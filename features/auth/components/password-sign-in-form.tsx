@@ -35,8 +35,8 @@ export function PasswordSignInForm({
   const form = useForm<z.infer<typeof PasswordSignInSchema>>({
     resolver: zodResolver(PasswordSignInSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'user@supasheet.dev',
+      password: '12345678',
     },
   });
 
