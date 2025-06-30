@@ -1,0 +1,29 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "printWidth": 80,
+  "singleQuote": false,
+  "arrowParens": "always",
+  "importOrder": [
+    "/^(?!.*\\.css).*/",
+    "^server-only$",
+    "^react$",
+    "^react-dom$",
+    "^next$",
+    "^next/(.*)$",
+    "^@supabase/supabase-js$",
+    "^@supabase/ssr$",
+    "^@supabase/gotrue-js$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/(.*)$",
+    "^[./]"
+  ],
+  "tailwindFunctions": ["tw", "clsx", "cn", "cva"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ]
+}
