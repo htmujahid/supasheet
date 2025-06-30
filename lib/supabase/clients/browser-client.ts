@@ -18,13 +18,8 @@ export function getSupabaseBrowserClient<GenericSchema = Database>() {
   const keys = getSupabaseClientKeys();
 
   if (!keys.url) {
-    if (typeof window !== 'undefined') {
-      keys.url = Cookie.get(SUPABASE_URL_COOKIE_NAME) as string;
-      keys.anonKey = Cookie.get(SUPABASE_ANON_KEY_COOKIE_NAME) as string;
-    } else {
-      keys.url = 'http://127.0.0.1:54321';
-      keys.anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
-    }
+    keys.url = Cookie.get(SUPABASE_URL_COOKIE_NAME) || 'http://127.0.0.1:54321';
+    keys.anonKey = Cookie.get(SUPABASE_ANON_KEY_COOKIE_NAME) || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
   }
 
   return createBrowserClient<GenericSchema>(keys.url, keys.anonKey);
