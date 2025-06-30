@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
   const hasSupabaseKeys = checkSupabaseKeys(request);
 
   if (!hasSupabaseKeys) {
-    // return NextResponse.redirect(new URL("/start", process.env.NEXT_PUBLIC_PRIMARY_SITE_URL));
+    return NextResponse.redirect(new URL("/start", process.env.NEXT_PUBLIC_PRIMARY_SITE_URL));
   }
 
   // set a unique request ID for each request
