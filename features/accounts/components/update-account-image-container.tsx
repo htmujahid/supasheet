@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { Database } from '@/lib/database.types';
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
-import { ImageUploader } from '@/components/makerkit/image-uploader';
-import { Trans } from '@/components/makerkit/trans';
+import { ImageUploader } from "@/components/makerkit/image-uploader";
+import { Trans } from "@/components/makerkit/trans";
+import { Database } from "@/lib/database.types";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-import { useRevalidatePersonalAccountDataQuery } from '../hooks/use-personal-account-data';
+import { useRevalidatePersonalAccountDataQuery } from "../hooks/use-personal-account-data";
 
-const AVATARS_BUCKET = 'account_image';
+const AVATARS_BUCKET = "account_image";
 
 export function UpdateAccountImageContainer({
   user,
@@ -41,7 +41,7 @@ function UploadProfileAvatarForm(props: {
   onAvatarUpdated: () => void;
 }) {
   const client = useSupabase();
-  const { t } = useTranslation('account');
+  const { t } = useTranslation("account");
 
   const createToaster = useCallback(
     (promise: () => Promise<unknown>) => {
@@ -72,11 +72,11 @@ function UploadProfileAvatarForm(props: {
             uploadUserProfilePhoto(client, file, props.userId)
               .then((pictureUrl) => {
                 return client
-                  .from('accounts')
+                  .from("accounts")
                   .update({
                     picture_url: pictureUrl,
                   })
-                  .eq('id', props.userId)
+                  .eq("id", props.userId)
                   .throwOnError();
               })
               .then(() => {
@@ -90,11 +90,11 @@ function UploadProfileAvatarForm(props: {
           removeExistingStorageFile()
             .then(() => {
               return client
-                .from('accounts')
+                .from("accounts")
                 .update({
                   picture_url: null,
                 })
-                .eq('id', props.userId)
+                .eq("id", props.userId)
                 .throwOnError();
             })
             .then(() => {
@@ -109,13 +109,13 @@ function UploadProfileAvatarForm(props: {
 
   return (
     <ImageUploader value={props.pictureUrl} onValueChange={onValueChange}>
-      <div className={'flex flex-col space-y-1'}>
-        <span className={'text-sm'}>
-          <Trans i18nKey={'account:profilePictureHeading'} />
+      <div className={"flex flex-col space-y-1"}>
+        <span className={"text-sm"}>
+          <Trans i18nKey={"account:profilePictureHeading"} />
         </span>
 
-        <span className={'text-xs'}>
-          <Trans i18nKey={'account:profilePictureSubheading'} />
+        <span className={"text-xs"}>
+          <Trans i18nKey={"account:profilePictureSubheading"} />
         </span>
       </div>
     </ImageUploader>
@@ -124,7 +124,7 @@ function UploadProfileAvatarForm(props: {
 
 function deleteProfilePhoto(client: SupabaseClient<Database>, url: string) {
   const bucket = client.storage.from(AVATARS_BUCKET);
-  const fileName = url.split('/').pop()?.split('?')[0];
+  const fileName = url.split("/").pop()?.split("?")[0];
 
   if (!fileName) {
     return;
@@ -140,7 +140,7 @@ async function uploadUserProfilePhoto(
 ) {
   const bytes = await photoFile.arrayBuffer();
   const bucket = client.storage.from(AVATARS_BUCKET);
-  const extension = photoFile.name.split('.').pop();
+  const extension = photoFile.name.split(".").pop();
   const fileName = await getAvatarFileName(userId, extension);
 
   const result = await bucket.upload(fileName, bytes);
@@ -156,7 +156,7 @@ async function getAvatarFileName(
   userId: string,
   extension: string | undefined,
 ) {
-  const { nanoid } = await import('nanoid');
+  const { nanoid } = await import("nanoid");
 
   // we add a version to the URL to ensure
   // the browser always fetches the latest image

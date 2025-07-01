@@ -1,5 +1,5 @@
-import { AppLogo } from '@/components/app-logo';
-import { cn } from '@/lib/utils';
+import { AppLogo } from "@/components/app-logo";
+import { cn } from "@/lib/utils";
 
 export function AuthLayout({
   children,
@@ -10,8 +10,8 @@ export function AuthLayout({
 }) {
   return (
     <div
-      className={cn('grid min-h-svh', {
-        'lg:grid-cols-2': isCoverImage,
+      className={cn("grid min-h-svh", {
+        "lg:grid-cols-2": isCoverImage,
       })}
     >
       <div className="flex flex-col gap-4 p-6 md:p-10">

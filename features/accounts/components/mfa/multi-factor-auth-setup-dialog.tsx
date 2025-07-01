@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircleIcon } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeftIcon } from 'lucide-react';
-import { useForm, useWatch } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
+import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
-import { useFactorsMutationKey } from '@/lib/supabase/hooks/use-user-factors-mutation-key';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { If } from "@/components/makerkit/if";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -31,18 +31,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { If } from '@/components/makerkit/if';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@/components/ui/input-otp';
-import { Trans } from '@/components/makerkit/trans';
+} from "@/components/ui/input-otp";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
+import { useFactorsMutationKey } from "@/lib/supabase/hooks/use-user-factors-mutation-key";
 
-import { refreshAuthSession } from '../../server/server-actions';
+import { refreshAuthSession } from "../../server/server-actions";
 
 export function MultiFactorAuthSetupDialog(props: { userId: string }) {
   const { t } = useTranslation();
@@ -58,7 +58,7 @@ export function MultiFactorAuthSetupDialog(props: { userId: string }) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Trans i18nKey={'account:setupMfaButtonLabel'} />
+          <Trans i18nKey={"account:setupMfaButtonLabel"} />
         </Button>
       </DialogTrigger>
 
@@ -68,11 +68,11 @@ export function MultiFactorAuthSetupDialog(props: { userId: string }) {
       >
         <DialogHeader>
           <DialogTitle>
-            <Trans i18nKey={'account:setupMfaButtonLabel'} />
+            <Trans i18nKey={"account:setupMfaButtonLabel"} />
           </DialogTitle>
 
           <DialogDescription>
-            <Trans i18nKey={'account:multiFactorAuthDescription'} />
+            <Trans i18nKey={"account:multiFactorAuthDescription"} />
           </DialogDescription>
         </DialogHeader>
 
@@ -107,18 +107,18 @@ function MultiFactorAuthSetupForm({
       }),
     ),
     defaultValues: {
-      factorId: '',
-      verificationCode: '',
+      factorId: "",
+      verificationCode: "",
     },
   });
 
   const [state, setState] = useState({
     loading: false,
-    error: '',
+    error: "",
   });
 
   const factorId = useWatch({
-    name: 'factorId',
+    name: "factorId",
     control: verificationCodeForm.control,
   });
 
@@ -132,7 +132,7 @@ function MultiFactorAuthSetupForm({
     }) => {
       setState({
         loading: true,
-        error: '',
+        error: "",
       });
 
       try {
@@ -145,7 +145,7 @@ function MultiFactorAuthSetupForm({
 
         setState({
           loading: false,
-          error: '',
+          error: "",
         });
 
         onEnrolled();
@@ -166,13 +166,13 @@ function MultiFactorAuthSetupForm({
   }
 
   return (
-    <div className={'flex flex-col space-y-4'}>
-      <div className={'flex justify-center'}>
+    <div className={"flex flex-col space-y-4"}>
+      <div className={"flex justify-center"}>
         <FactorQrCode
           userId={userId}
           onCancel={onCancel}
           onSetFactorId={(factorId) =>
-            verificationCodeForm.setValue('factorId', factorId)
+            verificationCodeForm.setValue("factorId", factorId)
           }
         />
       </div>
@@ -181,15 +181,15 @@ function MultiFactorAuthSetupForm({
         <Form {...verificationCodeForm}>
           <form
             onSubmit={verificationCodeForm.handleSubmit(onSubmit)}
-            className={'w-full'}
+            className={"w-full"}
           >
-            <div className={'flex flex-col space-y-8'}>
+            <div className={"flex flex-col space-y-8"}>
               <FormField
                 render={({ field }) => {
                   return (
                     <FormItem
                       className={
-                        'mx-auto flex flex-col items-center justify-center'
+                        "mx-auto flex flex-col items-center justify-center"
                       }
                     >
                       <FormControl>
@@ -210,7 +210,7 @@ function MultiFactorAuthSetupForm({
 
                       <FormDescription>
                         <Trans
-                          i18nKey={'account:verifyActivationCodeDescription'}
+                          i18nKey={"account:verifyActivationCodeDescription"}
                         />
                       </FormDescription>
 
@@ -218,24 +218,24 @@ function MultiFactorAuthSetupForm({
                     </FormItem>
                   );
                 }}
-                name={'verificationCode'}
+                name={"verificationCode"}
               />
 
-              <div className={'flex justify-end space-x-2'}>
-                <Button type={'button'} variant={'ghost'} onClick={onCancel}>
-                  <Trans i18nKey={'common:cancel'} />
+              <div className={"flex justify-end space-x-2"}>
+                <Button type={"button"} variant={"ghost"} onClick={onCancel}>
+                  <Trans i18nKey={"common:cancel"} />
                 </Button>
 
                 <Button
                   disabled={
                     !verificationCodeForm.formState.isValid || state.loading
                   }
-                  type={'submit'}
+                  type={"submit"}
                 >
                   {state.loading ? (
-                    <Trans i18nKey={'account:verifyingCode'} />
+                    <Trans i18nKey={"account:verifyingCode"} />
                   ) : (
-                    <Trans i18nKey={'account:enableMfaFactor'} />
+                    <Trans i18nKey={"account:enableMfaFactor"} />
                   )}
                 </Button>
               </div>
@@ -258,7 +258,7 @@ function FactorQrCode({
 }>) {
   const enrollFactorMutation = useEnrollFactor(userId);
   const { t } = useTranslation();
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   const form = useForm({
     resolver: zodResolver(
@@ -268,34 +268,34 @@ function FactorQrCode({
       }),
     ),
     defaultValues: {
-      factorName: '',
-      qrCode: '',
+      factorName: "",
+      qrCode: "",
     },
   });
 
-  const factorName = useWatch({ name: 'factorName', control: form.control });
+  const factorName = useWatch({ name: "factorName", control: form.control });
 
   if (error) {
     return (
-      <div className={'flex w-full flex-col space-y-2'}>
-        <Alert variant={'destructive'}>
-          <AlertCircleIcon className={'h-4'} />
+      <div className={"flex w-full flex-col space-y-2"}>
+        <Alert variant={"destructive"}>
+          <AlertCircleIcon className={"h-4"} />
 
           <AlertTitle>
-            <Trans i18nKey={'account:qrCodeErrorHeading'} />
+            <Trans i18nKey={"account:qrCodeErrorHeading"} />
           </AlertTitle>
 
           <AlertDescription>
             <Trans
               i18nKey={`auth:errors.${error}`}
-              defaults={t('account:qrCodeErrorDescription')}
+              defaults={t("account:qrCodeErrorDescription")}
             />
           </AlertDescription>
         </Alert>
 
         <div>
-          <Button variant={'outline'} onClick={onCancel}>
-            <ArrowLeftIcon className={'h-4'} />
+          <Button variant={"outline"} onClick={onCancel}>
+            <ArrowLeftIcon className={"h-4"} />
             <Trans i18nKey={`common:retry`} />
           </Button>
         </div>
@@ -316,9 +316,9 @@ function FactorQrCode({
 
           const data = response.data;
 
-          if (data.type === 'totp') {
-            form.setValue('factorName', name);
-            form.setValue('qrCode', data.totp.qr_code);
+          if (data.type === "totp") {
+            form.setValue("factorName", name);
+            form.setValue("qrCode", data.totp.qr_code);
           }
 
           // dispatch event to set factor ID
@@ -329,15 +329,15 @@ function FactorQrCode({
   }
 
   return (
-    <div className={'flex flex-col space-y-4'}>
+    <div className={"flex flex-col space-y-4"}>
       <p>
-        <span className={'text-muted-foreground text-sm'}>
-          <Trans i18nKey={'account:multiFactorModalHeading'} />
+        <span className={"text-muted-foreground text-sm"}>
+          <Trans i18nKey={"account:multiFactorModalHeading"} />
         </span>
       </p>
 
-      <div className={'flex justify-center'}>
-        <QrImage src={form.getValues('qrCode')} />
+      <div className={"flex justify-center"}>
+        <QrImage src={form.getValues("qrCode")} />
       </div>
     </div>
   );
@@ -356,34 +356,34 @@ function FactorNameForm(
       }),
     ),
     defaultValues: {
-      name: '',
+      name: "",
     },
   });
 
   return (
     <Form {...form}>
       <form
-        className={'w-full'}
+        className={"w-full"}
         onSubmit={form.handleSubmit((data) => {
           props.onSetFactorName(data.name);
         })}
       >
-        <div className={'flex flex-col space-y-4'}>
+        <div className={"flex flex-col space-y-4"}>
           <FormField
-            name={'name'}
+            name={"name"}
             render={({ field }) => {
               return (
                 <FormItem>
                   <FormLabel>
-                    <Trans i18nKey={'account:factorNameLabel'} />
+                    <Trans i18nKey={"account:factorNameLabel"} />
                   </FormLabel>
 
                   <FormControl>
-                    <Input autoComplete={'off'} required {...field} />
+                    <Input autoComplete={"off"} required {...field} />
                   </FormControl>
 
                   <FormDescription>
-                    <Trans i18nKey={'account:factorNameHint'} />
+                    <Trans i18nKey={"account:factorNameHint"} />
                   </FormDescription>
 
                   <FormMessage />
@@ -392,13 +392,13 @@ function FactorNameForm(
             }}
           />
 
-          <div className={'flex justify-end space-x-2'}>
-            <Button type={'button'} variant={'ghost'} onClick={props.onCancel}>
-              <Trans i18nKey={'common:cancel'} />
+          <div className={"flex justify-end space-x-2"}>
+            <Button type={"button"} variant={"ghost"} onClick={props.onCancel}>
+              <Trans i18nKey={"common:cancel"} />
             </Button>
 
-            <Button type={'submit'}>
-              <Trans i18nKey={'account:factorNameSubmitLabel'} />
+            <Button type={"submit"}>
+              <Trans i18nKey={"account:factorNameSubmitLabel"} />
             </Button>
           </div>
         </div>
@@ -411,11 +411,11 @@ function QrImage({ src }: { src: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      alt={'QR Code'}
+      alt={"QR Code"}
       src={src}
       width={160}
       height={160}
-      className={'bg-white p-2'}
+      className={"bg-white p-2"}
     />
   );
 }
@@ -428,7 +428,7 @@ function useEnrollFactor(userId: string) {
   const mutationFn = async (factorName: string) => {
     const response = await client.auth.mfa.enroll({
       friendlyName: factorName,
-      factorType: 'totp',
+      factorType: "totp",
     });
 
     if (response.error) {
@@ -495,15 +495,15 @@ function useVerifyCodeMutation(userId: string) {
 
 function ErrorAlert() {
   return (
-    <Alert variant={'destructive'}>
-      <AlertCircleIcon className={'h-4'} />
+    <Alert variant={"destructive"}>
+      <AlertCircleIcon className={"h-4"} />
 
       <AlertTitle>
-        <Trans i18nKey={'account:multiFactorSetupErrorHeading'} />
+        <Trans i18nKey={"account:multiFactorSetupErrorHeading"} />
       </AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={'account:multiFactorSetupErrorDescription'} />
+        <Trans i18nKey={"account:multiFactorSetupErrorDescription"} />
       </AlertDescription>
     </Alert>
   );

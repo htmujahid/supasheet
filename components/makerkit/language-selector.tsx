@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from "react";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 import {
   Select,
@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from "../ui/select";
 
 export function LanguageSelector({
   onChange,
@@ -21,12 +21,12 @@ export function LanguageSelector({
   const { language: currentLanguage, options } = i18n;
 
   const locales = (options.supportedLngs as string[]).filter(
-    (locale) => locale.toLowerCase() !== 'cimode',
+    (locale) => locale.toLowerCase() !== "cimode",
   );
 
   const languageNames = useMemo(() => {
     return new Intl.DisplayNames([currentLanguage], {
-      type: 'language',
+      type: "language",
     });
   }, [currentLanguage]);
 

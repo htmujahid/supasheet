@@ -1,10 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { Database } from '@/lib/database.types';
-import { Button } from '@/components/ui/button';
+import { Trans } from "@/components/makerkit/trans";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,14 +12,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Trans } from '@/components/makerkit/trans';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Database } from "@/lib/database.types";
 
-import { useUpdateAccountData } from '../hooks/use-update-account';
-import { AccountDetailsSchema } from '../schema/account-details.schema';
+import { useUpdateAccountData } from "../hooks/use-update-account";
+import { AccountDetailsSchema } from "../schema/account-details.schema";
 
-type UpdateUserDataParams = Database['public']['Tables']['accounts']['Update'];
+type UpdateUserDataParams = Database["public"]["Tables"]["accounts"]["Update"];
 
 export function UpdateAccountDetailsForm({
   displayName,
@@ -31,7 +31,7 @@ export function UpdateAccountDetailsForm({
   onUpdate: (user: Partial<UpdateUserDataParams>) => void;
 }) {
   const updateAccountMutation = useUpdateAccountData(userId);
-  const { t } = useTranslation('account');
+  const { t } = useTranslation("account");
 
   const form = useForm({
     resolver: zodResolver(AccountDetailsSchema),
@@ -55,26 +55,26 @@ export function UpdateAccountDetailsForm({
   };
 
   return (
-    <div className={'flex flex-col space-y-8'}>
+    <div className={"flex flex-col space-y-8"}>
       <Form {...form}>
         <form
-          data-test={'update-account-name-form'}
-          className={'flex flex-col space-y-4'}
+          data-test={"update-account-name-form"}
+          className={"flex flex-col space-y-4"}
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
-            name={'displayName'}
+            name={"displayName"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  <Trans i18nKey={'account:name'} />
+                  <Trans i18nKey={"account:name"} />
                 </FormLabel>
 
                 <FormControl>
                   <Input
-                    data-test={'account-display-name'}
+                    data-test={"account-display-name"}
                     minLength={2}
-                    placeholder={''}
+                    placeholder={""}
                     maxLength={100}
                     {...field}
                   />
@@ -87,7 +87,7 @@ export function UpdateAccountDetailsForm({
 
           <div>
             <Button disabled={updateAccountMutation.isPending}>
-              <Trans i18nKey={'account:updateProfileSubmitLabel'} />
+              <Trans i18nKey={"account:updateProfileSubmitLabel"} />
             </Button>
           </div>
         </form>

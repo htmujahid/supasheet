@@ -1,5 +1,9 @@
 "use client";
 
+import * as React from "react";
+
+import * as ReactDOM from "react-dom";
+
 import {
   type Announcements,
   DndContext,
@@ -35,11 +39,9 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Slot } from "@radix-ui/react-slot";
-import * as React from "react";
 
 import { composeEventHandlers, useComposedRefs } from "@/lib/composition";
 import { cn } from "@/lib/utils";
-import * as ReactDOM from "react-dom";
 
 const orientationConfig = {
   vertical: {
@@ -427,7 +429,7 @@ const SortableItem = React.forwardRef<HTMLDivElement, SortableItemProps>(
           ref={composedRef}
           style={composedStyle}
           className={cn(
-            "focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
+            "focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-hidden",
             {
               "touch-none select-none": asHandle,
               "cursor-default": context.flatCursor,

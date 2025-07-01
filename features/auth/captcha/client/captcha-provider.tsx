@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { createContext, useCallback, useRef, useState } from 'react';
+import { createContext, useCallback, useRef, useState } from "react";
 
-import { TurnstileInstance } from '@marsidev/react-turnstile';
+import { TurnstileInstance } from "@marsidev/react-turnstile";
 
 export const Captcha = createContext<{
   token: string;
@@ -10,12 +10,12 @@ export const Captcha = createContext<{
   instance: TurnstileInstance | null;
   setInstance: (ref: TurnstileInstance) => void;
 }>({
-  token: '',
+  token: "",
   instance: null,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setToken: (_: string) => {
     // do nothing
-    return '';
+    return "";
   },
   setInstance: () => {
     // do nothing
@@ -23,7 +23,7 @@ export const Captcha = createContext<{
 });
 
 export function CaptchaProvider(props: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>("");
   const instanceRef = useRef<TurnstileInstance | null>(null);
 
   const setInstance = useCallback((ref: TurnstileInstance) => {

@@ -1,12 +1,11 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { Computer, Moon, Sun, SunMoonIcon } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Computer, Moon, Sun, SunMoonIcon } from "lucide-react";
+import { useTheme } from "next-themes";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +15,12 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Trans } from './trans';
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
-const MODES = ['light', 'dark', 'system'];
+import { Trans } from "./trans";
+
+const MODES = ["light", "dark", "system"];
 
 export function ModeToggle(props: { className?: string }) {
   const { setTheme, theme } = useTheme();
@@ -30,8 +31,8 @@ export function ModeToggle(props: { className?: string }) {
 
       return (
         <DropdownMenuItem
-          className={cn('space-x-2', {
-            'bg-muted': isSelected,
+          className={cn("space-x-2", {
+            "bg-muted": isSelected,
           })}
           key={mode}
           onClick={() => {
@@ -74,8 +75,8 @@ export function SubMenuModeToggle() {
 
         return (
           <DropdownMenuItem
-            className={cn('flex cursor-pointer items-center space-x-2', {
-              'bg-muted': isSelected,
+            className={cn("flex cursor-pointer items-center space-x-2", {
+              "bg-muted": isSelected,
             })}
             key={mode}
             onClick={() => {
@@ -99,24 +100,26 @@ export function SubMenuModeToggle() {
       <DropdownMenuSub>
         <DropdownMenuSubTrigger
           className={
-            'hidden w-full items-center justify-between gap-x-2 lg:flex'
+            "hidden w-full items-center justify-between gap-x-2 lg:flex"
           }
         >
-          <span className={'flex space-x-2'}>
+          <span className={"flex space-x-2"}>
             <SunMoonIcon size={16} className="opacity-60" />
 
             <span>
-              <Trans i18nKey={'common:theme'} />
+              <Trans i18nKey={"common:theme"} />
             </span>
           </span>
         </DropdownMenuSubTrigger>
 
-        <DropdownMenuSubContent className='min-w-54'>{MenuItems}</DropdownMenuSubContent>
+        <DropdownMenuSubContent className="min-w-54">
+          {MenuItems}
+        </DropdownMenuSubContent>
       </DropdownMenuSub>
 
-      <div className={'lg:hidden'}>
+      <div className={"lg:hidden"}>
         <DropdownMenuLabel>
-          <Trans i18nKey={'common:theme'} />
+          <Trans i18nKey={"common:theme"} />
         </DropdownMenuLabel>
 
         {MenuItems}
@@ -131,11 +134,11 @@ function setCookeTheme(theme: string) {
 
 function Icon({ theme }: { theme: string | undefined }) {
   switch (theme) {
-    case 'light':
+    case "light":
       return <Sun className="h-4" />;
-    case 'dark':
+    case "dark":
       return <Moon className="h-4" />;
-    case 'system':
+    case "system":
       return <Computer className="h-4" />;
   }
 }

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Returns and validates the Supabase client keys from the environment.
@@ -6,8 +6,8 @@ import { z } from 'zod';
 export function getSupabaseClientKeys() {
   return z
     .object({
-      url: z.string().default(''),
-      anonKey: z.string().default(''),
+      url: z.string().default(""),
+      anonKey: z.string().default(""),
     })
     .parse({
       url: process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -15,5 +15,5 @@ export function getSupabaseClientKeys() {
     });
 }
 
-export const SUPABASE_URL_COOKIE_NAME = 'supabase-url';
-export const SUPABASE_ANON_KEY_COOKIE_NAME = 'supabase-anon-key';
+export const SUPABASE_URL_COOKIE_NAME = "supabase-url";
+export const SUPABASE_ANON_KEY_COOKIE_NAME = "supabase-anon-key";

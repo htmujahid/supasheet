@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import type { z } from 'zod';
+import type { z } from "zod";
 
-import { useSignInWithEmailPassword } from '@/lib/supabase/hooks/use-sign-in-with-email-password';
+import { useSignInWithEmailPassword } from "@/lib/supabase/hooks/use-sign-in-with-email-password";
 
-import { useCaptchaToken } from '../captcha/client';
-import type { PasswordSignInSchema } from '../schemas/password-sign-in.schema';
-import { AuthErrorAlert } from './auth-error-alert';
-import { PasswordSignInForm } from './password-sign-in-form';
+import { useCaptchaToken } from "../captcha/client";
+import type { PasswordSignInSchema } from "../schemas/password-sign-in.schema";
+import { AuthErrorAlert } from "./auth-error-alert";
+import { PasswordSignInForm } from "./password-sign-in-form";
 
 export function PasswordSignInContainer({
   onSignIn,

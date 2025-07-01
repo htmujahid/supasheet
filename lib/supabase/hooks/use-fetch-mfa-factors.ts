@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
-import { useFactorsMutationKey } from './use-user-factors-mutation-key';
+import { useSupabase } from "./use-supabase";
+import { useFactorsMutationKey } from "./use-user-factors-mutation-key";
 
 /**
  * @name useFetchAuthFactors

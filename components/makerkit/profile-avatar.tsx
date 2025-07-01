@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 type SessionProps = {
   displayName: string | null;
@@ -18,16 +18,16 @@ type ProfileAvatarProps = (SessionProps | TextProps) & {
 export function ProfileAvatar(props: ProfileAvatarProps) {
   const avatarClassName = cn(
     props.className,
-    'mx-auto h-9 w-9 group-focus:ring-2',
+    "mx-auto h-9 w-9 group-focus:ring-2",
   );
 
-  if ('text' in props) {
+  if ("text" in props) {
     return (
       <Avatar className={avatarClassName}>
         <AvatarFallback
           className={cn(
             props.fallbackClassName,
-            'animate-in fade-in uppercase',
+            "animate-in fade-in uppercase",
           )}
         >
           {props.text.slice(0, 1)}
@@ -43,9 +43,9 @@ export function ProfileAvatar(props: ProfileAvatarProps) {
       <AvatarImage src={props.pictureUrl ?? undefined} />
 
       <AvatarFallback
-        className={cn(props.fallbackClassName, 'animate-in fade-in')}
+        className={cn(props.fallbackClassName, "animate-in fade-in")}
       >
-        <span suppressHydrationWarning className={'uppercase'}>
+        <span suppressHydrationWarning className={"uppercase"}>
           {initials}
         </span>
       </AvatarFallback>

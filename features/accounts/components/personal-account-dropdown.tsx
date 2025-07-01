@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import Link from 'next/link';
+import Link from "next/link";
 
-import type { User } from '@supabase/supabase-js';
+import type { User } from "@supabase/supabase-js";
 
-import { ChevronsUpDown, Home, LogOut, UserPenIcon } from 'lucide-react';
+import { ChevronsUpDown, Home, LogOut, UserPenIcon } from "lucide-react";
 
+import { If } from "@/components/makerkit/if";
+import { SubMenuModeToggle } from "@/components/makerkit/mode-toggle";
+import { ProfileAvatar } from "@/components/makerkit/profile-avatar";
+import { Trans } from "@/components/makerkit/trans";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { If } from '@/components/makerkit/if';
-import { SubMenuModeToggle } from '@/components/makerkit/mode-toggle';
-import { ProfileAvatar } from '@/components/makerkit/profile-avatar';
-import { Trans } from '@/components/makerkit/trans';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
-import { usePersonalAccountData } from '../hooks/use-personal-account-data';
+import { usePersonalAccountData } from "../hooks/use-personal-account-data";
 
 export function PersonalAccountDropdown({
   className,
@@ -65,45 +65,45 @@ export function PersonalAccountDropdown({
   }, [user]);
 
   const displayName =
-    personalAccountData?.data?.name ?? account?.name ?? user?.email ?? '';
+    personalAccountData?.data?.name ?? account?.name ?? user?.email ?? "";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label="Open your profile menu"
-        data-test={'account-dropdown-trigger'}
+        data-test={"account-dropdown-trigger"}
         className={cn(
-          'animate-in fade-in flex cursor-pointer items-center duration-500 group-data-[minimized=true]:px-0',
-          className ?? '',
+          "animate-in fade-in flex cursor-pointer items-center duration-500 group-data-[minimized=true]:px-0",
+          className ?? "",
           {
-            ['active:bg-secondary/50 items-center gap-x-4 rounded-md' +
-            ' hover:bg-secondary p-2 transition-colors']: showProfileName,
+            ["active:bg-secondary/50 items-center gap-x-4 rounded-md" +
+            " hover:bg-secondary p-2 transition-colors"]: showProfileName,
           },
         )}
       >
         <ProfileAvatar
-          className={'rounded-md'}
-          fallbackClassName={'rounded-md border'}
-          displayName={displayName ?? user?.email ?? ''}
+          className={"rounded-md"}
+          fallbackClassName={"rounded-md border"}
+          displayName={displayName ?? user?.email ?? ""}
           pictureUrl={personalAccountData?.data?.picture_url}
         />
 
         <If condition={showProfileName}>
           <div
             className={
-              'fade-in animate-in flex w-full flex-col truncate text-left group-data-[minimized=true]:hidden'
+              "fade-in animate-in flex w-full flex-col truncate text-left group-data-[minimized=true]:hidden"
             }
           >
             <span
-              data-test={'account-dropdown-display-name'}
-              className={'truncate text-sm'}
+              data-test={"account-dropdown-display-name"}
+              className={"truncate text-sm"}
             >
               {displayName}
             </span>
 
             <span
-              data-test={'account-dropdown-email'}
-              className={'text-muted-foreground truncate text-xs'}
+              data-test={"account-dropdown-email"}
+              className={"text-muted-foreground truncate text-xs"}
             >
               {signedInAsLabel}
             </span>
@@ -111,23 +111,23 @@ export function PersonalAccountDropdown({
 
           <ChevronsUpDown
             className={
-              'text-muted-foreground mr-1 h-8 group-data-[minimized=true]:hidden'
+              "text-muted-foreground mr-1 h-8 group-data-[minimized=true]:hidden"
             }
           />
         </If>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className={'!min-w-[15rem]'}>
-        <DropdownMenuItem className={'!h-10 rounded-none'}>
+      <DropdownMenuContent className={"!min-w-[15rem]"}>
+        <DropdownMenuItem className={"!h-10 rounded-none"}>
           <div
-            className={'flex flex-col justify-start truncate text-left text-xs'}
+            className={"flex flex-col justify-start truncate text-left text-xs"}
           >
-            <div className={'text-muted-foreground'}>
-              <Trans i18nKey={'common:signedInAs'} />
+            <div className={"text-muted-foreground"}>
+              <Trans i18nKey={"common:signedInAs"} />
             </div>
 
             <div>
-              <span className={'block truncate'}>{signedInAsLabel}</span>
+              <span className={"block truncate"}>{signedInAsLabel}</span>
             </div>
           </div>
         </DropdownMenuItem>
@@ -136,26 +136,26 @@ export function PersonalAccountDropdown({
 
         <DropdownMenuItem asChild>
           <Link
-            className={'s-full flex cursor-pointer items-center'}
+            className={"s-full flex cursor-pointer items-center"}
             href={paths.home}
           >
-            <Home className={'h-5'} />
+            <Home className={"h-5"} />
 
             <span>
-              <Trans i18nKey={'common:routes.home'} />
+              <Trans i18nKey={"common:routes.home"} />
             </span>
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link
-            className={'s-full flex cursor-pointer items-center'}
+            className={"s-full flex cursor-pointer items-center"}
             href={paths.account}
           >
-            <UserPenIcon className={'h-5'} />
+            <UserPenIcon className={"h-5"} />
 
             <span>
-              <Trans i18nKey={'common:routes.account'} />
+              <Trans i18nKey={"common:routes.account"} />
             </span>
           </Link>
         </DropdownMenuItem>
@@ -167,16 +167,16 @@ export function PersonalAccountDropdown({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          data-test={'account-dropdown-sign-out'}
-          role={'button'}
-          className={'cursor-pointer'}
+          data-test={"account-dropdown-sign-out"}
+          role={"button"}
+          className={"cursor-pointer"}
           onClick={signOutRequested}
         >
-          <span className={'flex w-full items-center space-x-2'}>
-            <LogOut className={'h-5'} />
+          <span className={"flex w-full items-center space-x-2"}>
+            <LogOut className={"h-5"} />
 
             <span>
-              <Trans i18nKey={'auth:signOut'} />
+              <Trans i18nKey={"auth:signOut"} />
             </span>
           </span>
         </DropdownMenuItem>

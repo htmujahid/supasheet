@@ -1,8 +1,7 @@
-import type * as React from 'react';
+import type * as React from "react";
 
-import { type Table as TanstackTable, flexRender } from '@tanstack/react-table';
+import { type Table as TanstackTable, flexRender } from "@tanstack/react-table";
 
-import { DataTablePagination } from '@/features/resources/components/data-table/data-table-pagination';
 import {
   Table,
   TableBody,
@@ -10,11 +9,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { getCommonPinningStyles } from '@/lib/data-table';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/table";
+import { DataTablePagination } from "@/features/resources/components/data-table/data-table-pagination";
+import { getCommonPinningStyles } from "@/lib/data-table";
+import { cn } from "@/lib/utils";
 
-interface DataTableProps<TData> extends React.ComponentProps<'div'> {
+interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
 }
@@ -28,22 +28,22 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   return (
     <div
-      className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)}
+      className={cn("flex w-full flex-col gap-2.5 overflow-auto", className)}
       {...props}
     >
       {children}
       <div className="overflow-hidden rounded-md border [&>div]:h-[calc(100vh-183px)]">
         <Table
-          className='table-fixed'
+          className="table-fixed"
           style={{
             width: table.getCenterTotalSize(),
           }}
         >
-          <TableHeader className='sticky top-0 z-10'>
+          <TableHeader className="sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="[&>:not(:last-child)]:border-r bg-muted"
+                className="bg-muted [&>:not(:last-child)]:border-r"
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead
@@ -68,10 +68,10 @@ export function DataTable<TData>({
                           onMouseDown: header.getResizeHandler(),
                           onTouchStart: header.getResizeHandler(),
                           className:
-                            'absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-px',
+                            "absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-px",
                           style: {
-                            userSelect: 'none',
-                            touchAction: 'none',
+                            userSelect: "none",
+                            touchAction: "none",
                           },
                         }}
                       />
@@ -81,12 +81,12 @@ export function DataTable<TData>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className='border-b'>
+          <TableBody className="border-b">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={row.getIsSelected() && "selected"}
                   className="[&>td]:border-r"
                 >
                   {row.getVisibleCells().map((cell) => (

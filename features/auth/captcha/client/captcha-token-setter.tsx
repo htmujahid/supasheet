@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useContext } from 'react';
+import { useContext } from "react";
 
-import { Turnstile, TurnstileProps } from '@marsidev/react-turnstile';
+import { Turnstile, TurnstileProps } from "@marsidev/react-turnstile";
 
-import { Captcha } from './captcha-provider';
+import { Captcha } from "./captcha-provider";
 
 export function CaptchaTokenSetter(props: {
   siteKey: string | undefined;
@@ -18,7 +18,7 @@ export function CaptchaTokenSetter(props: {
 
   const options = props.options ?? {
     options: {
-      size: 'invisible',
+      size: "invisible",
     },
   };
 

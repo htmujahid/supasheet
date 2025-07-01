@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useUser } from '@/lib/supabase/hooks/use-user';
-import { Alert } from '@/components/ui/alert';
-import { LoadingOverlay } from '@/components/makerkit/loading-overlay';
-import { Trans } from '@/components/makerkit/trans';
+import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert } from "@/components/ui/alert";
+import { useUser } from "@/lib/supabase/hooks/use-user";
 
-import { UpdatePasswordForm } from './update-password-form';
+import { UpdatePasswordForm } from "./update-password-form";
 
 export function UpdatePasswordFormContainer(
   props: React.PropsWithChildren<{
@@ -35,8 +35,8 @@ export function UpdatePasswordFormContainer(
 
 function WarnCannotUpdatePasswordAlert() {
   return (
-    <Alert variant={'warning'}>
-      <Trans i18nKey={'account:cannotUpdatePassword'} />
+    <Alert variant={"warning"}>
+      <Trans i18nKey={"account:cannotUpdatePassword"} />
     </Alert>
   );
 }

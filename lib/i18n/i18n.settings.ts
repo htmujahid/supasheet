@@ -3,7 +3,7 @@
  * This is used as a fallback language when the selected language is not supported.
  *
  */
-const defaultLanguage = process.env.NEXT_PUBLIC_DEFAULT_LOCALE ?? 'en';
+const defaultLanguage = process.env.NEXT_PUBLIC_DEFAULT_LOCALE ?? "en";
 
 /**
  * The list of supported languages.
@@ -15,7 +15,7 @@ export const languages: string[] = [defaultLanguage];
 /**
  * The name of the cookie that stores the selected language.
  */
-export const I18N_COOKIE_NAME = 'lang';
+export const I18N_COOKIE_NAME = "lang";
 
 /**
  * The default array of Internationalization (i18n) namespaces.
@@ -24,13 +24,13 @@ export const I18N_COOKIE_NAME = 'lang';
  * Add your own namespaces here
  **/
 export const defaultI18nNamespaces = [
-  'common',
-  'auth',
-  'account',
-  'teams',
-  'billing',
-  'marketing',
-  'resource'
+  "common",
+  "auth",
+  "account",
+  "teams",
+  "billing",
+  "marketing",
+  "resource",
 ];
 
 /**
@@ -58,7 +58,7 @@ export function getI18nSettings(
     fallbackLng: languages[0],
     detection: undefined,
     lng,
-    load: 'languageOnly' as const,
+    load: "languageOnly" as const,
     preload: false as const,
     lowerCaseLng: true as const,
     fallbackNS: ns,

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import type { User } from '@supabase/supabase-js';
+import type { User } from "@supabase/supabase-js";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { If } from '@/components/makerkit/if';
-import { Trans } from '@/components/makerkit/trans';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { If } from "@/components/makerkit/if";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,11 +19,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useUpdateUser } from '@/lib/supabase/hooks/use-update-user-mutation';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useUpdateUser } from "@/lib/supabase/hooks/use-update-user-mutation";
 
-import { UpdateEmailSchema } from '../../schema/update-email.schema';
+import { UpdateEmailSchema } from "../../schema/update-email.schema";
 
 function createEmailResolver(currentEmail: string, errorMessage: string) {
   return zodResolver(
@@ -40,7 +40,7 @@ export function UpdateEmailForm({
   user: User;
   callbackPath: string;
 }) {
-  const { t } = useTranslation('account');
+  const { t } = useTranslation("account");
   const updateUserMutation = useUpdateUser();
 
   const updateEmail = ({ email }: { email: string }) => {
@@ -64,48 +64,48 @@ export function UpdateEmailForm({
   const currentEmail = user.email;
 
   const form = useForm({
-    resolver: createEmailResolver(currentEmail!, t('emailNotMatching')),
+    resolver: createEmailResolver(currentEmail!, t("emailNotMatching")),
     defaultValues: {
-      email: '',
-      repeatEmail: '',
+      email: "",
+      repeatEmail: "",
     },
   });
 
   return (
     <Form {...form}>
       <form
-        className={'flex flex-col space-y-4'}
-        data-test={'account-email-form'}
+        className={"flex flex-col space-y-4"}
+        data-test={"account-email-form"}
         onSubmit={form.handleSubmit(updateEmail)}
       >
         <If condition={updateUserMutation.data}>
-          <Alert variant={'success'}>
-            <CheckIcon className={'h-4'} />
+          <Alert variant={"success"}>
+            <CheckIcon className={"h-4"} />
 
             <AlertTitle>
-              <Trans i18nKey={'account:updateEmailSuccess'} />
+              <Trans i18nKey={"account:updateEmailSuccess"} />
             </AlertTitle>
 
             <AlertDescription>
-              <Trans i18nKey={'account:updateEmailSuccessMessage'} />
+              <Trans i18nKey={"account:updateEmailSuccessMessage"} />
             </AlertDescription>
           </Alert>
         </If>
 
-        <div className={'flex flex-col space-y-4'}>
+        <div className={"flex flex-col space-y-4"}>
           <FormField
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  <Trans i18nKey={'account:newEmail'} />
+                  <Trans i18nKey={"account:newEmail"} />
                 </FormLabel>
 
                 <FormControl>
                   <Input
-                    data-test={'account-email-form-email-input'}
+                    data-test={"account-email-form-email-input"}
                     required
-                    type={'email'}
-                    placeholder={''}
+                    type={"email"}
+                    placeholder={""}
                     {...field}
                   />
                 </FormControl>
@@ -113,34 +113,34 @@ export function UpdateEmailForm({
                 <FormMessage />
               </FormItem>
             )}
-            name={'email'}
+            name={"email"}
           />
 
           <FormField
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  <Trans i18nKey={'account:repeatEmail'} />
+                  <Trans i18nKey={"account:repeatEmail"} />
                 </FormLabel>
 
                 <FormControl>
                   <Input
                     {...field}
-                    data-test={'account-email-form-repeat-email-input'}
+                    data-test={"account-email-form-repeat-email-input"}
                     required
-                    type={'email'}
+                    type={"email"}
                   />
                 </FormControl>
 
                 <FormMessage />
               </FormItem>
             )}
-            name={'repeatEmail'}
+            name={"repeatEmail"}
           />
 
           <div>
             <Button disabled={updateUserMutation.isPending}>
-              <Trans i18nKey={'account:updateEmailSubmitLabel'} />
+              <Trans i18nKey={"account:updateEmailSubmitLabel"} />
             </Button>
           </div>
         </div>

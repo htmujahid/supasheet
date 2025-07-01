@@ -1,8 +1,8 @@
-import type { SignInWithOAuthCredentials } from '@supabase/supabase-js';
+import type { SignInWithOAuthCredentials } from "@supabase/supabase-js";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 /**
  * @name useSignInWithProvider
@@ -10,7 +10,7 @@ import { useSupabase } from './use-supabase';
  */
 export function useSignInWithProvider() {
   const client = useSupabase();
-  const mutationKey = ['auth', 'sign-in-with-provider'];
+  const mutationKey = ["auth", "sign-in-with-provider"];
 
   const mutationFn = async (credentials: SignInWithOAuthCredentials) => {
     const response = await client.auth.signInWithOAuth(credentials);

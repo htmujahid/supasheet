@@ -1,7 +1,9 @@
 "use client";
 
-import type { Column } from "@tanstack/react-table";
 import * as React from "react";
+
+import type { Column } from "@tanstack/react-table";
+import { PlusCircle, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +16,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import { PlusCircle, XCircle } from "lucide-react";
 
 interface Range {
   min: number;
@@ -137,7 +138,7 @@ export function DataTableSliderFilter<TData>({
               role="button"
               aria-label={`Clear ${title} filter`}
               tabIndex={0}
-              className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:outline-none"
               onClick={onReset}
             >
               <XCircle />
@@ -161,7 +162,7 @@ export function DataTableSliderFilter<TData>({
       </PopoverTrigger>
       <PopoverContent align="start" className="flex w-auto flex-col gap-4">
         <div className="flex flex-col gap-3">
-          <p className="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <p className="leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             {title}
           </p>
           <div className="flex items-center gap-4">
@@ -184,7 +185,7 @@ export function DataTableSliderFilter<TData>({
                 className={cn("h-8 w-24", unit && "pr-8")}
               />
               {unit && (
-                <span className="absolute top-0 right-0 bottom-0 flex items-center rounded-r-md bg-accent px-2 text-muted-foreground text-sm">
+                <span className="bg-accent text-muted-foreground absolute top-0 right-0 bottom-0 flex items-center rounded-r-md px-2 text-sm">
                   {unit}
                 </span>
               )}
@@ -208,7 +209,7 @@ export function DataTableSliderFilter<TData>({
                 className={cn("h-8 w-24", unit && "pr-8")}
               />
               {unit && (
-                <span className="absolute top-0 right-0 bottom-0 flex items-center rounded-r-md bg-accent px-2 text-muted-foreground text-sm">
+                <span className="bg-accent text-muted-foreground absolute top-0 right-0 bottom-0 flex items-center rounded-r-md px-2 text-sm">
                   {unit}
                 </span>
               )}

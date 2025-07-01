@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+
 import type { ColumnSort, SortDirection, Table } from "@tanstack/react-table";
 import {
   ArrowDownUp,
@@ -7,7 +9,6 @@ import {
   GripVertical,
   Trash2,
 } from "lucide-react";
-import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -171,7 +172,7 @@ export function DataTableSortList<TData>({
       value={sorting}
       onValueChange={onSortingChange}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getItemValue={(item: { id: any; }) => item.id}
+      getItemValue={(item: { id: any }) => item.id}
     >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -181,7 +182,7 @@ export function DataTableSortList<TData>({
             {sorting.length > 0 && (
               <Badge
                 variant="secondary"
-                className="h-[18.24px] rounded-[3.2px] px-[5.12px] font-mono font-normal text-[10.4px]"
+                className="h-[18.24px] rounded-[3.2px] px-[5.12px] font-mono text-[10.4px] font-normal"
               >
                 {sorting.length}
               </Badge>
@@ -195,7 +196,7 @@ export function DataTableSortList<TData>({
           {...props}
         >
           <div className="flex flex-col gap-1">
-            <h4 id={labelId} className="font-medium leading-none">
+            <h4 id={labelId} className="leading-none font-medium">
               {sorting.length > 0 ? "Sort by" : "No sorting applied"}
             </h4>
             <p
@@ -255,10 +256,10 @@ export function DataTableSortList<TData>({
       </Popover>
       <SortableOverlay>
         <div className="flex items-center gap-2">
-          <div className="h-8 w-[180px] rounded-sm bg-primary/10" />
-          <div className="h-8 w-24 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+          <div className="bg-primary/10 h-8 w-[180px] rounded-sm" />
+          <div className="bg-primary/10 h-8 w-24 rounded-sm" />
+          <div className="bg-primary/10 size-8 shrink-0 rounded-sm" />
+          <div className="bg-primary/10 size-8 shrink-0 rounded-sm" />
         </div>
       </SortableOverlay>
     </Sortable>

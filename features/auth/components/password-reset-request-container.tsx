@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
 
-import { If } from '@/components/makerkit/if';
-import { Trans } from '@/components/makerkit/trans';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { If } from "@/components/makerkit/if";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,12 +16,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useRequestResetPassword } from '@/lib/supabase/hooks/use-request-reset-password';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useRequestResetPassword } from "@/lib/supabase/hooks/use-request-reset-password";
 
-import { useCaptchaToken } from '../captcha/client';
-import { AuthErrorAlert } from './auth-error-alert';
+import { useCaptchaToken } from "../captcha/client";
+import { AuthErrorAlert } from "./auth-error-alert";
 
 const PasswordResetSchema = z.object({
   email: z.string().email(),
@@ -30,7 +30,7 @@ const PasswordResetSchema = z.object({
 export function PasswordResetRequestContainer(params: {
   redirectPath: string;
 }) {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation("auth");
   const resetPasswordMutation = useRequestResetPassword();
   const { captchaToken, resetCaptchaToken } = useCaptchaToken();
 
@@ -40,16 +40,16 @@ export function PasswordResetRequestContainer(params: {
   const form = useForm<z.infer<typeof PasswordResetSchema>>({
     resolver: zodResolver(PasswordResetSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
   return (
     <>
       <If condition={success}>
-        <Alert variant={'success'}>
+        <Alert variant={"success"}>
           <AlertDescription>
-            <Trans i18nKey={'auth:passwordResetSuccessMessage'} />
+            <Trans i18nKey={"auth:passwordResetSuccessMessage"} />
           </AlertDescription>
         </Alert>
       </If>
@@ -73,25 +73,24 @@ export function PasswordResetRequestContainer(params: {
                   resetCaptchaToken();
                 });
             })}
-            className={'w-full'}
+            className={"w-full"}
           >
-            <div className={'flex flex-col space-y-4'}>
-
+            <div className={"flex flex-col space-y-4"}>
               <AuthErrorAlert error={error} />
 
               <FormField
-                name={'email'}
+                name={"email"}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      <Trans i18nKey={'common:emailAddress'} />
+                      <Trans i18nKey={"common:emailAddress"} />
                     </FormLabel>
 
                     <FormControl>
                       <Input
                         required
                         type="email"
-                        placeholder={t('emailPlaceholder')}
+                        placeholder={t("emailPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -102,7 +101,7 @@ export function PasswordResetRequestContainer(params: {
               />
 
               <Button disabled={resetPasswordMutation.isPending} type="submit">
-                <Trans i18nKey={'auth:passwordResetLabel'} />
+                <Trans i18nKey={"auth:passwordResetLabel"} />
               </Button>
             </div>
           </form>

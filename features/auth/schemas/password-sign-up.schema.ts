@@ -1,9 +1,8 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { RefinedPasswordSchema } from './password.schema';
+import { RefinedPasswordSchema } from "./password.schema";
 
-export const PasswordSignUpSchema = z
-  .object({
-    email: z.string().email(),
-    password: RefinedPasswordSchema,
-  });
+export const PasswordSignUpSchema = z.object({
+  email: z.string().email(),
+  password: RefinedPasswordSchema,
+});

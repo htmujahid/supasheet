@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
-import { OauthProviderLogoImage } from './oauth-provider-logo-image';
+import { OauthProviderLogoImage } from "./oauth-provider-logo-image";
 
 export function AuthProviderButton({
   providerId,
@@ -12,10 +12,10 @@ export function AuthProviderButton({
 }>) {
   return (
     <Button
-      className={'flex w-full space-x-2 text-center'}
+      className={"flex w-full space-x-2 text-center"}
       data-provider={providerId}
-      data-test={'auth-provider-button'}
-      variant={'outline'}
+      data-test={"auth-provider-button"}
+      variant={"outline"}
       onClick={onClick}
     >
       <OauthProviderLogoImage providerId={providerId} />

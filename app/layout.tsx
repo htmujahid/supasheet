@@ -1,20 +1,16 @@
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
-import { RootProviders } from '@/components/providers/root-providers';
-import { Toaster } from '@/components/ui/sonner';
-import { heading, sans, mono } from '@/lib/fonts';
-import { createI18nServerInstance } from '@/lib/i18n/i18n.server';
-import { generateRootMetadata } from '@/lib/root-metadata';
-import { cn } from '@/lib/utils';
+import { RootProviders } from "@/components/providers/root-providers";
+import { Toaster } from "@/components/ui/sonner";
+import { heading, mono, sans } from "@/lib/fonts";
+import { createI18nServerInstance } from "@/lib/i18n/i18n.server";
+import { withI18n } from "@/lib/i18n/with-i18n";
+import { generateRootMetadata } from "@/lib/root-metadata";
+import { cn } from "@/lib/utils";
 
-import './globals.css';
-import { withI18n } from '@/lib/i18n/with-i18n';
+import "./globals.css";
 
-async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function RootLayout({ children }: { children: React.ReactNode }) {
   const { language } = await createI18nServerInstance();
   const theme = await getTheme();
   const className = getClassName(theme);
@@ -33,19 +29,18 @@ async function RootLayout({
 }
 
 function getClassName(theme?: string) {
-  const dark = theme === 'dark';
+  const dark = theme === "dark";
   const light = !dark;
 
-  const font = [sans.variable, heading.variable, mono.variable].reduce<string[]>(
-    (acc, curr) => {
-      if (acc.includes(curr)) return acc;
+  const font = [sans.variable, heading.variable, mono.variable].reduce<
+    string[]
+  >((acc, curr) => {
+    if (acc.includes(curr)) return acc;
 
-      return [...acc, curr];
-    },
-    [],
-  );
+    return [...acc, curr];
+  }, []);
 
-  return cn('bg-background min-h-screen antialiased', ...font, {
+  return cn("bg-background min-h-screen antialiased", ...font, {
     dark,
     light,
   });
@@ -53,7 +48,7 @@ function getClassName(theme?: string) {
 
 async function getTheme() {
   const cookiesStore = await cookies();
-  return cookiesStore.get('theme')?.value as 'light' | 'dark' | 'system';
+  return cookiesStore.get("theme")?.value as "light" | "dark" | "system";
 }
 
 export const generateMetadata = generateRootMetadata;

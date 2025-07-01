@@ -1,9 +1,9 @@
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import type { SupabaseClient, User } from "@supabase/supabase-js";
 
-import { checkRequiresMultiFactorAuthentication } from './check-requires-mfa';
+import { checkRequiresMultiFactorAuthentication } from "./check-requires-mfa";
 
-const MULTI_FACTOR_AUTH_VERIFY_PATH = '/auth/verify';
-const SIGN_IN_PATH = '/auth/sign-in';
+const MULTI_FACTOR_AUTH_VERIFY_PATH = "/auth/verify";
+const SIGN_IN_PATH = "/auth/sign-in";
 
 /**
  * @name requireUser

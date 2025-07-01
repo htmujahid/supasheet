@@ -1,8 +1,8 @@
-import type { SignInWithPasswordlessCredentials } from '@supabase/supabase-js';
+import type { SignInWithPasswordlessCredentials } from "@supabase/supabase-js";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 /**
  * @name useSignInWithOtp
@@ -10,7 +10,7 @@ import { useSupabase } from './use-supabase';
  */
 export function useSignInWithOtp() {
   const client = useSupabase();
-  const mutationKey = ['auth', 'sign-in-with-otp'];
+  const mutationKey = ["auth", "sign-in-with-otp"];
 
   const mutationFn = async (credentials: SignInWithPasswordlessCredentials) => {
     const result = await client.auth.signInWithOtp(credentials);

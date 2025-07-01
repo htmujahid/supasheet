@@ -1,4 +1,3 @@
-
 const Logger = {
   info: console.info,
   error: console.error,

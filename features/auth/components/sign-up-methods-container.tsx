@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import type { Provider } from '@supabase/supabase-js';
+import type { Provider } from "@supabase/supabase-js";
 
-import { If } from '@/components/makerkit/if';
-import { isBrowser } from '@/lib/utils';
+import { If } from "@/components/makerkit/if";
+import { isBrowser } from "@/lib/utils";
 
-import { MagicLinkAuthContainer } from './magic-link-auth-container';
-import { OauthProviders } from './oauth-providers';
-import { EmailPasswordSignUpContainer } from './password-sign-up-container';
+import { MagicLinkAuthContainer } from "./magic-link-auth-container";
+import { OauthProviders } from "./oauth-providers";
+import { EmailPasswordSignUpContainer } from "./password-sign-up-container";
 
 export function SignUpMethodsContainer(props: {
   paths: {
@@ -74,7 +74,7 @@ function getCallbackUrl(props: {
   inviteToken?: string;
 }) {
   if (!isBrowser()) {
-    return '';
+    return "";
   }
 
   const redirectPath = props.paths.callback;
@@ -82,14 +82,14 @@ function getCallbackUrl(props: {
   const url = new URL(redirectPath, origin);
 
   if (props.inviteToken) {
-    url.searchParams.set('invite_token', props.inviteToken);
+    url.searchParams.set("invite_token", props.inviteToken);
   }
 
   const searchParams = new URLSearchParams(window.location.search);
-  const next = searchParams.get('next');
+  const next = searchParams.get("next");
 
   if (next) {
-    url.searchParams.set('next', next);
+    url.searchParams.set("next", next);
   }
 
   return url.href;
@@ -97,17 +97,17 @@ function getCallbackUrl(props: {
 
 function getDefaultValues() {
   if (!isBrowser()) {
-    return { email: '' };
+    return { email: "" };
   }
 
   const searchParams = new URLSearchParams(window.location.search);
-  const inviteToken = searchParams.get('invite_token');
+  const inviteToken = searchParams.get("invite_token");
 
   if (!inviteToken) {
-    return { email: '' };
+    return { email: "" };
   }
 
   return {
-    email: searchParams.get('email') ?? '',
+    email: searchParams.get("email") ?? "",
   };
 }

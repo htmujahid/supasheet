@@ -55,7 +55,7 @@ export function createRegistry<T, Names extends string = string>(): Registry<
       }
 
       return await Promise.all(names.map((name) => getImplementation(name)));
-    }) as Registry<T, Names>['get'],
+    }) as Registry<T, Names>["get"],
 
     async setup(group?: string) {
       if (group) {

@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
 
-import { headers } from 'next/headers';
+import { headers } from "next/headers";
 
-import appConfig from '@/config/app.config';
+import appConfig from "@/config/app.config";
 
 /**
  * @name generateRootMetadata
@@ -10,7 +10,7 @@ import appConfig from '@/config/app.config';
  */
 export const generateRootMetadata = async (): Promise<Metadata> => {
   const headersStore = await headers();
-  const csrfToken = headersStore.get('x-csrf-token') ?? '';
+  const csrfToken = headersStore.get("x-csrf-token") ?? "";
 
   return {
     title: appConfig.title,
@@ -18,7 +18,7 @@ export const generateRootMetadata = async (): Promise<Metadata> => {
     metadataBase: new URL(appConfig.url),
     applicationName: appConfig.name,
     other: {
-      'csrf-token': csrfToken,
+      "csrf-token": csrfToken,
     },
     openGraph: {
       url: appConfig.url,
@@ -27,13 +27,13 @@ export const generateRootMetadata = async (): Promise<Metadata> => {
       description: appConfig.description,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: appConfig.title,
       description: appConfig.description,
     },
     icons: {
-      icon: '/images/favicon/favicon.ico',
-      apple: '/images/favicon/apple-touch-icon.png',
+      icon: "/images/favicon/favicon.ico",
+      apple: "/images/favicon/apple-touch-icon.png",
     },
   };
 };

@@ -1,7 +1,8 @@
 "use client";
 
-import type { Table } from "@tanstack/react-table";
 import type * as React from "react";
+
+import type { Table } from "@tanstack/react-table";
 
 import { DataTableViewOptions } from "@/features/resources/components/data-table/data-table-view-options";
 import { cn } from "@/lib/utils";
@@ -21,10 +22,7 @@ export function DataTableAdvancedToolbar<TData>({
     <div
       role="toolbar"
       aria-orientation="horizontal"
-      className={cn(
-        "flex w-full items-start justify-between gap-2",
-        className,
-      )}
+      className={cn("flex w-full items-start justify-between gap-2", className)}
       {...props}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">{children}</div>

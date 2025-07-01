@@ -1,6 +1,7 @@
+import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
+
 import type { DataTableConfig } from "@/config/data-table.config";
 import type { FilterItemSchema } from "@/lib/parsers";
-import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>

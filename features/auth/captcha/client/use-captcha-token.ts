@@ -1,6 +1,6 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo } from "react";
 
-import { Captcha } from './captcha-provider';
+import { Captcha } from "./captcha-provider";
 
 /**
  * @name useCaptchaToken

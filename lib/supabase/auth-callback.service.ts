@@ -1,10 +1,10 @@
-import 'server-only';
+import "server-only";
 
 import {
   AuthError,
   type EmailOtpType,
   SupabaseClient,
-} from '@supabase/supabase-js';
+} from "@supabase/supabase-js";
 
 /**
  * @name createAuthCallbackService
@@ -42,20 +42,20 @@ class AuthCallbackService {
     const url = new URL(request.url);
     const searchParams = url.searchParams;
 
-    const host = request.headers.get('host');
+    const host = request.headers.get("host");
 
     // set the host to the request host since outside of Vercel it gets set as "localhost"
-    if (url.host.includes('localhost:') && !host?.includes('localhost')) {
+    if (url.host.includes("localhost:") && !host?.includes("localhost")) {
       url.host = host as string;
-      url.port = '';
+      url.port = "";
     }
 
     url.pathname = params.redirectPath;
 
-    const token_hash = searchParams.get('token_hash');
-    const type = searchParams.get('type') as EmailOtpType | null;
+    const token_hash = searchParams.get("token_hash");
+    const type = searchParams.get("type") as EmailOtpType | null;
     const callbackParam =
-      searchParams.get('next') ?? searchParams.get('callback');
+      searchParams.get("next") ?? searchParams.get("callback");
 
     let nextPath: string | null = null;
     const callbackUrl = callbackParam ? new URL(callbackParam) : null;
@@ -63,7 +63,7 @@ class AuthCallbackService {
     // if we have a callback url, we check if it has a next path
     if (callbackUrl) {
       // if we have a callback url, we check if it has a next path
-      const callbackNextPath = callbackUrl.searchParams.get('next');
+      const callbackNextPath = callbackUrl.searchParams.get("next");
 
       // if we have a next path in the callback url, we use that
       if (callbackNextPath) {
@@ -73,12 +73,12 @@ class AuthCallbackService {
       }
     }
 
-    const errorPath = params.errorPath ?? '/auth/callback/error';
+    const errorPath = params.errorPath ?? "/auth/callback/error";
 
     // remove the query params from the url
-    searchParams.delete('token_hash');
-    searchParams.delete('type');
-    searchParams.delete('next');
+    searchParams.delete("token_hash");
+    searchParams.delete("type");
+    searchParams.delete("next");
 
     // if we have a next path, we redirect to that path
     if (nextPath) {
@@ -96,7 +96,7 @@ class AuthCallbackService {
       }
 
       if (error.code) {
-        url.searchParams.set('code', error.code);
+        url.searchParams.set("code", error.code);
       }
 
       const errorMessage = getAuthErrorMessage({
@@ -104,7 +104,7 @@ class AuthCallbackService {
         code: error.code,
       });
 
-      url.searchParams.set('error', errorMessage);
+      url.searchParams.set("error", errorMessage);
     }
 
     // return the user to an error page with some instructions
@@ -131,10 +131,10 @@ class AuthCallbackService {
     const requestUrl = new URL(request.url);
     const searchParams = requestUrl.searchParams;
 
-    const authCode = searchParams.get('code');
-    const error = searchParams.get('error');
-    const nextUrlPathFromParams = searchParams.get('next');
-    const errorPath = params.errorPath ?? '/auth/callback/error';
+    const authCode = searchParams.get("code");
+    const error = searchParams.get("error");
+    const nextUrlPathFromParams = searchParams.get("next");
+    const errorPath = params.errorPath ?? "/auth/callback/error";
 
     const nextUrl = nextUrlPathFromParams ?? params.redirectPath;
 
@@ -204,7 +204,7 @@ function onError({
 
   const searchParams = new URLSearchParams({
     error: errorMessage,
-    code: code ?? '',
+    code: code ?? "",
   });
 
   const nextPath = `${path}?${searchParams.toString()}`;
@@ -222,7 +222,7 @@ function onError({
  * want to provide a helpful error message.
  */
 function isVerifierError(error: string) {
-  return error.includes('both auth code and code verifier should be non-empty');
+  return error.includes("both auth code and code verifier should be non-empty");
 }
 
 /**
@@ -233,15 +233,15 @@ function isVerifierError(error: string) {
 function getAuthErrorMessage(params: { error: string; code?: string }) {
   // this error arises when the user tries to sign in with an expired email link
   if (params.code) {
-    if (params.code === 'otp_expired') {
-      return 'auth:errors.otp_expired';
+    if (params.code === "otp_expired") {
+      return "auth:errors.otp_expired";
     }
   }
 
   // this error arises when the user is trying to sign in with a different
   // browser than the one they used to request the sign in link
   if (isVerifierError(params.error)) {
-    return 'auth:errors.codeVerifierMismatch';
+    return "auth:errors.codeVerifierMismatch";
   }
 
   // fallback to the default error message

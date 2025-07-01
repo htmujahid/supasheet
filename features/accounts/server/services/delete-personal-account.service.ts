@@ -1,9 +1,9 @@
-import 'server-only';
+import "server-only";
 
-import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from "@supabase/supabase-js";
 
-import { getLogger } from '@/lib/logger';
-import { Database } from '@/lib/database.types';
+import { Database } from "@/lib/database.types";
+import { getLogger } from "@/lib/logger";
 
 export function createDeletePersonalAccountService() {
   return new DeletePersonalAccountService();
@@ -18,7 +18,7 @@ export function createDeletePersonalAccountService() {
  * const accountsService = new DeletePersonalAccountService();
  */
 class DeletePersonalAccountService {
-  private namespace = 'accounts.delete';
+  private namespace = "accounts.delete";
 
   /**
    * @name deletePersonalAccount
@@ -41,7 +41,7 @@ class DeletePersonalAccountService {
 
     logger.info(
       ctx,
-      'User requested to delete their personal account. Processing...',
+      "User requested to delete their personal account. Processing...",
     );
 
     // execute the deletion of the user
@@ -53,12 +53,12 @@ class DeletePersonalAccountService {
           ...ctx,
           error,
         },
-        'Encountered an error deleting user',
+        "Encountered an error deleting user",
       );
 
-      throw new Error('Error deleting user');
+      throw new Error("Error deleting user");
     }
 
-    logger.info(ctx, 'User successfully deleted!');
+    logger.info(ctx, "User successfully deleted!");
   }
 }

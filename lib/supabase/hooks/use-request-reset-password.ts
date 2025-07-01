@@ -1,6 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 interface RequestPasswordResetMutationParams {
   email: string;
@@ -17,7 +17,7 @@ interface RequestPasswordResetMutationParams {
  */
 export function useRequestResetPassword() {
   const client = useSupabase();
-  const mutationKey = ['auth', 'reset-password'];
+  const mutationKey = ["auth", "reset-password"];
 
   const mutationFn = async (params: RequestPasswordResetMutationParams) => {
     const { error, data } = await client.auth.resetPasswordForEmail(

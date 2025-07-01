@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import type { Provider } from '@supabase/supabase-js';
+import type { Provider } from "@supabase/supabase-js";
 
-import { If } from '@/components/makerkit/if';
-import { LoadingOverlay } from '@/components/makerkit/loading-overlay';
-import { Trans } from '@/components/makerkit/trans';
-import { useSignInWithProvider } from '@/lib/supabase/hooks/use-sign-in-with-provider';
+import { If } from "@/components/makerkit/if";
+import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
+import { Trans } from "@/components/makerkit/trans";
+import { useSignInWithProvider } from "@/lib/supabase/hooks/use-sign-in-with-provider";
 
-import { AuthErrorAlert } from './auth-error-alert';
-import { AuthProviderButton } from './auth-provider-button';
+import { AuthErrorAlert } from "./auth-error-alert";
+import { AuthProviderButton } from "./auth-provider-button";
 
 /**
  * @name OAUTH_SCOPES
@@ -22,7 +22,7 @@ import { AuthProviderButton } from './auth-provider-button';
  * @see https://supabase.com/docs/guides/auth/social-login
  */
 const OAUTH_SCOPES: Partial<Record<Provider, string>> = {
-  azure: 'email',
+  azure: "email",
   // add your OAuth providers here
 };
 
@@ -45,7 +45,7 @@ export function OauthProviders(props: {
       const credential = await signInRequest();
 
       if (!credential) {
-        return Promise.reject(new Error('Failed to sign in with provider'));
+        return Promise.reject(new Error("Failed to sign in with provider"));
       }
     },
     [],
@@ -63,8 +63,8 @@ export function OauthProviders(props: {
         <LoadingOverlay />
       </If>
 
-      <div className={'flex w-full flex-1 flex-col space-y-3'}>
-        <div className={'flex-col space-y-2'}>
+      <div className={"flex w-full flex-1 flex-col space-y-3"}>
+        <div className={"flex-col space-y-2"}>
           {enabledProviders.map((provider) => {
             return (
               <AuthProviderButton
@@ -75,15 +75,15 @@ export function OauthProviders(props: {
                   const queryParams = new URLSearchParams();
 
                   if (props.paths.returnPath) {
-                    queryParams.set('next', props.paths.returnPath);
+                    queryParams.set("next", props.paths.returnPath);
                   }
 
                   const redirectPath = [
                     props.paths.callback,
                     queryParams.toString(),
-                  ].join('?');
+                  ].join("?");
 
-                  const redirectTo = [origin, redirectPath].join('');
+                  const redirectTo = [origin, redirectPath].join("");
                   const scopesOpts = OAUTH_SCOPES[provider] ?? {};
 
                   const credentials = {
@@ -101,7 +101,7 @@ export function OauthProviders(props: {
                 }}
               >
                 <Trans
-                  i18nKey={'auth:signInWithProvider'}
+                  i18nKey={"auth:signInWithProvider"}
                   values={{
                     provider: getProviderName(provider),
                   }}
@@ -121,8 +121,8 @@ function getProviderName(providerId: string) {
   const capitalize = (value: string) =>
     value.slice(0, 1).toUpperCase() + value.slice(1);
 
-  if (providerId.endsWith('.com')) {
-    return capitalize(providerId.split('.com')[0]!);
+  if (providerId.endsWith(".com")) {
+    return capitalize(providerId.split(".com")[0]!);
   }
 
   return capitalize(providerId);

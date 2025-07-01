@@ -1,12 +1,16 @@
-import 'server-only';
+import "server-only";
 
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server";
 
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient } from "@supabase/ssr";
 
-import { Database } from '@/lib/database.types';
+import { Database } from "@/lib/database.types";
 
-import { getSupabaseClientKeys, SUPABASE_ANON_KEY_COOKIE_NAME, SUPABASE_URL_COOKIE_NAME } from '../get-supabase-client-keys';
+import {
+  SUPABASE_ANON_KEY_COOKIE_NAME,
+  SUPABASE_URL_COOKIE_NAME,
+  getSupabaseClientKeys,
+} from "../get-supabase-client-keys";
 
 /**
  * Creates a middleware client for Supabase.
@@ -22,8 +26,9 @@ export function createMiddlewareClient<GenericSchema = Database>(
 
   if (!keys.url) {
     const url = request.cookies.get(SUPABASE_URL_COOKIE_NAME)?.value as string;
-    const anonKey = request.cookies.get(SUPABASE_ANON_KEY_COOKIE_NAME)?.value as string;
-    
+    const anonKey = request.cookies.get(SUPABASE_ANON_KEY_COOKIE_NAME)
+      ?.value as string;
+
     keys.url = url;
     keys.anonKey = anonKey;
   }

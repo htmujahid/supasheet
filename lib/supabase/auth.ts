@@ -1,1 +1,1 @@
-export * from './auth-callback.service';
+export * from "./auth-callback.service";

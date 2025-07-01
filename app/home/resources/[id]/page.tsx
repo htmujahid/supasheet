@@ -1,11 +1,11 @@
-import { ResourceTable } from '@/features/resources/components/resource-table';
+import { ResourceTable } from "@/features/resources/components/resource-table";
 import {
   loadColumnsSchema,
   loadResourceData,
   loadTableSchema,
-} from '@/features/resources/lib/loaders';
-import { searchParamsCache } from '@/features/resources/lib/validations';
-import { DatabaseTables } from '@/lib/database-meta.types';
+} from "@/features/resources/lib/loaders";
+import { searchParamsCache } from "@/features/resources/lib/validations";
+import { DatabaseTables } from "@/lib/database-meta.types";
 
 export default async function HomeResourcePage(props: {
   params: Promise<{
@@ -24,11 +24,7 @@ export default async function HomeResourcePage(props: {
 
   const columns = await loadColumnsSchema(id);
 
-  const data = await loadResourceData(
-    id,
-    columns ?? [],
-    search,
-  );
+  const data = await loadResourceData(id, columns ?? [], search);
 
   return (
     <ResourceTable

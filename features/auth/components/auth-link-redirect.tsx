@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 export function AuthLinkRedirect(props: { redirectPath?: string }) {
   const params = useSearchParams();
 
-  const redirectPath = params?.get('redirectPath') ?? props.redirectPath ?? '/';
+  const redirectPath = params?.get("redirectPath") ?? props.redirectPath ?? "/";
 
   useRedirectOnSignIn(redirectPath);
 

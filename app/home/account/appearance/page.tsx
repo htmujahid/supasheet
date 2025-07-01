@@ -1,23 +1,23 @@
-import { Trans } from '@/components/makerkit/trans';
+import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { AppearanceForm } from '@/features/accounts/components/appearance-form';
+} from "@/components/ui/card";
+import { AppearanceForm } from "@/features/accounts/components/appearance-form";
 
 export default function AppearancePage() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          <Trans i18nKey={'account:dangerZone'} />
+          <Trans i18nKey={"account:dangerZone"} />
         </CardTitle>
 
         <CardDescription>
-          <Trans i18nKey={'account:dangerZoneDescription'} />
+          <Trans i18nKey={"account:dangerZoneDescription"} />
         </CardDescription>
       </CardHeader>
 

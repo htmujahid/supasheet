@@ -1,8 +1,8 @@
-import type { UserAttributes } from '@supabase/supabase-js';
+import type { UserAttributes } from "@supabase/supabase-js";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 type Params = UserAttributes & { redirectTo: string };
 
@@ -12,7 +12,7 @@ type Params = UserAttributes & { redirectTo: string };
  */
 export function useUpdateUser() {
   const client = useSupabase();
-  const mutationKey = ['supabase:user'];
+  const mutationKey = ["supabase:user"];
 
   const mutationFn = async (attributes: Params) => {
     const { redirectTo, ...params } = attributes;

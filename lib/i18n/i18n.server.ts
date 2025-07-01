@@ -1,18 +1,18 @@
-import { cache } from 'react';
+import { cache } from "react";
 
-import { cookies, headers } from 'next/headers';
+import { cookies, headers } from "next/headers";
 
 import {
   type InitOptions,
   createInstance as createI18nInstance,
-} from 'i18next';
-import resourcesToBackend from 'i18next-resources-to-backend';
-import { initReactI18next } from 'react-i18next/initReactI18next';
+} from "i18next";
+import resourcesToBackend from "i18next-resources-to-backend";
+import { initReactI18next } from "react-i18next/initReactI18next";
 
-import featuresFlagConfig from '@/config/feature-flags.config';
+import featuresFlagConfig from "@/config/feature-flags.config";
 
-import { i18nResolver } from './i18n.resolver';
-import { I18N_COOKIE_NAME, getI18nSettings, languages } from './i18n.settings';
+import { i18nResolver } from "./i18n.resolver";
+import { I18N_COOKIE_NAME, getI18nSettings, languages } from "./i18n.settings";
 
 /**
  * Initialize the i18n instance on the server.
@@ -47,7 +47,7 @@ export async function initializeServerI18n(
         }),
       )
       .use({
-        type: '3rdParty',
+        type: "3rdParty",
         init: async (i18next: typeof i18nInstance) => {
           let iterations = 0;
           const maxIterations = 100;
@@ -132,14 +132,14 @@ export function parseAcceptLanguageHeader(
   // Split the header value by comma and map each language to its quality value
   return (
     languageHeaderValue
-      .split(',')
+      .split(",")
       .map((lang): [number, string] => {
-        const [locale, q = 'q=1'] = lang.split(';');
+        const [locale, q = "q=1"] = lang.split(";");
 
-        if (!locale) return [0, ''];
+        if (!locale) return [0, ""];
 
         const trimmedLocale = locale.trim();
-        const numQ = Number(q.replace(/q ?=/, ''));
+        const numQ = Number(q.replace(/q ?=/, ""));
 
         return [isNaN(numQ) ? 0 : numQ, trimmedLocale];
       })
@@ -147,9 +147,9 @@ export function parseAcceptLanguageHeader(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .flatMap(([_, locale]) => {
         // Ignore wildcard '*' if 'ignoreWildcard' is true
-        if (locale === '*' && ignoreWildcard) return [];
+        if (locale === "*" && ignoreWildcard) return [];
 
-        const languageSegment = locale.split('-')[0];
+        const languageSegment = locale.split("-")[0];
 
         if (!languageSegment) return [];
 
@@ -192,7 +192,7 @@ async function createInstance() {
 
   // if not, check if the language priority is set to user and
   // use the user's preferred language
-  if (!selectedLanguage && priority === 'user') {
+  if (!selectedLanguage && priority === "user") {
     const userPreferredLanguage = await getPreferredLanguageFromBrowser();
 
     selectedLanguage = getLanguageOrFallback(userPreferredLanguage);
@@ -207,7 +207,7 @@ export const createI18nServerInstance = cache(createInstance);
 
 async function getPreferredLanguageFromBrowser() {
   const headersStore = await headers();
-  const acceptLanguage = headersStore.get('accept-language');
+  const acceptLanguage = headersStore.get("accept-language");
 
   if (!acceptLanguage) {
     return;
@@ -219,7 +219,7 @@ async function getPreferredLanguageFromBrowser() {
 function getLanguageOrFallback(language: string | undefined) {
   let selectedLanguage = language;
 
-  if (!languages.includes(language ?? '')) {
+  if (!languages.includes(language ?? "")) {
     console.warn(
       `Language "${language}" is not supported. Falling back to "${languages[0]}"`,
     );

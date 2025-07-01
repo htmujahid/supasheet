@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 export function usePersonalAccountData(
   userId: string,
@@ -13,7 +13,7 @@ export function usePersonalAccountData(
   },
 ) {
   const client = useSupabase();
-  const queryKey = ['account:data', userId];
+  const queryKey = ["account:data", userId];
 
   const queryFn = async () => {
     if (!userId) {
@@ -21,7 +21,7 @@ export function usePersonalAccountData(
     }
 
     const response = await client
-      .from('accounts')
+      .from("accounts")
       .select(
         `
         id,
@@ -29,7 +29,7 @@ export function usePersonalAccountData(
         picture_url
     `,
       )
-      .eq('id', userId)
+      .eq("id", userId)
       .single();
 
     if (response.error) {
@@ -61,7 +61,7 @@ export function useRevalidatePersonalAccountDataQuery() {
   return useCallback(
     (userId: string) =>
       queryClient.invalidateQueries({
-        queryKey: ['account:data', userId],
+        queryKey: ["account:data", userId],
       }),
     [queryClient],
   );

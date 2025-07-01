@@ -1,18 +1,18 @@
-'use server';
+"use server";
 
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { enhanceAction } from '@/lib/next/actions';
-import { getLogger } from '@/lib/logger';
-import { getSupabaseServerAdminClient } from '@/lib/supabase/clients/server-admin-client';
-import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
+import { getLogger } from "@/lib/logger";
+import { enhanceAction } from "@/lib/next/actions";
+import { getSupabaseServerAdminClient } from "@/lib/supabase/clients/server-admin-client";
+import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import { DeletePersonalAccountSchema } from '../schema/delete-personal-account.schema';
-import { createDeletePersonalAccountService } from './services/delete-personal-account.service';
+import { DeletePersonalAccountSchema } from "../schema/delete-personal-account.schema";
+import { createDeletePersonalAccountService } from "./services/delete-personal-account.service";
 
 const enableAccountDeletion =
-  process.env.NEXT_PUBLIC_ENABLE_PERSONAL_ACCOUNT_DELETION === 'true';
+  process.env.NEXT_PUBLIC_ENABLE_PERSONAL_ACCOUNT_DELETION === "true";
 
 export async function refreshAuthSession() {
   const client = await getSupabaseServerClient();
@@ -32,18 +32,18 @@ export const deletePersonalAccountAction = enhanceAction(
     );
 
     if (!success) {
-      throw new Error('Invalid form data');
+      throw new Error("Invalid form data");
     }
 
     const ctx = {
-      name: 'account.delete',
+      name: "account.delete",
       userId: user.id,
     };
 
     if (!enableAccountDeletion) {
       logger.warn(ctx, `Account deletion is not enabled`);
 
-      throw new Error('Account deletion is not enabled');
+      throw new Error("Account deletion is not enabled");
     }
 
     logger.info(ctx, `Deleting account...`);
@@ -66,10 +66,10 @@ export const deletePersonalAccountAction = enhanceAction(
     logger.info(ctx, `Account request successfully sent`);
 
     // clear the cache for all pages
-    revalidatePath('/', 'layout');
+    revalidatePath("/", "layout");
 
     // redirect to the home page
-    redirect('/');
+    redirect("/");
   },
   {},
 );

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from "react";
 
-import { CheckCircleIcon } from 'lucide-react';
+import { CheckCircleIcon } from "lucide-react";
 
-import { If } from '@/components/makerkit/if';
-import { Trans } from '@/components/makerkit/trans';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useSignUpWithEmailAndPassword } from '@/lib/supabase/hooks/use-sign-up-with-email-password';
+import { If } from "@/components/makerkit/if";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useSignUpWithEmailAndPassword } from "@/lib/supabase/hooks/use-sign-up-with-email-password";
 
-import { useCaptchaToken } from '../captcha/client';
-import { AuthErrorAlert } from './auth-error-alert';
-import { PasswordSignUpForm } from './password-sign-up-form';
+import { useCaptchaToken } from "../captcha/client";
+import { AuthErrorAlert } from "./auth-error-alert";
+import { PasswordSignUpForm } from "./password-sign-up-form";
 
 interface EmailPasswordSignUpContainerProps {
   displayTermsCheckbox?: boolean;
@@ -93,15 +93,15 @@ export function EmailPasswordSignUpContainer({
 
 function SuccessAlert() {
   return (
-    <Alert variant={'success'}>
-      <CheckCircleIcon className={'w-4'} />
+    <Alert variant={"success"}>
+      <CheckCircleIcon className={"w-4"} />
 
       <AlertTitle>
-        <Trans i18nKey={'auth:emailConfirmationAlertHeading'} />
+        <Trans i18nKey={"auth:emailConfirmationAlertHeading"} />
       </AlertTitle>
 
-      <AlertDescription data-test={'email-confirmation-alert'}>
-        <Trans i18nKey={'auth:emailConfirmationAlertBody'} />
+      <AlertDescription data-test={"email-confirmation-alert"}>
+        <Trans i18nKey={"auth:emailConfirmationAlertBody"} />
       </AlertDescription>
     </Alert>
   );

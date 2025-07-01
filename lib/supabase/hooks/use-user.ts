@@ -1,10 +1,10 @@
-import type { User } from '@supabase/supabase-js';
+import type { User } from "@supabase/supabase-js";
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
-const queryKey = ['supabase:user'];
+const queryKey = ["supabase:user"];
 
 /**
  * @name useUser
@@ -26,7 +26,7 @@ export function useUser(initialData?: User | null) {
       return response.data.user;
     }
 
-    return Promise.reject(new Error('Unexpected result format'));
+    return Promise.reject(new Error("Unexpected result format"));
   };
 
   return useQuery({

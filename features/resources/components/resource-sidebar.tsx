@@ -1,17 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
+import { useParams } from "next/navigation";
+
+import { SearchIcon } from "lucide-react";
+
+import { Label } from "@/components/ui/label";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarInput,
-} from '@/components/ui/sidebar';
-import ResourcesGroup, { NavResources } from './nav-resources';
-import { SearchIcon } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { useParams } from 'next/navigation';
+} from "@/components/ui/sidebar";
+
+import ResourcesGroup, { NavResources } from "./nav-resources";
 
 export function ResourceSidebar({
   resources,
@@ -35,15 +38,13 @@ export function ResourceSidebar({
   const [activeResources, setActiveResources] = useState(resources);
 
   return (
-    <Sidebar
-      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
-    >
+    <Sidebar className="top-(--header-height) h-[calc(100svh-var(--header-height))]!">
       <SidebarHeader>
         <ResourcesGroup
           groups={uniqueGroups}
-          activeGroup={'All'}
+          activeGroup={"All"}
           onValueChange={(group: string) => {
-            if (group === 'All') {
+            if (group === "All") {
               setActiveResources(resources);
               return;
             }

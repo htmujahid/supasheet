@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const UpdateEmailSchema = {
   withTranslation: (errorMessage: string) => {
@@ -12,7 +12,7 @@ export const UpdateEmailSchema = {
           return values.email === values.repeatEmail;
         },
         {
-          path: ['repeatEmail'],
+          path: ["repeatEmail"],
           message: errorMessage,
         },
       );

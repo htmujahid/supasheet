@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const PasswordUpdateSchema = {
   withTranslation: (errorMessage: string) => {
@@ -12,7 +12,7 @@ export const PasswordUpdateSchema = {
           return values.newPassword === values.repeatPassword;
         },
         {
-          path: ['repeatPassword'],
+          path: ["repeatPassword"],
           message: errorMessage,
         },
       );

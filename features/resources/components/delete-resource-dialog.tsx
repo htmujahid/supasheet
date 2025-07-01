@@ -1,8 +1,11 @@
 "use client";
 
+import * as React from "react";
+
+import { useParams } from "next/navigation";
+
 import type { Row } from "@tanstack/react-table";
 import { Loader, Trash } from "lucide-react";
-import * as React from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -26,11 +29,13 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { useMediaQuery } from "@/hooks/use-media-query";
-
 import { deleteResourceDataAction } from "@/features/resources/lib/actions";
-import { DatabaseTables, PrimaryKey, TableSchema } from "@/lib/database-meta.types";
-import { useParams } from "next/navigation";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import {
+  DatabaseTables,
+  PrimaryKey,
+  TableSchema,
+} from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 
 interface DeleteResourceDialogProps
@@ -60,10 +65,13 @@ export function DeleteResourceDialog({
 
     const primaryKeys = tableSchema.primary_keys as PrimaryKey[];
 
-    const resourceIds = primaryKeys.reduce((acc, key) => {
-      acc[key.name] = resources.map((d) => d[key.name]);
-      return acc;
-    }, {} as Record<string, unknown[]>);
+    const resourceIds = primaryKeys.reduce(
+      (acc, key) => {
+        acc[key.name] = resources.map((d) => d[key.name]);
+        return acc;
+      },
+      {} as Record<string, unknown[]>,
+    );
 
     startDeleteTransition(async () => {
       const { data, error } = await deleteResourceDataAction({

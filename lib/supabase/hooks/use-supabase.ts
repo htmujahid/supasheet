@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { Database } from '../../database.types';
-import { getSupabaseBrowserClient } from '../clients/browser-client';
+import { Database } from "../../database.types";
+import { getSupabaseBrowserClient } from "../clients/browser-client";
 
 /**
  * @name useSupabase

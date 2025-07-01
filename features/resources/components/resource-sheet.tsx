@@ -43,10 +43,12 @@ import {
 } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 
-import { createResourceDataAction, updateResourceDataAction } from "../lib/actions";
+import {
+  createResourceDataAction,
+  updateResourceDataAction,
+} from "../lib/actions";
 
-interface ResourceSheetProps
-  extends React.ComponentPropsWithRef<typeof Sheet> {
+interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: Tables<"_pg_meta_tables"> | null;
   columnsSchema: Tables<"_pg_meta_columns">[];
   data: TableSchema | null;
@@ -60,15 +62,16 @@ export function ResourceSheet({
 }: ResourceSheetProps) {
   const params = useParams<{ id: DatabaseTables }>();
   const form = useForm<TableSchema>({
-    defaultValues: data ??  columnsSchema.reduce((acc, column) => {
-      acc[column.name as keyof TableSchema] = getColumnInputField(column)
-        .defaultValue as string;
-      return acc;
-    }, {} as TableSchema),
+    defaultValues:
+      data ??
+      columnsSchema.reduce((acc, column) => {
+        acc[column.name as keyof TableSchema] = getColumnInputField(column)
+          .defaultValue as string;
+        return acc;
+      }, {} as TableSchema),
   });
 
   const [isPending, startTransition] = React.useTransition();
-
 
   function onCreate(input: TableSchema) {
     startTransition(async () => {
@@ -144,7 +147,8 @@ export function ResourceSheet({
             {data ? "Update" : "Create"} {params.id}
           </SheetTitle>
           <SheetDescription>
-            {data ? "Update the" : "Create a new"} {params.id} and save the changes
+            {data ? "Update the" : "Create a new"} {params.id} and save the
+            changes
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
@@ -326,7 +330,7 @@ export function ResourceSheet({
                   />
                 );
               })}
-            <SheetFooter className="flex-row gap-2 px-0 pt-2 sm:space-x-0 sticky bottom-0 bg-background">
+            <SheetFooter className="bg-background sticky bottom-0 flex-row gap-2 px-0 pt-2 sm:space-x-0">
               <Button disabled={isPending} className="flex-1">
                 {isPending && (
                   <Loader

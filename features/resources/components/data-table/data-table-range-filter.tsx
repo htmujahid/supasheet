@@ -1,7 +1,8 @@
 "use client";
 
-import type { Column } from "@tanstack/react-table";
 import * as React from "react";
+
+import type { Column } from "@tanstack/react-table";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -101,7 +102,7 @@ export function DataTableRangeFilter<TData>({
         defaultValue={value[0]}
         onChange={(event) => onRangeValueChange(event.target.value, true)}
       />
-      <span className="sr-only shrink-0 text-muted-foreground">to</span>
+      <span className="text-muted-foreground sr-only shrink-0">to</span>
       <Input
         id={`${inputId}-max`}
         type="number"

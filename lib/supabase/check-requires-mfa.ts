@@ -1,6 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-const ASSURANCE_LEVEL_2 = 'aal2';
+const ASSURANCE_LEVEL_2 = "aal2";
 
 /**
  * @name checkRequiresMultiFactorAuthentication

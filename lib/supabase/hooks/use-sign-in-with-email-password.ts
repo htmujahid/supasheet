@@ -1,8 +1,8 @@
-import type { SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import type { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 /**
  * @name useSignInWithEmailPassword
@@ -10,7 +10,7 @@ import { useSupabase } from './use-supabase';
  */
 export function useSignInWithEmailPassword() {
   const client = useSupabase();
-  const mutationKey = ['auth', 'sign-in-with-email-password'];
+  const mutationKey = ["auth", "sign-in-with-email-password"];
 
   const mutationFn = async (credentials: SignInWithPasswordCredentials) => {
     const response = await client.auth.signInWithPassword(credentials);
@@ -24,7 +24,7 @@ export function useSignInWithEmailPassword() {
 
     // if the user has no identities, it means that the email is taken
     if (identities.length === 0) {
-      throw new Error('User already registered');
+      throw new Error("User already registered");
     }
 
     return response.data;

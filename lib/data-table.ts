@@ -97,15 +97,11 @@ export function getColumnInputField(columnSchema: Tables<"_pg_meta_columns">) {
     defaultValue = undefined;
   }
 
-  if (
-    columnSchema.data_type === "USER-DEFINED" &&
-    columnSchema.default_value
-  ) {
-    defaultValue = columnSchema.default_value
-    ?.split("::")[0]
-    ?.replaceAll("'", "") ?? "";
+  if (columnSchema.data_type === "USER-DEFINED" && columnSchema.default_value) {
+    defaultValue =
+      columnSchema.default_value?.split("::")[0]?.replaceAll("'", "") ?? "";
   }
-  
+
   const required = columnSchema.is_nullable === false;
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable;
 

@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import type { Provider, UserIdentity } from '@supabase/supabase-js';
+import type { Provider, UserIdentity } from "@supabase/supabase-js";
 
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 
-import { useLinkIdentityWithProvider } from '@/lib/supabase/hooks/use-link-identity-with-provider';
-import { useUnlinkUserIdentity } from '@/lib/supabase/hooks/use-unlink-user-identity';
-import { useUserIdentities } from '@/lib/supabase/hooks/use-user-identities';
+import { If } from "@/components/makerkit/if";
+import { OauthProviderLogoImage } from "@/components/makerkit/oauth-provider-logo-image";
+import { Spinner } from "@/components/makerkit/spinner";
+import { Trans } from "@/components/makerkit/trans";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,14 +19,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { If } from '@/components/makerkit/if';
-import { OauthProviderLogoImage } from '@/components/makerkit/oauth-provider-logo-image';
-import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
-import { Spinner } from '@/components/makerkit/spinner';
-import { Trans } from '@/components/makerkit/trans';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useLinkIdentityWithProvider } from "@/lib/supabase/hooks/use-link-identity-with-provider";
+import { useUnlinkUserIdentity } from "@/lib/supabase/hooks/use-unlink-user-identity";
+import { useUserIdentities } from "@/lib/supabase/hooks/use-user-identities";
 
 export function LinkAccountsList(props: { providers: Provider[] }) {
   const unlinkMutation = useUnlinkUserIdentity();
@@ -49,9 +49,9 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
     const promise = unlinkMutation.mutateAsync(identity);
 
     toast.promise(promise, {
-      loading: <Trans i18nKey={'account:unlinkingAccount'} />,
-      success: <Trans i18nKey={'account:accountUnlinked'} />,
-      error: <Trans i18nKey={'account:unlinkAccountError'} />,
+      loading: <Trans i18nKey={"account:unlinkingAccount"} />,
+      success: <Trans i18nKey={"account:accountUnlinked"} />,
+      error: <Trans i18nKey={"account:unlinkAccountError"} />,
     });
   };
 
@@ -59,9 +59,9 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
     const promise = linkMutation.mutateAsync(provider);
 
     toast.promise(promise, {
-      loading: <Trans i18nKey={'account:linkingAccount'} />,
-      success: <Trans i18nKey={'account:accountLinked'} />,
-      error: <Trans i18nKey={'account:linkAccountError'} />,
+      loading: <Trans i18nKey={"account:linkingAccount"} />,
+      success: <Trans i18nKey={"account:accountLinked"} />,
+      error: <Trans i18nKey={"account:linkAccountError"} />,
     });
   };
 
@@ -80,11 +80,11 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
         <div className="space-y-3">
           <div>
             <h3 className="text-foreground text-sm font-medium">
-              <Trans i18nKey={'account:linkedAccounts'} />
+              <Trans i18nKey={"account:linkedAccounts"} />
             </h3>
 
             <p className="text-muted-foreground text-xs">
-              <Trans i18nKey={'account:alreadyLinkedAccountsDescription'} />
+              <Trans i18nKey={"account:alreadyLinkedAccountsDescription"} />
             </p>
           </div>
 
@@ -123,19 +123,19 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
                         <If condition={unlinkMutation.isPending}>
                           <Spinner className="mr-2 h-3 w-3" />
                         </If>
-                        <Trans i18nKey={'account:unlinkAccount'} />
+                        <Trans i18nKey={"account:unlinkAccount"} />
                       </Button>
                     </AlertDialogTrigger>
 
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>
-                          <Trans i18nKey={'account:confirmUnlinkAccount'} />
+                          <Trans i18nKey={"account:confirmUnlinkAccount"} />
                         </AlertDialogTitle>
 
                         <AlertDialogDescription>
                           <Trans
-                            i18nKey={'account:unlinkAccountConfirmation'}
+                            i18nKey={"account:unlinkAccountConfirmation"}
                             values={{ provider: identity.provider }}
                           />
                         </AlertDialogDescription>
@@ -143,14 +143,14 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
 
                       <AlertDialogFooter>
                         <AlertDialogCancel>
-                          <Trans i18nKey={'common:cancel'} />
+                          <Trans i18nKey={"common:cancel"} />
                         </AlertDialogCancel>
 
                         <AlertDialogAction
                           onClick={() => handleUnlinkAccount(identity)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                          <Trans i18nKey={'account:unlinkAccount'} />
+                          <Trans i18nKey={"account:unlinkAccount"} />
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -169,11 +169,11 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
         <div className="space-y-3">
           <div>
             <h3 className="text-foreground text-sm font-medium">
-              <Trans i18nKey={'account:availableAccounts'} />
+              <Trans i18nKey={"account:availableAccounts"} />
             </h3>
 
             <p className="text-muted-foreground text-xs">
-              <Trans i18nKey={'account:availableAccountsDescription'} />
+              <Trans i18nKey={"account:availableAccountsDescription"} />
             </p>
           </div>
 
@@ -203,7 +203,7 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
         }
       >
         <div className="text-muted-foreground py-8 text-center">
-          <Trans i18nKey={'account:noAccountsAvailable'} />
+          <Trans i18nKey={"account:noAccountsAvailable"} />
         </div>
       </If>
     </div>

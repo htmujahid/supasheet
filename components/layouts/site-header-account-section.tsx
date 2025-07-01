@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import Link from 'next/link';
+import dynamic from "next/dynamic";
+import Link from "next/link";
 
-import type { User } from '@supabase/supabase-js';
+import type { User } from "@supabase/supabase-js";
 
-import { PersonalAccountDropdown } from '@/features/accounts/components/personal-account-dropdown';
-import { useSignOut } from '@/lib/supabase/hooks/use-sign-out';
-import { useUser } from '@/lib/supabase/hooks/use-user';
-import { Button } from '@/components/ui/button';
-import { If } from '@/components/makerkit/if';
-import { Trans } from '@/components/makerkit/trans';
-import pathsConfig from '@/config/paths.config';
-import featuresFlagConfig from '@/config/feature-flags.config';
+import { If } from "@/components/makerkit/if";
+import { Trans } from "@/components/makerkit/trans";
+import { Button } from "@/components/ui/button";
+import featuresFlagConfig from "@/config/feature-flags.config";
+import pathsConfig from "@/config/paths.config";
+import { PersonalAccountDropdown } from "@/features/accounts/components/personal-account-dropdown";
+import { useSignOut } from "@/lib/supabase/hooks/use-sign-out";
+import { useUser } from "@/lib/supabase/hooks/use-user";
 
 const ModeToggle = dynamic(() =>
-  import('@/components/makerkit/mode-toggle').then((mod) => ({
+  import("@/components/makerkit/mode-toggle").then((mod) => ({
     default: mod.ModeToggle,
   })),
 );
@@ -63,22 +63,22 @@ function SuspendedPersonalAccountDropdown(props: { user: User | null }) {
 
 function AuthButtons() {
   return (
-    <div className={'flex space-x-2'}>
-      <div className={'hidden space-x-0.5 md:flex'}>
+    <div className={"flex space-x-2"}>
+      <div className={"hidden space-x-0.5 md:flex"}>
         <If condition={features.enableThemeToggle}>
           <ModeToggle />
         </If>
 
-        <Button asChild variant={'ghost'}>
+        <Button asChild variant={"ghost"}>
           <Link href={pathsConfig.auth.signIn}>
-            <Trans i18nKey={'auth:signIn'} />
+            <Trans i18nKey={"auth:signIn"} />
           </Link>
         </Button>
       </div>
 
-      <Button asChild className="group" variant={'default'}>
+      <Button asChild className="group" variant={"default"}>
         <Link href={pathsConfig.auth.signUp}>
-          <Trans i18nKey={'auth:signUp'} />
+          <Trans i18nKey={"auth:signUp"} />
         </Link>
       </Button>
     </div>

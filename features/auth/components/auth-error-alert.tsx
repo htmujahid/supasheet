@@ -1,7 +1,7 @@
-import { AlertCircleIcon } from 'lucide-react';
+import { AlertCircleIcon } from "lucide-react";
 
-import { Trans } from '@/components/makerkit/trans';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 /**
  * @name AuthErrorAlert
@@ -24,17 +24,17 @@ export function AuthErrorAlert({
   const errorCode = error instanceof Error ? error.message : error;
 
   return (
-    <Alert variant={'destructive'}>
-      <AlertCircleIcon className={'w-4'} />
+    <Alert variant={"destructive"}>
+      <AlertCircleIcon className={"w-4"} />
 
       <AlertTitle>
         <Trans i18nKey={`auth:errorAlertHeading`} />
       </AlertTitle>
 
-      <AlertDescription data-test={'auth-error-message'}>
+      <AlertDescription data-test={"auth-error-message"}>
         <Trans
           i18nKey={`auth:errors.${errorCode}`}
-          defaults={'<DefaultError />'}
+          defaults={"<DefaultError />"}
           components={{ DefaultError }}
         />
       </AlertDescription>

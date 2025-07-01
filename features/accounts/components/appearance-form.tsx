@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useTheme } from 'next-themes';
+import { useTheme } from "next-themes";
 
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function AppearanceForm() {
   const { theme, setTheme } = useTheme();
   return (
     <RadioGroup value={theme} onValueChange={setTheme}>
-      <div className="grid max-w-md md:grid-cols-2 gap-8 pt-2">
+      <div className="grid max-w-md gap-8 pt-2 md:grid-cols-2">
         <Label className="[&:has([data-state=checked])>div]:border-primary">
           <RadioGroupItem value="light" className="sr-only" />
-          <div className="items-center rounded-md border-2 border-muted p-1 hover:border-accent">
+          <div className="border-muted hover:border-accent items-center rounded-md border-2 p-1">
             <div className="space-y-2 rounded-sm bg-[#ecedef] p-2">
               <div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
                 <div className="h-2 w-[80px] rounded-lg bg-[#ecedef]" />
@@ -34,7 +34,7 @@ export function AppearanceForm() {
         </Label>
         <Label className="[&:has([data-state=checked])>div]:border-primary">
           <RadioGroupItem value="dark" className="sr-only" />
-          <div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
+          <div className="border-muted bg-popover hover:bg-accent hover:text-accent-foreground items-center rounded-md border-2 p-1">
             <div className="space-y-2 rounded-sm bg-slate-950 p-2">
               <div className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
                 <div className="h-2 w-[80px] rounded-lg bg-slate-400" />

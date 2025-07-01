@@ -1,16 +1,16 @@
-import 'server-only';
+import "server-only";
 
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
-import type { User } from '@supabase/supabase-js';
+import type { User } from "@supabase/supabase-js";
 
-import { ZodType, z } from 'zod';
+import { ZodType, z } from "zod";
 
-import { verifyCaptchaToken } from '@/features/auth/captcha/server';
-import { requireUser } from '@/lib/supabase/require-user';
-import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
+import { verifyCaptchaToken } from "@/features/auth/captcha/server";
+import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
+import { requireUser } from "@/lib/supabase/require-user";
 
-import { zodParseFactory } from '../utils';
+import { zodParseFactory } from "../utils";
 
 /**
  * @name enhanceAction
@@ -23,21 +23,21 @@ export function enhanceAction<
     auth?: boolean;
     captcha?: boolean;
     schema?: z.ZodType<
-      Config['captcha'] extends true ? Args & { captchaToken: string } : Args,
+      Config["captcha"] extends true ? Args & { captchaToken: string } : Args,
       z.ZodTypeDef
     >;
   },
 >(
   fn: (
-    params: Config['schema'] extends ZodType ? z.infer<Config['schema']> : Args,
-    user: Config['auth'] extends false ? undefined : User,
+    params: Config["schema"] extends ZodType ? z.infer<Config["schema"]> : Args,
+    user: Config["auth"] extends false ? undefined : User,
   ) => Response | Promise<Response>,
   config: Config,
 ) {
   return async (
-    params: Config['schema'] extends ZodType ? z.infer<Config['schema']> : Args,
+    params: Config["schema"] extends ZodType ? z.infer<Config["schema"]> : Args,
   ) => {
-    type UserParam = Config['auth'] extends false ? undefined : User;
+    type UserParam = Config["auth"] extends false ? undefined : User;
 
     const requireAuth = config.auth ?? true;
     let user: UserParam = undefined as UserParam;

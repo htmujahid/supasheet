@@ -1,8 +1,8 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-import { Grid2X2PlusIcon } from 'lucide-react';
+import { Grid2X2PlusIcon } from "lucide-react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 function LogoImage({
   className,
@@ -12,7 +12,7 @@ function LogoImage({
   width?: number;
 }) {
   return (
-    <div className={cn('flex items-center gap-1 w-fit', className)}>
+    <div className={cn("flex w-fit items-center gap-1", className)}>
       <Grid2X2PlusIcon width={width} />
       <span>Supasheet.</span>
     </div>
@@ -33,8 +33,8 @@ export function AppLogo({
   }
 
   return (
-    <Link aria-label={label ?? 'Home Page'} href={href ?? '/'}>
-      <LogoImage className={''} />
+    <Link aria-label={label ?? "Home Page"} href={href ?? "/"}>
+      <LogoImage className={""} />
     </Link>
   );
 }

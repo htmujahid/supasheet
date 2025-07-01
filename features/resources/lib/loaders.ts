@@ -139,17 +139,19 @@ export async function loadResources() {
 
   if (response.error) {
     const tableSchema = await client.from("_pg_meta_tables").select("*");
-    resources = tableSchema.data?.map((resource) => ({
-      name: resource.name as string,
-      id: resource.name as string,
-      group: resource.schema as string,
-    })) ?? [];
+    resources =
+      tableSchema.data?.map((resource) => ({
+        name: resource.name as string,
+        id: resource.name as string,
+        group: resource.schema as string,
+      })) ?? [];
   } else {
-    resources = response.data?.map((resource) => ({
-      name: resource.name,
-      id: resource.id,
-      group: resource.grp,
-    })) ?? [];
+    resources =
+      response.data?.map((resource) => ({
+        name: resource.name,
+        id: resource.id,
+        group: resource.grp,
+      })) ?? [];
   }
 
   return resources ?? [];

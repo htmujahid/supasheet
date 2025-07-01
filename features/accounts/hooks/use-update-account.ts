@@ -1,17 +1,17 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { Database } from '@/lib/database.types';
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
+import { Database } from "@/lib/database.types";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-type UpdateData = Database['public']['Tables']['accounts']['Update'];
+type UpdateData = Database["public"]["Tables"]["accounts"]["Update"];
 
 export function useUpdateAccountData(accountId: string) {
   const client = useSupabase();
 
-  const mutationKey = ['account:data', accountId];
+  const mutationKey = ["account:data", accountId];
 
   const mutationFn = async (data: UpdateData) => {
-    const response = await client.from('accounts').update(data).match({
+    const response = await client.from("accounts").update(data).match({
       id: accountId,
     });
 

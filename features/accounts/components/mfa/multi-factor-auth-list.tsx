@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
-import type { Factor } from '@supabase/supabase-js';
+import type { Factor } from "@supabase/supabase-js";
 
-import { AlertCircleIcon } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ShieldCheck, X } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
+import { ShieldCheck, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { useFetchAuthFactors } from '@/lib/supabase/hooks/use-fetch-mfa-factors';
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
-import { useFactorsMutationKey } from '@/lib/supabase/hooks/use-user-factors-mutation-key';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { If } from "@/components/makerkit/if";
+import { Spinner } from "@/components/makerkit/spinner";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,11 +23,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { If } from '@/components/makerkit/if';
-import { Spinner } from '@/components/makerkit/spinner';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -35,20 +33,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Trans } from '@/components/makerkit/trans';
+} from "@/components/ui/tooltip";
+import { useFetchAuthFactors } from "@/lib/supabase/hooks/use-fetch-mfa-factors";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
+import { useFactorsMutationKey } from "@/lib/supabase/hooks/use-user-factors-mutation-key";
 
-import { MultiFactorAuthSetupDialog } from './multi-factor-auth-setup-dialog';
+import { MultiFactorAuthSetupDialog } from "./multi-factor-auth-setup-dialog";
 
 export function MultiFactorAuthFactorsList(props: { userId: string }) {
   return (
-    <div className={'flex flex-col space-y-4'}>
+    <div className={"flex flex-col space-y-4"}>
       <FactorsTableContainer userId={props.userId} />
 
       <div>
@@ -67,11 +67,11 @@ function FactorsTableContainer(props: { userId: string }) {
 
   if (isLoading) {
     return (
-      <div className={'flex items-center space-x-4'}>
+      <div className={"flex items-center space-x-4"}>
         <Spinner />
 
         <div>
-          <Trans i18nKey={'account:loadingFactors'} />
+          <Trans i18nKey={"account:loadingFactors"} />
         </div>
       </div>
     );
@@ -80,15 +80,15 @@ function FactorsTableContainer(props: { userId: string }) {
   if (isError) {
     return (
       <div>
-        <Alert variant={'destructive'}>
-          <AlertCircleIcon className={'h-4'} />
+        <Alert variant={"destructive"}>
+          <AlertCircleIcon className={"h-4"} />
 
           <AlertTitle>
-            <Trans i18nKey={'account:factorsListError'} />
+            <Trans i18nKey={"account:factorsListError"} />
           </AlertTitle>
 
           <AlertDescription>
-            <Trans i18nKey={'account:factorsListErrorDescription'} />
+            <Trans i18nKey={"account:factorsListErrorDescription"} />
           </AlertDescription>
         </Alert>
       </div>
@@ -99,16 +99,16 @@ function FactorsTableContainer(props: { userId: string }) {
 
   if (!allFactors.length) {
     return (
-      <div className={'flex flex-col space-y-4'}>
+      <div className={"flex flex-col space-y-4"}>
         <Alert>
-          <ShieldCheck className={'h-4'} />
+          <ShieldCheck className={"h-4"} />
 
           <AlertTitle>
-            <Trans i18nKey={'account:multiFactorAuthHeading'} />
+            <Trans i18nKey={"account:multiFactorAuthHeading"} />
           </AlertTitle>
 
           <AlertDescription>
-            <Trans i18nKey={'account:multiFactorAuthDescription'} />
+            <Trans i18nKey={"account:multiFactorAuthDescription"} />
           </AlertDescription>
         </Alert>
       </div>
@@ -160,25 +160,25 @@ function ConfirmUnenrollFactorModal(
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            <Trans i18nKey={'account:unenrollFactorModalHeading'} />
+            <Trans i18nKey={"account:unenrollFactorModalHeading"} />
           </AlertDialogTitle>
 
           <AlertDialogDescription>
-            <Trans i18nKey={'account:unenrollFactorModalDescription'} />
+            <Trans i18nKey={"account:unenrollFactorModalDescription"} />
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
           <AlertDialogCancel>
-            <Trans i18nKey={'common:cancel'} />
+            <Trans i18nKey={"common:cancel"} />
           </AlertDialogCancel>
 
           <AlertDialogAction
-            type={'button'}
+            type={"button"}
             disabled={unEnroll.isPending}
             onClick={() => onUnenrollRequested(props.factorId)}
           >
-            <Trans i18nKey={'account:unenrollFactorModalButtonLabel'} />
+            <Trans i18nKey={"account:unenrollFactorModalButtonLabel"} />
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -201,13 +201,13 @@ function FactorsTable({
         <TableHeader>
           <TableRow>
             <TableHead>
-              <Trans i18nKey={'account:factorName'} />
+              <Trans i18nKey={"account:factorName"} />
             </TableHead>
             <TableHead>
-              <Trans i18nKey={'account:factorType'} />
+              <Trans i18nKey={"account:factorType"} />
             </TableHead>
             <TableHead>
-              <Trans i18nKey={'account:factorStatus'} />
+              <Trans i18nKey={"account:factorStatus"} />
             </TableHead>
 
             <TableHead />
@@ -218,39 +218,39 @@ function FactorsTable({
           {factors.map((factor) => (
             <TableRow key={factor.id}>
               <TableCell>
-                <span className={'block truncate'}>{factor.friendly_name}</span>
+                <span className={"block truncate"}>{factor.friendly_name}</span>
               </TableCell>
 
               <TableCell>
-                <Badge variant={'info'} className={'inline-flex uppercase'}>
+                <Badge variant={"info"} className={"inline-flex uppercase"}>
                   {factor.factor_type}
                 </Badge>
               </TableCell>
 
               <td>
                 <Badge
-                  className={'inline-flex capitalize'}
-                  variant={factor.status === 'verified' ? 'success' : 'outline'}
+                  className={"inline-flex capitalize"}
+                  variant={factor.status === "verified" ? "success" : "outline"}
                 >
                   {factor.status}
                 </Badge>
               </td>
 
-              <td className={'flex justify-end'}>
+              <td className={"flex justify-end"}>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant={'ghost'}
-                        size={'icon'}
+                        variant={"ghost"}
+                        size={"icon"}
                         onClick={() => setUnenrolling(factor.id)}
                       >
-                        <X className={'h-4'} />
+                        <X className={"h-4"} />
                       </Button>
                     </TooltipTrigger>
 
                     <TooltipContent>
-                      <Trans i18nKey={'account:unenrollTooltip'} />
+                      <Trans i18nKey={"account:unenrollTooltip"} />
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

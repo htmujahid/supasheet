@@ -1,6 +1,6 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from "@supabase/supabase-js";
 
-import { Database } from '@/lib/database.types';
+import { Database } from "@/lib/database.types";
 
 /**
  * Class representing an API for interacting with user accounts.
@@ -17,9 +17,9 @@ class AccountsApi {
    */
   async getAccount(id: string) {
     const { data, error } = await this.client
-      .from('accounts')
-      .select('*')
-      .eq('id', id)
+      .from("accounts")
+      .select("*")
+      .eq("id", id)
       .single();
 
     if (error) {

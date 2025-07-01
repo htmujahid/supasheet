@@ -1,12 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import type { Provider } from '@supabase/supabase-js';
+import type { Provider } from "@supabase/supabase-js";
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
-export const USER_IDENTITIES_QUERY_KEY = ['user-identities'];
+export const USER_IDENTITIES_QUERY_KEY = ["user-identities"];
 
 export function useUserIdentities() {
   const supabase = useSupabase();

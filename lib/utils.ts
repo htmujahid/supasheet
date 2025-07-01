@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
  * Check if the code is running in a browser environment.
  */
 export function isBrowser() {
-  return typeof window !== 'undefined';
+  return typeof window !== "undefined";
 }
 
 /**
@@ -22,12 +22,12 @@ export function formatCurrency(params: {
   value: string | number;
 }) {
   return new Intl.NumberFormat(params.locale, {
-    style: 'currency',
+    style: "currency",
     currency: params.currencyCode,
   }).format(Number(params.value));
 }
 
-const ROOT_PATH = '/';
+const ROOT_PATH = "/";
 
 /**
  * @name isRouteActive
@@ -47,7 +47,7 @@ export function isRouteActive(
   }
 
   // if the end prop is a function, we call it with the current path
-  if (typeof end === 'function') {
+  if (typeof end === "function") {
     return !end(currentPath);
   }
 
@@ -76,7 +76,7 @@ export function checkIfRouteIsActive(
   depth = 1,
 ) {
   // we remove any eventual query param from the route's URL
-  const currentRoutePath = currentRoute.split('?')[0] ?? '';
+  const currentRoutePath = currentRoute.split("?")[0] ?? "";
 
   if (!isRoot(currentRoutePath) && isRoot(targetLink)) {
     return false;
@@ -96,7 +96,7 @@ export function checkIfRouteIsActive(
 }
 
 function splitIntoSegments(href: string) {
-  return href.split('/').filter(Boolean);
+  return href.split("/").filter(Boolean);
 }
 
 function hasMatchingSegments(

@@ -39,7 +39,7 @@ export function ResourceTableToolbarActions({
       ) : null}
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
         <Plus />
-        New {tableSchema?.name as string || "Resource"}
+        New {(tableSchema?.name as string) || "Resource"}
       </Button>
       <Button
         variant="outline"

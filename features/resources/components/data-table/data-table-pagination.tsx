@@ -1,8 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,7 +73,7 @@ export function DataTablePagination<TData>({
               onChange={(e) => {
                 table.setPageIndex(Number(e.target.value) - 1);
               }}
-              className="w-12 h-8"
+              className="h-8 w-12"
             />
             of {table.getPageCount()}
           </div>

@@ -1,9 +1,9 @@
-import 'server-only';
+import "server-only";
 
-import { z } from 'zod';
+import { z } from "zod";
 
 const message =
-  'Invalid Supabase Service Role Key. Please add the environment variable SUPABASE_SERVICE_ROLE_KEY.';
+  "Invalid Supabase Service Role Key. Please add the environment variable SUPABASE_SERVICE_ROLE_KEY.";
 
 /**
  * @name getServiceRoleKey
@@ -25,7 +25,7 @@ export function getServiceRoleKey() {
  * Displays a warning message if the Supabase Service Role is being used.
  */
 export function warnServiceRoleKeyUsage() {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     console.warn(
       `[Dev Only] This is a simple warning to let you know you are using the Supabase Service Role. Make sure it's the right call.`,
     );

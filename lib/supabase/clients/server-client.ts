@@ -1,12 +1,16 @@
-import 'server-only';
+import "server-only";
 
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient } from "@supabase/ssr";
 
-import { Database } from '@/lib/database.types';
+import { Database } from "@/lib/database.types";
 
-import { getSupabaseClientKeys, SUPABASE_ANON_KEY_COOKIE_NAME, SUPABASE_URL_COOKIE_NAME } from '../get-supabase-client-keys';
+import {
+  SUPABASE_ANON_KEY_COOKIE_NAME,
+  SUPABASE_URL_COOKIE_NAME,
+  getSupabaseClientKeys,
+} from "../get-supabase-client-keys";
 
 /**
  * @name getSupabaseServerClient
@@ -18,7 +22,8 @@ export async function getSupabaseServerClient<GenericSchema = Database>() {
   if (!keys.url) {
     const cookieStore = await cookies();
     const url = cookieStore.get(SUPABASE_URL_COOKIE_NAME)?.value as string;
-    const anonKey = cookieStore.get(SUPABASE_ANON_KEY_COOKIE_NAME)?.value as string;
+    const anonKey = cookieStore.get(SUPABASE_ANON_KEY_COOKIE_NAME)
+      ?.value as string;
 
     keys.url = url;
     keys.anonKey = anonKey;

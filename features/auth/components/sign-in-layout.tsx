@@ -13,7 +13,9 @@ export function SignInLayout({
     <div className="flex flex-col gap-6">
       <div className="">
         <Heading level={2}>{title}</Heading>
-        <p className="text-muted-foreground text-sm text-balance">{description}</p>
+        <p className="text-muted-foreground text-sm text-balance">
+          {description}
+        </p>
       </div>
       {children}
     </div>

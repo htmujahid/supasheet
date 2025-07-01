@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { If } from '@/components/makerkit/if';
-import { LanguageSelector } from '@/components/makerkit/language-selector';
-import { LoadingOverlay } from '@/components/makerkit/loading-overlay';
-import { Trans } from '@/components/makerkit/trans';
+import { If } from "@/components/makerkit/if";
+import { LanguageSelector } from "@/components/makerkit/language-selector";
+import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
+import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import pathsConfig from '@/config/paths.config';
+} from "@/components/ui/card";
+import pathsConfig from "@/config/paths.config";
 
-import { usePersonalAccountData } from '../hooks/use-personal-account-data';
-import { UpdateEmailFormContainer } from './email/update-email-form-container';
-import { UpdateAccountDetailsFormContainer } from './update-account-details-form-container';
-import { UpdateAccountImageContainer } from './update-account-image-container';
+import { usePersonalAccountData } from "../hooks/use-personal-account-data";
+import { UpdateEmailFormContainer } from "./email/update-email-form-container";
+import { UpdateAccountDetailsFormContainer } from "./update-account-details-form-container";
+import { UpdateAccountImageContainer } from "./update-account-image-container";
 
 export function ProfileContainer({ userId }: { userId: string }) {
   const user = usePersonalAccountData(userId);
@@ -33,11 +33,11 @@ export function ProfileContainer({ userId }: { userId: string }) {
       <Card>
         <CardHeader>
           <CardTitle>
-            <Trans i18nKey={'account:accountImage'} />
+            <Trans i18nKey={"account:accountImage"} />
           </CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={'account:accountImageDescription'} />
+            <Trans i18nKey={"account:accountImageDescription"} />
           </CardDescription>
         </CardHeader>
 
@@ -54,11 +54,11 @@ export function ProfileContainer({ userId }: { userId: string }) {
       <Card>
         <CardHeader>
           <CardTitle>
-            <Trans i18nKey={'account:name'} />
+            <Trans i18nKey={"account:name"} />
           </CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={'account:nameDescription'} />
+            <Trans i18nKey={"account:nameDescription"} />
           </CardDescription>
         </CardHeader>
 
@@ -71,11 +71,11 @@ export function ProfileContainer({ userId }: { userId: string }) {
         <Card>
           <CardHeader>
             <CardTitle>
-              <Trans i18nKey={'account:language'} />
+              <Trans i18nKey={"account:language"} />
             </CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={'account:languageDescription'} />
+              <Trans i18nKey={"account:languageDescription"} />
             </CardDescription>
           </CardHeader>
 
@@ -88,11 +88,11 @@ export function ProfileContainer({ userId }: { userId: string }) {
       <Card>
         <CardHeader>
           <CardTitle>
-            <Trans i18nKey={'account:updateEmailCardTitle'} />
+            <Trans i18nKey={"account:updateEmailCardTitle"} />
           </CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={'account:updateEmailCardDescription'} />
+            <Trans i18nKey={"account:updateEmailCardDescription"} />
           </CardDescription>
         </CardHeader>
 
@@ -108,7 +108,7 @@ function useSupportMultiLanguage() {
   const { i18n } = useTranslation();
   const langs = (i18n?.options?.supportedLngs as string[]) ?? [];
 
-  const supportedLangs = langs.filter((lang) => lang !== 'cimode');
+  const supportedLangs = langs.filter((lang) => lang !== "cimode");
 
   return supportedLangs.length > 1;
 }

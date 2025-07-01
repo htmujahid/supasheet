@@ -1,7 +1,7 @@
-import i18next, { type InitOptions, i18n } from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import resourcesToBackend from 'i18next-resources-to-backend';
-import { initReactI18next } from 'react-i18next';
+import i18next, { type InitOptions, i18n } from "i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+import resourcesToBackend from "i18next-resources-to-backend";
+import { initReactI18next } from "react-i18next";
 
 // Keep track of the number of iterations
 let iteration = 0;
@@ -43,9 +43,9 @@ export async function initializeI18nClient(
       {
         ...settings,
         detection: {
-          order: ['htmlTag', 'cookie', 'navigator'],
-          caches: ['cookie'],
-          lookupCookie: 'lang',
+          order: ["htmlTag", "cookie", "navigator"],
+          caches: ["cookie"],
+          lookupCookie: "lang",
         },
         interpolation: {
           escapeValue: false,
@@ -53,7 +53,7 @@ export async function initializeI18nClient(
       },
       (err) => {
         if (err) {
-          console.error('Error initializing i18n client', err);
+          console.error("Error initializing i18n client", err);
         }
       },
     );
@@ -74,7 +74,7 @@ export async function initializeI18nClient(
       `Keeping component from rendering if no languages or namespaces are loaded. Iteration: ${iteration}. Will stop after ${MAX_ITERATIONS} iterations.`,
     );
 
-    throw new Error('No languages or namespaces loaded');
+    throw new Error("No languages or namespaces loaded");
   }
 
   return i18next;

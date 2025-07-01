@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+
 import type { Column, ColumnMeta, Table } from "@tanstack/react-table";
 import {
   CalendarIcon,
@@ -10,9 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import * as React from "react";
 
-import { DataTableRangeFilter } from "@/features/resources/components/data-table/data-table-range-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -56,6 +56,7 @@ import {
   SortableOverlay,
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table.config";
+import { DataTableRangeFilter } from "@/features/resources/components/data-table/data-table-range-filter";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
 import { formatDate } from "@/lib/format";
@@ -140,7 +141,7 @@ export function DataTableFilterList<TData>({
         filterId: generateId({ length: 8 }),
       },
     ]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columns, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
@@ -239,7 +240,7 @@ export function DataTableFilterList<TData>({
             {filters.length > 0 && (
               <Badge
                 variant="secondary"
-                className="h-[18.24px] rounded-[3.2px] px-[5.12px] font-mono font-normal text-[10.4px]"
+                className="h-[18.24px] rounded-[3.2px] px-[5.12px] font-mono text-[10.4px] font-normal"
               >
                 {filters.length}
               </Badge>
@@ -253,7 +254,7 @@ export function DataTableFilterList<TData>({
           {...props}
         >
           <div className="flex flex-col gap-1">
-            <h4 id={labelId} className="font-medium leading-none">
+            <h4 id={labelId} className="leading-none font-medium">
               {filters.length > 0 ? "Filters" : "No filters applied"}
             </h4>
             <p
@@ -314,12 +315,12 @@ export function DataTableFilterList<TData>({
       </Popover>
       <SortableOverlay>
         <div className="flex items-center gap-2">
-          <div className="h-8 min-w-[72px] rounded-sm bg-primary/10" />
-          <div className="h-8 w-32 rounded-sm bg-primary/10" />
-          <div className="h-8 w-32 rounded-sm bg-primary/10" />
-          <div className="h-8 min-w-36 flex-1 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+          <div className="bg-primary/10 h-8 min-w-[72px] rounded-sm" />
+          <div className="bg-primary/10 h-8 w-32 rounded-sm" />
+          <div className="bg-primary/10 h-8 w-32 rounded-sm" />
+          <div className="bg-primary/10 h-8 min-w-36 flex-1 rounded-sm" />
+          <div className="bg-primary/10 size-8 shrink-0 rounded-sm" />
+          <div className="bg-primary/10 size-8 shrink-0 rounded-sm" />
         </div>
       </SortableOverlay>
     </Sortable>
@@ -502,9 +503,7 @@ function DataTableFilterItem<TData>({
             onFilterUpdate(filter.filterId, {
               operator: value,
               value:
-                value === "empty" || value === "not.empty"
-                  ? ""
-                  : filter.value,
+                value === "empty" || value === "not.empty" ? "" : filter.value,
             })
           }
         >
@@ -590,7 +589,7 @@ function onFilterInputRender<TData>({
           filter.operator === "empty" ? "empty" : "not empty"
         }`}
         aria-live="polite"
-        className="h-8 w-full rounded border bg-transparent dark:bg-input/30"
+        className="dark:bg-input/30 h-8 w-full rounded border bg-transparent"
       />
     );
   }

@@ -1,17 +1,17 @@
-import 'server-only';
+import "server-only";
 
-import { redirect } from 'next/navigation';
-import { NextRequest, NextResponse } from 'next/server';
+import { redirect } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
 
-import { User } from '@supabase/supabase-js';
+import { User } from "@supabase/supabase-js";
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { verifyCaptchaToken } from '@/features/auth/captcha/server';
-import { requireUser } from '@/lib/supabase/require-user';
-import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
+import { verifyCaptchaToken } from "@/features/auth/captcha/server";
+import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
+import { requireUser } from "@/lib/supabase/require-user";
 
-import { zodParseFactory } from '../utils';
+import { zodParseFactory } from "../utils";
 
 interface Config<Schema> {
   auth?: boolean;
@@ -56,10 +56,10 @@ export const enhanceRouteHandler = <
   // Route handler function
   handler:
     | ((
-        params: HandlerParams<Params['schema'], Params['auth']>,
+        params: HandlerParams<Params["schema"], Params["auth"]>,
       ) => NextResponse | Response)
     | ((
-        params: HandlerParams<Params['schema'], Params['auth']>,
+        params: HandlerParams<Params["schema"], Params["auth"]>,
       ) => Promise<NextResponse | Response>),
   // Parameters object
   params?: Params,
@@ -75,7 +75,7 @@ export const enhanceRouteHandler = <
       params: Promise<Record<string, string>>;
     },
   ) {
-    type UserParam = Params['auth'] extends false ? undefined : User;
+    type UserParam = Params["auth"] extends false ? undefined : User;
 
     let user: UserParam = undefined as UserParam;
 
@@ -90,7 +90,7 @@ export const enhanceRouteHandler = <
       if (token) {
         await verifyCaptchaToken(token);
       } else {
-        return new Response('Captcha token is required', { status: 400 });
+        return new Response("Captcha token is required", { status: 400 });
       }
     }
 
@@ -136,5 +136,5 @@ export const enhanceRouteHandler = <
  * @param request
  */
 function captchaTokenGetter(request: NextRequest) {
-  return request.headers.get('x-captcha-token');
+  return request.headers.get("x-captcha-token");
 }

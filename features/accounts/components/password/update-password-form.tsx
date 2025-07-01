@@ -1,19 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
-import type { User } from '@supabase/supabase-js';
+import type { User } from "@supabase/supabase-js";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircleIcon } from 'lucide-react';
-import { Check } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircleIcon } from "lucide-react";
+import { Check } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-import { useUpdateUser } from '@/lib/supabase/hooks/use-update-user-mutation';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { If } from "@/components/makerkit/if";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -22,13 +23,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { If } from '@/components/makerkit/if';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Trans } from '@/components/makerkit/trans';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useUpdateUser } from "@/lib/supabase/hooks/use-update-user-mutation";
 
-import { PasswordUpdateSchema } from '../../schema/update-password.schema';
+import { PasswordUpdateSchema } from "../../schema/update-password.schema";
 
 export const UpdatePasswordForm = ({
   user,
@@ -37,19 +37,19 @@ export const UpdatePasswordForm = ({
   user: User;
   callbackPath: string;
 }) => {
-  const { t } = useTranslation('account');
+  const { t } = useTranslation("account");
   const updateUserMutation = useUpdateUser();
   const [needsReauthentication, setNeedsReauthentication] = useState(false);
 
   const updatePasswordFromCredential = (password: string) => {
-    const redirectTo = [window.location.origin, callbackPath].join('');
+    const redirectTo = [window.location.origin, callbackPath].join("");
 
     const promise = updateUserMutation
       .mutateAsync({ password, redirectTo })
       .catch((error) => {
         if (
-          typeof error === 'string' &&
-          error?.includes('Password update requires reauthentication')
+          typeof error === "string" &&
+          error?.includes("Password update requires reauthentication")
         ) {
           setNeedsReauthentication(true);
         } else {
@@ -82,21 +82,21 @@ export const UpdatePasswordForm = ({
 
   const form = useForm({
     resolver: zodResolver(
-      PasswordUpdateSchema.withTranslation(t('passwordNotMatching')),
+      PasswordUpdateSchema.withTranslation(t("passwordNotMatching")),
     ),
     defaultValues: {
-      newPassword: '',
-      repeatPassword: '',
+      newPassword: "",
+      repeatPassword: "",
     },
   });
 
   return (
     <Form {...form}>
       <form
-        data-test={'account-password-form'}
+        data-test={"account-password-form"}
         onSubmit={form.handleSubmit(updatePasswordCallback)}
       >
-        <div className={'flex flex-col space-y-4'}>
+        <div className={"flex flex-col space-y-4"}>
           <If condition={updateUserMutation.data}>
             <SuccessAlert />
           </If>
@@ -106,21 +106,21 @@ export const UpdatePasswordForm = ({
           </If>
 
           <FormField
-            name={'newPassword'}
+            name={"newPassword"}
             render={({ field }) => {
               return (
                 <FormItem>
                   <FormLabel>
                     <Label>
-                      <Trans i18nKey={'account:newPassword'} />
+                      <Trans i18nKey={"account:newPassword"} />
                     </Label>
                   </FormLabel>
 
                   <FormControl>
                     <Input
-                      data-test={'account-password-form-password-input'}
+                      data-test={"account-password-form-password-input"}
                       required
-                      type={'password'}
+                      type={"password"}
                       {...field}
                     />
                   </FormControl>
@@ -132,27 +132,27 @@ export const UpdatePasswordForm = ({
           />
 
           <FormField
-            name={'repeatPassword'}
+            name={"repeatPassword"}
             render={({ field }) => {
               return (
                 <FormItem>
                   <FormLabel>
                     <Label>
-                      <Trans i18nKey={'account:repeatPassword'} />
+                      <Trans i18nKey={"account:repeatPassword"} />
                     </Label>
                   </FormLabel>
 
                   <FormControl>
                     <Input
-                      data-test={'account-password-form-repeat-password-input'}
+                      data-test={"account-password-form-repeat-password-input"}
                       required
-                      type={'password'}
+                      type={"password"}
                       {...field}
                     />
                   </FormControl>
 
                   <FormDescription>
-                    <Trans i18nKey={'account:repeatPasswordDescription'} />
+                    <Trans i18nKey={"account:repeatPasswordDescription"} />
                   </FormDescription>
 
                   <FormMessage />
@@ -163,7 +163,7 @@ export const UpdatePasswordForm = ({
 
           <div>
             <Button disabled={updateUserMutation.isPending}>
-              <Trans i18nKey={'account:updatePasswordSubmitLabel'} />
+              <Trans i18nKey={"account:updatePasswordSubmitLabel"} />
             </Button>
           </div>
         </div>
@@ -174,15 +174,15 @@ export const UpdatePasswordForm = ({
 
 function SuccessAlert() {
   return (
-    <Alert variant={'success'}>
-      <Check className={'h-4'} />
+    <Alert variant={"success"}>
+      <Check className={"h-4"} />
 
       <AlertTitle>
-        <Trans i18nKey={'account:updatePasswordSuccess'} />
+        <Trans i18nKey={"account:updatePasswordSuccess"} />
       </AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={'account:updatePasswordSuccessMessage'} />
+        <Trans i18nKey={"account:updatePasswordSuccessMessage"} />
       </AlertDescription>
     </Alert>
   );
@@ -190,15 +190,15 @@ function SuccessAlert() {
 
 function NeedsReauthenticationAlert() {
   return (
-    <Alert variant={'warning'}>
-      <AlertCircleIcon className={'h-4'} />
+    <Alert variant={"warning"}>
+      <AlertCircleIcon className={"h-4"} />
 
       <AlertTitle>
-        <Trans i18nKey={'account:needsReauthentication'} />
+        <Trans i18nKey={"account:needsReauthentication"} />
       </AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={'account:needsReauthenticationDescription'} />
+        <Trans i18nKey={"account:needsReauthenticationDescription"} />
       </AlertDescription>
     </Alert>
   );

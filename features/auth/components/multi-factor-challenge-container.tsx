@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { AlertCircleIcon } from 'lucide-react';
-import { useForm, useWatch } from 'react-hook-form';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
-import { If } from '@/components/makerkit/if';
-import { Spinner } from '@/components/makerkit/spinner';
-import { Trans } from '@/components/makerkit/trans';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { If } from "@/components/makerkit/if";
+import { Spinner } from "@/components/makerkit/spinner";
+import { Trans } from "@/components/makerkit/trans";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,16 +20,16 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@/components/ui/input-otp';
-import { useFetchAuthFactors } from '@/lib/supabase/hooks/use-fetch-mfa-factors';
-import { useSignOut } from '@/lib/supabase/hooks/use-sign-out';
-import { useSupabase } from '@/lib/supabase/hooks/use-supabase';
+} from "@/components/ui/input-otp";
+import { useFetchAuthFactors } from "@/lib/supabase/hooks/use-fetch-mfa-factors";
+import { useSignOut } from "@/lib/supabase/hooks/use-sign-out";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 export function MultiFactorChallengeContainer({
   paths,
@@ -54,13 +54,13 @@ export function MultiFactorChallengeContainer({
       }),
     ),
     defaultValues: {
-      factorId: '',
-      verificationCode: '',
+      factorId: "",
+      verificationCode: "",
     },
   });
 
   const factorId = useWatch({
-    name: 'factorId',
+    name: "factorId",
     control: verificationCodeForm.control,
   });
 
@@ -69,7 +69,7 @@ export function MultiFactorChallengeContainer({
       <FactorsListContainer
         userId={userId}
         onSelect={(factorId) => {
-          verificationCodeForm.setValue('factorId', factorId);
+          verificationCodeForm.setValue("factorId", factorId);
         }}
       />
     );
@@ -78,7 +78,7 @@ export function MultiFactorChallengeContainer({
   return (
     <Form {...verificationCodeForm}>
       <form
-        className={'w-full'}
+        className={"w-full"}
         onSubmit={verificationCodeForm.handleSubmit(async (data) => {
           await verifyMFAChallenge.mutateAsync({
             factorId,
@@ -86,36 +86,36 @@ export function MultiFactorChallengeContainer({
           });
         })}
       >
-        <div className={'flex flex-col space-y-4'}>
-          <span className={'text-muted-foreground text-sm'}>
-            <Trans i18nKey={'account:verifyActivationCodeDescription'} />
+        <div className={"flex flex-col space-y-4"}>
+          <span className={"text-muted-foreground text-sm"}>
+            <Trans i18nKey={"account:verifyActivationCodeDescription"} />
           </span>
 
-          <div className={'flex w-full flex-col space-y-2.5'}>
-            <div className={'flex flex-col space-y-4'}>
+          <div className={"flex w-full flex-col space-y-2.5"}>
+            <div className={"flex flex-col space-y-4"}>
               <If condition={verifyMFAChallenge.error}>
-                <Alert variant={'destructive'}>
-                  <AlertCircleIcon className={'h-5'} />
+                <Alert variant={"destructive"}>
+                  <AlertCircleIcon className={"h-5"} />
 
                   <AlertTitle>
-                    <Trans i18nKey={'account:invalidVerificationCodeHeading'} />
+                    <Trans i18nKey={"account:invalidVerificationCodeHeading"} />
                   </AlertTitle>
 
                   <AlertDescription>
                     <Trans
-                      i18nKey={'account:invalidVerificationCodeDescription'}
+                      i18nKey={"account:invalidVerificationCodeDescription"}
                     />
                   </AlertDescription>
                 </Alert>
               </If>
 
               <FormField
-                name={'verificationCode'}
+                name={"verificationCode"}
                 render={({ field }) => {
                   return (
                     <FormItem
                       className={
-                        'mx-auto flex flex-col items-center justify-center'
+                        "mx-auto flex flex-col items-center justify-center"
                       }
                     >
                       <FormControl>
@@ -136,7 +136,7 @@ export function MultiFactorChallengeContainer({
 
                       <FormDescription>
                         <Trans
-                          i18nKey={'account:verifyActivationCodeDescription'}
+                          i18nKey={"account:verifyActivationCodeDescription"}
                         />
                       </FormDescription>
 
@@ -155,9 +155,9 @@ export function MultiFactorChallengeContainer({
             }
           >
             {verifyMFAChallenge.isPending ? (
-              <Trans i18nKey={'account:verifyingCode'} />
+              <Trans i18nKey={"account:verifyingCode"} />
             ) : (
-              <Trans i18nKey={'account:submitVerificationCode'} />
+              <Trans i18nKey={"account:submitVerificationCode"} />
             )}
           </Button>
         </div>
@@ -168,7 +168,7 @@ export function MultiFactorChallengeContainer({
 
 function useVerifyMFAChallenge({ onSuccess }: { onSuccess: () => void }) {
   const client = useSupabase();
-  const mutationKey = ['mfa-verify-challenge'];
+  const mutationKey = ["mfa-verify-challenge"];
 
   const mutationFn = async (params: {
     factorId: string;
@@ -223,11 +223,11 @@ function FactorsListContainer({
 
   if (isLoading) {
     return (
-      <div className={'flex flex-col items-center space-y-4 py-8'}>
+      <div className={"flex flex-col items-center space-y-4 py-8"}>
         <Spinner />
 
         <div>
-          <Trans i18nKey={'account:loadingFactors'} />
+          <Trans i18nKey={"account:loadingFactors"} />
         </div>
       </div>
     );
@@ -235,16 +235,16 @@ function FactorsListContainer({
 
   if (error) {
     return (
-      <div className={'w-full'}>
-        <Alert variant={'destructive'}>
-          <AlertCircleIcon className={'h-4'} />
+      <div className={"w-full"}>
+        <Alert variant={"destructive"}>
+          <AlertCircleIcon className={"h-4"} />
 
           <AlertTitle>
-            <Trans i18nKey={'account:factorsListError'} />
+            <Trans i18nKey={"account:factorsListError"} />
           </AlertTitle>
 
           <AlertDescription>
-            <Trans i18nKey={'account:factorsListErrorDescription'} />
+            <Trans i18nKey={"account:factorsListErrorDescription"} />
           </AlertDescription>
         </Alert>
       </div>
@@ -254,19 +254,19 @@ function FactorsListContainer({
   const verifiedFactors = factors?.totp ?? [];
 
   return (
-    <div className={'flex flex-col space-y-4'}>
+    <div className={"flex flex-col space-y-4"}>
       <div>
-        <span className={'font-medium'}>
-          <Trans i18nKey={'account:selectFactor'} />
+        <span className={"font-medium"}>
+          <Trans i18nKey={"account:selectFactor"} />
         </span>
       </div>
 
-      <div className={'flex flex-col space-y-2'}>
+      <div className={"flex flex-col space-y-2"}>
         {verifiedFactors.map((factor) => (
           <div key={factor.id}>
             <Button
-              variant={'outline'}
-              className={'w-full'}
+              variant={"outline"}
+              className={"w-full"}
               onClick={() => onSelect(factor.id)}
             >
               {factor.friendly_name}

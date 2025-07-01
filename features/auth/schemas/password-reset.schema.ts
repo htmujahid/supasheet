@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { RefinedPasswordSchema, refineRepeatPassword } from './password.schema';
+import { RefinedPasswordSchema, refineRepeatPassword } from "./password.schema";
 
 export const PasswordResetSchema = z
   .object({

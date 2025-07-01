@@ -1,12 +1,12 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
-import pathsConfig from '@/config/paths.config';
-import { MultiFactorChallengeContainer } from '@/features/auth/components/multi-factor-challenge-container';
-import { createI18nServerInstance } from '@/lib/i18n/i18n.server';
-import { withI18n } from '@/lib/i18n/with-i18n';
-import { checkRequiresMultiFactorAuthentication } from '@/lib/supabase/check-requires-mfa';
-import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
-import { AuthLayout } from '@/features/auth/components/auth-layout';
+import pathsConfig from "@/config/paths.config";
+import { AuthLayout } from "@/features/auth/components/auth-layout";
+import { MultiFactorChallengeContainer } from "@/features/auth/components/multi-factor-challenge-container";
+import { createI18nServerInstance } from "@/lib/i18n/i18n.server";
+import { withI18n } from "@/lib/i18n/with-i18n";
+import { checkRequiresMultiFactorAuthentication } from "@/lib/supabase/check-requires-mfa";
+import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 interface Props {
   searchParams: Promise<{
@@ -18,7 +18,7 @@ export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
 
   return {
-    title: i18n.t('auth:signIn'),
+    title: i18n.t("auth:signIn"),
   };
 };
 

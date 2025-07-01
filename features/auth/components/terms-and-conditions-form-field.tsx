@@ -1,13 +1,13 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-import { Trans } from '@/components/makerkit/trans';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Trans } from "@/components/makerkit/trans";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 
 export function TermsAndConditionsFormField(
   props: {
@@ -16,34 +16,34 @@ export function TermsAndConditionsFormField(
 ) {
   return (
     <FormField
-      name={props.name ?? 'termsAccepted'}
+      name={props.name ?? "termsAccepted"}
       render={({ field }) => {
         return (
           <FormItem>
             <FormControl>
-              <label className={'flex items-start space-x-2 py-2'}>
+              <label className={"flex items-start space-x-2 py-2"}>
                 <Checkbox required name={field.name} />
 
-                <div className={'text-xs'}>
+                <div className={"text-xs"}>
                   <Trans
-                    i18nKey={'auth:acceptTermsAndConditions'}
+                    i18nKey={"auth:acceptTermsAndConditions"}
                     components={{
                       TermsOfServiceLink: (
                         <Link
-                          target={'_blank'}
-                          className={'underline'}
-                          href={'/terms-of-service'}
+                          target={"_blank"}
+                          className={"underline"}
+                          href={"/terms-of-service"}
                         >
-                          <Trans i18nKey={'auth:termsOfService'} />
+                          <Trans i18nKey={"auth:termsOfService"} />
                         </Link>
                       ),
                       PrivacyPolicyLink: (
                         <Link
-                          target={'_blank'}
-                          className={'underline'}
-                          href={'/privacy-policy'}
+                          target={"_blank"}
+                          className={"underline"}
+                          href={"/privacy-policy"}
                         >
-                          <Trans i18nKey={'auth:privacyPolicy'} />
+                          <Trans i18nKey={"auth:privacyPolicy"} />
                         </Link>
                       ),
                     }}

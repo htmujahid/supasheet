@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useUser } from '@/lib/supabase/hooks/use-user';
-import { LoadingOverlay } from '@/components/makerkit/loading-overlay';
+import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
+import { useUser } from "@/lib/supabase/hooks/use-user";
 
-import { UpdateEmailForm } from './update-email-form';
+import { UpdateEmailForm } from "./update-email-form";
 
 export function UpdateEmailFormContainer(props: { callbackPath: string }) {
   const { data: user, isPending } = useUser();

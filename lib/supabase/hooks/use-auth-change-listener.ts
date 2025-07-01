@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 /**
  * @name PRIVATE_PATH_PREFIXES
  * @description A list of private path prefixes
  */
-const PRIVATE_PATH_PREFIXES = ['/home', '/update-password'];
+const PRIVATE_PATH_PREFIXES = ["/home", "/update-password"];
 
 /**
  * @name AUTH_PATHS
  * @description A list of auth paths
  */
-const AUTH_PATHS = ['/auth'];
+const AUTH_PATHS = ["/auth"];
 
 /**
  * @name useAuthChangeListener
@@ -52,13 +52,13 @@ export function useAuthChangeListener({
 
       if (shouldRedirectUser) {
         // send user away when signed out
-        window.location.assign('/');
+        window.location.assign("/");
 
         return;
       }
 
       // revalidate user session when user signs in or out
-      if (event === 'SIGNED_OUT') {
+      if (event === "SIGNED_OUT") {
         // sometimes Supabase sends SIGNED_OUT event
         // but in the auth path, so we ignore it
         if (AUTH_PATHS.some((path) => pathName.startsWith(path))) {

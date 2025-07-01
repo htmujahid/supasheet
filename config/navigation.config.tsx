@@ -1,9 +1,9 @@
-import { Home, User } from 'lucide-react';
-import { z } from 'zod';
+import { Home, User } from "lucide-react";
+import { z } from "zod";
 
-import pathsConfig from '@/config/paths.config';
+import pathsConfig from "@/config/paths.config";
 
-const iconClasses = 'w-4';
+const iconClasses = "w-4";
 
 const RouteMatchingEnd = z
   .union([z.boolean(), z.function().args(z.string()).returns(z.boolean())])
@@ -42,22 +42,22 @@ const RouteGroup = z.object({
 });
 
 export const NavigationConfigSchema = z.object({
-  style: z.enum(['custom', 'sidebar', 'header']).default('sidebar'),
+  style: z.enum(["custom", "sidebar", "header"]).default("sidebar"),
   sidebarCollapsed: z
-    .enum(['false', 'true'])
-    .default('true')
+    .enum(["false", "true"])
+    .default("true")
     .optional()
     .transform((value) => value === `true`),
-  sidebarCollapsedStyle: z.enum(['offcanvas', 'icon', 'none']).default('icon'),
+  sidebarCollapsedStyle: z.enum(["offcanvas", "icon", "none"]).default("icon"),
   routes: z.array(z.union([RouteGroup, Divider])),
 });
 
 const routes = [
   {
-    label: 'common:routes.application',
+    label: "common:routes.application",
     children: [
       {
-        label: 'common:routes.home',
+        label: "common:routes.home",
         path: pathsConfig.app.home,
         Icon: <Home className={iconClasses} />,
         end: true,
@@ -65,16 +65,16 @@ const routes = [
     ],
   },
   {
-    label: 'common:routes.settings',
+    label: "common:routes.settings",
     children: [
       {
-        label: 'common:routes.account',
+        label: "common:routes.account",
         path: pathsConfig.app.account,
         Icon: <User className={iconClasses} />,
       },
     ],
   },
-] satisfies z.infer<typeof NavigationConfigSchema>['routes'];
+] satisfies z.infer<typeof NavigationConfigSchema>["routes"];
 
 export const navigationConfig = NavigationConfigSchema.parse({
   routes,

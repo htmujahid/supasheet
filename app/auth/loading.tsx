@@ -1,3 +1,3 @@
-import { GlobalLoader } from '@/components/makerkit/global-loader';
+import { GlobalLoader } from "@/components/makerkit/global-loader";
 
 export default GlobalLoader;

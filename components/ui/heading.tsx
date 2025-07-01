@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 type Level = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -34,7 +34,7 @@ export function Heading({
       return (
         <h3
           className={cn(
-            'font-heading scroll-m-20 text-xl font-semibold tracking-tight lg:text-2xl',
+            "font-heading scroll-m-20 text-xl font-semibold tracking-tight lg:text-2xl",
             className,
           )}
         >
@@ -45,7 +45,7 @@ export function Heading({
       return (
         <h4
           className={cn(
-            'font-heading scroll-m-20 text-lg font-semibold tracking-tight lg:text-xl',
+            "font-heading scroll-m-20 text-lg font-semibold tracking-tight lg:text-xl",
             className,
           )}
         >
@@ -56,7 +56,7 @@ export function Heading({
       return (
         <h5
           className={cn(
-            'font-heading scroll-m-20 text-base font-medium lg:text-lg',
+            "font-heading scroll-m-20 text-base font-medium lg:text-lg",
             className,
           )}
         >
@@ -67,7 +67,7 @@ export function Heading({
       return (
         <h6
           className={cn(
-            'font-heading scroll-m-20 text-base font-medium',
+            "font-heading scroll-m-20 text-base font-medium",
             className,
           )}
         >

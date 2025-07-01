@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Password requirements
@@ -8,9 +8,9 @@ const requirements = {
   minLength: 8,
   maxLength: 99,
   specialChars:
-    process.env.NEXT_PUBLIC_PASSWORD_REQUIRE_SPECIAL_CHARS === 'true',
-  numbers: process.env.NEXT_PUBLIC_PASSWORD_REQUIRE_NUMBERS === 'true',
-  uppercase: process.env.NEXT_PUBLIC_PASSWORD_REQUIRE_UPPERCASE === 'true',
+    process.env.NEXT_PUBLIC_PASSWORD_REQUIRE_SPECIAL_CHARS === "true",
+  numbers: process.env.NEXT_PUBLIC_PASSWORD_REQUIRE_NUMBERS === "true",
+  uppercase: process.env.NEXT_PUBLIC_PASSWORD_REQUIRE_UPPERCASE === "true",
 };
 
 /**
@@ -36,9 +36,9 @@ export function refineRepeatPassword(
 ) {
   if (data.password !== data.repeatPassword) {
     ctx.addIssue({
-      message: 'auth:errors.passwordsDoNotMatch',
-      path: ['repeatPassword'],
-      code: 'custom',
+      message: "auth:errors.passwordsDoNotMatch",
+      path: ["repeatPassword"],
+      code: "custom",
     });
   }
 
@@ -52,8 +52,8 @@ function validatePassword(password: string, ctx: z.RefinementCtx) {
 
     if (specialCharsCount < 1) {
       ctx.addIssue({
-        message: 'auth:errors.minPasswordSpecialChars',
-        code: 'custom',
+        message: "auth:errors.minPasswordSpecialChars",
+        code: "custom",
       });
     }
   }
@@ -63,8 +63,8 @@ function validatePassword(password: string, ctx: z.RefinementCtx) {
 
     if (numbersCount < 1) {
       ctx.addIssue({
-        message: 'auth:errors.minPasswordNumbers',
-        code: 'custom',
+        message: "auth:errors.minPasswordNumbers",
+        code: "custom",
       });
     }
   }
@@ -72,8 +72,8 @@ function validatePassword(password: string, ctx: z.RefinementCtx) {
   if (requirements.uppercase) {
     if (!/[A-Z]/.test(password)) {
       ctx.addIssue({
-        message: 'auth:errors.uppercasePassword',
-        code: 'custom',
+        message: "auth:errors.uppercasePassword",
+        code: "custom",
       });
     }
   }

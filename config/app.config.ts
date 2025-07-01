@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-const production = process.env.NODE_ENV === 'production';
+const production = process.env.NODE_ENV === "production";
 
 const AppConfigSchema = z
   .object({
@@ -32,8 +32,8 @@ const AppConfigSchema = z
         description: `This is the default locale of your SaaS.`,
         required_error: `Please provide the variable NEXT_PUBLIC_DEFAULT_LOCALE`,
       })
-      .default('en'),
-    theme: z.enum(['light', 'dark', 'system']),
+      .default("en"),
+    theme: z.enum(["light", "dark", "system"]),
     production: z.boolean(),
     themeColor: z.string(),
     themeColorDark: z.string(),
@@ -46,11 +46,11 @@ const AppConfigSchema = z
         return true;
       }
 
-      return !schema.url.startsWith('http:');
+      return !schema.url.startsWith("http:");
     },
     {
       message: `Please provide a valid HTTPS URL. Set the variable NEXT_PUBLIC_SITE_URL with a valid URL, such as: 'https://example.com'`,
-      path: ['url'],
+      path: ["url"],
     },
   )
   .refine(
@@ -59,7 +59,7 @@ const AppConfigSchema = z
     },
     {
       message: `Please provide different theme colors for light and dark themes.`,
-      path: ['themeColor'],
+      path: ["themeColor"],
     },
   );
 

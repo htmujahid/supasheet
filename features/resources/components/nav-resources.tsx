@@ -1,14 +1,13 @@
-'use client';
+"use client";
 
-import { useId, useState } from 'react';
-import Link from 'next/link';
-import {
-  CheckIcon,
-  ChevronDownIcon,
-} from 'lucide-react';
+import { useId, useState } from "react";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
+import { Table2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -16,19 +15,19 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { Table2 } from 'lucide-react';
+} from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export function NavResources({
   resources,
@@ -42,11 +41,11 @@ export function NavResources({
 }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarMenu className='overflow-y-auto'>
+      <SidebarMenu className="overflow-y-auto">
         {resources.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild isActive={activeResource === item.id}>
-              <Link href={'/home/resources/' + item.id} title={item.name}>
+              <Link href={"/home/resources/" + item.id} title={item.name}>
                 <Table2 />
                 <span>{item.name}</span>
               </Link>
@@ -83,14 +82,12 @@ export default function ResourcesGroup({
             aria-expanded={open}
             className="bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]"
           >
-            <span className={cn('truncate', !value && 'text-muted-foreground')}>
-              {
-                value === 'All'
-                  ? 'All Groups'
-                  : value && groups.includes(value)
+            <span className={cn("truncate", !value && "text-muted-foreground")}>
+              {value === "All"
+                ? "All Groups"
+                : value && groups.includes(value)
                   ? value
-                  : 'Select Group'
-              }
+                  : "Select Group"}
             </span>
             <ChevronDownIcon
               size={16}
@@ -117,9 +114,14 @@ export default function ResourcesGroup({
                   }}
                 >
                   All
-                  {value === 'All' && <CheckIcon size={16} className="ml-auto"
-                    aria-hidden="true" />}
-                </CommandItem> 
+                  {value === "All" && (
+                    <CheckIcon
+                      size={16}
+                      className="ml-auto"
+                      aria-hidden="true"
+                    />
+                  )}
+                </CommandItem>
                 {groups.map((group) => (
                   <CommandItem
                     key={group}

@@ -1,4 +1,4 @@
-import { createI18nServerInstance } from './i18n.server';
+import { createI18nServerInstance } from "./i18n.server";
 
 type LayoutOrPageComponent<Params> = React.ComponentType<Params>;
 

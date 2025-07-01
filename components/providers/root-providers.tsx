@@ -65,9 +65,7 @@ export function RootProviders({
                     } as React.CSSProperties
                   }
                 >
-                  <div className="w-full">
-                    {children}
-                  </div>
+                  <div className="w-full">{children}</div>
                 </SidebarProvider>
               </ThemeProvider>
             </AuthProvider>

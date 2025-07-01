@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import type { InitOptions, i18n } from 'i18next';
+import type { InitOptions, i18n } from "i18next";
 
-import { initializeI18nClient } from './i18n.client';
+import { initializeI18nClient } from "./i18n.client";
 
 let i18nInstance: i18n;
 

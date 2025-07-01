@@ -1,6 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { useSupabase } from './use-supabase';
+import { useSupabase } from "./use-supabase";
 
 interface Credentials {
   email: string;
@@ -15,7 +15,7 @@ interface Credentials {
  */
 export function useSignUpWithEmailAndPassword() {
   const client = useSupabase();
-  const mutationKey = ['auth', 'sign-up-with-email-password'];
+  const mutationKey = ["auth", "sign-up-with-email-password"];
 
   const mutationFn = async (params: Credentials) => {
     const { emailRedirectTo, captchaToken, ...credentials } = params;
@@ -37,7 +37,7 @@ export function useSignUpWithEmailAndPassword() {
 
     // if the user has no identities, it means that the email is taken
     if (identities.length === 0) {
-      throw new Error('User already registered');
+      throw new Error("User already registered");
     }
 
     return response.data;
