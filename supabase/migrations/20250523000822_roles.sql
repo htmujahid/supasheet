@@ -88,3 +88,20 @@ using (
 
 insert into public.role_permissions (role, permission) values ('admin', 'accounts');
 insert into public.role_permissions (role, permission) values ('user', 'accounts');
+
+create or replace function public.new_account_created_setup() 
+returns trigger 
+language plpgsql 
+as $$
+begin
+  insert into public.user_roles (account_id, role) values (new.id, 'user');
+  return new;
+end;
+$$;
+
+-- trigger the function every time a user is created
+create trigger on_account_created
+    after insert
+    on public.accounts
+    for each row
+execute procedure public.new_account_created_setup();
