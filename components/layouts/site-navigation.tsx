@@ -1,20 +1,25 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { Menu } from 'lucide-react';
+import { Menu } from "lucide-react";
 
+import { Trans } from "@/components/makerkit/trans";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { NavigationMenu, NavigationMenuList } from '@/components/ui/navigation-menu';
-import { Trans } from '@/components/makerkit/trans';
+} from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
 
-import { SiteNavigationItem } from './site-navigation-item';
-// import { SidebarTrigger } from '../ui/sidebar';
+import { If } from "../makerkit/if";
+import { SidebarTrigger } from "../ui/sidebar";
+import { SiteNavigationItem } from "./site-navigation-item";
 
 /**
  * Add your navigation links here
@@ -48,7 +53,11 @@ const links: Record<
      */
 };
 
+const sidebarPaths = ["/home/resources"];
+
 export function SiteNavigation() {
+  const pathname = usePathname();
+
   const NavItems = Object.values(links).map((item) => {
     return (
       <SiteNavigationItem key={item.path} path={item.path}>
@@ -59,16 +68,21 @@ export function SiteNavigation() {
 
   return (
     <>
-      <div className={'hidden items-center justify-center md:flex'}>
-        <NavigationMenu className={'px-4 py-2'}>
-          <NavigationMenuList className={'space-x-5'}>
+      <div className={"hidden items-center justify-center md:flex"}>
+        <NavigationMenu className={"px-4 py-2"}>
+          <NavigationMenuList className={"space-x-5"}>
             {NavItems}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
 
-      <div className={'flex justify-start sm:items-center md:hidden'}>
-        {/* <SidebarTrigger className='size-9 opacity-80' iconClassName='size-6' /> */}
+      <div className={"flex justify-start sm:items-center md:hidden"}>
+        <If condition={sidebarPaths.map((path) => pathname.startsWith(path))}>
+          <SidebarTrigger
+            className="size-8 opacity-80"
+            iconClassName="size-5"
+          />
+        </If>
         <MobileDropdown />
       </div>
     </>
@@ -82,13 +96,13 @@ function MobileDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger aria-label={'Open Menu'}>
-        <Menu className={'h-8 w-8'} />
+      <DropdownMenuTrigger aria-label={"Open Menu"}>
+        <Menu className={"h-8 w-8"} />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className={'w-full'}>
+      <DropdownMenuContent className={"w-full"}>
         {Object.values(links).map((item) => {
-          const className = 'flex w-full h-full items-center';
+          const className = "flex w-full h-full items-center";
 
           return (
             <DropdownMenuItem key={item.path} asChild>

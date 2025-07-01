@@ -32,14 +32,14 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border [&>div]:h-[calc(100vh-183px)]">
         <Table
           className='table-fixed'
           style={{
             width: table.getCenterTotalSize(),
           }}
         >
-          <TableHeader>
+          <TableHeader className='sticky top-0 z-10'>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
@@ -81,13 +81,13 @@ export function DataTable<TData>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className='border-b'>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className="[&>:not(:last-child)]:border-r"
+                  className="[&>td]:border-r"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
