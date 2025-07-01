@@ -35,6 +35,8 @@ export function ResourceSidebar({
     new Set(resources.map((resource) => resource.group)),
   );
 
+  const [activeGroup, setActiveGroup] = useState("All");
+  const [search, setSearch] = useState("");
   const [activeResources, setActiveResources] = useState(resources);
 
   return (
@@ -42,14 +44,23 @@ export function ResourceSidebar({
       <SidebarHeader>
         <ResourcesGroup
           groups={uniqueGroups}
-          activeGroup={"All"}
+          activeGroup={activeGroup}
           onValueChange={(group: string) => {
+            setActiveGroup(group);
             if (group === "All") {
-              setActiveResources(resources);
+              setActiveResources(
+                resources.filter((resource) =>
+                  resource.name.toLowerCase().includes(search.toLowerCase()),
+                ),
+              );
               return;
             }
             setActiveResources(
-              resources.filter((resource) => resource.group === group),
+              resources.filter(
+                (resource) =>
+                  resource.group === group &&
+                  resource.name.toLowerCase().includes(search.toLowerCase()),
+              ),
             );
           }}
         />
@@ -59,6 +70,17 @@ export function ResourceSidebar({
           </Label>
           <SidebarInput
             id="search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setActiveResources(
+                resources.filter((resource) =>
+                  resource.name
+                    .toLowerCase()
+                    .includes(e.target.value.toLowerCase()),
+                ),
+              );
+            }}
             placeholder="Type to search..."
             className="h-8 pl-7"
           />

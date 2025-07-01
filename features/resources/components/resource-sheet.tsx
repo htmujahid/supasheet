@@ -48,6 +48,24 @@ import {
   updateResourceDataAction,
 } from "../lib/actions";
 
+const parseJsonColumns = (
+  input: TableSchema,
+  jsonColumns: Tables<"_pg_meta_columns">[]
+): TableSchema => {
+  return jsonColumns.reduce((acc, column) => {
+    try {
+      acc[column.name as keyof TableSchema] = JSON.parse(
+        input[column.name as keyof TableSchema] as string,
+      );
+    } catch {
+      acc[column.name as keyof TableSchema] = input[
+        column.name as keyof TableSchema
+      ];
+    }
+    return acc;
+  }, {} as TableSchema);
+};
+
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: Tables<"_pg_meta_tables"> | null;
   columnsSchema: Tables<"_pg_meta_columns">[];
@@ -61,12 +79,31 @@ export function ResourceSheet({
   ...props
 }: ResourceSheetProps) {
   const params = useParams<{ id: DatabaseTables }>();
+
+  const jsonColumns = columnsSchema.filter(
+    (column) => column.data_type === "jsonb" || column.data_type === "json",
+  );
+
+  // stringify the json data
+  const jsonData = jsonColumns.reduce((acc, column) => {
+    const value = data?.[column.name as keyof TableSchema];
+    if (value) {
+      acc[column.name as keyof TableSchema] = JSON.stringify(value);
+    }
+    return acc;
+  }, {} as TableSchema);
+
+  const updatedData = data ? { ...data, ...jsonData } : null;
+
   const form = useForm<TableSchema>({
     defaultValues:
-      data ??
+      updatedData ??
       columnsSchema.reduce((acc, column) => {
-        acc[column.name as keyof TableSchema] = getColumnInputField(column)
-          .defaultValue as string;
+        const inputField = getColumnInputField(column);
+
+        acc[column.name as keyof TableSchema] =
+          inputField.defaultValue as string;
+
         return acc;
       }, {} as TableSchema),
   });
@@ -75,12 +112,14 @@ export function ResourceSheet({
 
   function onCreate(input: TableSchema) {
     startTransition(async () => {
+      const jsonInput = parseJsonColumns(input, jsonColumns);
+
       const { data, error } = await createResourceDataAction({
         resourceName: params.id,
-        data: input,
+        data: { ...input, ...jsonInput },
       });
 
-      if (!data?.length) {
+      if (!data?.length && !error) {
         toast.error("You don't have permission to create this resource");
         return;
       }
@@ -106,6 +145,8 @@ export function ResourceSheet({
     startTransition(async () => {
       if (!data) return;
 
+      const jsonInput = parseJsonColumns(input, jsonColumns);
+
       const primaryKeys = tableSchema.primary_keys as PrimaryKey[];
 
       const resourceIds = primaryKeys.reduce(
@@ -119,10 +160,10 @@ export function ResourceSheet({
       const { data: updatedData, error } = await updateResourceDataAction({
         resourceName: params.id,
         resourceIds,
-        data: input,
+        data: { ...input, ...jsonInput },
       });
 
-      if (!updatedData?.length) {
+      if (!updatedData?.length && !error) {
         toast.error("You don't have permission to update this resource");
         return;
       }
@@ -320,6 +361,20 @@ export function ResourceSheet({
                                 value={field.value as string}
                                 disabled={columnInput.disabled}
                                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                              />
+                            )}
+                            {columnInput.variant === "json" && (
+                              <Textarea
+                                className="resize-none"
+                                {...form.register(
+                                  column.name as FieldPath<TableSchema>,
+                                  {
+                                    required: !column.is_nullable
+                                      ? `${column.name} is required`
+                                      : false,
+                                  },
+                                )}
+                                disabled={columnInput.disabled}
                               />
                             )}
                           </div>

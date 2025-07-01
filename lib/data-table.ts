@@ -97,11 +97,6 @@ export function getColumnInputField(columnSchema: Tables<"_pg_meta_columns">) {
     defaultValue = undefined;
   }
 
-  if (columnSchema.data_type === "USER-DEFINED" && columnSchema.default_value) {
-    defaultValue =
-      columnSchema.default_value?.split("::")[0]?.replaceAll("'", "") ?? "";
-  }
-
   const required = columnSchema.is_nullable === false;
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable;
 
@@ -173,8 +168,10 @@ export function getColumnInputField(columnSchema: Tables<"_pg_meta_columns">) {
     case "json":
     case "jsonb":
       return {
-        variant: "text",
-        defaultValue,
+        variant: "json",
+        defaultValue:
+          (defaultValue as string)?.split("::")[0]?.replaceAll("'", "") ??
+          undefined,
         required,
         disabled,
       };
@@ -190,7 +187,8 @@ export function getColumnInputField(columnSchema: Tables<"_pg_meta_columns">) {
     case "USER-DEFINED":
       return {
         variant: "select",
-        defaultValue,
+        defaultValue:
+          (defaultValue as string)?.split("::")[0]?.replaceAll("'", "") ?? "",
         required,
         disabled,
       };
@@ -201,6 +199,16 @@ export function getColumnInputField(columnSchema: Tables<"_pg_meta_columns">) {
         required,
         disabled,
       };
+  }
+}
+
+export function getColumnCell(columnSchema: Tables<"_pg_meta_columns">) {
+  switch (columnSchema.data_type) {
+    case "json":
+    case "jsonb":
+      return "json";
+    default:
+      return "text";
   }
 }
 

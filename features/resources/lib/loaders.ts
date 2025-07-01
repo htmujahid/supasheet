@@ -1,5 +1,4 @@
-import { DatabaseTables, TableSchema } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
+import { DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { GetResourceSchema } from "./validations";
@@ -34,7 +33,6 @@ export async function loadTableSchema(id: string) {
 
 export async function loadResourceData(
   id: DatabaseTables,
-  columns: Tables<"_pg_meta_columns">[],
   input: GetResourceSchema,
 ) {
   const client = await getSupabaseServerClient();
@@ -103,27 +101,8 @@ export async function loadResourceData(
 
   const total = response.count;
 
-  // check if some field is a jsonb convert to json.stringify
-  const data = response.data?.map((row) => {
-    const newRow = { ...row } as TableSchema;
-    Object.keys(newRow).forEach((key) => {
-      const column = columns?.find((column) => column.name === key);
-      if (
-        column?.data_type === "jsonb" ||
-        column?.data_type === "json" ||
-        column?.data_type === "jsonb[]" ||
-        column?.data_type === "json[]"
-      ) {
-        newRow[key as keyof typeof newRow] = JSON.stringify(
-          newRow[key as keyof typeof newRow],
-        );
-      }
-    });
-    return newRow;
-  });
-
   return {
-    results: data ?? [],
+    results: response.data ?? [],
     total: total ?? 0,
     page: Number(page),
     perPage: Number(perPage),

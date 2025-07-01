@@ -2,10 +2,8 @@
 
 import * as React from "react";
 
-import Link from "next/link";
-
 import type { Column, ColumnDef, Row } from "@tanstack/react-table";
-import { ArrowUpRightIcon, Maximize2Icon } from "lucide-react";
+import { Maximize2Icon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import { Button } from "@/components/ui/button";
@@ -14,31 +12,34 @@ import { DataTable } from "@/features/resources/components/data-table/data-table
 import { DataTableColumnHeader } from "@/features/resources/components/data-table/data-table-column-header";
 import { useDataTable } from "@/hooks/use-data-table";
 import { getColumnMeta } from "@/lib/data-table";
-import {
-  PaginatedData,
-  Relationship,
-  TableSchema,
-} from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
-import { cn } from "@/lib/utils";
+import { TableSchema } from "@/lib/database-meta.types";
 import { DataTableRowAction } from "@/types/data-table";
 
+import {
+  loadColumnsSchema,
+  loadResourceData,
+  loadTableSchema,
+} from "../lib/loaders";
 import { DataTableAdvancedToolbar } from "./data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "./data-table/data-table-filter-list";
+import { DataTableRowCell } from "./data-table/data-table-row-cell";
 import { DataTableSortList } from "./data-table/data-table-sort-list";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
 
 export function ResourceTable({
-  tableSchema,
-  columnsSchema,
-  data,
+  promises,
 }: {
-  tableSchema: Tables<"_pg_meta_tables"> | null;
-  columnsSchema: Tables<"_pg_meta_columns">[];
-  data: PaginatedData<TableSchema>;
+  promises: Promise<
+    [
+      Awaited<ReturnType<typeof loadTableSchema>>,
+      Awaited<ReturnType<typeof loadColumnsSchema>>,
+      Awaited<ReturnType<typeof loadResourceData>>,
+    ]
+  >;
 }) {
+  const [tableSchema, columnsSchema, data] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<TableSchema> | null>(null);
 
@@ -83,7 +84,7 @@ export function ResourceTable({
           minSize: 64,
           enableResizing: false,
         },
-        ...columnsSchema.map((c) => ({
+        ...(columnsSchema ?? []).map((c) => ({
           id: c.name,
           accessorKey: c.name as string,
           header: ({ column }: { column: Column<TableSchema, unknown> }) => (
@@ -95,28 +96,11 @@ export function ResourceTable({
             />
           ),
           cell: ({ row }: { row: Row<TableSchema> }) => (
-            <div
-              className={cn(
-                "relative truncate",
-                c.name === "account_id" && "pl-6",
-              )}
-            >
-              {row.original?.[c.name as keyof TableSchema]?.toString()}
-              <If condition={c.name === "account_id"}>
-                <Link
-                  href={prepareForeignKeyLink(
-                    c.name as string,
-                    row.original?.[c.name as keyof TableSchema]?.toString() ??
-                      "",
-                    getColumnMeta(c).variant,
-                    tableSchema ?? null,
-                  )}
-                  className="absolute top-1/2 left-0 -translate-y-1/2 transform"
-                >
-                  <ArrowUpRightIcon className="size-3" />
-                </Link>
-              </If>
-            </div>
+            <DataTableRowCell
+              row={row}
+              column={c}
+              tableSchema={tableSchema ?? null}
+            />
           ),
           size: 170,
           enableColumnFilter: true,
@@ -156,7 +140,7 @@ export function ResourceTable({
           <DataTableSortList table={table} />
           <ResourceTableToolbarActions
             table={table}
-            columnsSchema={columnsSchema}
+            columnsSchema={columnsSchema ?? []}
             tableSchema={tableSchema ?? null}
           />
         </DataTableAdvancedToolbar>
@@ -176,27 +160,10 @@ export function ResourceTable({
           open={rowAction?.variant === "update"}
           onOpenChange={() => setRowAction(null)}
           tableSchema={tableSchema ?? null}
-          columnsSchema={columnsSchema}
+          columnsSchema={columnsSchema ?? []}
           data={rowAction?.row.original ?? null}
         />
       </If>
     </div>
   );
-}
-
-function prepareForeignKeyLink(
-  key: string,
-  value: string,
-  variant: string,
-  table: Tables<"_pg_meta_tables"> | null,
-) {
-  if (!table) return "#";
-
-  const relationships = table.relationships as Relationship[];
-
-  const relationship = relationships.find((r) => r.source_column_name === key);
-
-  if (!relationship) return "#";
-
-  return `/home/resources/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"${variant}","operator":"eq","filterId":"0QdV0twS"}]`;
 }

@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+
+import { DataTableSkeleton } from "@/features/resources/components/data-table/data-table-skeleton";
 import { ResourceTable } from "@/features/resources/components/resource-table";
 import {
   loadColumnsSchema,
@@ -20,17 +23,38 @@ export default async function HomeResourcePage(props: {
   const searchParams = await props.searchParams;
   const search = searchParamsCache.parse(searchParams);
 
-  const table = await loadTableSchema(id);
-
-  const columns = await loadColumnsSchema(id);
-
-  const data = await loadResourceData(id, columns ?? [], search);
+  const promises = Promise.all([
+    loadTableSchema(id),
+    loadColumnsSchema(id),
+    loadResourceData(id, search),
+  ]);
 
   return (
-    <ResourceTable
-      tableSchema={table ?? null}
-      columnsSchema={columns ?? []}
-      data={data}
-    />
+    <Suspense
+      fallback={
+        <DataTableSkeleton
+          columnCount={7}
+          rowCount={100}
+          filterCount={2}
+          cellWidths={[
+            "64px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+            "170px",
+          ]}
+          shrinkZero
+        />
+      }
+    >
+      <ResourceTable promises={promises} />
+    </Suspense>
   );
 }

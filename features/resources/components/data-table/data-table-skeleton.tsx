@@ -52,11 +52,11 @@ export function DataTableSkeleton({
           <Skeleton className="ml-auto hidden h-7 w-[4.5rem] lg:flex" />
         ) : null}
       </div>
-      <div className="rounded-md border">
+      <div className="overflow-hidden rounded-md border [&>div]:h-[calc(100vh-183px)]">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 z-10">
             {Array.from({ length: 1 }).map((_, i) => (
-              <TableRow key={i} className="hover:bg-transparent">
+              <TableRow key={i} className="hover:bg-muted bg-muted">
                 {Array.from({ length: columnCount }).map((_, j) => (
                   <TableHead
                     key={j}
@@ -65,7 +65,7 @@ export function DataTableSkeleton({
                       minWidth: shrinkZero ? cozyCellWidths[j] : "auto",
                     }}
                   >
-                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-6 w-full border" />
                   </TableHead>
                 ))}
               </TableRow>
@@ -91,21 +91,18 @@ export function DataTableSkeleton({
         </Table>
       </div>
       {withPagination ? (
-        <div className="flex w-full items-center justify-between gap-4 overflow-auto p-1 sm:gap-8">
-          <Skeleton className="h-7 w-40 shrink-0" />
-          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+        <div className="flex w-full items-center justify-between gap-2 overflow-auto p-1">
+          <Skeleton className="h-7 w-40 shrink-0 hidden md:block" />
+          <div className="flex items-center gap-2 flex-1 justify-end">
             <div className="flex items-center gap-2">
-              <Skeleton className="h-7 w-24" />
-              <Skeleton className="h-7 w-[4.5rem]" />
-            </div>
-            <div className="flex items-center justify-center text-sm font-medium">
-              <Skeleton className="h-7 w-20" />
+              <Skeleton className="h-7 w-[110px]" />
             </div>
             <div className="flex items-center gap-2">
-              <Skeleton className="hidden size-7 lg:block" />
               <Skeleton className="size-7" />
+              <Skeleton className="size-7 w-[38px]" />
+              <Skeleton className="size-7 w-[48px]" />
+              <Skeleton className="size-7 w-[30px]" />
               <Skeleton className="size-7" />
-              <Skeleton className="hidden size-7 lg:block" />
             </div>
           </div>
         </div>
