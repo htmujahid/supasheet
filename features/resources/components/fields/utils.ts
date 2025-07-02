@@ -22,6 +22,10 @@ export function getColumnInputField(
     defaultValue = undefined;
   }
 
+  if (typeof defaultValue === "string") {
+    defaultValue = defaultValue.split("::")[0]?.replaceAll("'", "") ?? null;
+  }
+
   const required = columnSchema.is_nullable === false;
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable;
 
@@ -94,9 +98,7 @@ export function getColumnInputField(
     case "jsonb":
       return {
         variant: "json",
-        defaultValue:
-          (defaultValue as string)?.split("::")[0]?.replaceAll("'", "") ??
-          undefined,
+        defaultValue,
         required,
         disabled,
       };
@@ -112,8 +114,7 @@ export function getColumnInputField(
     case "USER-DEFINED":
       return {
         variant: "select",
-        defaultValue:
-          (defaultValue as string)?.split("::")[0]?.replaceAll("'", "") ?? "",
+        defaultValue,
         required,
         disabled,
       };

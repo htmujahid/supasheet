@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useTransition } from "react";
 
 import { useParams } from "next/navigation";
 
@@ -17,14 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Sheet,
   SheetClose,
@@ -34,10 +26,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
 import {
   DatabaseTables,
   PrimaryKey,
+  Relationship,
   TableSchema,
 } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
@@ -46,12 +38,53 @@ import {
   createResourceDataAction,
   updateResourceDataAction,
 } from "../lib/actions";
+import { BooleanField } from "./fields/boolean-field";
+import { DateField } from "./fields/date-field";
+import { DatetimeField } from "./fields/datetime-field";
+import { ForeignKeyField } from "./fields/foreign-key-field";
+import { JsonField } from "./fields/json-field";
+import { NumberField } from "./fields/number-field";
+import { SelectField } from "./fields/select-field";
+import { TextField } from "./fields/text-field";
+import { TimeField } from "./fields/time-field";
+import { FieldProps } from "./fields/types";
 import { getColumnInputField } from "./fields/utils";
+import { UuidField } from "./fields/uuid-field";
 
-const parseJsonColumns = (
+const JSON_DATA_TYPES = ["jsonb", "json"] as const;
+
+function getJsonColumns(
+  columnsSchema: Tables<"_pg_meta_columns">[],
+): Tables<"_pg_meta_columns">[] {
+  return columnsSchema.filter((column) =>
+    JSON_DATA_TYPES.includes(
+      column.data_type as (typeof JSON_DATA_TYPES)[number],
+    ),
+  );
+}
+
+function serializeJsonColumns(
+  input: TableSchema | null,
+  columnsSchema: Tables<"_pg_meta_columns">[],
+): TableSchema | null {
+  if (!input) return input;
+
+  const jsonColumns = getJsonColumns(columnsSchema);
+
+  const serialized = jsonColumns.reduce((acc, column) => {
+    acc[column.name as keyof TableSchema] = JSON.stringify(
+      input[column.name as keyof TableSchema],
+    );
+    return acc;
+  }, {} as TableSchema);
+
+  return { ...input, ...serialized };
+}
+
+function parseJsonColumns(
   input: TableSchema,
   jsonColumns: Tables<"_pg_meta_columns">[],
-): TableSchema => {
+): TableSchema {
   return jsonColumns.reduce((acc, column) => {
     try {
       acc[column.name as keyof TableSchema] = JSON.parse(
@@ -63,7 +96,7 @@ const parseJsonColumns = (
     }
     return acc;
   }, {} as TableSchema);
-};
+}
 
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: Tables<"_pg_meta_tables"> | null;
@@ -79,24 +112,9 @@ export function ResourceSheet({
 }: ResourceSheetProps) {
   const params = useParams<{ id: DatabaseTables }>();
 
-  const jsonColumns = columnsSchema.filter(
-    (column) => column.data_type === "jsonb" || column.data_type === "json",
-  );
-
-  // stringify the json data
-  const jsonData = jsonColumns.reduce((acc, column) => {
-    const value = data?.[column.name as keyof TableSchema];
-    if (value) {
-      acc[column.name as keyof TableSchema] = JSON.stringify(value);
-    }
-    return acc;
-  }, {} as TableSchema);
-
-  const updatedData = data ? { ...data, ...jsonData } : null;
-
   const form = useForm<TableSchema>({
     defaultValues:
-      updatedData ??
+      serializeJsonColumns(data, columnsSchema) ??
       columnsSchema.reduce((acc, column) => {
         const inputField = getColumnInputField(column);
 
@@ -107,11 +125,11 @@ export function ResourceSheet({
       }, {} as TableSchema),
   });
 
-  const [isPending, startTransition] = React.useTransition();
+  const [isPending, startTransition] = useTransition();
 
   function onCreate(input: TableSchema) {
     startTransition(async () => {
-      const jsonInput = parseJsonColumns(input, jsonColumns);
+      const jsonInput = parseJsonColumns(input, getJsonColumns(columnsSchema));
 
       const { data, error } = await createResourceDataAction({
         resourceName: params.id,
@@ -144,7 +162,7 @@ export function ResourceSheet({
     startTransition(async () => {
       if (!data) return;
 
-      const jsonInput = parseJsonColumns(input, jsonColumns);
+      const jsonInput = parseJsonColumns(input, getJsonColumns(columnsSchema));
 
       const primaryKeys = tableSchema.primary_keys as PrimaryKey[];
 
@@ -204,13 +222,20 @@ export function ResourceSheet({
               .map((column) => {
                 const columnInput = getColumnInputField(column);
 
+                const relationship = (
+                  tableSchema?.relationships as Relationship[]
+                )?.find(
+                  (relationship) =>
+                    relationship.source_column_name === column.name,
+                );
+
                 return (
                   <FormField
                     key={column.id}
                     control={form.control}
                     disabled={columnInput.disabled}
                     name={column.name as FieldPath<TableSchema>}
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel>
                           {column.name as string}{" "}
@@ -220,160 +245,18 @@ export function ResourceSheet({
                         </FormLabel>
                         <FormControl>
                           <div>
-                            {columnInput.variant === "uuid" && (
-                              <Input
-                                value={field.value as string}
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: columnInput.required
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                disabled={columnInput.disabled}
+                            {relationship ? (
+                              <ForeignKeyField
+                                form={form}
+                                columnInput={columnInput}
+                                column={column}
+                                relationship={relationship}
                               />
-                            )}
-                            {columnInput.variant === "text" && (
-                              <Textarea
-                                className="resize-none"
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: !column.is_nullable
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                disabled={columnInput.disabled}
-                              />
-                            )}
-                            {columnInput.variant === "select" && (
-                              <Select
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: columnInput.required
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                value={field.value as string}
-                                onValueChange={(value) => {
-                                  form.setValue(
-                                    column.name as FieldPath<TableSchema>,
-                                    value,
-                                  );
-                                }}
-                                disabled={columnInput.disabled}
-                              >
-                                <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {(column.enums as string[])?.map((option) => (
-                                    <SelectItem key={option} value={option}>
-                                      {option}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            )}
-                            {columnInput.variant === "number" && (
-                              <Input
-                                type="number"
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: columnInput.required
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                value={field.value as string}
-                                disabled={columnInput.disabled}
-                              />
-                            )}
-                            {columnInput.variant === "boolean" && (
-                              <Select
-                                onValueChange={(value) => {
-                                  form.setValue(
-                                    column.name as FieldPath<TableSchema>,
-                                    value === "true",
-                                  );
-                                }}
-                                value={field.value ? "true" : "false"}
-                                disabled={columnInput.disabled}
-                              >
-                                <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select an option" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="true">True</SelectItem>
-                                  <SelectItem value="false">False</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            )}
-                            {columnInput.variant === "date" && (
-                              <Input
-                                type="date"
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: columnInput.required
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                value={field.value as string}
-                                disabled={columnInput.disabled}
-                                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                              />
-                            )}
-                            {columnInput.variant === "time" && (
-                              <Input
-                                type="time"
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: columnInput.required
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                value={field.value as string}
-                                disabled={columnInput.disabled}
-                                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                              />
-                            )}
-                            {columnInput.variant === "datetime" && (
-                              <Input
-                                type="datetime-local"
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: columnInput.required
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                value={field.value as string}
-                                disabled={columnInput.disabled}
-                                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                              />
-                            )}
-                            {columnInput.variant === "json" && (
-                              <Textarea
-                                className="resize-none"
-                                {...form.register(
-                                  column.name as FieldPath<TableSchema>,
-                                  {
-                                    required: !column.is_nullable
-                                      ? `${column.name} is required`
-                                      : false,
-                                  },
-                                )}
-                                disabled={columnInput.disabled}
+                            ) : (
+                              <AllFields
+                                form={form}
+                                columnInput={columnInput}
+                                column={column}
                               />
                             )}
                           </div>
@@ -405,4 +288,88 @@ export function ResourceSheet({
       </SheetContent>
     </Sheet>
   );
+}
+
+function AllFields(props: FieldProps) {
+  if (props.columnInput.variant === "uuid") {
+    return (
+      <UuidField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "text") {
+    return (
+      <TextField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "number") {
+    return (
+      <NumberField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "boolean") {
+    return (
+      <BooleanField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "select") {
+    return (
+      <SelectField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "date") {
+    return (
+      <DateField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "time") {
+    return (
+      <TimeField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "datetime") {
+    return (
+      <DatetimeField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
+  if (props.columnInput.variant === "json") {
+    return (
+      <JsonField
+        form={props.form}
+        columnInput={props.columnInput}
+        column={props.column}
+      />
+    );
+  }
 }

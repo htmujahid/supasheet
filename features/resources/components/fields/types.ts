@@ -18,10 +18,12 @@ export type ColumnInput = {
   defaultValue: unknown;
   required: boolean;
   disabled: boolean;
+  dynamicDisabled?: boolean;
 };
 
 export type FieldProps = {
   form: UseFormReturn<TableSchema>;
   columnInput: ColumnInput;
   column: Tables<"_pg_meta_columns">;
+  disabled?: boolean;
 };

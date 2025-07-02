@@ -55,7 +55,7 @@ export function ResourceTableToolbarActions({
         Export
       </Button>
       <ResourceSheet
-        tableSchema={null}
+        tableSchema={tableSchema}
         columnsSchema={columnsSchema}
         data={null}
         open={open}

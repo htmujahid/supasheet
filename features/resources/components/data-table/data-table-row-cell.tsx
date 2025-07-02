@@ -32,6 +32,10 @@ export function DataTableRowCell({
   const meta = getColumnMeta(column);
   const cell = getColumnCell(column);
 
+  const relationship = (tableSchema?.relationships as Relationship[]).find(
+    (r) => r.source_column_name === column.name,
+  );
+
   if (cell === "json") {
     return (
       <pre className="truncate">
@@ -50,11 +54,11 @@ export function DataTableRowCell({
         <div
           className={cn(
             "relative truncate select-none",
-            column.name === "account_id" && "pl-6",
+            relationship && "pl-6",
           )}
         >
           {row.original?.[column.name as keyof TableSchema]?.toString()}
-          <If condition={column.name === "account_id"}>
+          <If condition={relationship}>
             <Link
               href={prepareForeignKeyLink(
                 column.name as string,
@@ -63,7 +67,7 @@ export function DataTableRowCell({
                 meta.variant,
                 tableSchema ?? null,
               )}
-              className="absolute top-1/2 left-0 -translate-y-1/2 transform"
+              className="absolute top-1/2 left-0 -translate-y-1/2 transform border p-0.5 rounded"
             >
               <ArrowUpRightIcon className="size-3" />
             </Link>

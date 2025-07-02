@@ -6,12 +6,13 @@ import { TableSchema } from "@/lib/database-meta.types";
 import { FieldProps } from "./types";
 
 export function TextField({ form, columnInput, column }: FieldProps) {
+  const { disabled } = columnInput;
   return (
     <Textarea
       {...form.register(column.name as FieldPath<TableSchema>, {
-        required: !columnInput.required ? `${column.name} is required` : false,
+        required: columnInput.required ? `${column.name} is required` : false,
       })}
-      disabled={columnInput.disabled}
+      disabled={disabled}
     />
   );
 }

@@ -9,7 +9,7 @@ export function JsonField({ form, columnInput, column }: FieldProps) {
   return (
     <Textarea
       {...form.register(column.name as FieldPath<TableSchema>, {
-        required: !columnInput.required ? `${column.name} is required` : false,
+        required: columnInput.required ? `${column.name} is required` : false,
       })}
       disabled={columnInput.disabled}
     />

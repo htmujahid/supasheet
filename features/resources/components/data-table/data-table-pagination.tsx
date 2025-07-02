@@ -26,7 +26,7 @@ export function DataTablePagination<TData>({
   return (
     <div
       className={cn(
-        "flex w-full flex-row items-center justify-end gap-4 overflow-auto p-1",
+        "flex w-full flex-row items-center justify-end gap-8 overflow-auto p-1",
         className,
       )}
       {...props}
@@ -75,7 +75,7 @@ export function DataTablePagination<TData>({
               }}
               className="h-8 w-12"
             />
-            of {table.getPageCount()}
+            <span className="whitespace-nowrap">of {table.getPageCount()}</span>
           </div>
           <Button
             aria-label="Go to next page"
