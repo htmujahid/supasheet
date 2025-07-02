@@ -35,7 +35,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { getColumnInputField } from "@/lib/data-table";
 import {
   DatabaseTables,
   PrimaryKey,
@@ -47,10 +46,11 @@ import {
   createResourceDataAction,
   updateResourceDataAction,
 } from "../lib/actions";
+import { getColumnInputField } from "./fields/utils";
 
 const parseJsonColumns = (
   input: TableSchema,
-  jsonColumns: Tables<"_pg_meta_columns">[]
+  jsonColumns: Tables<"_pg_meta_columns">[],
 ): TableSchema => {
   return jsonColumns.reduce((acc, column) => {
     try {
@@ -58,9 +58,8 @@ const parseJsonColumns = (
         input[column.name as keyof TableSchema] as string,
       );
     } catch {
-      acc[column.name as keyof TableSchema] = input[
-        column.name as keyof TableSchema
-      ];
+      acc[column.name as keyof TableSchema] =
+        input[column.name as keyof TableSchema];
     }
     return acc;
   }, {} as TableSchema);
@@ -221,7 +220,7 @@ export function ResourceSheet({
                         </FormLabel>
                         <FormControl>
                           <div>
-                            {columnInput.variant === "input" && (
+                            {columnInput.variant === "uuid" && (
                               <Input
                                 value={field.value as string}
                                 {...form.register(

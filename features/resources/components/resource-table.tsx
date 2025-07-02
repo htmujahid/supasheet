@@ -1,17 +1,10 @@
 "use client";
 
-import * as React from "react";
-
-import type { Column, ColumnDef, Row } from "@tanstack/react-table";
-import { Maximize2Icon } from "lucide-react";
+import { use, useMemo, useState } from "react";
 
 import { If } from "@/components/makerkit/if";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/features/resources/components/data-table/data-table";
-import { DataTableColumnHeader } from "@/features/resources/components/data-table/data-table-column-header";
 import { useDataTable } from "@/hooks/use-data-table";
-import { getColumnMeta } from "@/lib/data-table";
 import { TableSchema } from "@/lib/database-meta.types";
 import { DataTableRowAction } from "@/types/data-table";
 
@@ -22,10 +15,10 @@ import {
 } from "../lib/loaders";
 import { DataTableAdvancedToolbar } from "./data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "./data-table/data-table-filter-list";
-import { DataTableRowCell } from "./data-table/data-table-row-cell";
 import { DataTableSortList } from "./data-table/data-table-sort-list";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
+import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
 
 export function ResourceTable({
@@ -39,77 +32,18 @@ export function ResourceTable({
     ]
   >;
 }) {
-  const [tableSchema, columnsSchema, data] = React.use(promises);
+  const [tableSchema, columnsSchema, data] = use(promises);
   const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<TableSchema> | null>(null);
+    useState<DataTableRowAction<TableSchema> | null>(null);
 
-  const columns = React.useMemo<ColumnDef<TableSchema>[]>(
+  const columns = useMemo(
     () =>
-      [
-        {
-          id: "select",
-          header: ({ table }) => (
-            <Checkbox
-              checked={
-                table.getIsAllPageRowsSelected() ||
-                (table.getIsSomePageRowsSelected() && "indeterminate")
-              }
-              onCheckedChange={(value) =>
-                table.toggleAllPageRowsSelected(!!value)
-              }
-              aria-label="Select all"
-            />
-          ),
-          cell: ({ row }) => (
-            <div className="group flex items-center gap-2">
-              <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-              />
-              <Button
-                variant="ghost"
-                className="size-5 opacity-0 group-hover:opacity-100"
-                onClick={() => {
-                  setRowAction({ row, variant: "update" });
-                }}
-              >
-                <Maximize2Icon className="text-muted-foreground size-3" />
-              </Button>
-            </div>
-          ),
-          enableSorting: false,
-          enableHiding: false,
-          size: 64,
-          minSize: 64,
-          enableResizing: false,
-        },
-        ...(columnsSchema ?? []).map((c) => ({
-          id: c.name,
-          accessorKey: c.name as string,
-          header: ({ column }: { column: Column<TableSchema, unknown> }) => (
-            <DataTableColumnHeader
-              column={column}
-              columnSchema={c}
-              tableSchema={tableSchema ?? null}
-              title={c.name as string}
-            />
-          ),
-          cell: ({ row }: { row: Row<TableSchema> }) => (
-            <DataTableRowCell
-              row={row}
-              column={c}
-              tableSchema={tableSchema ?? null}
-            />
-          ),
-          size: 170,
-          enableColumnFilter: true,
-          meta: getColumnMeta(c),
-          enableSorting: true,
-          enableHiding: true,
-        })),
-      ] as ColumnDef<TableSchema, unknown>[],
-    [columnsSchema, tableSchema],
+      getResourceTableColumns({
+        columnsSchema: columnsSchema ?? [],
+        tableSchema,
+        setRowAction,
+      }),
+    [columnsSchema, tableSchema, setRowAction],
   );
 
   const { table, shallow, throttleMs, debounceMs } = useDataTable<TableSchema>({

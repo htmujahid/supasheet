@@ -92,8 +92,8 @@ export function DataTableSkeleton({
       </div>
       {withPagination ? (
         <div className="flex w-full items-center justify-between gap-2 overflow-auto p-1">
-          <Skeleton className="h-7 w-40 shrink-0 hidden md:block" />
-          <div className="flex items-center gap-2 flex-1 justify-end">
+          <Skeleton className="hidden h-7 w-40 shrink-0 md:block" />
+          <div className="flex flex-1 items-center justify-end gap-2">
             <div className="flex items-center gap-2">
               <Skeleton className="h-7 w-[110px]" />
             </div>
