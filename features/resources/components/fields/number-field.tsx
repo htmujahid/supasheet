@@ -31,7 +31,14 @@ export function NumberField({ form, columnInput, column }: FieldProps) {
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
-          form.setValue(column.name as FieldPath<TableSchema>, value);
+          if (value === undefined) {
+            form.setValue(
+              column.name as FieldPath<TableSchema>,
+              columnInput.defaultValue,
+            );
+          } else {
+            form.setValue(column.name as FieldPath<TableSchema>, value);
+          }
         }}
       />
     </div>
