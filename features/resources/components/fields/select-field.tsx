@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { FieldPath } from "react-hook-form";
 
 import {
@@ -14,8 +16,9 @@ import { FieldProps } from "./types";
 
 export function SelectField({ form, columnInput, column }: FieldProps) {
   const value = form.getValues(column.name as FieldPath<TableSchema>);
-
-  console.log("value", value);
+  const [field, setField] = useState<string | null | undefined>(
+    value as string | null | undefined,
+  );
 
   return (
     <div className="relative">
@@ -29,14 +32,17 @@ export function SelectField({ form, columnInput, column }: FieldProps) {
           },
         })}
         onValueChange={(value) => {
+          setField(value);
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
         defaultValue={value?.toString()}
         disabled={columnInput.disabled}
       >
         <SelectTrigger className="w-full [&>svg]:hidden">
-          {value === undefined && columnInput.defaultValue ? (
+          {field === undefined && columnInput.defaultValue ? (
             <span className="text-muted-foreground">DEFAULT VALUE</span>
+          ) : field === null ? (
+            <span className="text-muted-foreground">NULL</span>
           ) : (
             <SelectValue placeholder={"Select an option"} />
           )}
@@ -52,6 +58,7 @@ export function SelectField({ form, columnInput, column }: FieldProps) {
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
+          setField(value);
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
       />

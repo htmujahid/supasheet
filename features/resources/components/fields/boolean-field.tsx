@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { FieldPath } from "react-hook-form";
 
 import {
@@ -14,26 +16,26 @@ import { FieldProps } from "./types";
 
 export function BooleanField({ form, columnInput, column }: FieldProps) {
   const value = form.getValues(column.name as FieldPath<TableSchema>);
+  const [field, setField] = useState<string | null | undefined>(
+    value as string | null | undefined,
+  );
 
   return (
     <div className="relative">
       <Select
         {...form.register(column.name as FieldPath<TableSchema>)}
         onValueChange={(value) => {
+          setField(value);
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
-        defaultValue={
-          value === null
-            ? "null"
-            : value === undefined
-              ? undefined
-              : value?.toString()
-        }
+        defaultValue={value?.toString()}
         disabled={columnInput.disabled}
       >
         <SelectTrigger className="w-full [&>svg]:hidden">
-          {value === undefined && columnInput.defaultValue ? (
+          {field === undefined && columnInput.defaultValue ? (
             <span className="text-muted-foreground">DEFAULT VALUE</span>
+          ) : field === null ? (
+            <span className="text-muted-foreground">NULL</span>
           ) : (
             <SelectValue placeholder={"Select an option"} />
           )}
@@ -46,6 +48,7 @@ export function BooleanField({ form, columnInput, column }: FieldProps) {
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
+          setField(value);
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
       />

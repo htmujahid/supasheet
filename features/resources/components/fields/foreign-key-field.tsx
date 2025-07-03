@@ -40,14 +40,8 @@ export function ForeignKeyField({
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
-          if (value === undefined) {
-            form.setValue(
-              column.name as FieldPath<TableSchema>,
-              columnInput.defaultValue,
-            );
-          } else {
-            form.setValue(column.name as FieldPath<TableSchema>, value);
-          }
+          form.resetField(column.name as string);
+          form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
       >
         <DropdownMenuItem onClick={() => setOpen(true)}>

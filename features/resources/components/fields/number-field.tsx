@@ -33,6 +33,7 @@ export function NumberField({ form, columnInput, column }: FieldProps) {
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
+          form.resetField(column.name as string)
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
       />
