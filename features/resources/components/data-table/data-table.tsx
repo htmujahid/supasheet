@@ -43,7 +43,7 @@ export function DataTable<TData>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-muted [&>:not(:last-child)]:border-r"
+                className="bg-muted hover:bg-muted [&>:not(:last-child)]:border-r"
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead

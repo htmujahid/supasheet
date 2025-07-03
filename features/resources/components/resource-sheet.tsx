@@ -8,10 +8,12 @@ import { Loader } from "lucide-react";
 import { FieldPath, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { If } from "@/components/makerkit/if";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -114,15 +116,7 @@ export function ResourceSheet({
 
   const form = useForm<TableSchema>({
     defaultValues:
-      serializeJsonColumns(data, columnsSchema) ??
-      columnsSchema.reduce((acc, column) => {
-        const inputField = getColumnInputField(column);
-
-        acc[column.name as keyof TableSchema] =
-          inputField.defaultValue as string;
-
-        return acc;
-      }, {} as TableSchema),
+      serializeJsonColumns(data, columnsSchema) ?? {}
   });
 
   const [isPending, startTransition] = useTransition();
@@ -261,6 +255,13 @@ export function ResourceSheet({
                             )}
                           </div>
                         </FormControl>
+                        <If condition={columnInput.defaultValue}>
+                          {(defaultValue) => (
+                            <FormDescription>
+                              DEFAULT: {defaultValue}
+                            </FormDescription>
+                          )}
+                        </If>
                         <FormMessage />
                       </FormItem>
                     )}

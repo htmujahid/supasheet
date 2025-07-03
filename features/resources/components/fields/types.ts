@@ -15,7 +15,7 @@ export type ColumnInput = {
     | "select"
     | "multiSelect"
     | "time";
-  defaultValue: unknown;
+  defaultValue: string | null;
   required: boolean;
   disabled: boolean;
   dynamicDisabled?: boolean;

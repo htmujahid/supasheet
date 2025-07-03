@@ -2,27 +2,38 @@ import type { Tables } from "@/lib/database.types";
 
 import type { ColumnInput } from "./types";
 
+const dateTimeTypes = [
+  "timestamp with time zone",
+  "timestamp without time zone",
+  "timestamp",
+  "time with time zone",
+  "time without time zone",
+  "time",
+  "date",
+];
+
 export function getColumnInputField(
   columnSchema: Tables<"_pg_meta_columns">,
 ): ColumnInput {
-  let defaultValue: unknown = "";
+  let defaultValue: string | null = null;
 
   if (columnSchema.default_value === "NULL") {
     defaultValue = null;
-  } else if (
-    columnSchema.default_value === "gen_random_uuid()" ||
-    columnSchema.default_value === "uuid_generate_v4()"
-  ) {
-    defaultValue = crypto.randomUUID();
-  } else if (columnSchema.default_value === "now()") {
-    defaultValue = new Date();
+  // } else if (
+  //   columnSchema.default_value === "gen_random_uuid()" ||
+  //   columnSchema.default_value === "uuid_generate_v4()"
+  // ) {
+  //   defaultValue = crypto.randomUUID();
   } else if (columnSchema.default_value) {
     defaultValue = columnSchema.default_value;
   } else {
-    defaultValue = undefined;
+    defaultValue = null;
   }
 
-  if (typeof defaultValue === "string") {
+  if (
+    typeof defaultValue === "string" &&
+    !dateTimeTypes.includes(columnSchema.data_type ?? "")
+  ) {
     defaultValue = defaultValue.split("::")[0]?.replaceAll("'", "") ?? null;
   }
 
@@ -75,6 +86,7 @@ export function getColumnInputField(
         required,
         disabled,
       };
+    case "time":
     case "time with time zone":
     case "time without time zone":
       return {
@@ -83,7 +95,6 @@ export function getColumnInputField(
         required,
         disabled,
       };
-    case "time":
     case "timestamp with time zone":
     case "timestamp without time zone":
     case "timestamp":

@@ -56,6 +56,8 @@ export async function createResourceDataAction(input: {
 }) {
   const client = await getSupabaseServerClient();
 
+  console.log(input.data);
+
   const { data, error } = await client
     .from(input.resourceName)
     .insert({ ...input.data } as never)
