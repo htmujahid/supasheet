@@ -9,6 +9,7 @@ import { FieldProps } from "./types";
 
 export function TimeField({ form, columnInput, column }: FieldProps) {
   const value = form.getValues(column.name as FieldPath<TableSchema>);
+
   return (
     <div className="relative">
       <Input
@@ -26,13 +27,6 @@ export function TimeField({ form, columnInput, column }: FieldProps) {
           },
         })}
         disabled={columnInput.disabled}
-        placeholder={
-          value === undefined && columnInput.defaultValue
-            ? `DEFAULT: ${columnInput.defaultValue}`
-            : value === null
-              ? "NULL"
-              : "EMPTY"
-        }
         className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
       <div className="absolute top-2.5 right-9 text-xs">

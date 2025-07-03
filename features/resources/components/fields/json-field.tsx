@@ -8,6 +8,12 @@ import { FieldProps } from "./types";
 
 export function JsonField({ form, columnInput, column }: FieldProps) {
   const value = form.getValues(column.name as FieldPath<TableSchema>);
+  const placeholder =
+    value === undefined && columnInput.defaultValue
+      ? "DEFAULT VALUE"
+      : value === null
+        ? "NULL"
+        : "EMPTY";
 
   return (
     <div className="relative">
@@ -24,7 +30,7 @@ export function JsonField({ form, columnInput, column }: FieldProps) {
             return value;
           },
         })}
-        placeholder={value === null ? "NULL" : "EMPTY"}
+        placeholder={placeholder}
         disabled={columnInput.disabled}
       />
       <FieldOptionDropdown

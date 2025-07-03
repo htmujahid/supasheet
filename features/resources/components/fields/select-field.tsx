@@ -23,6 +23,12 @@ export function SelectField({ form, columnInput, column }: FieldProps) {
             columnInput.required && !column.default_value
               ? `${column.name} is required`
               : false,
+          setValueAs: (value) => {
+            if (value === "") {
+              return undefined;
+            }
+            return value;
+          },
         })}
         onValueChange={(value) => {
           form.setValue(column.name as FieldPath<TableSchema>, value);
@@ -37,7 +43,11 @@ export function SelectField({ form, columnInput, column }: FieldProps) {
         disabled={columnInput.disabled}
       >
         <SelectTrigger className="w-full [&>svg]:hidden">
-          <SelectValue placeholder="Select an option" />
+          {value === undefined && columnInput.defaultValue ? (
+            <span className="text-muted-foreground">DEFAULT VALUE</span>
+          ) : (
+            <SelectValue placeholder={"Select an option"} />
+          )}
         </SelectTrigger>
         <SelectContent>
           {(column.enums as string[])?.map((option) => (
@@ -50,14 +60,7 @@ export function SelectField({ form, columnInput, column }: FieldProps) {
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
-          if (value === undefined) {
-            form.setValue(
-              column.name as FieldPath<TableSchema>,
-              columnInput.defaultValue,
-            );
-          } else {
-            form.setValue(column.name as FieldPath<TableSchema>, value);
-          }
+          form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
       />
     </div>

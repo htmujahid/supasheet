@@ -19,11 +19,11 @@ export function UuidField({ form, columnInput, column }: FieldProps) {
               : false,
         })}
         placeholder={
-          value === undefined && columnInput.defaultValue
-            ? `DEFAULT: ${columnInput.defaultValue}`
-            : value === ""
-              ? "EMPTY"
-              : "NULL"
+          value === undefined
+            ? "DEFAULT VALUE"
+            : value === null
+              ? "NULL"
+              : "EMPTY"
         }
         defaultValue={
           column.default_value === "gen_random_uuid()" ||
