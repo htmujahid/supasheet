@@ -24,8 +24,8 @@ export function DatetimeField({ form, columnInput, column }: FieldProps) {
         disabled={columnInput.disabled}
         className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
-      <div className="absolute top-2.5 right-9 text-xs">
-        {value === undefined && columnInput.defaultValue}
+      <div className="absolute top-2.5 right-8 text-xs">
+        {value === undefined && "DEFAULT VALUE"}
         {value === null && "NULL"}
       </div>
       <FieldOptionDropdown
