@@ -15,10 +15,6 @@ export function DateField({ form, columnInput, column }: FieldProps) {
       <Input
         type="date"
         {...form.register(column.name as FieldPath<TableSchema>, {
-          required:
-            columnInput.required && !column.default_value
-              ? `${column.name} is required`
-              : false,
           setValueAs: (value) => {
             if (value === "") {
               return undefined;

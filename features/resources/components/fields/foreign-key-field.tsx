@@ -27,7 +27,6 @@ export function ForeignKeyField({
     <div className="relative">
       <Input
         {...form.register(column.name as FieldPath<TableSchema>, {
-          required: columnInput.required ? `${column.name} is required` : false,
           setValueAs: (value) => {
             if (value === "") {
               return undefined;

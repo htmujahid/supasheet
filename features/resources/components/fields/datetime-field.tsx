@@ -14,10 +14,6 @@ export function DatetimeField({ form, columnInput, column }: FieldProps) {
       <Input
         type="datetime-local"
         {...form.register(column.name as FieldPath<TableSchema>, {
-          required:
-            columnInput.required && !column.default_value
-              ? `${column.name} is required`
-              : false,
           setValueAs: (value) => {
             if (value === "") {
               return undefined;

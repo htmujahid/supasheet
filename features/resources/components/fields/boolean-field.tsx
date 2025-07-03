@@ -18,12 +18,7 @@ export function BooleanField({ form, columnInput, column }: FieldProps) {
   return (
     <div className="relative">
       <Select
-        {...form.register(column.name as FieldPath<TableSchema>, {
-          required:
-            columnInput.required && !column.default_value
-              ? `${column.name} is required`
-              : false,
-        })}
+        {...form.register(column.name as FieldPath<TableSchema>)}
         onValueChange={(value) => {
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}

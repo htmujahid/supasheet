@@ -15,14 +15,12 @@ import { FieldProps } from "./types";
 export function SelectField({ form, columnInput, column }: FieldProps) {
   const value = form.getValues(column.name as FieldPath<TableSchema>);
 
+  console.log("value", value);
+
   return (
     <div className="relative">
       <Select
         {...form.register(column.name as FieldPath<TableSchema>, {
-          required:
-            columnInput.required && !column.default_value
-              ? `${column.name} is required`
-              : false,
           setValueAs: (value) => {
             if (value === "") {
               return undefined;
@@ -33,13 +31,7 @@ export function SelectField({ form, columnInput, column }: FieldProps) {
         onValueChange={(value) => {
           form.setValue(column.name as FieldPath<TableSchema>, value);
         }}
-        defaultValue={
-          value === null
-            ? "null"
-            : value === undefined
-              ? undefined
-              : (value as string)
-        }
+        defaultValue={value?.toString()}
         disabled={columnInput.disabled}
       >
         <SelectTrigger className="w-full [&>svg]:hidden">

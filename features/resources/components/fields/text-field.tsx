@@ -19,10 +19,6 @@ export function TextField({ form, columnInput, column }: FieldProps) {
     <div className="relative">
       <Textarea
         {...form.register(column.name as FieldPath<TableSchema>, {
-          required:
-            columnInput.required && !column.default_value
-              ? `${column.name} is required`
-              : false,
           setValueAs: (value) => {
             if (value === "") {
               return undefined;

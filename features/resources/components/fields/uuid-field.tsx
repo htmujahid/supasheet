@@ -9,22 +9,25 @@ import type { FieldProps } from "./types";
 export function UuidField({ form, columnInput, column }: FieldProps) {
   const value = form.getValues(column.name as FieldPath<TableSchema>);
 
+  const placeholder =
+    value === undefined && columnInput.defaultValue
+      ? "DEFAULT VALUE"
+      : value === null
+        ? "NULL"
+        : "EMPTY";
+
   return (
     <div className="relative">
       <Input
         {...form.register(column.name as FieldPath<TableSchema>, {
-          required:
-            columnInput.required && !column.default_value
-              ? `${column.name} is required`
-              : false,
+          setValueAs: (value) => {
+            if (value === "") {
+              return undefined;
+            }
+            return value;
+          },
         })}
-        placeholder={
-          value === undefined
-            ? "DEFAULT VALUE"
-            : value === null
-              ? "NULL"
-              : "EMPTY"
-        }
+        placeholder={placeholder}
         defaultValue={
           column.default_value === "gen_random_uuid()" ||
           column.default_value === "gen_random_uuid()"
