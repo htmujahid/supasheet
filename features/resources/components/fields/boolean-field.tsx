@@ -32,7 +32,7 @@ export function BooleanField({ form, columnInput, column }: FieldProps) {
             ? "null"
             : value === undefined
               ? undefined
-              : (value as string)
+              : value?.toString()
         }
         disabled={columnInput.disabled}
       >
