@@ -67,7 +67,7 @@ export function DataTableRowCell({
                 meta.variant,
                 tableSchema ?? null,
               )}
-              className="absolute top-1/2 left-0 -translate-y-1/2 transform border p-0.5 rounded"
+              className="absolute top-1/2 left-0 -translate-y-1/2 transform rounded border p-0.5"
             >
               <ArrowUpRightIcon className="size-3" />
             </Link>

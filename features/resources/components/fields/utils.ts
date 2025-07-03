@@ -19,11 +19,11 @@ export function getColumnInputField(
 
   if (columnSchema.default_value === "NULL") {
     defaultValue = null;
-  // } else if (
-  //   columnSchema.default_value === "gen_random_uuid()" ||
-  //   columnSchema.default_value === "uuid_generate_v4()"
-  // ) {
-  //   defaultValue = crypto.randomUUID();
+    // } else if (
+    //   columnSchema.default_value === "gen_random_uuid()" ||
+    //   columnSchema.default_value === "uuid_generate_v4()"
+    // ) {
+    //   defaultValue = crypto.randomUUID();
   } else if (columnSchema.default_value) {
     defaultValue = columnSchema.default_value;
   } else {

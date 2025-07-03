@@ -94,7 +94,9 @@ export function DataTableClientFilterList<TData>({
       .filter((column) => column.columnDef.enableColumnFilter);
   }, [table]);
 
-  const [filters, setFilters] = React.useState<ExtendedColumnFilter<TData>[]>([]);
+  const [filters, setFilters] = React.useState<ExtendedColumnFilter<TData>[]>(
+    [],
+  );
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
   const [joinOperator, setJoinOperator] = React.useState<JoinOperator>("and");

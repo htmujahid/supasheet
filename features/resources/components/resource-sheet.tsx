@@ -115,8 +115,7 @@ export function ResourceSheet({
   const params = useParams<{ id: DatabaseTables }>();
 
   const form = useForm<TableSchema>({
-    defaultValues:
-      serializeJsonColumns(data, columnsSchema) ?? {}
+    defaultValues: serializeJsonColumns(data, columnsSchema) ?? {},
   });
 
   const [isPending, startTransition] = useTransition();

@@ -49,7 +49,7 @@ export function DatetimeField({ form, columnInput, column }: FieldProps) {
           onClick={() =>
             form.setValue(
               column.name as FieldPath<TableSchema>,
-              new Date().toISOString().slice(0, 16)
+              new Date().toISOString().slice(0, 16),
             )
           }
         >

@@ -1,6 +1,5 @@
 import { FieldPath } from "react-hook-form";
 
-import { If } from "@/components/makerkit/if";
 import {
   Select,
   SelectContent,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { TableSchema } from "@/lib/database-meta.types";
 
+import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 
 export function BooleanField({ form, columnInput, column }: FieldProps) {
@@ -40,20 +40,16 @@ export function BooleanField({ form, columnInput, column }: FieldProps) {
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>
         <SelectContent>
-          <If condition={!columnInput.required}>
-            <SelectItem
-              value="null"
-              onClick={() =>
-                form.setValue(column.name as FieldPath<TableSchema>, null)
-              }
-            >
-              NULL
-            </SelectItem>
-          </If>
           <SelectItem value="true">True</SelectItem>
           <SelectItem value="false">False</SelectItem>
         </SelectContent>
       </Select>
+      <FieldOptionDropdown
+        columnInput={columnInput}
+        setValue={(value) => {
+          form.setValue(column.name as FieldPath<TableSchema>, value);
+        }}
+      />
     </div>
   );
 }

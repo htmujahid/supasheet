@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
+
 import { DatabaseTables } from "@/lib/database-meta.types";
+import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
+
 import { GetResourceSchema } from "./validations";
 
 export function useColumnsSchema(id: string) {
@@ -8,7 +10,7 @@ export function useColumnsSchema(id: string) {
     queryKey: ["columns-schema", id],
     queryFn: async () => {
       const client = getSupabaseBrowserClient();
-      
+
       const columnResponse = await client
         .from("_pg_meta_columns")
         .select("*")
@@ -26,7 +28,7 @@ export function useTableSchema(id: string) {
     queryKey: ["table-schema", id],
     queryFn: async () => {
       const client = getSupabaseBrowserClient();
-      
+
       const tableResponse = await client
         .from("_pg_meta_tables")
         .select("*")
@@ -43,10 +45,7 @@ export function useTableSchema(id: string) {
   });
 }
 
-export function useResourceData(
-  id: DatabaseTables,
-  input: GetResourceSchema,
-) {
+export function useResourceData(id: DatabaseTables, input: GetResourceSchema) {
   return useQuery({
     queryKey: ["resource-data", id, input],
     queryFn: async () => {
@@ -131,7 +130,7 @@ export function useResources() {
     queryKey: ["resources"],
     queryFn: async () => {
       const client = getSupabaseBrowserClient();
-      
+
       const response = await client.from("resources").select("id, name, grp");
 
       let resources: { name: string; id: string; group: string }[] = [];
