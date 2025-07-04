@@ -32,7 +32,7 @@ export function DataTableRowCell({
   const meta = getColumnMeta(column);
   const cell = getColumnCell(column);
 
-  const relationship = (tableSchema?.relationships as Relationship[]).find(
+  const relationship = (tableSchema?.relationships as Relationship[])?.find(
     (r) => r.source_column_name === column.name,
   );
 
@@ -86,30 +86,32 @@ export function DataTableRowCell({
           <CopyIcon className="size-4" />
           Copy Cell Content
         </ContextMenuItem>
-        <ContextMenuSeparator />
-        <ContextMenuItem
-          onClick={() =>
-            setRowAction({
-              variant: "update",
-              row: row,
-            })
-          }
-        >
-          <EditIcon className="size-4" />
-          Edit Row
-        </ContextMenuItem>
-        <ContextMenuItem
-          variant="destructive"
-          onClick={() =>
-            setRowAction({
-              variant: "delete",
-              row: row,
-            })
-          }
-        >
-          <TrashIcon className="size-4" />
-          Delete Row
-        </ContextMenuItem>
+        <If condition={tableSchema}>
+          <ContextMenuSeparator />
+          <ContextMenuItem
+            onClick={() =>
+              setRowAction({
+                variant: "update",
+                row: row,
+              })
+            }
+          >
+            <EditIcon className="size-4" />
+            Edit Row
+          </ContextMenuItem>
+          <ContextMenuItem
+            variant="destructive"
+            onClick={() =>
+              setRowAction({
+                variant: "delete",
+                row: row,
+              })
+            }
+          >
+            <TrashIcon className="size-4" />
+            Delete Row
+          </ContextMenuItem>
+        </If>
       </ContextMenuContent>
     </ContextMenu>
   );

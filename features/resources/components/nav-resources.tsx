@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 
 import Link from "next/link";
 
-import { CheckIcon, ChevronDownIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, EyeIcon } from "lucide-react";
 import { Table2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ export function NavResources({
   resources: {
     name: string;
     id: string;
+    type: string;
   }[];
   activeResource?: string;
 }) {
@@ -46,7 +47,7 @@ export function NavResources({
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild isActive={activeResource === item.id}>
               <Link href={"/home/resources/" + item.id} title={item.name}>
-                <Table2 />
+                {item.type === "table" ? <Table2 /> : <EyeIcon />}
                 <span>{item.name}</span>
               </Link>
             </SidebarMenuButton>

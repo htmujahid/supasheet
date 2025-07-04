@@ -7,3 +7,6 @@ alter type public.app_permission add value 'tasks:select';
 alter type public.app_permission add value 'tasks:insert';
 alter type public.app_permission add value 'tasks:update';
 alter type public.app_permission add value 'tasks:delete';
+
+alter type public.app_permission add value 'task_view';
+alter type public.app_permission add value 'task_summary_view';

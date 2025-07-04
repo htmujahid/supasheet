@@ -23,6 +23,7 @@ export function ResourceSidebar({
     name: string;
     id: string;
     group: string;
+    type: string;
   }[];
 }) {
   const params = useParams();

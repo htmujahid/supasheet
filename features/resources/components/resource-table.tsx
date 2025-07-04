@@ -79,7 +79,7 @@ export function ResourceTable({
           />
         </DataTableAdvancedToolbar>
       </DataTable>
-      <If condition={rowAction?.variant === "delete"}>
+      <If condition={rowAction?.variant === "delete" && tableSchema}>
         <DeleteResourceDialog
           open={rowAction?.variant === "delete"}
           onOpenChange={() => setRowAction(null)}
@@ -89,7 +89,7 @@ export function ResourceTable({
           onSuccess={() => rowAction?.row.toggleSelected(false)}
         />
       </If>
-      <If condition={rowAction?.variant === "update"}>
+      <If condition={rowAction?.variant === "update" && tableSchema}>
         <ResourceSheet
           open={rowAction?.variant === "update"}
           onOpenChange={() => setRowAction(null)}

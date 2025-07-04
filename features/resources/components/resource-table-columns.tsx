@@ -1,4 +1,4 @@
-import { Column, ColumnDef, Row } from "@tanstack/react-table";
+import { Column, ColumnDef, Row, Table } from "@tanstack/react-table";
 import { Maximize2Icon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,42 +21,48 @@ export function getResourceTableColumns({
   setRowAction: (rowAction: DataTableRowAction<TableSchema> | null) => void;
 }) {
   return [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <div className="group flex items-center gap-2">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-          <Button
-            variant="ghost"
-            className="size-5 opacity-0 group-hover:opacity-100"
-            onClick={() => {
-              setRowAction({ row, variant: "update" });
-            }}
-          >
-            <Maximize2Icon className="text-muted-foreground size-3" />
-          </Button>
-        </div>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-      size: 64,
-      minSize: 64,
-      enableResizing: false,
-    },
+    ...(tableSchema
+      ? [
+          {
+            id: "select",
+            header: ({ table }: { table: Table<TableSchema> }) => (
+              <Checkbox
+                checked={
+                  table.getIsAllPageRowsSelected() ||
+                  (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) =>
+                  table.toggleAllPageRowsSelected(!!value)
+                }
+                aria-label="Select all"
+              />
+            ),
+            cell: ({ row }: { row: Row<TableSchema> }) => (
+              <div className="group flex items-center gap-2">
+                <Checkbox
+                  checked={row.getIsSelected()}
+                  onCheckedChange={(value) => row.toggleSelected(!!value)}
+                  aria-label="Select row"
+                />
+                <Button
+                  variant="ghost"
+                  className="size-5 opacity-0 group-hover:opacity-100"
+                  onClick={() => {
+                    setRowAction({ row, variant: "update" });
+                  }}
+                >
+                  <Maximize2Icon className="text-muted-foreground size-3" />
+                </Button>
+              </div>
+            ),
+            enableSorting: false,
+            enableHiding: false,
+            size: 64,
+            minSize: 64,
+            enableResizing: false,
+          },
+        ]
+      : []),
     ...(columnsSchema ?? []).map((c) => ({
       id: c.name,
       accessorKey: c.name as string,

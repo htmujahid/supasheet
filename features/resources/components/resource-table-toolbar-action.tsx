@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Table } from "@tanstack/react-table";
 import { Download, Plus } from "lucide-react";
 
+import { If } from "@/components/makerkit/if";
 import { Button } from "@/components/ui/button";
 import { TableSchema } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
@@ -28,7 +29,7 @@ export function ResourceTableToolbarActions({
 
   return (
     <div className="flex flex-1 items-center justify-end gap-2">
-      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+      {table.getFilteredSelectedRowModel().rows.length > 0 && tableSchema ? (
         <DeleteResourceDialog
           tableSchema={tableSchema}
           resources={table
@@ -37,10 +38,12 @@ export function ResourceTableToolbarActions({
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
       ) : null}
-      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-        <Plus />
-        New {(tableSchema?.name as string) || "Resource"}
-      </Button>
+      <If condition={tableSchema}>
+        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+          <Plus />
+          New {(tableSchema?.name as string) || "Resource"}
+        </Button>
+      </If>
       <Button
         variant="outline"
         size="sm"
