@@ -2,7 +2,7 @@
 
 import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
 import { Trans } from "@/components/makerkit/trans";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useUser } from "@/lib/supabase/hooks/use-user";
 
 import { UpdatePasswordForm } from "./update-password-form";
@@ -26,7 +26,7 @@ export function UpdatePasswordFormContainer(
     (item) => item.provider === `email`,
   );
 
-  if (!canUpdatePassword) {
+  if (canUpdatePassword) {
     return <WarnCannotUpdatePasswordAlert />;
   }
 
@@ -35,8 +35,10 @@ export function UpdatePasswordFormContainer(
 
 function WarnCannotUpdatePasswordAlert() {
   return (
-    <Alert variant={"warning"}>
-      <Trans i18nKey={"account:cannotUpdatePassword"} />
+    <Alert variant={"warning"} className="">
+      <AlertTitle>
+        <Trans i18nKey={"account:cannotUpdatePassword"} />
+      </AlertTitle>
     </Alert>
   );
 }
