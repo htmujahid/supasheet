@@ -233,7 +233,9 @@ export function ResourceSheet({
             {columnsSchema
               .filter(
                 (column) =>
-                  !["created_at", "updated_at"].includes(column.name as string),
+                  !["created_at", "updated_at", "created_by", "updated_by"].includes(
+                    column.name as string,
+                  ),
               )
               .map((column) => {
                 let columnInput: ColumnInput;

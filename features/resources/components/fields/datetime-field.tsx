@@ -10,7 +10,7 @@ export function DatetimeField({ field, columnInput }: FieldProps) {
       <Input
         type="datetime-local"
         {...field}
-        value={field.value as string}
+        value={field.value?.toString().slice(0, 16)}
         disabled={columnInput.disabled}
         className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
