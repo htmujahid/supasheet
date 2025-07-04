@@ -2,16 +2,6 @@ import type { Tables } from "@/lib/database.types";
 
 import type { ColumnInput } from "./types";
 
-const dateTimeTypes = [
-  "timestamp with time zone",
-  "timestamp without time zone",
-  "timestamp",
-  "time with time zone",
-  "time without time zone",
-  "time",
-  "date",
-];
-
 export function getColumnInputField(
   columnSchema: Tables<"_pg_meta_columns">,
 ): ColumnInput {
@@ -19,22 +9,10 @@ export function getColumnInputField(
 
   if (columnSchema.default_value === "NULL") {
     defaultValue = null;
-    // } else if (
-    //   columnSchema.default_value === "gen_random_uuid()" ||
-    //   columnSchema.default_value === "uuid_generate_v4()"
-    // ) {
-    //   defaultValue = crypto.randomUUID();
   } else if (columnSchema.default_value) {
     defaultValue = columnSchema.default_value;
   } else {
     defaultValue = null;
-  }
-
-  if (
-    typeof defaultValue === "string" &&
-    !dateTimeTypes.includes(columnSchema.data_type ?? "")
-  ) {
-    defaultValue = defaultValue.split("::")[0]?.replaceAll("'", "") ?? null;
   }
 
   const required = columnSchema.is_nullable === false;
@@ -47,6 +25,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
 
     case "character":
@@ -60,6 +39,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
 
     case "double precision":
@@ -77,6 +57,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
 
     case "date":
@@ -85,6 +66,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
     case "time":
     case "time with time zone":
@@ -94,6 +76,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
     case "timestamp with time zone":
     case "timestamp without time zone":
@@ -103,6 +86,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
 
     case "json":
@@ -112,6 +96,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
 
     case "boolean":
@@ -120,6 +105,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
 
     case "USER-DEFINED":
@@ -128,6 +114,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: columnSchema.enums?.toString().split(",") ?? undefined,
       };
     default:
       return {
@@ -135,6 +122,7 @@ export function getColumnInputField(
         defaultValue,
         required,
         disabled,
+        options: undefined,
       };
   }
 }

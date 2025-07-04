@@ -34,7 +34,7 @@ export function FieldOptionDropdown({
           <SquarePenIcon size={16} aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
+      <DropdownMenuContent className="w-56" align="end">
         <If condition={!columnInput.required}>
           <DropdownMenuItem
             onClick={() => {
@@ -47,7 +47,7 @@ export function FieldOptionDropdown({
         <If condition={columnInput.defaultValue}>
           <DropdownMenuItem
             onClick={() => {
-              setValue(undefined);
+              setValue("");
             }}
           >
             Set Default

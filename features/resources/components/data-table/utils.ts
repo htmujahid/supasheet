@@ -5,6 +5,10 @@ export function getColumnCell(columnSchema: Tables<"_pg_meta_columns">) {
     case "json":
     case "jsonb":
       return "json";
+
+    case "ARRAY":
+      return "array";
+
     default:
       return "text";
   }

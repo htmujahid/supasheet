@@ -1,7 +1,3 @@
-import { useState } from "react";
-
-import { FieldPath } from "react-hook-form";
-
 import {
   Select,
   SelectContent,
@@ -9,32 +5,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TableSchema } from "@/lib/database-meta.types";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 
-export function BooleanField({ form, columnInput, column }: FieldProps) {
-  const value = form.getValues(column.name as FieldPath<TableSchema>);
-  const [field, setField] = useState<string | null | undefined>(
-    value as string | null | undefined,
-  );
-
+export function BooleanField({ field, columnInput }: FieldProps) {
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Select
-        {...form.register(column.name as FieldPath<TableSchema>)}
+        {...field}
         onValueChange={(value) => {
-          setField(value);
-          form.setValue(column.name as FieldPath<TableSchema>, value);
+          field.onChange(value);
         }}
-        defaultValue={value?.toString()}
+        value={field.value as string}
         disabled={columnInput.disabled}
       >
         <SelectTrigger className="w-full [&>svg]:hidden">
-          {field === undefined && columnInput.defaultValue ? (
+          {field.value === "" && columnInput.defaultValue ? (
             <span className="text-muted-foreground">DEFAULT VALUE</span>
-          ) : field === null ? (
+          ) : field.value === null ? (
             <span className="text-muted-foreground">NULL</span>
           ) : (
             <SelectValue placeholder={"Select an option"} />
@@ -48,8 +37,7 @@ export function BooleanField({ form, columnInput, column }: FieldProps) {
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
-          setField(value);
-          form.setValue(column.name as FieldPath<TableSchema>, value);
+          field.onChange(value);
         }}
       />
     </div>

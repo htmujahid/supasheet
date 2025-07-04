@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import {
   ColumnFiltersState,
@@ -62,10 +62,14 @@ export function ForeignTableSheet({
     relationship.target_table_name,
   );
 
-  const columns = getSheetTableColumns({
-    columnsSchema: columnsSchema ?? [],
-    setRecord,
-  });
+  const columns = useMemo(
+    () =>
+      getSheetTableColumns({
+        columnsSchema: columnsSchema ?? [],
+        setRecord,
+      }),
+    [columnsSchema, setRecord],
+  );
 
   const table = useReactTable({
     data: data?.results ?? [],

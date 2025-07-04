@@ -40,18 +40,11 @@ import {
   createResourceDataAction,
   updateResourceDataAction,
 } from "../lib/actions";
-import { BooleanField } from "./fields/boolean-field";
-import { DateField } from "./fields/date-field";
-import { DatetimeField } from "./fields/datetime-field";
+import { AllFields } from "./fields/all-fields";
+import { ArrayField } from "./fields/array-field";
 import { ForeignKeyField } from "./fields/foreign-key-field";
-import { JsonField } from "./fields/json-field";
-import { NumberField } from "./fields/number-field";
-import { SelectField } from "./fields/select-field";
-import { TextField } from "./fields/text-field";
-import { TimeField } from "./fields/time-field";
-import { FieldProps } from "./fields/types";
+import { ColumnInput } from "./fields/types";
 import { getColumnInputField } from "./fields/utils";
-import { UuidField } from "./fields/uuid-field";
 
 const JSON_DATA_TYPES = ["jsonb", "json"] as const;
 
@@ -65,7 +58,7 @@ function getJsonColumns(
   );
 }
 
-function serializeJsonColumns(
+function serializeData(
   input: TableSchema | null,
   columnsSchema: Tables<"_pg_meta_columns">[],
 ): TableSchema | null {
@@ -80,7 +73,18 @@ function serializeJsonColumns(
     return acc;
   }, {} as TableSchema);
 
-  return { ...input, ...serialized };
+  const otherValues = columnsSchema.reduce((acc, column) => {
+    if (column.data_type === "ARRAY") {
+      acc[column.name as keyof TableSchema] =
+        input[column.name as keyof TableSchema];
+    } else {
+      acc[column.name as keyof TableSchema] =
+        input[column.name as keyof TableSchema]?.toString();
+    }
+    return acc;
+  }, {} as TableSchema);
+
+  return { ...otherValues, ...serialized };
 }
 
 function parseJsonColumns(
@@ -115,12 +119,23 @@ export function ResourceSheet({
   const params = useParams<{ id: DatabaseTables }>();
 
   const form = useForm<TableSchema>({
-    defaultValues: serializeJsonColumns(data, columnsSchema) ?? {},
+    defaultValues:
+      serializeData(data, columnsSchema) ??
+      columnsSchema.reduce((acc, column) => {
+        acc[column.name as keyof TableSchema] = "";
+        return acc;
+      }, {} as TableSchema),
   });
 
   const [isPending, startTransition] = useTransition();
 
   function onCreate(input: TableSchema) {
+    Object.entries(input).forEach(([key, value]) => {
+      if (value === "") {
+        delete input[key];
+      }
+    });
+
     startTransition(async () => {
       const jsonInput = parseJsonColumns(input, getJsonColumns(columnsSchema));
 
@@ -151,6 +166,14 @@ export function ResourceSheet({
       toast.error("Table schema not found");
       return;
     }
+
+    console.log(input);
+
+    Object.entries(input).forEach(([key, value]) => {
+      if (value === "") {
+        delete input[key];
+      }
+    });
 
     startTransition(async () => {
       if (!data) return;
@@ -213,7 +236,23 @@ export function ResourceSheet({
                   !["created_at", "updated_at"].includes(column.name as string),
               )
               .map((column) => {
-                const columnInput = getColumnInputField(column);
+                let columnInput: ColumnInput;
+
+                if (column.data_type === "ARRAY") {
+                  let data_type =
+                    column.actual_type?.toString().slice(1) ?? null;
+
+                  if ((column.enums as string[])?.length) {
+                    data_type = "USER-DEFINED";
+                  }
+
+                  columnInput = getColumnInputField({
+                    ...column,
+                    data_type,
+                  });
+                } else {
+                  columnInput = getColumnInputField(column);
+                }
 
                 const relationship = (
                   tableSchema?.relationships as Relationship[]
@@ -228,7 +267,7 @@ export function ResourceSheet({
                     control={form.control}
                     disabled={columnInput.disabled}
                     name={column.name as FieldPath<TableSchema>}
-                    render={() => (
+                    render={({ field }) => (
                       <FormItem>
                         <FormLabel>
                           {column.name as string}{" "}
@@ -238,18 +277,23 @@ export function ResourceSheet({
                         </FormLabel>
                         <FormControl>
                           <div>
-                            {relationship ? (
-                              <ForeignKeyField
+                            {column.data_type === "ARRAY" ? (
+                              <ArrayField
                                 form={form}
                                 columnInput={columnInput}
-                                column={column}
+                                field={field}
+                                control={form.control}
+                              />
+                            ) : relationship ? (
+                              <ForeignKeyField
+                                field={field}
+                                columnInput={columnInput}
                                 relationship={relationship}
                               />
                             ) : (
                               <AllFields
-                                form={form}
+                                field={field}
                                 columnInput={columnInput}
-                                column={column}
                               />
                             )}
                           </div>
@@ -288,88 +332,4 @@ export function ResourceSheet({
       </SheetContent>
     </Sheet>
   );
-}
-
-function AllFields(props: FieldProps) {
-  if (props.columnInput.variant === "uuid") {
-    return (
-      <UuidField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "text") {
-    return (
-      <TextField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "number") {
-    return (
-      <NumberField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "boolean") {
-    return (
-      <BooleanField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "select") {
-    return (
-      <SelectField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "date") {
-    return (
-      <DateField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "time") {
-    return (
-      <TimeField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "datetime") {
-    return (
-      <DatetimeField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
-  if (props.columnInput.variant === "json") {
-    return (
-      <JsonField
-        form={props.form}
-        columnInput={props.columnInput}
-        column={props.column}
-      />
-    );
-  }
 }

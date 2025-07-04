@@ -1,48 +1,36 @@
-import { FieldPath } from "react-hook-form";
-
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { TableSchema } from "@/lib/database-meta.types";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 
-export function DateField({ form, columnInput, column }: FieldProps) {
-  const value = form.getValues(column.name as FieldPath<TableSchema>);
-
+export function DateField({ field, columnInput }: FieldProps) {
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Input
         type="date"
-        {...form.register(column.name as FieldPath<TableSchema>, {
-          setValueAs: (value) => {
-            if (value === "") {
-              return undefined;
-            }
-            return value;
-          },
-        })}
+        {...field}
+        value={field.value as string}
         disabled={columnInput.disabled}
         className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
       <div className="absolute top-2.5 right-8 text-xs">
-        {value === undefined && "DEFAULT VALUE"}
-        {value === null && "NULL"}
+        {field.value === "" && columnInput.defaultValue ? (
+          <span className="text-muted-foreground">DEFAULT VALUE</span>
+        ) : field.value === null ? (
+          <span className="text-muted-foreground">NULL</span>
+        ) : (
+          <span className="text-muted-foreground">EMPTY</span>
+        )}
       </div>
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
-          form.resetField(column.name as string);
-          form.setValue(column.name as FieldPath<TableSchema>, value);
+          field.onChange(value);
         }}
       >
         <DropdownMenuItem
-          onClick={() =>
-            form.setValue(
-              column.name as FieldPath<TableSchema>,
-              new Date().toISOString().slice(0, 10),
-            )
-          }
+          onClick={() => field.onChange(new Date().toISOString().slice(0, 10))}
         >
           NOW
         </DropdownMenuItem>

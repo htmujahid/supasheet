@@ -21,7 +21,7 @@ export function getSheetTableColumns({
     cell: ({ row }) => {
       const cell = getColumnCell(c);
 
-      if (cell === "json") {
+      if (cell === "json" || cell === "array") {
         return (
           <pre
             className="truncate select-none"

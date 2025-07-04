@@ -1,39 +1,28 @@
-import { FieldPath } from "react-hook-form";
-
 import { Textarea } from "@/components/ui/textarea";
-import { TableSchema } from "@/lib/database-meta.types";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 
-export function JsonField({ form, columnInput, column }: FieldProps) {
-  const value = form.getValues(column.name as FieldPath<TableSchema>);
+export function JsonField({ field, columnInput }: FieldProps) {
   const placeholder =
-    value === undefined && columnInput.defaultValue
+    field.value === "" && columnInput.defaultValue
       ? "DEFAULT VALUE"
-      : value === null
+      : field.value === null
         ? "NULL"
         : "EMPTY";
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Textarea
-        {...form.register(column.name as FieldPath<TableSchema>, {
-          setValueAs: (value) => {
-            if (value === "") {
-              return undefined;
-            }
-            return value;
-          },
-        })}
+        {...field}
+        value={field.value as string}
         placeholder={placeholder}
         disabled={columnInput.disabled}
       />
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
-          form.resetField(column.name as string);
-          form.setValue(column.name as FieldPath<TableSchema>, value);
+          field.onChange(value);
         }}
       />
     </div>

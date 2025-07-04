@@ -1,7 +1,6 @@
-import type { UseFormReturn } from "react-hook-form";
+import type { ControllerRenderProps } from "react-hook-form";
 
 import type { TableSchema } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
 
 export type ColumnInput = {
   variant:
@@ -19,11 +18,11 @@ export type ColumnInput = {
   required: boolean;
   disabled: boolean;
   dynamicDisabled?: boolean;
+  options?: string[];
 };
 
 export type FieldProps = {
-  form: UseFormReturn<TableSchema>;
+  field: ControllerRenderProps<TableSchema, string>;
   columnInput: ColumnInput;
-  column: Tables<"_pg_meta_columns">;
   disabled?: boolean;
 };

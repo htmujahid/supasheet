@@ -36,13 +36,13 @@ export function DataTableRowCell({
     (r) => r.source_column_name === column.name,
   );
 
-  if (cell === "json") {
+  if (cell === "json" || cell === "array") {
     return (
       <pre className="truncate">
         {JSON.stringify(
           row.original?.[column.name as keyof TableSchema],
           null,
-          2,
+          0,
         )}
       </pre>
     );
