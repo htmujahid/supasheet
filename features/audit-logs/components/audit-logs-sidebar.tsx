@@ -39,25 +39,25 @@ export function AuditLogsSidebar({
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
         <div className="text-foreground text-base font-medium">Audit Logs</div>
-        <SidebarInput
-          id="search"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setActiveItems(
-              items.filter((resource) =>
-                resource.name
-                  .toLowerCase()
-                  .includes(e.target.value.toLowerCase()),
-              ),
-            );
-          }}
-          placeholder="Type to search..."
-        />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarMenu className="overflow-y-auto">
+          <SidebarInput
+            id="search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setActiveItems(
+                items.filter((resource) =>
+                  resource.name
+                    .toLowerCase()
+                    .includes(e.target.value.toLowerCase()),
+                ),
+              );
+            }}
+            placeholder="Type to search..."
+          />
+          <SidebarMenu className="mt-2 overflow-y-auto">
             {activeItems.map((item) => (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton

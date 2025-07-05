@@ -171,14 +171,14 @@ export function Dashboard2() {
         </div>
 
         {/* Top Row - KPI Cards */}
-        <div className="grid gap-2.5 grid-cols-1 lg:grid-cols-2 xl:grid-cols-4">
-          <Card className="shadow-none pb-0">
+        <div className="grid grid-cols-1 gap-2.5 lg:grid-cols-2 xl:grid-cols-4">
+          <Card className="pb-0 shadow-none">
             <CardHeader className="flex-shrink-0">
               <CardDescription>Total Revenue</CardDescription>
               <CardTitle className="text-2xl sm:text-3xl">$15,231.89</CardTitle>
               <CardDescription>+20.1% from last month</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0 pt-0">
+            <CardContent className="flex-1 pt-0 pb-0">
               <ChartContainer config={chartConfig} className="h-[80px] w-full">
                 <LineChart
                   data={data}
@@ -202,14 +202,14 @@ export function Dashboard2() {
               </ChartContainer>
             </CardContent>
           </Card>
-          
-          <Card className="shadow-none pb-0">
+
+          <Card className="pb-0 shadow-none">
             <CardHeader className="flex-shrink-0">
               <CardDescription>Subscriptions</CardDescription>
               <CardTitle className="text-2xl sm:text-3xl">+2,350</CardTitle>
               <CardDescription>+180.1% from last month</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0 pt-0">
+            <CardContent className="flex-1 pt-0 pb-0">
               <ChartContainer config={chartConfig} className="h-[80px] w-full">
                 <AreaChart
                   data={data}
@@ -230,18 +230,21 @@ export function Dashboard2() {
               </ChartContainer>
             </CardContent>
           </Card>
-          
-          <Card className="shadow-none pb-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">
+
+          <Card className="pb-0 shadow-none">
+            <CardHeader className="flex flex-shrink-0 flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-zinc-900">
                 Conversion Rate
               </CardTitle>
               <Target className="h-4 w-4 text-zinc-700" />
             </CardHeader>
-            <CardContent className="flex-1 pb-0 pt-0">
+            <CardContent className="flex-1 pt-0 pb-0">
               <div className="text-2xl font-bold text-zinc-700">3.24%</div>
               <p className="text-xs text-zinc-500">+0.5% from last week</p>
-              <ChartContainer config={chartConfig} className="h-[80px] w-full mt-2">
+              <ChartContainer
+                config={chartConfig}
+                className="mt-2 h-[80px] w-full"
+              >
                 <BarChart
                   data={conversionData}
                   margin={{
@@ -251,27 +254,26 @@ export function Dashboard2() {
                     bottom: 0,
                   }}
                 >
-                  <Bar
-                    dataKey="rate"
-                    fill="hsl(var(--zinc-700))"
-                    radius={2}
-                  />
+                  <Bar dataKey="rate" fill="hsl(var(--zinc-700))" radius={2} />
                 </BarChart>
               </ChartContainer>
             </CardContent>
           </Card>
 
-          <Card className="shadow-none pb-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">
+          <Card className="pb-0 shadow-none">
+            <CardHeader className="flex flex-shrink-0 flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-zinc-900">
                 Bounce Rate
               </CardTitle>
               <Globe className="h-4 w-4 text-zinc-600" />
             </CardHeader>
-            <CardContent className="flex-1 pb-0 pt-0">
+            <CardContent className="flex-1 pt-0 pb-0">
               <div className="text-2xl font-bold text-zinc-600">42.3%</div>
               <p className="text-xs text-zinc-500">-2.1% from last week</p>
-              <ChartContainer config={chartConfig} className="h-[80px] w-full mt-2">
+              <ChartContainer
+                config={chartConfig}
+                className="mt-2 h-[80px] w-full"
+              >
                 <AreaChart
                   data={data}
                   margin={{
@@ -296,7 +298,7 @@ export function Dashboard2() {
         </div>
 
         {/* Second Row - Charts */}
-        <div className="grid gap-2.5 grid-cols-1 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2.5 lg:grid-cols-3">
           {/* Traffic Sources Bar Chart */}
           <Card className="shadow-none lg:col-span-2">
             <CardHeader>
@@ -374,7 +376,7 @@ export function Dashboard2() {
         </div>
 
         {/* Third Row - Goals and Activity */}
-        <div className="grid gap-2.5 grid-cols-1 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
           {/* Goals Progress */}
           <Card className="shadow-none">
             <CardHeader>

@@ -60,7 +60,7 @@ export function RootProviders({
                 <SidebarProvider
                   style={
                     {
-                      "--sidebar-width": "calc(var(--spacing) * 72)",
+                      "--sidebar-width": "calc(var(--spacing) * 80)",
                       "--header-height": "calc(var(--spacing) * 14)",
                     } as React.CSSProperties
                   }

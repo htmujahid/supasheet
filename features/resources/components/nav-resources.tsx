@@ -2,10 +2,7 @@
 
 import { useId, useState } from "react";
 
-import Link from "next/link";
-
-import { CheckIcon, ChevronDownIcon, EyeIcon } from "lucide-react";
-import { Table2 } from "lucide-react";
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,42 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-
-export function NavResources({
-  resources,
-  activeResource,
-}: {
-  resources: {
-    name: string;
-    id: string;
-    type: string;
-  }[];
-  activeResource?: string;
-}) {
-  return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarMenu className="overflow-y-auto">
-        {resources.map((item) => (
-          <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild isActive={activeResource === item.id}>
-              <Link href={"/home/resources/" + item.id} title={item.name}>
-                {item.type === "table" ? <Table2 /> : <EyeIcon />}
-                <span>{item.name}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
-  );
-}
 
 export function ResourcesGroup({
   groups,
