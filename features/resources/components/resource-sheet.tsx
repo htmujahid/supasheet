@@ -5,20 +5,11 @@ import { useTransition } from "react";
 import { useParams } from "next/navigation";
 
 import { Loader } from "lucide-react";
-import { FieldPath, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { If } from "@/components/makerkit/if";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import {
   Sheet,
   SheetClose,
@@ -31,7 +22,6 @@ import {
 import {
   DatabaseTables,
   PrimaryKey,
-  Relationship,
   TableSchema,
 } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
@@ -40,69 +30,9 @@ import {
   createResourceDataAction,
   updateResourceDataAction,
 } from "../lib/actions";
-import { AllFields } from "./fields/all-fields";
-import { ArrayField } from "./fields/array-field";
-import { ForeignKeyField } from "./fields/foreign-key-field";
-import { ColumnInput } from "./fields/types";
-import { getColumnInputField } from "./fields/utils";
-
-const JSON_DATA_TYPES = ["jsonb", "json"] as const;
-
-function getJsonColumns(
-  columnsSchema: Tables<"_pg_meta_columns">[],
-): Tables<"_pg_meta_columns">[] {
-  return columnsSchema.filter((column) =>
-    JSON_DATA_TYPES.includes(
-      column.data_type as (typeof JSON_DATA_TYPES)[number],
-    ),
-  );
-}
-
-function serializeData(
-  input: TableSchema | null,
-  columnsSchema: Tables<"_pg_meta_columns">[],
-): TableSchema | null {
-  if (!input) return input;
-
-  const jsonColumns = getJsonColumns(columnsSchema);
-
-  const serialized = jsonColumns.reduce((acc, column) => {
-    acc[column.name as keyof TableSchema] = JSON.stringify(
-      input[column.name as keyof TableSchema],
-    );
-    return acc;
-  }, {} as TableSchema);
-
-  const otherValues = columnsSchema.reduce((acc, column) => {
-    if (column.data_type === "ARRAY") {
-      acc[column.name as keyof TableSchema] =
-        input[column.name as keyof TableSchema];
-    } else {
-      acc[column.name as keyof TableSchema] =
-        input[column.name as keyof TableSchema]?.toString();
-    }
-    return acc;
-  }, {} as TableSchema);
-
-  return { ...otherValues, ...serialized };
-}
-
-function parseJsonColumns(
-  input: TableSchema,
-  jsonColumns: Tables<"_pg_meta_columns">[],
-): TableSchema {
-  return jsonColumns.reduce((acc, column) => {
-    try {
-      acc[column.name as keyof TableSchema] = JSON.parse(
-        input[column.name as keyof TableSchema] as string,
-      );
-    } catch {
-      acc[column.name as keyof TableSchema] =
-        input[column.name as keyof TableSchema];
-    }
-    return acc;
-  }, {} as TableSchema);
-}
+import { READONLY_COLUMNS } from "../lib/constants";
+import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
+import { ResourceFormField } from "./fields/resource-form-field";
 
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: Tables<"_pg_meta_tables"> | null;
@@ -167,8 +97,6 @@ export function ResourceSheet({
       return;
     }
 
-    console.log(input);
-
     Object.entries(input).forEach(([key, value]) => {
       if (value === "") {
         delete input[key];
@@ -232,87 +160,16 @@ export function ResourceSheet({
           >
             {columnsSchema
               .filter(
-                (column) =>
-                  !["created_at", "updated_at", "created_by", "updated_by"].includes(
-                    column.name as string,
-                  ),
+                (column) => !READONLY_COLUMNS.includes(column.name as string),
               )
-              .map((column) => {
-                let columnInput: ColumnInput;
-
-                if (column.data_type === "ARRAY") {
-                  let data_type =
-                    column.actual_type?.toString().slice(1) ?? null;
-
-                  if ((column.enums as string[])?.length) {
-                    data_type = "USER-DEFINED";
-                  }
-
-                  columnInput = getColumnInputField({
-                    ...column,
-                    data_type,
-                  });
-                } else {
-                  columnInput = getColumnInputField(column);
-                }
-
-                const relationship = (
-                  tableSchema?.relationships as Relationship[]
-                )?.find(
-                  (relationship) =>
-                    relationship.source_column_name === column.name,
-                );
-
-                return (
-                  <FormField
-                    key={column.id}
-                    control={form.control}
-                    disabled={columnInput.disabled}
-                    name={column.name as FieldPath<TableSchema>}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {column.name as string}{" "}
-                          {columnInput.required && (
-                            <span className="text-destructive">*</span>
-                          )}
-                        </FormLabel>
-                        <FormControl>
-                          <div>
-                            {column.data_type === "ARRAY" ? (
-                              <ArrayField
-                                form={form}
-                                columnInput={columnInput}
-                                field={field}
-                                control={form.control}
-                              />
-                            ) : relationship ? (
-                              <ForeignKeyField
-                                field={field}
-                                columnInput={columnInput}
-                                relationship={relationship}
-                              />
-                            ) : (
-                              <AllFields
-                                field={field}
-                                columnInput={columnInput}
-                              />
-                            )}
-                          </div>
-                        </FormControl>
-                        <If condition={columnInput.defaultValue}>
-                          {(defaultValue) => (
-                            <FormDescription>
-                              DEFAULT: {defaultValue}
-                            </FormDescription>
-                          )}
-                        </If>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                );
-              })}
+              .map((column) => (
+                <ResourceFormField
+                  key={column.id}
+                  column={column}
+                  tableSchema={tableSchema}
+                  form={form}
+                />
+              ))}
             <SheetFooter className="bg-background sticky bottom-0 flex-row gap-2 px-0 pt-2 sm:space-x-0">
               <Button disabled={isPending} className="flex-1">
                 {isPending && (
