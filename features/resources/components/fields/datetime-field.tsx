@@ -30,9 +30,7 @@ export function DatetimeField({ field, columnInput }: FieldProps) {
         }}
       >
         <DropdownMenuItem
-          onClick={() =>
-            field.onChange(new Date().toISOString().slice(0, 16))
-          }
+          onClick={() => field.onChange(new Date().toISOString().slice(0, 16))}
         >
           NOW
         </DropdownMenuItem>

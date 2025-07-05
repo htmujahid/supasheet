@@ -77,14 +77,14 @@ export function ArrayField({
           condition={
             fieldArray.fields?.length === 0 &&
             field.value !== null &&
-            field.value !== ''
+            field.value !== ""
           }
         >
           <p className="text-muted-foreground py-2 text-center text-sm">
             Empty array []
           </p>
         </If>
-        <If condition={field.value === '' && columnInput.defaultValue}>
+        <If condition={field.value === "" && columnInput.defaultValue}>
           <p className="text-muted-foreground py-2 text-center text-sm">
             DEFAULT VALUE
           </p>
@@ -174,7 +174,7 @@ export function ArrayField({
                 <DropdownMenuItem
                   onClick={() => {
                     fieldArray.remove();
-                    form.setValue(field.name as FieldPath<TableSchema>, '');
+                    form.setValue(field.name as FieldPath<TableSchema>, "");
                   }}
                 >
                   Set default value

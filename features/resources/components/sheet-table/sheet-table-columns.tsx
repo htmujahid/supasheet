@@ -1,9 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 
+import { getColumnCell, getColumnMeta } from "@/features/resources/lib/columns";
 import { TableSchema } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
-
-import { getColumnCell, getColumnMeta } from "../data-table/utils";
 
 export function getSheetTableColumns({
   columnsSchema,

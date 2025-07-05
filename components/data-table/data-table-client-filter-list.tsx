@@ -11,8 +11,8 @@ import {
   ListFilter,
   Trash2,
 } from "lucide-react";
-import { parseAsStringEnum, useQueryState } from "nuqs";
 
+import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -56,12 +56,10 @@ import {
   SortableOverlay,
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table.config";
-import { DataTableRangeFilter } from "@/features/resources/components/data-table/data-table-range-filter";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
 import { formatDate } from "@/lib/format";
 import { generateId } from "@/lib/id";
-import { getFiltersStateParser } from "@/lib/parsers";
 import { cn } from "@/lib/utils";
 import type {
   ExtendedColumnFilter,
@@ -69,28 +67,21 @@ import type {
   JoinOperator,
 } from "@/types/data-table";
 
-const FILTERS_KEY = "filters";
-const JOIN_OPERATOR_KEY = "joinOperator";
 const DEBOUNCE_MS = 300;
-const THROTTLE_MS = 50;
 const OPEN_MENU_SHORTCUT = "f";
 const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
-interface DataTableFilterListProps<TData>
+interface DataTableClientFilterListProps<TData>
   extends React.ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
   debounceMs?: number;
-  throttleMs?: number;
-  shallow?: boolean;
 }
 
-export function DataTableFilterList<TData>({
+export function DataTableClientFilterList<TData>({
   table,
   debounceMs = DEBOUNCE_MS,
-  throttleMs = THROTTLE_MS,
-  shallow = true,
   ...props
-}: DataTableFilterListProps<TData>) {
+}: DataTableClientFilterListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
@@ -103,25 +94,12 @@ export function DataTableFilterList<TData>({
       .filter((column) => column.columnDef.enableColumnFilter);
   }, [table]);
 
-  const [filters, setFilters] = useQueryState(
-    FILTERS_KEY,
-    getFiltersStateParser<TData>(columns.map((field) => field.id))
-      .withDefault([])
-      .withOptions({
-        clearOnDefault: true,
-        shallow,
-        throttleMs,
-      }),
+  const [filters, setFilters] = React.useState<ExtendedColumnFilter<TData>[]>(
+    [],
   );
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
-  const [joinOperator, setJoinOperator] = useQueryState(
-    JOIN_OPERATOR_KEY,
-    parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
-      clearOnDefault: true,
-      shallow,
-    }),
-  );
+  const [joinOperator, setJoinOperator] = React.useState<JoinOperator>("and");
 
   const onFilterAdd = React.useCallback(() => {
     const column = columns[0];
@@ -176,7 +154,7 @@ export function DataTableFilterList<TData>({
   );
 
   const onFiltersReset = React.useCallback(() => {
-    void setFilters(null);
+    void setFilters([]);
     void setJoinOperator("and");
   }, [setFilters, setJoinOperator]);
 
@@ -225,6 +203,10 @@ export function DataTableFilterList<TData>({
     },
     [filters, onFilterRemove],
   );
+
+  React.useEffect(() => {
+    table.setColumnFilters(filters);
+  }, [filters, table]);
 
   return (
     <Sortable

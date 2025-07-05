@@ -30,23 +30,25 @@ revoke all on table public.role_permissions from authenticated, service_role;
 
 grant select, insert, update, delete on table public.role_permissions to authenticated, service_role;
 
+-- Performance indexes
+create index idx_user_roles_account_id on public.user_roles (account_id);
+create index idx_user_roles_role on public.user_roles (role);
+create index idx_role_permissions_role on public.role_permissions (role);
+create index idx_role_permissions_permission on public.role_permissions (permission);
+create index idx_role_permissions_role_permission on public.role_permissions (role, permission);
+
 create or replace function public.has_permission(
   requested_permission app_permission
 )
 returns boolean as $$
-declare
-  bind_permissions int;
-  user_role public.app_role;
 begin
-  select role into user_role from public.user_roles where account_id = auth.uid();
-
-  select count(*)
-  into bind_permissions
-  from public.role_permissions
-  where role_permissions.permission = requested_permission
-    and role_permissions.role = user_role;
-
-  return bind_permissions > 0;
+  return exists (
+    select 1
+    from public.role_permissions rp
+    inner join public.user_roles ur on rp.role = ur.role
+    where ur.account_id = auth.uid()
+      and rp.permission = requested_permission
+  );
 end;
 $$ language plpgsql stable security definer set search_path = '';
 
@@ -56,12 +58,11 @@ create or replace function public.has_role(
   requested_role app_role
 )
 returns boolean as $$
-declare
-  user_role public.app_role;
 begin
-  select role into user_role from public.user_roles where account_id = auth.uid();
-
-  return user_role = requested_role;
+  return exists (
+    select 1 from public.user_roles 
+    where account_id = auth.uid() and role = requested_role
+  );
 end;
 $$ language plpgsql stable security definer set search_path = '';
 
@@ -88,6 +89,12 @@ using (
 
 insert into public.role_permissions (role, permission) values ('admin', 'accounts');
 insert into public.role_permissions (role, permission) values ('user', 'accounts');
+
+insert into public.role_permissions (role, permission) values ('admin', 'role_permissions');
+insert into public.role_permissions (role, permission) values ('user', 'role_permissions');
+
+insert into public.role_permissions (role, permission) values ('admin', 'user_roles');
+insert into public.role_permissions (role, permission) values ('user', 'user_roles');
 
 create or replace function public.new_account_created_setup() 
 returns trigger 

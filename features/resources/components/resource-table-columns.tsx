@@ -3,13 +3,12 @@ import { Maximize2Icon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ResourceColumnHeader } from "@/features/resources/components/resource-column-header";
+import { ResourceRowCell } from "@/features/resources/components/resource-row-cell";
+import { getColumnMeta } from "@/features/resources/lib/columns";
 import { TableSchema } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 import { DataTableRowAction } from "@/types/data-table";
-
-import { DataTableColumnHeader } from "./data-table/data-table-column-header";
-import { DataTableRowCell } from "./data-table/data-table-row-cell";
-import { getColumnMeta } from "./data-table/utils";
 
 export function getResourceTableColumns({
   columnsSchema,
@@ -67,7 +66,7 @@ export function getResourceTableColumns({
       id: c.name,
       accessorKey: c.name as string,
       header: ({ column }: { column: Column<TableSchema, unknown> }) => (
-        <DataTableColumnHeader
+        <ResourceColumnHeader
           column={column}
           columnSchema={c}
           tableSchema={tableSchema ?? null}
@@ -75,7 +74,7 @@ export function getResourceTableColumns({
         />
       ),
       cell: ({ row }: { row: Row<TableSchema> }) => (
-        <DataTableRowCell
+        <ResourceRowCell
           row={row}
           column={c}
           tableSchema={tableSchema ?? null}

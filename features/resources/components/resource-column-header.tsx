@@ -22,22 +22,18 @@ import {
 import { Tables } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
 
-import { getDataTypeIcon } from "../icons";
+import { getDataTypeIcon } from "./icons";
 
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.ComponentProps<typeof DropdownMenuTrigger> {
-  column: Column<TData, TValue>;
-  title: string;
-}
-
-export function DataTableColumnHeader<TData, TValue>({
+export function ResourceColumnHeader<TData, TValue>({
   column,
   title,
   className,
   columnSchema,
   tableSchema,
   ...props
-}: DataTableColumnHeaderProps<TData, TValue> & {
+}: React.ComponentProps<typeof DropdownMenuTrigger> & {
+  column: Column<TData, TValue>;
+  title: string;
   tableSchema: Tables<"_pg_meta_tables"> | null;
   columnSchema: Tables<"_pg_meta_columns">;
 }) {

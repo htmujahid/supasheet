@@ -1,33 +1,28 @@
 import Link from "next/link";
 
 import { Row } from "@tanstack/react-table";
-import { ArrowUpRightIcon, CopyIcon, EditIcon, TrashIcon } from "lucide-react";
+import { ArrowUpRightIcon, CopyIcon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { getColumnCell, getColumnMeta } from "@/features/resources/lib/columns";
 import { Relationship, TableSchema } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
-import { DataTableRowAction } from "@/types/data-table";
 
-import { getColumnCell, getColumnMeta } from "./utils";
-
-export function DataTableRowCell({
+export function UserRowCell({
   row,
   column,
   tableSchema,
-  setRowAction,
 }: {
   row: Row<TableSchema>;
   column: Tables<"_pg_meta_columns">;
   tableSchema: Tables<"_pg_meta_tables"> | null;
-  setRowAction: (action: DataTableRowAction<TableSchema> | null) => void;
 }) {
   const meta = getColumnMeta(column);
   const cell = getColumnCell(column);
@@ -86,32 +81,6 @@ export function DataTableRowCell({
           <CopyIcon className="size-4" />
           Copy Cell Content
         </ContextMenuItem>
-        <If condition={tableSchema}>
-          <ContextMenuSeparator />
-          <ContextMenuItem
-            onClick={() =>
-              setRowAction({
-                variant: "update",
-                row: row,
-              })
-            }
-          >
-            <EditIcon className="size-4" />
-            Edit Row
-          </ContextMenuItem>
-          <ContextMenuItem
-            variant="destructive"
-            onClick={() =>
-              setRowAction({
-                variant: "delete",
-                row: row,
-              })
-            }
-          >
-            <TrashIcon className="size-4" />
-            Delete Row
-          </ContextMenuItem>
-        </If>
       </ContextMenuContent>
     </ContextMenu>
   );

@@ -30,9 +30,7 @@ export function TimeField({ field, columnInput }: FieldProps) {
         }}
       >
         <DropdownMenuItem
-          onClick={() =>
-            field.onChange(new Date().toISOString().slice(11, 16))
-          }
+          onClick={() => field.onChange(new Date().toISOString().slice(11, 16))}
         >
           NOW
         </DropdownMenuItem>

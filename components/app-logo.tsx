@@ -12,7 +12,7 @@ function LogoImage({
   width?: number;
 }) {
   return (
-    <div className={cn("flex w-fit items-center gap-1", className)}>
+    <div className={cn("flex w-fit items-center gap-2", className)}>
       <Grid2X2PlusIcon width={width} />
       <span>Supasheet.</span>
     </div>

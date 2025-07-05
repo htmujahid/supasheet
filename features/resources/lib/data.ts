@@ -58,7 +58,6 @@ export function useResourceData(id: DatabaseTables, input: GetResourceSchema) {
         .range((page - 1) * perPage, page * perPage - 1);
 
       sort.forEach((item) => {
-        console.log(item);
         query.order(item.id, { ascending: item.desc });
       });
 

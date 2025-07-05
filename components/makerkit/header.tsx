@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = function ({
       )}
       {...props}
     >
-      <div className="px-4 md:px-6">
+      <div className="px-4">
         <div className="grid h-12 grid-cols-3 items-center">
           <div className={"mx-auto w-min md:mx-0"}>{logo}</div>
           <div className="order-first md:order-none">{navigation}</div>

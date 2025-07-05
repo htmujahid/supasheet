@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { DataTableSkeleton } from "@/features/resources/components/data-table/data-table-skeleton";
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { ResourceTable } from "@/features/resources/components/resource-table";
 import {
   loadColumnsSchema,

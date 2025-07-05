@@ -2,8 +2,11 @@
 
 import { use, useMemo, useState } from "react";
 
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
+import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
+import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { If } from "@/components/makerkit/if";
-import { DataTable } from "@/features/resources/components/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 import { TableSchema } from "@/lib/database-meta.types";
 import { DataTableRowAction } from "@/types/data-table";
@@ -13,9 +16,6 @@ import {
   loadResourceData,
   loadTableSchema,
 } from "../lib/loaders";
-import { DataTableAdvancedToolbar } from "./data-table/data-table-advanced-toolbar";
-import { DataTableFilterList } from "./data-table/data-table-filter-list";
-import { DataTableSortList } from "./data-table/data-table-sort-list";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
 import { getResourceTableColumns } from "./resource-table-columns";

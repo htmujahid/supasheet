@@ -23,5 +23,3 @@ revoke all on table "public"."resources" from authenticated, service_role;
 
 -- Open up access to resources
 grant select on table public.resources to authenticated, service_role;
-
-insert into public.resources (id, name, description, grp, type, icon) values ('accounts', 'Accounts', 'Accounts', 'Public', 'table', 'accounts');

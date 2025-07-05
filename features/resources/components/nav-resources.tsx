@@ -58,7 +58,7 @@ export function NavResources({
   );
 }
 
-export default function ResourcesGroup({
+export function ResourcesGroup({
   groups,
   activeGroup,
   onValueChange,

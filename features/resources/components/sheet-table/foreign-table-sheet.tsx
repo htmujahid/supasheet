@@ -8,6 +8,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
+import { DataTableClientFilterList } from "@/components/data-table/data-table-client-filter-list";
+import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import {
   Sheet,
   SheetContent,
@@ -22,10 +26,6 @@ import {
 import { ExtendedColumnFilter, ExtendedColumnSort } from "@/types/data-table";
 
 import { useColumnsSchema, useResourceData } from "../../lib/data";
-import { DataTable } from "../data-table/data-table";
-import { DataTableAdvancedToolbar } from "../data-table/data-table-advanced-toolbar";
-import { DataTableClientFilterList } from "../data-table/data-table-client-filter-list";
-import { DataTableSortList } from "../data-table/data-table-sort-list";
 import { getSheetTableColumns } from "./sheet-table-columns";
 
 interface ForeignTableSheetProps

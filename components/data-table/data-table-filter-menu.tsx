@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useQueryState } from "nuqs";
 
+import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -36,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DataTableRangeFilter } from "@/features/resources/components/data-table/data-table-range-filter";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
 import { formatDate } from "@/lib/format";
