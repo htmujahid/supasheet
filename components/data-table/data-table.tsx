@@ -14,9 +14,12 @@ import {
 import { getCommonPinningStyles } from "@/lib/data-table";
 import { cn } from "@/lib/utils";
 
+import { If } from "../makerkit/if";
+
 interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
+  isPagination?: boolean;
 }
 
 export function DataTable<TData>({
@@ -24,6 +27,7 @@ export function DataTable<TData>({
   actionBar,
   children,
   className,
+  isPagination = true,
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -117,12 +121,14 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
-        {actionBar &&
-          table.getFilteredSelectedRowModel().rows.length > 0 &&
-          actionBar}
-      </div>
+      <If condition={isPagination}>
+        <div className="flex flex-col gap-2.5">
+          <DataTablePagination table={table} />
+          {actionBar &&
+            table.getFilteredSelectedRowModel().rows.length > 0 &&
+            actionBar}
+        </div>
+      </If>
     </div>
   );
 }

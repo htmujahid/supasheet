@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { SiteHeader } from "@/components/layouts/site-header";
 import { Trans } from "@/components/makerkit/trans";
@@ -56,14 +54,6 @@ const ErrorPage = ({
                 <ArrowLeft className={"mr-2 h-4"} />
 
                 <Trans i18nKey={"common:goBack"} />
-              </Button>
-
-              <Button className={"w-full"} variant={"outline"} asChild>
-                <Link href={"/contact"}>
-                  <MessageCircle className={"mr-2 h-4"} />
-
-                  <Trans i18nKey={"common:contactUs"} />
-                </Link>
               </Button>
             </div>
           </div>

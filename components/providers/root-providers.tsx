@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import dynamic from "next/dynamic";
 
+import { loader } from "@monaco-editor/react";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -30,6 +31,12 @@ const CaptchaTokenSetter = dynamic(async () => {
   return {
     default: CaptchaTokenSetter,
   };
+});
+
+loader.config({
+  paths: {
+    vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs",
+  },
 });
 
 export function RootProviders({
