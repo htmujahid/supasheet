@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import * as React from "react";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { ChevronRight, File, Folder } from "lucide-react";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -12,23 +19,27 @@ import {
   SidebarHeader,
   SidebarInput,
   SidebarMenu,
+} from "@/components/ui/sidebar";
+import {
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
 } from "@/components/ui/sidebar";
 
-export function SqlSidebar({
-  items,
-}: {
-  items: {
-    name: string;
-    id: string;
-    icon: React.ReactNode;
-  }[];
-}) {
-  const params = useParams();
+const items = {
+  app: ["api", "page", "layout"],
+  components: ["header", "footer"],
+  _: [
+    "eslintrc",
+    "gitignore",
+    "next",
+    "tailwind",
+    "package",
+    "README",
+  ],
+};
 
-  const acitveItem = items.find((resource) => resource.id === params?.id);
-
+export function SqlSidebar() {
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
 
@@ -47,33 +58,80 @@ export function SqlSidebar({
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setActiveItems(
-                items.filter((resource) =>
-                  resource.name
-                    .toLowerCase()
-                    .includes(e.target.value.toLowerCase()),
-                ),
-              );
+              setActiveItems(Object.entries(items).reduce((acc, [key, value]) => {
+                acc[key] = value.filter((item) =>
+                  item.toLowerCase().includes(e.target.value.toLowerCase()),
+                )
+                return acc;
+              }, {}));
             }}
             placeholder="Type to search..."
           />
           <SidebarMenu className="mt-2 overflow-y-auto">
-            {activeItems.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={acitveItem?.id === item.id}
-                >
-                  <Link href={"/home/sql/" + item.id} title={item.name}>
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            {Object.keys(activeItems).map((item, index) => (
+              <Tree
+                key={index}
+                folder={item}
+                files={activeItems[item as keyof typeof items]}
+              />
             ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
+  );
+}
+
+function Tree({ folder, files }: { folder: string; files: string[] }) {
+  const params = useParams();
+
+  if (folder === '_') {
+    return (
+      <SidebarMenuItem>
+        {files.map((subItem, index) => (
+          <SidebarMenuButton
+            key={index}
+            isActive={false}
+            className="data-[active=true]:bg-transparent"
+          >
+            <File />
+            {subItem}
+          </SidebarMenuButton>
+        ))}
+      </SidebarMenuItem>
+    )
+  }
+
+  if (!files.length) return;
+
+  return (
+    <SidebarMenuItem>
+      <Collapsible
+        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+        // defaultOpen={name === "components" || name === "ui"}
+      >
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton>
+            <ChevronRight className="transition-transform" />
+            <Folder />
+            {folder}
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {files.map((subItem, index) => (
+              <SidebarMenuButton
+                key={index}
+                isActive={false}
+                className="data-[active=true]:bg-transparent"
+              >
+                <File />
+                {subItem}
+              </SidebarMenuButton>
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </Collapsible>
+    </SidebarMenuItem>
   );
 }
