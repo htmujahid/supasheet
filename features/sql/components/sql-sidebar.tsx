@@ -1,17 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import * as React from "react";
 
-import { useParams } from "next/navigation";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
-import { ChevronRight, File, Folder } from "lucide-react";
-
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -19,29 +12,54 @@ import {
   SidebarHeader,
   SidebarInput,
   SidebarMenu,
-} from "@/components/ui/sidebar";
-import {
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
 } from "@/components/ui/sidebar";
-
-const items = {
-  app: ["api", "page", "layout"],
-  components: ["header", "footer"],
-  _: [
-    "eslintrc",
-    "gitignore",
-    "next",
-    "tailwind",
-    "package",
-    "README",
-  ],
-};
+import { Input } from "@/components/ui/input";
+import { FileCode2Icon, PlusIcon } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 export function SqlSidebar() {
+  const params = useParams();
+  const router = useRouter();
+  const [items = [], setItems] = useLocalStorage<{
+    name: string;
+    id: string;
+  }[]>("sql-sidebar-items", []);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newSnippetName, setNewSnippetName] = useState("");
+
+  const activeItem = items?.find((item) => item.id === params?.id);
+
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
+
+  const handleCreateSnippet = () => {
+    if (!newSnippetName.trim()) return;
+    
+    const newSnippet = {
+      name: newSnippetName.trim(),
+      id: `${Date.now()}`,
+    };
+    
+    const updatedItems = [...items, newSnippet];
+    setItems(updatedItems);
+    setActiveItems(updatedItems);
+    setNewSnippetName("");
+    setIsEditing(false);
+    
+    // Navigate to the new snippet
+    router.push(`/home/sql/${newSnippet.id}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleCreateSnippet();
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setNewSnippetName("");
+    }
+  };
 
   return (
     <Sidebar
@@ -49,7 +67,7 @@ export function SqlSidebar() {
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
-        <div className="text-foreground text-base font-medium">SQL Editor</div>
+        <div className="text-foreground text-base font-medium">Dashboard</div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -58,80 +76,50 @@ export function SqlSidebar() {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setActiveItems(Object.entries(items).reduce((acc, [key, value]) => {
-                acc[key] = value.filter((item) =>
-                  item.toLowerCase().includes(e.target.value.toLowerCase()),
-                )
-                return acc;
-              }, {}));
+              setActiveItems(
+                items.filter((resource) =>
+                  resource.name
+                    .toLowerCase()
+                    .includes(e.target.value.toLowerCase()),
+                ),
+              );
             }}
             placeholder="Type to search..."
           />
           <SidebarMenu className="mt-2 overflow-y-auto">
-            {Object.keys(activeItems).map((item, index) => (
-              <Tree
-                key={index}
-                folder={item}
-                files={activeItems[item as keyof typeof items]}
-              />
+            {isEditing ? (
+              <div className="px-2 py-1">
+                <Input
+                  value={newSnippetName}
+                  onChange={(e) => setNewSnippetName(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Enter snippet name..."
+                  autoFocus
+                  className="h-8 text-sm"
+                />
+              </div>
+            ) : (
+              <SidebarMenuButton onClick={() => setIsEditing(true)}>
+                <PlusIcon />
+                <span>New Snippet</span>
+              </SidebarMenuButton>
+            )}
+            {activeItems.map((item) => (
+              <SidebarMenuItem key={item.name}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={activeItem?.id === item.id}
+                >
+                  <Link href={"/home/sql/" + item.id} title={item.name}>
+                    <FileCode2Icon />
+                    <span>{item.name}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  );
-}
-
-function Tree({ folder, files }: { folder: string; files: string[] }) {
-  const params = useParams();
-
-  if (folder === '_') {
-    return (
-      <SidebarMenuItem>
-        {files.map((subItem, index) => (
-          <SidebarMenuButton
-            key={index}
-            isActive={false}
-            className="data-[active=true]:bg-transparent"
-          >
-            <File />
-            {subItem}
-          </SidebarMenuButton>
-        ))}
-      </SidebarMenuItem>
-    )
-  }
-
-  if (!files.length) return;
-
-  return (
-    <SidebarMenuItem>
-      <Collapsible
-        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-        // defaultOpen={name === "components" || name === "ui"}
-      >
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton>
-            <ChevronRight className="transition-transform" />
-            <Folder />
-            {folder}
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>
-            {files.map((subItem, index) => (
-              <SidebarMenuButton
-                key={index}
-                isActive={false}
-                className="data-[active=true]:bg-transparent"
-              >
-                <File />
-                {subItem}
-              </SidebarMenuButton>
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </Collapsible>
-    </SidebarMenuItem>
   );
 }

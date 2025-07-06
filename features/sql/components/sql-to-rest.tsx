@@ -9,16 +9,17 @@ import { Button } from "@/components/ui/button";
 
 import { IStandaloneCodeEditor } from "../lib/types";
 import { useSqlData } from "../lib/use-sql-data";
+import { useParams } from "next/navigation";
 
 const MonacoEditor = dynamic(() => import("./monaco-editor"), { ssr: false });
 
 export default function SqlToRest() {
+  const { id } = useParams<{ id: string }>();
+
   const sqlData = useSqlData();
 
   const editorRef = useRef<IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<Monaco | null>(null);
-
-  const id = "1";
 
   const executeQuery = useCallback(async () => {
     const value = editorRef.current?.getValue() || "";
