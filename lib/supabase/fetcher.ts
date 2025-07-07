@@ -2,7 +2,7 @@ export async function restSupabaseFetcher(
   method: string,
   path: string,
   token: string,
-  body?: any
+  body?: object
 ) {
   const response = await fetch(
     new URL(`/rest/v1${path}`, process.env.NEXT_PUBLIC_SUPABASE_URL).href,
