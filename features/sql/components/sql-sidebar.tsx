@@ -16,8 +16,119 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
-import { FileCode2Icon, PlusIcon } from "lucide-react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { FileCode2Icon, PlusIcon, EditIcon, TrashIcon } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+
+interface SqlSnippetItemProps {
+  item: { name: string; id: string };
+  isActive: boolean;
+  onUpdateItems: (updatedItems: { name: string; id: string }[]) => void;
+  items: { name: string; id: string }[];
+  activeItem: { name: string; id: string } | undefined;
+}
+
+function SqlSnippetItem({
+  item,
+  isActive,
+  onUpdateItems,
+  items,
+  activeItem,
+}: SqlSnippetItemProps) {
+  const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingName, setEditingName] = useState(item.name);
+
+  const handleRename = () => {
+    setIsEditing(true);
+    setEditingName(item.name);
+  };
+
+  const handleSaveRename = () => {
+    if (!editingName.trim()) return;
+    
+    const updatedItems = items.map((i) =>
+      i.id === item.id ? { ...i, name: editingName.trim() } : i
+    );
+    
+    onUpdateItems(updatedItems);
+    setIsEditing(false);
+  };
+
+  const handleCancelRename = () => {
+    setIsEditing(false);
+    setEditingName(item.name);
+  };
+
+  const handleRenameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSaveRename();
+    } else if (e.key === "Escape") {
+      handleCancelRename();
+    }
+  };
+
+  const handleRemove = () => {
+    const updatedItems = items.filter((i) => i.id !== item.id);
+    onUpdateItems(updatedItems);
+    
+    // If the removed item was active, navigate to the first available item or home
+    if (activeItem?.id === item.id) {
+      if (updatedItems.length > 0) {
+        router.push(`/home/sql/${updatedItems[0].id}`);
+      } else {
+        router.push("/home/sql");
+      }
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="px-2 py-1">
+        <Input
+          value={editingName}
+          onChange={(e) => setEditingName(e.target.value)}
+          onKeyDown={handleRenameKeyDown}
+          onBlur={handleSaveRename}
+          placeholder="Enter new name..."
+          autoFocus
+          className="h-8 text-sm"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <SidebarMenuButton asChild isActive={isActive}>
+          <Link href={"/home/sql/" + item.id} title={item.name}>
+            <FileCode2Icon />
+            <span>{item.name}</span>
+          </Link>
+        </SidebarMenuButton>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={handleRename}>
+          <EditIcon className="mr-2 h-4 w-4" />
+          Rename
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={handleRemove}
+          className="text-destructive focus:text-destructive"
+        >
+          <TrashIcon className="mr-2 h-4 w-4" />
+          Remove
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
 
 export function SqlSidebar() {
   const params = useParams();
@@ -34,6 +145,11 @@ export function SqlSidebar() {
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
 
+  const handleUpdateItems = (updatedItems: { name: string; id: string }[]) => {
+    setItems(updatedItems);
+    setActiveItems(updatedItems);
+  };
+
   const handleCreateSnippet = () => {
     if (!newSnippetName.trim()) return;
     
@@ -43,8 +159,7 @@ export function SqlSidebar() {
     };
     
     const updatedItems = [...items, newSnippet];
-    setItems(updatedItems);
-    setActiveItems(updatedItems);
+    handleUpdateItems(updatedItems);
     setNewSnippetName("");
     setIsEditing(false);
     
@@ -93,6 +208,7 @@ export function SqlSidebar() {
                   value={newSnippetName}
                   onChange={(e) => setNewSnippetName(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  onBlur={handleCreateSnippet}
                   placeholder="Enter snippet name..."
                   autoFocus
                   className="h-8 text-sm"
@@ -106,15 +222,13 @@ export function SqlSidebar() {
             )}
             {activeItems.map((item) => (
               <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton
-                  asChild
+                <SqlSnippetItem
+                  item={item}
                   isActive={activeItem?.id === item.id}
-                >
-                  <Link href={"/home/sql/" + item.id} title={item.name}>
-                    <FileCode2Icon />
-                    <span>{item.name}</span>
-                  </Link>
-                </SidebarMenuButton>
+                  onUpdateItems={handleUpdateItems}
+                  items={items}
+                  activeItem={activeItem}
+                />
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
