@@ -3,18 +3,20 @@ import { useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 
 import { Monaco } from "@monaco-editor/react";
-import { PlayIcon } from "lucide-react";
+import { Loader2, PlayIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 import { IStandaloneCodeEditor } from "../lib/types";
 import { useSqlData } from "../lib/use-sql-data";
 import { useParams } from "next/navigation";
+import { useSqlContext } from "./sql-context";
 
 const MonacoEditor = dynamic(() => import("./monaco-editor"), { ssr: false });
 
 export default function SqlToRest() {
   const { id } = useParams<{ id: string }>();
+  const { isLoading } = useSqlContext();
 
   const sqlData = useSqlData();
 
@@ -31,9 +33,18 @@ export default function SqlToRest() {
       <div className="flex items-center justify-between gap-2">
         <div className="text-base font-medium">SQL Editor</div>
         <div className="flex gap-2">
-          <Button variant="default" size="sm" onClick={() => executeQuery()}>
-            <PlayIcon className="size-4" />
-            Execute
+          <Button variant="default" size="sm" onClick={() => executeQuery()} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Executing...
+              </>
+            ) : (
+              <>
+                <PlayIcon className="size-4" />
+                Execute
+              </>
+            )}
           </Button>
         </div>
       </div>

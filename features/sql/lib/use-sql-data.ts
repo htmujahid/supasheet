@@ -4,6 +4,7 @@ import { processSql, renderHttp } from "@supabase/sql-to-rest";
 import { toast } from "sonner";
 
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
+import { restSupabaseFetcher } from "@/lib/supabase/fetcher";
 
 import { useSqlContext } from "../components/sql-context";
 
@@ -20,23 +21,13 @@ export function useSqlData() {
         setIsLoading(true);
 
         const token = await client.auth.getSession();
-        const response = await fetch(
-          new URL(
-            `/rest/v1${http.fullPath}`,
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-          ),
-          {
-            method: http.method,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token.data.session?.access_token}`,
-            },
-          },
+
+        const data = await restSupabaseFetcher(
+          http.method,
+          http.fullPath,
+          token.data.session?.access_token || ""
         );
-        const data = await response.json();
-        if (data.code) {
-          throw new Error(data.message || "Unknown error");
-        }
+
         setData(data);
         setIsLoading(false);
       } catch (error) {
