@@ -30,7 +30,7 @@ export default function SqlToRest() {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 p-[5.5px]">
         <div className="text-base font-medium">SQL Editor</div>
         <div className="flex gap-2">
           <Button variant="default" size="sm" onClick={() => executeQuery()} disabled={isLoading}>
@@ -48,7 +48,7 @@ export default function SqlToRest() {
           </Button>
         </div>
       </div>
-      <div className="mt-2.5 h-[calc(20vh)] w-full overflow-hidden rounded-md border">
+      <div className="h-[calc(20vh)] w-full overflow-hidden border-y">
         <MonacoEditor
           id={id}
           editorRef={editorRef}

@@ -7,8 +7,8 @@ import SqlToRestWithFallback from "./sql-to-rest-fallback";
 export function SQL() {
   return (
     <SqlProvider>
-      <div className="flex flex-col gap-2.5">
-        <div className="rounded-md border-b">
+      <div className="flex flex-col">
+        <div>
           <SqlToRestWithFallback />
         </div>
         <SqlTable />

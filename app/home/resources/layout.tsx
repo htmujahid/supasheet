@@ -17,7 +17,7 @@ export default async function HomeResourceLayout({
         <ResourceSidebar resources={resources} />
       </PrimaryLayout>
       <SidebarInset>
-        <div className="w-full flex-1 p-4">{children}</div>
+        <div className="w-full flex-1">{children}</div>
       </SidebarInset>
     </DefaultLayout>
   );

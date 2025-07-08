@@ -197,7 +197,7 @@ export function Dashboard3() {
       <div className="space-y-2.5">
         {/* Header */}
         <div className="space-y-2">
-          <h1 className="text-base font-bold">Dashboard 3</h1>
+          <h1 className="text-base font-medium">Dashboard 3</h1>
         </div>
 
         {/* System Metrics Row */}

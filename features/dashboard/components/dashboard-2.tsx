@@ -167,7 +167,7 @@ export function Dashboard2() {
       <div className="space-y-2.5">
         {/* Header */}
         <div className="space-y-2">
-          <h1 className="text-base font-bold">Dashboard 2</h1>
+          <h1 className="text-base font-medium">Dashboard 2</h1>
         </div>
 
         {/* Top Row - KPI Cards */}

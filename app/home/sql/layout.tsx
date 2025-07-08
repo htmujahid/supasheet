@@ -15,7 +15,7 @@ export default async function HomeSqlLayout({
         <SqlSidebar />
       </PrimaryLayout>
       <SidebarInset>
-        <div className="w-full flex-1 p-4">{children}</div>
+        <div className="w-full flex-1">{children}</div>
       </SidebarInset>
     </DefaultLayout>
   );

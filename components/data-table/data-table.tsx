@@ -32,11 +32,11 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   return (
     <div
-      className={cn("flex w-full flex-col gap-2.5 overflow-auto", className)}
+      className={cn("flex w-full flex-col overflow-auto", className)}
       {...props}
     >
       {children}
-      <div className="overflow-hidden rounded-md border [&>div]:h-[calc(100vh-183px)]">
+      <div className="overflow-hidden border-y [&>div]:h-[calc(100vh-142px)]">
         <Table
           className="table-fixed"
           style={{
