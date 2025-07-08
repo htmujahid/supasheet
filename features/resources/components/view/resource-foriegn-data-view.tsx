@@ -25,8 +25,9 @@ export function ResourceForiegnDataView({
           <TableBody>
             {refineRelationships.map((relationship) => {
               let value = singleResourceData?.[relationship.source_column_name as keyof typeof singleResourceData];
+              const isValue = !!value;
               let link = `/home/resources/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"${relationship.id}"}]`;
-              
+
               if (!value) {
                 value = singleResourceData?.[relationship.target_column_name as keyof typeof singleResourceData];
                 link = `/home/resources/${relationship.source_table_name}?filters=[{"id":"${relationship.source_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"${relationship.id}"}]`
@@ -37,7 +38,7 @@ export function ResourceForiegnDataView({
                   className="*:border-border hover:bg-transparent [&>:not(:last-child)]:border-r"
                 >
                   <TableCell className="bg-muted/50 w-1/4 py-2 font-medium">
-                  {value ? relationship.source_table_name : relationship.target_table_name}
+                  {isValue ? relationship.target_table_name : relationship.source_table_name}
                   </TableCell>
                   <TableCell className="py-2">
                     <Link
