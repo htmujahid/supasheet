@@ -52,7 +52,7 @@ export function SqlTable() {
   return (
     <div className="data-table-container [&>div>div>div]:!h-[calc(80vh-142px)]">
       <DataTable table={table} isPagination={false}>
-        <div className="flex h-10 justify-between gap-2 pt-1 px-1.5">
+        <div className="flex h-10 justify-between gap-2 px-1.5 pt-1">
           <div className="pt-1 text-base font-medium">Results</div>
           <div className="flex justify-between gap-2">
             <Button

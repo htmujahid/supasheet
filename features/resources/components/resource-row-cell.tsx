@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Row } from "@tanstack/react-table";
-import { ArrowUpRightIcon, CopyIcon, EditIcon, TrashIcon } from "lucide-react";
+import { ArrowUpRightIcon, CopyIcon, EditIcon, EyeIcon, TrashIcon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import {
@@ -12,7 +12,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { getColumnCell, getColumnMeta } from "@/features/resources/lib/columns";
-import { Relationship, TableSchema } from "@/lib/database-meta.types";
+import { PrimaryKey, Relationship, TableSchema } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
 import { DataTableRowAction } from "@/types/data-table";
@@ -62,7 +62,7 @@ export function ResourceRowCell({
               href={prepareForeignKeyLink(
                 column.name as string,
                 row.original?.[column.name as keyof TableSchema]?.toString() ??
-                  "",
+                "",
                 meta.variant,
                 tableSchema ?? null,
               )}
@@ -78,7 +78,7 @@ export function ResourceRowCell({
           onClick={() => {
             navigator.clipboard.writeText(
               row.original?.[column.name as keyof TableSchema]?.toString() ??
-                "",
+              "",
             );
           }}
         >

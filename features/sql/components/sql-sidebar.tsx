@@ -5,6 +5,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
+import { EditIcon, FileCode2Icon, PlusIcon, TrashIcon } from "lucide-react";
+
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Input } from "@/components/ui/input";
 import {
   Sidebar,
   SidebarContent,
@@ -15,14 +24,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Input } from "@/components/ui/input";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { FileCode2Icon, PlusIcon, EditIcon, TrashIcon } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface SqlSnippetItemProps {
@@ -51,11 +52,11 @@ function SqlSnippetItem({
 
   const handleSaveRename = () => {
     if (!editingName.trim()) return;
-    
+
     const updatedItems = items.map((i) =>
-      i.id === item.id ? { ...i, name: editingName.trim() } : i
+      i.id === item.id ? { ...i, name: editingName.trim() } : i,
     );
-    
+
     onUpdateItems(updatedItems);
     setIsEditing(false);
   };
@@ -76,7 +77,7 @@ function SqlSnippetItem({
   const handleRemove = () => {
     const updatedItems = items.filter((i) => i.id !== item.id);
     onUpdateItems(updatedItems);
-    
+
     // If the removed item was active, navigate to the first available item or home
     if (activeItem?.id === item.id) {
       if (updatedItems.length > 0) {
@@ -133,10 +134,12 @@ function SqlSnippetItem({
 export function SqlSidebar() {
   const params = useParams();
   const router = useRouter();
-  const [items = [], setItems] = useLocalStorage<{
-    name: string;
-    id: string;
-  }[]>("sql-sidebar-items", []);
+  const [items = [], setItems] = useLocalStorage<
+    {
+      name: string;
+      id: string;
+    }[]
+  >("sql-sidebar-items", []);
   const [isEditing, setIsEditing] = useState(false);
   const [newSnippetName, setNewSnippetName] = useState("");
 
@@ -152,17 +155,17 @@ export function SqlSidebar() {
 
   const handleCreateSnippet = () => {
     if (!newSnippetName.trim()) return;
-    
+
     const newSnippet = {
       name: newSnippetName.trim(),
       id: `${Date.now()}`,
     };
-    
+
     const updatedItems = [...items, newSnippet];
     handleUpdateItems(updatedItems);
     setNewSnippetName("");
     setIsEditing(false);
-    
+
     // Navigate to the new snippet
     router.push(`/home/sql/${newSnippet.id}`);
   };

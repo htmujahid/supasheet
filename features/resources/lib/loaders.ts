@@ -109,6 +109,23 @@ export async function loadResourceData(
   };
 }
 
+export async function loadSingleResourceData(
+  id: DatabaseTables,
+  pk: Record<string, unknown>,
+) {
+  const client = await getSupabaseServerClient();
+
+  const query = client.from(id).select("*");
+
+  for (const [key, value] of Object.entries(pk)) {
+    query.eq(key, value as string | number);
+  }
+
+  const response = await query.maybeSingle();
+
+  return response.data;
+}
+
 export async function loadResources() {
   const client = await getSupabaseServerClient();
 
@@ -148,4 +165,19 @@ export async function loadResources() {
   }
 
   return resources ?? [];
+}
+
+export async function loadForeignKeyData(
+  targetTable: DatabaseTables,
+  targetColumn: string,
+  value: unknown,
+) {
+  const client = await getSupabaseServerClient();
+
+  const response = await client
+    .from(targetTable)
+    .select("*")
+    .eq(targetColumn, value as string | number);
+
+  return response.data;
 }

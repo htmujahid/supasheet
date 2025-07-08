@@ -9,8 +9,8 @@ export default async function HomeUsersPage() {
         <FileText className="h-4 w-4" />
         <AlertTitle>No User Selected</AlertTitle>
         <AlertDescription>
-          Please select a user from the sidebar to view its contents or create
-          a new user.
+          Please select a user from the sidebar to view its contents or create a
+          new user.
         </AlertDescription>
       </Alert>
     </div>

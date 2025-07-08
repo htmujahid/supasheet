@@ -3,8 +3,8 @@ import { useCallback } from "react";
 import { processSql, renderHttp } from "@supabase/sql-to-rest";
 import { toast } from "sonner";
 
-import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 import { restSupabaseFetcher } from "@/lib/supabase/fetcher";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 import { useSqlContext } from "../components/sql-context";
 
@@ -25,7 +25,7 @@ export function useSqlData() {
         const data = await restSupabaseFetcher(
           http.method,
           http.fullPath,
-          token.data.session?.access_token || ""
+          token.data.session?.access_token || "",
         );
 
         setData(data);

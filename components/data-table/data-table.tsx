@@ -91,7 +91,7 @@ export function DataTable<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="[&>td]:border-r"
+                  className="group [&>td]:border-r"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

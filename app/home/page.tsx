@@ -1,69 +1,84 @@
-import { DefaultLayout } from "@/components/layouts/default-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { 
-  BarChart3, 
-  Database, 
-  FileText, 
-  Users, 
-  PieChart, 
-  Shield, 
-  HardDrive,
-  ArrowRight,
+
+import {
   Activity,
+  ArrowRight,
+  BarChart3,
+  Database,
+  FileText,
+  HardDrive,
+  PieChart,
+  Shield,
+  Users,
 } from "lucide-react";
+
+import { DefaultLayout } from "@/components/layouts/default-layout";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const quickLinks = [
   {
     title: "Dashboards",
-    description: "View and manage your dashboards with real-time analytics and customizable widgets",
+    description:
+      "View and manage your dashboards with real-time analytics and customizable widgets",
     href: "/home/dashboard",
     icon: BarChart3,
-    category: "Analytics"
+    category: "Analytics",
   },
   {
     title: "SQL Editor",
-    description: "Execute SQL queries, manage database schemas, and optimize performance",
+    description:
+      "Execute SQL queries, manage database schemas, and optimize performance",
     href: "/home/sql",
     icon: Database,
-    category: "Database"
+    category: "Database",
   },
   {
     title: "Resources",
-    description: "Manage your data resources, tables, and relationships with visual tools",
+    description:
+      "Manage your data resources, tables, and relationships with visual tools",
     href: "/home/resources",
     icon: FileText,
-    category: "Table and Views"
+    category: "Table and Views",
   },
   {
     title: "Users",
-    description: "Manage user accounts, permissions, roles, and access controls",
+    description:
+      "Manage user accounts, permissions, roles, and access controls",
     href: "/home/users",
     icon: Users,
-    category: "Authentication"
+    category: "Authentication",
   },
   {
     title: "Storage",
-    description: "Manage file storage, uploads, and organize your digital assets",
+    description:
+      "Manage file storage, uploads, and organize your digital assets",
     href: "/home/storage",
     icon: HardDrive,
-    category: "Files"
+    category: "Files",
   },
   {
     title: "Reports",
-    description: "Generate comprehensive reports, export data, and create visualizations",
+    description:
+      "Generate comprehensive reports, export data, and create visualizations",
     href: "/home/reports",
     icon: PieChart,
-    category: "Insights"
+    category: "Insights",
   },
   {
     title: "Audit Logs",
-    description: "View system audit logs, track changes, and monitor security events",
+    description:
+      "View system audit logs, track changes, and monitor security events",
     href: "/home/audit-logs",
     icon: Shield,
-    category: "Security"
-  }
+    category: "Security",
+  },
 ];
 
 export default function Home() {
@@ -71,47 +86,58 @@ export default function Home() {
     <DefaultLayout>
       <div className="w-full p-4 sm:p-6 lg:p-8">
         <div className="mb-8 sm:mb-10 lg:mb-12">
-          <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">Welcome to SupaSheet</h1>
+          <div className="mb-3 flex items-center gap-3 sm:mb-4 sm:gap-4">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
+              Welcome to SupaSheet
+            </h1>
           </div>
-          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl sm:max-w-3xl leading-relaxed">
-            Quick access to all your tools and resources. Everything you need to manage your data, users, and analytics in one place.
+          <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed sm:max-w-3xl sm:text-base lg:text-lg">
+            Quick access to all your tools and resources. Everything you need to
+            manage your data, users, and analytics in one place.
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
           {quickLinks.map((link) => {
             const Icon = link.icon;
             return (
-              <Card key={link.href} className="shadow-none group">
+              <Card key={link.href} className="group shadow-none">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 sm:gap-4">
                       <div className="relative">
-                        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border group-hover:bg-gray-50 transition-colors duration-300">
-                          <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-black" />
+                        <div className="rounded-xl border bg-white p-3 transition-colors duration-300 group-hover:bg-gray-50 sm:rounded-2xl sm:p-4">
+                          <Icon className="h-6 w-6 text-black sm:h-7 sm:w-7" />
                         </div>
                       </div>
                       <div>
-                        <CardTitle className="text-lg sm:text-xl group-hover:text-black transition-colors">
+                        <CardTitle className="text-lg transition-colors group-hover:text-black sm:text-xl">
                           {link.title}
                         </CardTitle>
-                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mt-1">
+                        <p className="text-muted-foreground mt-1 text-xs font-medium tracking-wide uppercase">
                           {link.category}
                         </p>
                       </div>
                     </div>
-                    <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Activity className="text-muted-foreground h-4 w-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:h-5 sm:w-5" />
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0 space-y-4 sm:space-y-5 lg:space-y-6">
-                  <CardDescription className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                <CardContent className="space-y-4 pt-0 sm:space-y-5 lg:space-y-6">
+                  <CardDescription className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
                     {link.description}
                   </CardDescription>
-                  <Button asChild size="sm" variant="outline" className="group/btn w-full">
-                    <Link href={link.href} className="flex items-center justify-center gap-2">
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="outline"
+                    className="group/btn w-full"
+                  >
+                    <Link
+                      href={link.href}
+                      className="flex items-center justify-center gap-2"
+                    >
                       Open
-                      <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 group-hover/btn:translate-x-1 transition-transform duration-200" />
+                      <ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover/btn:translate-x-1 sm:h-4 sm:w-4" />
                     </Link>
                   </Button>
                 </CardContent>

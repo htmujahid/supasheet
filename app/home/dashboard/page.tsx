@@ -9,8 +9,8 @@ export default async function HomeDashboardPage() {
         <FileText className="h-4 w-4" />
         <AlertTitle>No Dashboard Selected</AlertTitle>
         <AlertDescription>
-          Please select a dashboard from the sidebar to view its contents or create
-          a new dashboard.
+          Please select a dashboard from the sidebar to view its contents or
+          create a new dashboard.
         </AlertDescription>
       </Alert>
     </div>

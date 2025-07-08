@@ -22,7 +22,10 @@ export function DataTableAdvancedToolbar<TData>({
     <div
       role="toolbar"
       aria-orientation="horizontal"
-      className={cn("flex w-full items-start justify-between gap-2 p-[5.5px]", className)}
+      className={cn(
+        "flex w-full items-start justify-between gap-2 p-[5.5px]",
+        className,
+      )}
       {...props}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">{children}</div>
