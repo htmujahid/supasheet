@@ -81,9 +81,9 @@ function SqlSnippetItem({
     // If the removed item was active, navigate to the first available item or home
     if (activeItem?.id === item.id) {
       if (updatedItems.length > 0) {
-        router.push(`/home/sql/${updatedItems[0].id}`);
+        router.push(`/home/sql-editor/${updatedItems[0].id}`);
       } else {
-        router.push("/home/sql");
+        router.push("/home/sql-editor");
       }
     }
   };
@@ -108,7 +108,7 @@ function SqlSnippetItem({
     <ContextMenu>
       <ContextMenuTrigger>
         <SidebarMenuButton asChild isActive={isActive}>
-          <Link href={"/home/sql/" + item.id} title={item.name}>
+          <Link href={"/home/sql-editor/" + item.id} title={item.name}>
             <FileCode2Icon />
             <span>{item.name}</span>
           </Link>
@@ -167,7 +167,7 @@ export function SqlSidebar() {
     setIsEditing(false);
 
     // Navigate to the new snippet
-    router.push(`/home/sql/${newSnippet.id}`);
+    router.push(`/home/sql-editor/${newSnippet.id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

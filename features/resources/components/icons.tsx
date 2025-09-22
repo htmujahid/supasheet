@@ -1,6 +1,6 @@
-import { Tables } from "@/lib/database.types";
+import { ColumnSchema } from "@/lib/database-meta.types";
 
-export function getDataTypeIcon(columnSchema: Tables<"_pg_meta_columns">) {
+export function getDataTypeIcon(columnSchema: ColumnSchema) {
   switch (columnSchema.actual_type) {
     case "task_code":
       return <code className="text-muted-foreground font-mono text-xs">T</code>;

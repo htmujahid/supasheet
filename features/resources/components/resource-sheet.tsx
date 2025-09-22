@@ -20,8 +20,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
+  ColumnSchema,
+  DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
+  ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
@@ -35,9 +38,9 @@ import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
 
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
-  tableSchema: Tables<"_pg_meta_tables"> | null;
-  columnsSchema: Tables<"_pg_meta_columns">[];
-  data: TableSchema | null;
+  tableSchema: TableSchema | null;
+  columnsSchema: ColumnSchema[];
+  data: ResourceDataSchema | null;
 }
 
 export function ResourceSheet({
@@ -46,20 +49,21 @@ export function ResourceSheet({
   data,
   ...props
 }: ResourceSheetProps) {
-  const params = useParams<{ id: DatabaseTables }>();
+  const { schema } = useParams<{ schema: DatabaseSchemas }>();
+  const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
 
-  const form = useForm<TableSchema>({
+  const form = useForm<ResourceDataSchema>({
     defaultValues:
       serializeData(data, columnsSchema) ??
       columnsSchema.reduce((acc, column) => {
-        acc[column.name as keyof TableSchema] = "";
+        acc[column.name as keyof ResourceDataSchema] = "";
         return acc;
-      }, {} as TableSchema),
+      }, {} as ResourceDataSchema),
   });
 
   const [isPending, startTransition] = useTransition();
 
-  function onCreate(input: TableSchema) {
+  function onCreate(input: ResourceDataSchema) {
     Object.entries(input).forEach(([key, value]) => {
       if (value === "") {
         delete input[key];
@@ -70,7 +74,8 @@ export function ResourceSheet({
       const jsonInput = parseJsonColumns(input, getJsonColumns(columnsSchema));
 
       const { data, error } = await createResourceDataAction({
-        resourceName: params.id,
+        schema,
+        resourceName: id,
         data: { ...input, ...jsonInput },
       });
 
@@ -91,7 +96,7 @@ export function ResourceSheet({
     });
   }
 
-  function onUpdate(input: TableSchema) {
+  function onUpdate(input: ResourceDataSchema) {
     if (!tableSchema) {
       toast.error("Table schema not found");
       return;
@@ -119,7 +124,8 @@ export function ResourceSheet({
       );
 
       const { data: updatedData, error } = await updateResourceDataAction({
-        resourceName: params.id,
+        schema,
+        resourceName: id,
         resourceIds,
         data: { ...input, ...jsonInput },
       });
@@ -146,10 +152,10 @@ export function ResourceSheet({
       <SheetContent className="flex flex-col gap-6 sm:max-w-md">
         <SheetHeader className="text-left">
           <SheetTitle>
-            {data ? "Update" : "Create"} {params.id}
+            {data ? "Update" : "Create"} {id}
           </SheetTitle>
           <SheetDescription>
-            {data ? "Update the" : "Create a new"} {params.id} and save the
+            {data ? "Update the" : "Create a new"} {id} and save the
             changes
           </SheetDescription>
         </SheetHeader>

@@ -32,16 +32,18 @@ import {
 import { deleteResourceDataAction } from "@/features/resources/lib/actions";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
+  DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
+  ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 
 interface DeleteResourceDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  resources: Row<TableSchema>["original"][];
-  tableSchema: Tables<"_pg_meta_tables"> | null;
+  resources: Row<ResourceDataSchema>["original"][];
+  tableSchema: TableSchema | null;
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
@@ -53,7 +55,10 @@ export function DeleteResourceDialog({
   onSuccess,
   ...props
 }: DeleteResourceDialogProps) {
-  const params = useParams<{ id: DatabaseTables }>();
+  const { schema } = useParams<{ schema: DatabaseSchemas }>();
+
+  const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
+
   const [isDeletePending, startDeleteTransition] = React.useTransition();
   const isDesktop = useMediaQuery("(min-width: 640px)");
 
@@ -75,7 +80,8 @@ export function DeleteResourceDialog({
 
     startDeleteTransition(async () => {
       const { data, error } = await deleteResourceDataAction({
-        resourceName: params.id,
+        schema,
+        resourceName: id,
         resourceIds,
       });
 

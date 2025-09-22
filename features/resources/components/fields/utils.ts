@@ -1,9 +1,10 @@
 import type { Tables } from "@/lib/database.types";
 
 import type { ColumnInput } from "./types";
+import { ColumnSchema } from "@/lib/database-meta.types";
 
 export function getColumnInputField(
-  columnSchema: Tables<"_pg_meta_columns">,
+  columnSchema: ColumnSchema,
 ): ColumnInput {
   let defaultValue: string | null = null;
 

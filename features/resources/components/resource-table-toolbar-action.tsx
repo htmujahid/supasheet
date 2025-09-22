@@ -7,17 +7,16 @@ import { Download, Plus } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import { Button } from "@/components/ui/button";
-import { TableSchema } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
+import { ColumnSchema, ResourceDataSchema, TableSchema } from "@/lib/database-meta.types";
 import { exportTableToCSV } from "@/lib/export";
 
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
 
 interface ResourceTableToolbarActionsProps {
-  table: Table<TableSchema>;
-  columnsSchema: Tables<"_pg_meta_columns">[];
-  tableSchema: Tables<"_pg_meta_tables"> | null;
+  table: Table<ResourceDataSchema>;
+  columnsSchema: ColumnSchema[];
+  tableSchema: TableSchema | null;
 }
 
 export function ResourceTableToolbarActions({

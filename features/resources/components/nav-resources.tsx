@@ -68,23 +68,6 @@ export function ResourcesGroup({
             <CommandList>
               <CommandEmpty>No Group found.</CommandEmpty>
               <CommandGroup>
-                <CommandItem
-                  value="All"
-                  onSelect={(currentValue) => {
-                    setValue(currentValue);
-                    onValueChange(currentValue);
-                    setOpen(false);
-                  }}
-                >
-                  All
-                  {value === "All" && (
-                    <CheckIcon
-                      size={16}
-                      className="ml-auto"
-                      aria-hidden="true"
-                    />
-                  )}
-                </CommandItem>
                 {groups.map((group) => (
                   <CommandItem
                     key={group}

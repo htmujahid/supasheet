@@ -1,25 +1,47 @@
-import { DoorClosedLockedIcon, UserIcon, UserLockIcon } from "lucide-react";
+import {
+  KeyIcon,
+  ShieldUserIcon,
+  UserCogIcon,
+  UserIcon,
+  UserPlusIcon,
+} from "lucide-react";
 
-import { DefaultLayout } from "@/components/layouts/default-layout";
-import { PrimaryLayout } from "@/components/layouts/primary-layout";
-import { SidebarInset } from "@/components/ui/sidebar";
+import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
+import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { UserSidebar } from "@/features/users/components/user-sidebar";
 
 const items = [
   {
+    // name, profile picture, danger zone
     name: "Accounts",
-    id: "accounts",
+    href: "/home/users/accounts",
     icon: <UserIcon />,
   },
   {
-    name: "User Roles",
-    id: "user_roles",
-    icon: <UserLockIcon />,
+    // email, identities (google, github, etc)
+    name: "Identities",
+    href: "/home/users/identities",
+    icon: <UserPlusIcon />,
   },
   {
-    name: "Role Permissions",
-    id: "role_permissions",
-    icon: <DoorClosedLockedIcon />,
+    // password, mfa
+    name: "Security",
+    href: "/home/users/security",
+    icon: <ShieldUserIcon />,
+  },
+  {
+    // roles & permissions
+    name: "Roles & Permissions",
+    href: "/home/users/roles-permissions",
+    icon: <UserCogIcon />,
+  },
+  {
+    // other users roles & permissions
+    name: "Access Control",
+    href: "/home/users/access-control",
+    icon: <KeyIcon />,
   },
 ];
 
@@ -29,13 +51,25 @@ export default async function HomeUsersLayout({
   children: React.ReactNode;
 }) {
   return (
-    <DefaultLayout>
-      <PrimaryLayout>
+    <>
+      <PrimarySidebar>
         <UserSidebar items={items} />
-      </PrimaryLayout>
+      </PrimarySidebar>
       <SidebarInset>
-        <div className="w-full flex-1">{children}</div>
+        <div className="w-full flex-1">
+          <header className="flex h-12 shrink-0 items-center gap-2 px-4">
+            <div className="flex flex-1 items-center gap-2">
+              <SidebarTrigger />
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:!h-4"
+              />
+              <AppBreadcrumbs />
+            </div>
+          </header>
+          <div className="max-w-3xl px-4">{children}</div>
+        </div>
       </SidebarInset>
-    </DefaultLayout>
+    </>
   );
 }

@@ -1,6 +1,7 @@
+import { ColumnSchema } from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 
-export function getColumnCell(columnSchema: Tables<"_pg_meta_columns">) {
+export function getColumnCell(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
     case "json":
     case "jsonb":
@@ -14,7 +15,7 @@ export function getColumnCell(columnSchema: Tables<"_pg_meta_columns">) {
   }
 }
 
-export function getColumnMeta(columnSchema: Tables<"_pg_meta_columns">) {
+export function getColumnMeta(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
     case "character":
     case "character varying":

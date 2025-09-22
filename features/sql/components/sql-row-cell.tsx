@@ -7,17 +7,17 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { TableSchema } from "@/lib/database-meta.types";
+import { ResourceDataSchema } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
 
 export function SqlRowCell({
   row,
   title,
 }: {
-  row: Row<TableSchema>;
+  row: Row<ResourceDataSchema>;
   title: string;
 }) {
-  const value = row.original?.[title as keyof TableSchema];
+  const value = row.original?.[title as keyof ResourceDataSchema];
 
   // if typeof cell is array or json
   if (Array.isArray(value) || typeof value === "object") {

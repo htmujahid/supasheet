@@ -8,22 +8,26 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { DataTable } from "@/components/data-table/data-table";
-import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
-import { DataTableClientFilterList } from "@/components/data-table/data-table-client-filter-list";
-import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { DataTable } from "@/interfaces/data-table/components/data-table";
+import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
+import { DataTableClientFilterList } from "@/interfaces/data-table/components/data-table-client-filter-list";
+import { DataTableSortList } from "@/interfaces/data-table/components/data-table-sort-list";
 import {
+  ExtendedColumnFilter,
+  ExtendedColumnSort,
+} from "@/interfaces/data-table/types/data-table";
+import {
+  DatabaseSchemas,
   DatabaseTables,
   Relationship,
-  TableSchema,
+  ResourceDataSchema,
 } from "@/lib/database-meta.types";
-import { ExtendedColumnFilter, ExtendedColumnSort } from "@/types/data-table";
 
 import { useColumnsSchema, useResourceData } from "../../lib/data";
 import { getSheetTableColumns } from "./sheet-table-columns";
@@ -31,7 +35,7 @@ import { getSheetTableColumns } from "./sheet-table-columns";
 interface ForeignTableSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
   relationship: Relationship;
-  setRecord: (record: TableSchema) => void;
+  setRecord: (record: ResourceDataSchema) => void;
 }
 
 export function ForeignTableSheet({
@@ -48,7 +52,8 @@ export function ForeignTableSheet({
   const [sort, setSort] = useState<ExtendedColumnSort<unknown>[]>([]);
 
   const { data, refetch } = useResourceData(
-    relationship.target_table_name as DatabaseTables,
+    relationship.target_table_schema,
+    relationship.target_table_name,
     {
       page: pagination.pageIndex + 1,
       perPage: pagination.pageSize,

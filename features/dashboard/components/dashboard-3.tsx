@@ -193,13 +193,8 @@ export function Dashboard3() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-4">
       <div className="space-y-2.5">
-        {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-base font-medium">Dashboard 3</h1>
-        </div>
-
         {/* System Metrics Row */}
         <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
           {systemMetrics.map((metric, index) => {

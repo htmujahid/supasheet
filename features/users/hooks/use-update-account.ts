@@ -1,0 +1,33 @@
+import { useMutation } from "@tanstack/react-query";
+
+import { Database } from "@/lib/database.types";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
+
+type UpdateData = Database["supasheet"]["Tables"]["accounts"]["Update"];
+
+export function useUpdateAccountData(accountId: string) {
+  const client = useSupabase();
+
+  const mutationKey = ["account:data", accountId];
+
+  const mutationFn = async (data: UpdateData) => {
+    const response = await client
+      .schema("supasheet")
+      .from("accounts")
+      .update(data)
+      .match({
+        id: accountId,
+      });
+
+    if (response.error) {
+      throw response.error;
+    }
+
+    return response.data;
+  };
+
+  return useMutation({
+    mutationKey,
+    mutationFn,
+  });
+}

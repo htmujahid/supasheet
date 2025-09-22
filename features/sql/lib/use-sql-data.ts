@@ -23,19 +23,21 @@ export function useSqlData() {
         const token = await client.auth.getSession();
 
         const data = await restSupabaseFetcher(
+          "supasheet",
           http.method,
           http.fullPath,
           token.data.session?.access_token || "",
         );
 
         setData(data);
-        setIsLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           toast.error(error.message);
         } else {
           toast.error(error?.toString());
         }
+      } finally {
+        setIsLoading(false);
       }
     },
     [client, setIsLoading, setData],

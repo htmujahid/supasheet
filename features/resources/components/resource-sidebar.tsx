@@ -26,7 +26,7 @@ export function ResourceSidebar({
   resources: {
     name: string;
     id: string;
-    group: string;
+    schema: string;
     type: string;
   }[];
 }) {
@@ -36,13 +36,15 @@ export function ResourceSidebar({
     (resource) => resource.id === params?.id,
   );
 
-  const uniqueGroups = Array.from(
-    new Set(resources.map((resource) => resource.group)),
+  const uniqueSchemas = Array.from(
+    new Set(resources.map((resource) => resource.schema)),
   );
 
-  const [activeGroup, setActiveGroup] = useState("All");
+  const [activeSchema, setActiveSchema] = useState(resources[0]?.schema);
   const [search, setSearch] = useState("");
-  const [activeResources, setActiveResources] = useState(resources);
+  const [activeResources, setActiveResources] = useState(
+    resources.filter((resource) => resource.schema === activeSchema),
+  );
 
   return (
     <Sidebar
@@ -55,22 +57,14 @@ export function ResourceSidebar({
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <ResourcesGroup
-            groups={uniqueGroups}
-            activeGroup={activeGroup}
+            groups={uniqueSchemas}
+            activeGroup={activeSchema}
             onValueChange={(group: string) => {
-              setActiveGroup(group);
-              if (group === "All") {
-                setActiveResources(
-                  resources.filter((resource) =>
-                    resource.name.toLowerCase().includes(search.toLowerCase()),
-                  ),
-                );
-                return;
-              }
+              setActiveSchema(group);
               setActiveResources(
                 resources.filter(
                   (resource) =>
-                    resource.group === group &&
+                    resource.schema === group &&
                     resource.name.toLowerCase().includes(search.toLowerCase()),
                 ),
               );
@@ -99,8 +93,8 @@ export function ResourceSidebar({
                   asChild
                   isActive={activeResource?.id === item.id}
                 >
-                  <Link href={"/home/resources/" + item.id} title={item.name}>
-                    {item.type === "table" ? <Table2 /> : <EyeIcon />}
+                  <Link href={"/home/resources/" + item.schema + "/" + item.id} title={item.name}>
+                    {getResourceIcon(item.type)}
                     <span>{item.name}</span>
                   </Link>
                 </SidebarMenuButton>
@@ -111,4 +105,17 @@ export function ResourceSidebar({
       </SidebarContent>
     </Sidebar>
   );
+}
+
+function getResourceIcon(type: string) {
+  switch (type) {
+    case "table":
+      return <Table2 />;
+    case "view":
+      return <EyeIcon />;
+    case "materialized_view":
+      return <EyeIcon />;
+    default:
+      return <Table2 />;
+  }
 }

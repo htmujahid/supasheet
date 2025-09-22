@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 import { Menu } from "lucide-react";
 
@@ -17,8 +16,6 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-import { If } from "../makerkit/if";
-import { SidebarTrigger } from "../ui/sidebar";
 import { SiteNavigationItem } from "./site-navigation-item";
 
 /**
@@ -53,11 +50,7 @@ const links: Record<
      */
 };
 
-const sidebarPaths = ["/home/resources"];
-
 export function SiteNavigation() {
-  const pathname = usePathname();
-
   const NavItems = Object.values(links).map((item) => {
     return (
       <SiteNavigationItem key={item.path} path={item.path}>
@@ -77,12 +70,6 @@ export function SiteNavigation() {
       </div>
 
       <div className={"flex justify-start sm:items-center md:hidden"}>
-        <If condition={sidebarPaths.map((path) => pathname.startsWith(path))}>
-          <SidebarTrigger
-            className="size-8 opacity-80"
-            iconClassName="size-5"
-          />
-        </If>
         <MobileDropdown />
       </div>
     </>

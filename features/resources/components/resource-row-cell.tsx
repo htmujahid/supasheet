@@ -1,7 +1,13 @@
 import Link from "next/link";
 
 import { Row } from "@tanstack/react-table";
-import { ArrowUpRightIcon, CopyIcon, EditIcon, EyeIcon, TrashIcon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  CopyIcon,
+  EditIcon,
+  EyeIcon,
+  TrashIcon,
+} from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import {
@@ -12,10 +18,15 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { getColumnCell, getColumnMeta } from "@/features/resources/lib/columns";
-import { PrimaryKey, Relationship, TableSchema } from "@/lib/database-meta.types";
+import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
+import {
+  ColumnSchema,
+  Relationship,
+  ResourceDataSchema,
+  TableSchema,
+} from "@/lib/database-meta.types";
 import { Tables } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
-import { DataTableRowAction } from "@/types/data-table";
 
 export function ResourceRowCell({
   row,
@@ -23,10 +34,10 @@ export function ResourceRowCell({
   tableSchema,
   setRowAction,
 }: {
-  row: Row<TableSchema>;
-  column: Tables<"_pg_meta_columns">;
-  tableSchema: Tables<"_pg_meta_tables"> | null;
-  setRowAction: (action: DataTableRowAction<TableSchema> | null) => void;
+  row: Row<ResourceDataSchema>;
+  column: ColumnSchema;
+  tableSchema: TableSchema | null;
+  setRowAction: (action: DataTableRowAction<ResourceDataSchema> | null) => void;
 }) {
   const meta = getColumnMeta(column);
   const cell = getColumnCell(column);
@@ -39,7 +50,7 @@ export function ResourceRowCell({
     return (
       <pre className="truncate">
         {JSON.stringify(
-          row.original?.[column.name as keyof TableSchema],
+          row.original?.[column.name as keyof ResourceDataSchema],
           null,
           0,
         )}
@@ -56,13 +67,13 @@ export function ResourceRowCell({
             relationship && "pl-6",
           )}
         >
-          {row.original?.[column.name as keyof TableSchema]?.toString()}
+          {row.original?.[column.name as keyof ResourceDataSchema]?.toString()}
           <If condition={relationship}>
             <Link
               href={prepareForeignKeyLink(
                 column.name as string,
-                row.original?.[column.name as keyof TableSchema]?.toString() ??
-                "",
+                row.original?.[column.name as keyof ResourceDataSchema]?.toString() ??
+                  "",
                 meta.variant,
                 tableSchema ?? null,
               )}
@@ -77,8 +88,8 @@ export function ResourceRowCell({
         <ContextMenuItem
           onClick={() => {
             navigator.clipboard.writeText(
-              row.original?.[column.name as keyof TableSchema]?.toString() ??
-              "",
+              row.original?.[column.name as keyof ResourceDataSchema]?.toString() ??
+                "",
             );
           }}
         >
@@ -120,7 +131,7 @@ function prepareForeignKeyLink(
   key: string,
   value: string,
   variant: string,
-  table: Tables<"_pg_meta_tables"> | null,
+  table: TableSchema | null,
 ) {
   if (!table) return "#";
 
@@ -130,5 +141,5 @@ function prepareForeignKeyLink(
 
   if (!relationship) return "#";
 
-  return `/home/resources/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"${variant}","operator":"eq","filterId":"0QdV0twS"}]`;
+  return `/home/resources/${relationship.target_table_schema}/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"${variant}","operator":"eq","filterId":"0QdV0twS"}]`;
 }

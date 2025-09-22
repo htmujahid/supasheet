@@ -1,4 +1,4 @@
-import { DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { GetResourceSchema } from "./validations";
@@ -7,10 +7,11 @@ export async function loadColumnsSchema(id: string) {
   const client = await getSupabaseServerClient();
 
   const columnResponse = await client
-    .from("_pg_meta_columns")
+    .schema("supasheet")
+    .from("columns")
     .select("*")
     .order("ordinal_position", { ascending: true })
-    .eq("relation", id);
+    .eq("table", id);
 
   return columnResponse.data;
 }
@@ -19,7 +20,8 @@ export async function loadTableSchema(id: string) {
   const client = await getSupabaseServerClient();
 
   const tableResponse = await client
-    .from("_pg_meta_tables")
+    .schema("supasheet")
+    .from("tables")
     .select("*")
     .eq("name", id)
     .single();
@@ -32,7 +34,8 @@ export async function loadTableSchema(id: string) {
 }
 
 export async function loadResourceData(
-  id: DatabaseTables,
+  schema: DatabaseSchemas,
+  id: DatabaseTables<typeof schema>,
   input: GetResourceSchema,
 ) {
   const client = await getSupabaseServerClient();
@@ -40,6 +43,7 @@ export async function loadResourceData(
   const { page, perPage, sort, filters } = input;
 
   const query = client
+    .schema(schema)
     .from(id)
     .select("*", { count: "exact" })
     .range((page - 1) * perPage, page * perPage - 1);
@@ -110,12 +114,13 @@ export async function loadResourceData(
 }
 
 export async function loadSingleResourceData(
-  id: DatabaseTables,
+  schema: DatabaseSchemas,
+  id: DatabaseTables<typeof schema>,
   pk: Record<string, unknown>,
 ) {
   const client = await getSupabaseServerClient();
 
-  const query = client.from(id).select("*");
+  const query = client.schema(schema).from(id).select("*");
 
   for (const [key, value] of Object.entries(pk)) {
     query.eq(key, value as string | number);
@@ -129,46 +134,42 @@ export async function loadSingleResourceData(
 export async function loadResources() {
   const client = await getSupabaseServerClient();
 
-  const response = await client.from("resources").select("id, name, grp, type");
-
-  let resources: { name: string; id: string; group: string; type: string }[] =
-    [];
-
-  if (response.error) {
-    const tableSchema = await client.from("_pg_meta_tables").select("*");
+    const tableSchema = await client.schema("supasheet").from("tables").select("*");
     const tableResources =
       tableSchema.data?.map((resource) => ({
         name: resource.name as string,
         id: resource.name as string,
-        group: resource.schema as string,
+        schema: resource.schema as string,
         type: "table",
       })) ?? [];
 
-    const viewSchema = await client.from("_pg_meta_views").select("*");
+    const viewSchema = await client.schema("supasheet").from("views").select("*");
     const viewResources =
       viewSchema.data?.map((resource) => ({
         name: resource.name as string,
         id: resource.name as string,
-        group: resource.schema as string,
+        schema: resource.schema as string,
         type: "view",
       })) ?? [];
 
-    resources = [...tableResources, ...viewResources];
-  } else {
-    resources =
-      response.data?.map((resource) => ({
-        name: resource.name,
-        id: resource.id,
-        group: resource.grp,
-        type: resource.type,
+    const materializedViewSchema = await client
+      .schema("supasheet")
+      .from("materialized_views")
+      .select("*");
+    const materializedViewResources =
+      materializedViewSchema.data?.map((resource) => ({
+        name: resource.name as string,
+        id: resource.name as string,
+        schema: resource.schema as string,
+        type: "materialized_view",
       })) ?? [];
-  }
 
-  return resources ?? [];
+    return [...tableResources, ...viewResources, ...materializedViewResources];
 }
 
 export async function loadForeignKeyData(
-  targetTable: DatabaseTables,
+  schema: DatabaseSchemas,
+  targetTable: DatabaseTables<typeof schema>,
   targetColumn: string,
   value: unknown,
 ) {

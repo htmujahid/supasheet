@@ -2,14 +2,14 @@
 
 import { use, useMemo, useState } from "react";
 
-import { DataTable } from "@/components/data-table/data-table";
-import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
-import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
-import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { If } from "@/components/makerkit/if";
-import { useDataTable } from "@/hooks/use-data-table";
-import { TableSchema } from "@/lib/database-meta.types";
-import { DataTableRowAction } from "@/types/data-table";
+import { DataTable } from "@/interfaces/data-table/components/data-table";
+import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
+import { DataTableFilterList } from "@/interfaces/data-table/components/data-table-filter-list";
+import { DataTableSortList } from "@/interfaces/data-table/components/data-table-sort-list";
+import { useDataTable } from "@/interfaces/data-table/hooks/use-data-table";
+import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
+import { ResourceDataSchema } from "@/lib/database-meta.types";
 
 import {
   loadColumnsSchema,
@@ -34,7 +34,7 @@ export function ResourceTable({
 }) {
   const [tableSchema, columnsSchema, data] = use(promises);
   const [rowAction, setRowAction] =
-    useState<DataTableRowAction<TableSchema> | null>(null);
+    useState<DataTableRowAction<ResourceDataSchema> | null>(null);
 
   const columns = useMemo(
     () =>
@@ -46,7 +46,7 @@ export function ResourceTable({
     [columnsSchema, tableSchema, setRowAction],
   );
 
-  const { table, shallow, throttleMs, debounceMs } = useDataTable<TableSchema>({
+  const { table, shallow, throttleMs, debounceMs } = useDataTable<ResourceDataSchema>({
     data: data.results,
     columns,
     pageCount: Math.ceil(data.total / data.perPage),

@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button";
 import { IStandaloneCodeEditor } from "../lib/types";
 import { useSqlData } from "../lib/use-sql-data";
 import { useSqlContext } from "./sql-context";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 
 const MonacoEditor = dynamic(() => import("./monaco-editor"), { ssr: false });
 
@@ -30,8 +33,15 @@ export default function SqlToRest() {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-2 p-[5.5px]">
-        <div className="text-base font-medium">SQL Editor</div>
+      <header className="flex h-12 shrink-0 items-center justify-between gap-2 px-4">
+        <div className="flex flex-1 items-center gap-2">
+          <SidebarTrigger />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:!h-4"
+          />
+          <AppBreadcrumbs />
+        </div>
         <div className="flex gap-2">
           <Button
             variant="default"
@@ -52,14 +62,16 @@ export default function SqlToRest() {
             )}
           </Button>
         </div>
-      </div>
-      <div className="h-[calc(20vh)] w-full overflow-hidden border-y">
-        <MonacoEditor
-          id={id}
-          editorRef={editorRef}
-          monacoRef={monacoRef}
-          executeQuery={executeQuery}
-        />
+      </header>
+      <div className="px-4">
+        <div className="h-[calc(20vh)] w-full overflow-hidden border rounded-md">
+          <MonacoEditor
+            id={id}
+            editorRef={editorRef}
+            monacoRef={monacoRef}
+            executeQuery={executeQuery}
+          />
+        </div>
       </div>
     </>
   );

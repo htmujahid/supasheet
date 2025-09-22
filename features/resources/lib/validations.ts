@@ -4,7 +4,10 @@ import {
   parseAsStringEnum,
 } from "nuqs/server";
 
-import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
+import {
+  getFiltersStateParser,
+  getSortingStateParser,
+} from "@/interfaces/data-table/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
   page: parseAsInteger.withDefault(1),

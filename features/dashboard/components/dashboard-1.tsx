@@ -115,13 +115,8 @@ const chartConfig = {
 
 export function Dashboard1() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-4">
       <div className="space-y-2.5">
-        {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-base font-medium">Dashboard 1</h1>
-        </div>
-
         {/* Stats Cards */}
         <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-4">
           <Card className="shadow-none">

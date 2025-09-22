@@ -10,7 +10,7 @@ import { Trans } from "@/components/makerkit/trans";
 import { Button } from "@/components/ui/button";
 import featuresFlagConfig from "@/config/feature-flags.config";
 import pathsConfig from "@/config/paths.config";
-import { PersonalAccountDropdown } from "@/features/accounts/components/personal-account-dropdown";
+import { PersonalAccountDropdown } from "@/features/users/components/personal-account-dropdown";
 import { useSignOut } from "@/lib/supabase/hooks/use-sign-out";
 import { useUser } from "@/lib/supabase/hooks/use-user";
 

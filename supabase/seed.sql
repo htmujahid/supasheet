@@ -21,4 +21,28 @@ VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'b73eb03e-fb7a-424d-84ff-18e2791
         'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
         '9bb58bad-24a4-41a8-9742-1b5b4e2d8abd');
 
-insert into public.user_roles (account_id, role) values ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'admin');
+insert into supasheet.user_roles (account_id, role) values ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'user');
+
+INSERT INTO supasheet.columns SELECT * FROM supasheet.get_columns('finance');
+INSERT INTO supasheet.tables SELECT * FROM supasheet.get_tables('finance');
+INSERT INTO supasheet.views SELECT * FROM supasheet.get_views('finance');
+INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialized_views('finance');
+
+
+INSERT INTO supasheet.columns SELECT * FROM supasheet.get_columns('productivity');
+INSERT INTO supasheet.tables SELECT * FROM supasheet.get_tables('productivity');
+INSERT INTO supasheet.views SELECT * FROM supasheet.get_views('productivity');
+INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialized_views('productivity');
+
+
+INSERT INTO supasheet.columns SELECT * FROM supasheet.get_columns('journal');
+INSERT INTO supasheet.tables SELECT * FROM supasheet.get_tables('journal');
+INSERT INTO supasheet.views SELECT * FROM supasheet.get_views('journal');
+INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialized_views('journal');
+
+
+INSERT INTO supasheet.columns SELECT * FROM supasheet.get_columns('health_fitness');
+INSERT INTO supasheet.tables SELECT * FROM supasheet.get_tables('health_fitness');
+INSERT INTO supasheet.views SELECT * FROM supasheet.get_views('health_fitness');
+INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialized_views('health_fitness');
+

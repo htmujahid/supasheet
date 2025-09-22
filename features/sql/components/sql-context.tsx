@@ -1,18 +1,18 @@
 import { createContext, useContext, useState } from "react";
 
-import { TableSchema } from "@/lib/database-meta.types";
+import { ResourceDataSchema } from "@/lib/database-meta.types";
 
 type SqlContextType = {
-  data: TableSchema[];
+  data: ResourceDataSchema[];
   isLoading: boolean;
-  setData: React.Dispatch<React.SetStateAction<TableSchema[]>>;
+  setData: React.Dispatch<React.SetStateAction<ResourceDataSchema[]>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const SqlContext = createContext<SqlContextType | null>(null);
 
 export function SqlProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = useState<TableSchema[]>([]);
+  const [data, setData] = useState<ResourceDataSchema[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   return (

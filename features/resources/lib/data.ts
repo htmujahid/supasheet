@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
 import { GetResourceSchema } from "./validations";
@@ -12,7 +12,8 @@ export function useColumnsSchema(id: string) {
       const client = getSupabaseBrowserClient();
 
       const columnResponse = await client
-        .from("_pg_meta_columns")
+        .schema("supasheet")
+        .from("columns")
         .select("*")
         .order("ordinal_position", { ascending: true })
         .eq("relation", id);
@@ -30,7 +31,8 @@ export function useTableSchema(id: string) {
       const client = getSupabaseBrowserClient();
 
       const tableResponse = await client
-        .from("_pg_meta_tables")
+        .schema("supasheet")
+        .from("tables")
         .select("*")
         .eq("name", id)
         .single();
@@ -45,7 +47,7 @@ export function useTableSchema(id: string) {
   });
 }
 
-export function useResourceData(id: DatabaseTables, input: GetResourceSchema) {
+export function useResourceData(schema: DatabaseSchemas, id: DatabaseTables<typeof schema>, input: GetResourceSchema) {
   return useQuery({
     queryKey: ["resource-data", id, input],
     queryFn: async () => {
@@ -53,6 +55,7 @@ export function useResourceData(id: DatabaseTables, input: GetResourceSchema) {
       const { page, perPage, sort, filters } = input;
 
       const query = client
+        .schema(schema)
         .from(id)
         .select("*", { count: "exact" })
         .range((page - 1) * perPage, page * perPage - 1);
@@ -130,28 +133,31 @@ export function useResources() {
     queryFn: async () => {
       const client = getSupabaseBrowserClient();
 
-      const response = await client.from("resources").select("id, name, grp");
-
-      let resources: { name: string; id: string; group: string }[] = [];
-
-      if (response.error) {
-        const tableSchema = await client.from("_pg_meta_tables").select("*");
-        resources =
+        const tableSchema = await client.schema("supasheet").from("tables").select("*");
+        const tableResources =
           tableSchema.data?.map((resource) => ({
             name: resource.name as string,
             id: resource.name as string,
             group: resource.schema as string,
           })) ?? [];
-      } else {
-        resources =
-          response.data?.map((resource) => ({
-            name: resource.name,
-            id: resource.id,
-            group: resource.grp,
-          })) ?? [];
-      }
 
-      return resources ?? [];
+        const viewSchema = await client.schema("supasheet").from("views").select("*");
+        const viewResources =
+          viewSchema.data?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            group: resource.schema as string,
+          })) ?? [];
+
+        const materializedViewSchema = await client.schema("supasheet").from("materialized_views").select("*");
+        const materializedViewResources =
+          materializedViewSchema.data?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            group: resource.schema as string,
+          })) ?? [];
+
+        return [...tableResources, ...viewResources, ...materializedViewResources];
     },
   });
 }

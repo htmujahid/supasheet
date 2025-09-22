@@ -1,4 +1,5 @@
 export async function restSupabaseFetcher(
+  schema: string,
   method: string,
   path: string,
   token: string,
@@ -10,6 +11,7 @@ export async function restSupabaseFetcher(
       method,
       headers: {
         "Content-Type": "application/json",
+        "Accept-Profile": schema,
         apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         Authorization: `Bearer ${token}`,
       },

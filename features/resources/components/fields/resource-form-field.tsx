@@ -9,8 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Relationship, TableSchema } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
+import { ColumnSchema, Relationship, ResourceDataSchema, TableSchema } from "@/lib/database-meta.types";
 
 import { getDataTypeIcon } from "../icons";
 import { AllFields } from "./all-fields";
@@ -24,9 +23,9 @@ export function ResourceFormField({
   tableSchema,
   form,
 }: {
-  column: Tables<"_pg_meta_columns">;
-  tableSchema: Tables<"_pg_meta_tables"> | null;
-  form: UseFormReturn<TableSchema>;
+  column: ColumnSchema;
+  tableSchema: TableSchema | null;
+  form: UseFormReturn<ResourceDataSchema>;
 }) {
   let columnInput: ColumnInput;
 
@@ -56,7 +55,7 @@ export function ResourceFormField({
       key={column.id}
       control={form.control}
       disabled={columnInput.disabled}
-      name={column.name as FieldPath<TableSchema>}
+      name={column.name as FieldPath<ResourceDataSchema>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>

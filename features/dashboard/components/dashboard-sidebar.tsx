@@ -64,7 +64,7 @@ export function DashboardSidebar({
                   asChild
                   isActive={acitveItem?.id === item.id}
                 >
-                  <Link href={"/home/dashboard/" + item.id} title={item.name}>
+                  <Link href={"/home/dashboards/" + item.id} title={item.name}>
                     {item.icon}
                     <span>{item.name}</span>
                   </Link>

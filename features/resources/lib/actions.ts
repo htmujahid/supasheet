@@ -2,16 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 
-import { DatabaseTables, TableSchema } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables, ResourceDataSchema } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 export async function deleteResourceDataAction(input: {
-  resourceName: DatabaseTables;
+  schema: DatabaseSchemas;
+  resourceName: DatabaseTables<typeof input.schema>;
   resourceIds: Record<string, unknown[]>;
 }) {
   const client = await getSupabaseServerClient();
 
-  const query = client.from(input.resourceName).delete();
+  const query = client.schema(input.schema).from(input.resourceName).delete();
 
   for (const [key, value] of Object.entries(input.resourceIds)) {
     query.in(key, value);
@@ -28,13 +29,14 @@ export async function deleteResourceDataAction(input: {
 }
 
 export async function updateResourceDataAction(input: {
-  resourceName: DatabaseTables;
+  schema: DatabaseSchemas;
+  resourceName: DatabaseTables<typeof input.schema>;
   resourceIds: Record<string, unknown>;
-  data: TableSchema;
+  data: ResourceDataSchema;
 }) {
   const client = await getSupabaseServerClient();
 
-  const query = client.from(input.resourceName).update(input.data);
+  const query = client.schema(input.schema).from(input.resourceName).update(input.data as never);
 
   for (const [key, value] of Object.entries(input.resourceIds)) {
     query.eq(key, value as string | number);
@@ -51,14 +53,16 @@ export async function updateResourceDataAction(input: {
 }
 
 export async function createResourceDataAction(input: {
-  resourceName: DatabaseTables;
-  data: TableSchema;
+  schema: DatabaseSchemas;
+  resourceName: DatabaseTables<typeof input.schema>;
+  data: ResourceDataSchema;
 }) {
   const client = await getSupabaseServerClient();
 
   const { data, error } = await client
+    .schema(input.schema)
     .from(input.resourceName)
-    .insert({ ...input.data } as never)
+    .insert(input.data as never)
     .select("*");
 
   revalidatePath(`/home/resources/${input.resourceName}`);

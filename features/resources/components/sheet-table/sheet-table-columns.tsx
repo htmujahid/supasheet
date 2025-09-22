@@ -1,15 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { getColumnCell, getColumnMeta } from "@/features/resources/lib/columns";
-import { TableSchema } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
+import { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
 
 export function getSheetTableColumns({
   columnsSchema,
   setRecord,
 }: {
-  columnsSchema: Tables<"_pg_meta_columns">[];
-  setRecord: (record: TableSchema) => void;
+  columnsSchema: ColumnSchema[];
+  setRecord: (record: ResourceDataSchema) => void;
 }) {
   return (columnsSchema ?? []).map((c) => ({
     id: c.name,
@@ -29,7 +28,7 @@ export function getSheetTableColumns({
             }}
           >
             {JSON.stringify(
-              row.original?.[c.name as keyof TableSchema],
+              row.original?.[c.name as keyof ResourceDataSchema],
               null,
               2,
             )}
@@ -44,7 +43,7 @@ export function getSheetTableColumns({
             setRecord(row.original);
           }}
         >
-          {row.original[c.name as keyof TableSchema] as string}
+          {row.original[c.name as keyof ResourceDataSchema] as string}
         </div>
       );
     },
@@ -53,5 +52,5 @@ export function getSheetTableColumns({
     meta: getColumnMeta(c),
     enableSorting: true,
     enableHiding: true,
-  })) as ColumnDef<TableSchema, unknown>[];
+  })) as ColumnDef<ResourceDataSchema, unknown>[];
 }

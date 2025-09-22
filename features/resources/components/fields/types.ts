@@ -1,6 +1,6 @@
 import type { ControllerRenderProps } from "react-hook-form";
 
-import type { TableSchema } from "@/lib/database-meta.types";
+import type { ResourceDataSchema } from "@/lib/database-meta.types";
 
 export type ColumnInput = {
   variant:
@@ -22,7 +22,7 @@ export type ColumnInput = {
 };
 
 export type FieldProps = {
-  field: ControllerRenderProps<TableSchema, string>;
+  field: ControllerRenderProps<ResourceDataSchema, string>;
   columnInput: ColumnInput;
   disabled?: boolean;
 };

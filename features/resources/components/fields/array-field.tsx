@@ -26,7 +26,7 @@ import {
   SortableItem,
   SortableItemHandle,
 } from "@/components/ui/sortable";
-import { TableSchema } from "@/lib/database-meta.types";
+import { ResourceDataSchema } from "@/lib/database-meta.types";
 
 import { AllFields } from "./all-fields";
 import { ColumnInput, FieldProps } from "./types";
@@ -37,10 +37,10 @@ export function ArrayField({
   field,
   control,
 }: {
-  form: UseFormReturn<TableSchema>;
+  form: UseFormReturn<ResourceDataSchema>;
   columnInput: ColumnInput;
   field: FieldProps["field"];
-  control: Control<TableSchema>;
+  control: Control<ResourceDataSchema>;
 }) {
   const fieldArray = useFieldArray({
     control,
@@ -157,7 +157,7 @@ export function ArrayField({
                 <DropdownMenuItem
                   onClick={() => {
                     fieldArray.remove();
-                    form.setValue(field.name as FieldPath<TableSchema>, null);
+                    form.setValue(field.name as FieldPath<ResourceDataSchema>, null);
                   }}
                 >
                   Set null
@@ -165,7 +165,7 @@ export function ArrayField({
               </If>
               <DropdownMenuItem
                 onClick={() =>
-                  form.setValue(field.name as FieldPath<TableSchema>, [])
+                  form.setValue(field.name as FieldPath<ResourceDataSchema>, [])
                 }
               >
                 Set empty array
@@ -174,7 +174,7 @@ export function ArrayField({
                 <DropdownMenuItem
                   onClick={() => {
                     fieldArray.remove();
-                    form.setValue(field.name as FieldPath<TableSchema>, "");
+                    form.setValue(field.name as FieldPath<ResourceDataSchema>, "");
                   }}
                 >
                   Set default value

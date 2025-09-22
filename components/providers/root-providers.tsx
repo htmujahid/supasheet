@@ -15,7 +15,6 @@ import { I18nProvider } from "@/lib/i18n/i18n.provider";
 import { i18nResolver } from "@/lib/i18n/i18n.resolver";
 import { getI18nSettings } from "@/lib/i18n/i18n.settings";
 
-import { SidebarProvider } from "../ui/sidebar";
 import { AuthProvider } from "./auth-provider";
 import { ReactQueryProvider } from "./react-query-provider";
 
@@ -64,16 +63,7 @@ export function RootProviders({
                 defaultTheme={theme}
                 enableColorScheme={false}
               >
-                <SidebarProvider
-                  style={
-                    {
-                      "--sidebar-width": "calc(var(--spacing) * 80)",
-                      "--header-height": "calc(var(--spacing) * 14)",
-                    } as React.CSSProperties
-                  }
-                >
-                  <div className="w-full">{children}</div>
-                </SidebarProvider>
+                <div className="w-full">{children}</div>
               </ThemeProvider>
             </AuthProvider>
           </CaptchaProvider>

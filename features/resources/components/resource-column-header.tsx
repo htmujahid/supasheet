@@ -23,6 +23,7 @@ import { Tables } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
 
 import { getDataTypeIcon } from "./icons";
+import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 
 export function ResourceColumnHeader<TData, TValue>({
   column,
@@ -34,8 +35,8 @@ export function ResourceColumnHeader<TData, TValue>({
 }: React.ComponentProps<typeof DropdownMenuTrigger> & {
   column: Column<TData, TValue>;
   title: string;
-  tableSchema: Tables<"_pg_meta_tables"> | null;
-  columnSchema: Tables<"_pg_meta_columns">;
+  tableSchema: TableSchema | null;
+  columnSchema: ColumnSchema;
 }) {
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
@@ -118,8 +119,8 @@ export function ResourceColumnHeader<TData, TValue>({
 }
 
 function getColumnConstraintIcon(
-  tableSchema: Tables<"_pg_meta_tables"> | null,
-  columnSchema: Tables<"_pg_meta_columns">,
+  tableSchema: TableSchema | null,
+  columnSchema: ColumnSchema,
 ) {
   const primaryKeys = (tableSchema?.primary_keys as { name: string }[]) ?? [];
   const foreignKeys =

@@ -6,7 +6,7 @@
  */
 -- Accounts table
 create table if not exists
-    public.accounts
+    supasheet.accounts
 (
     id          uuid unique  not null default extensions.uuid_generate_v4(),
     name        varchar(255) not null,
@@ -21,12 +21,12 @@ create table if not exists
 );
 
 -- Enable RLS on the accounts table
-alter table "public"."accounts"
+alter table supasheet.accounts
     enable row level security;
 
 -- SELECT(accounts):
 -- Users can read their own accounts
-create policy accounts_read on public.accounts for
+create policy accounts_read on supasheet.accounts for
     select
     to authenticated using (
         (select auth.uid()) = id
@@ -34,7 +34,7 @@ create policy accounts_read on public.accounts for
 
 -- UPDATE(accounts):
 -- Users can update their own accounts
-create policy accounts_update on public.accounts
+create policy accounts_update on supasheet.accounts
     for update
     to authenticated using (
         (select auth.uid()) = id
@@ -45,7 +45,7 @@ create policy accounts_update on public.accounts
     );
 
 -- Revoke all on accounts table from authenticated and service_role
-revoke all on public.accounts
+revoke all on supasheet.accounts
     from
     authenticated,
     service_role;
@@ -56,13 +56,13 @@ grant
     ,
     insert,
     update,
-    delete on table public.accounts to authenticated,
+    delete on table supasheet.accounts to authenticated,
     service_role;
 
--- Function "public.protect_account_fields"
+-- Function "supasheet.protect_account_fields"
 -- Function to protect account fields from being updated by anyone
 create
-    or replace function public.protect_account_fields() returns trigger as
+    or replace function supasheet.protect_account_fields() returns trigger as
 $$
 begin
     if current_user in ('authenticated', 'anon') then
@@ -84,13 +84,13 @@ $$ language plpgsql
 create trigger protect_account_fields
     before
         update
-    on public.accounts
+    on supasheet.accounts
     for each row
-execute function public.protect_account_fields();
+execute function supasheet.protect_account_fields();
 
 -- create a trigger to update the account email when the primary owner email is updated
 create
-    or replace function public.handle_update_user_email() returns trigger
+    or replace function supasheet.handle_update_user_email() returns trigger
     language plpgsql
     security definer
     set
@@ -98,7 +98,7 @@ create
 $$
 begin
     update
-        public.accounts
+        supasheet.accounts
     set email = new.email
     where id = new.id;
 
@@ -115,12 +115,12 @@ create trigger "on_auth_user_updated"
         update of email
     on auth.users
     for each row
-execute procedure public.handle_update_user_email();
+execute procedure supasheet.handle_update_user_email();
 
--- Function "public.new_user_created_setup"
+-- Function "supasheet.new_user_created_setup"
 -- Setup a new user account after user creation
 create
-    or replace function public.new_user_created_setup() returns trigger
+    or replace function supasheet.new_user_created_setup() returns trigger
     language plpgsql
     security definer
     set
@@ -151,7 +151,7 @@ begin
         picture_url := null;
     end if;
 
-    insert into public.accounts(id,
+    insert into supasheet.accounts(id,
                                 name,
                                 picture_url,
                                 email)
@@ -171,7 +171,7 @@ create trigger on_auth_user_created
     after insert
     on auth.users
     for each row
-execute procedure public.new_user_created_setup();
+execute procedure supasheet.new_user_created_setup();
 
 -- Storage
 -- Account Image
@@ -181,7 +181,7 @@ values ('account_image', 'account_image', true);
 -- Function: get the storage filename as a UUID.
 -- Useful if you want to name files with UUIDs related to an account
 create
-    or replace function public.get_storage_filename_as_uuid(name text) returns uuid
+    or replace function supasheet.get_storage_filename_as_uuid(name text) returns uuid
     set
         search_path = '' as
 $$
@@ -194,20 +194,20 @@ end;
 $$ language plpgsql;
 
 grant
-    execute on function public.get_storage_filename_as_uuid (text) to authenticated,
+    execute on function supasheet.get_storage_filename_as_uuid (text) to authenticated,
     service_role;
 
 -- RLS policies for storage bucket account_image
 create policy account_image on storage.objects for all using (
     bucket_id = 'account_image'
         and (
-        public.get_storage_filename_as_uuid(name) = auth.uid()
+        supasheet.get_storage_filename_as_uuid(name) = auth.uid()
         )
     )
     with
     check (
     bucket_id = 'account_image'
         and (
-        public.get_storage_filename_as_uuid(name) = auth.uid()
+        supasheet.get_storage_filename_as_uuid(name) = auth.uid()
         )
     );
