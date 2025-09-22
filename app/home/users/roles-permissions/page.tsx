@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadRolesPermissions } from "@/features/users/lib/loaders";
-import { LockIcon, ShieldIcon, Users, UsersIcon } from "lucide-react";
+import { LockIcon, ShieldIcon } from "lucide-react";
 
 export default async function RolesPermissionsPage() {
   const rolesWithPermissions = await loadRolesPermissions();
