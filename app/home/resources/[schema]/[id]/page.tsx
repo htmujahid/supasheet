@@ -9,9 +9,6 @@ import {
 import { searchParamsCache } from "@/features/resources/lib/validations";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 
 export default async function HomeResourcePage(props: {
   params: Promise<{
