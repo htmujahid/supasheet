@@ -57,7 +57,7 @@ export default async function RolesPermissionsPage() {
             </div>
             <h3 className="font-medium text-lg mb-1">No roles assigned</h3>
             <p className="text-sm text-muted-foreground text-center">
-              You haven't been assigned any roles yet. Contact your
+              You haven&apos;t been assigned any roles yet. Contact your
               administrator if you need access.
             </p>
           </CardContent>
