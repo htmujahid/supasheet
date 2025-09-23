@@ -77,6 +77,7 @@ export function ResourceRowCell({
                 meta.variant,
                 tableSchema ?? null,
               )}
+              target="_blank"
               className="absolute top-1/2 left-0 -translate-y-1/2 transform rounded border p-0.5"
             >
               <ArrowUpRightIcon className="size-3" />

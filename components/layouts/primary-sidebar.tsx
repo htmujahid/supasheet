@@ -97,10 +97,6 @@ export function PrimarySidebar({
   const { data: userData } = useUser();
   const signOut = useSignOut();
 
-  if (!userData) {
-    return null;
-  }
-
   return (
     <Sidebar
       collapsible={props.children ? "icon" : "none"}
@@ -161,7 +157,8 @@ export function PrimarySidebar({
             showProfileName={false}
             paths={paths}
             features={features}
-            user={userData}
+            user={userData!}
+            account={{id: "", name: "", picture_url: ""}}
             signOutRequested={() => signOut.mutateAsync()}
           />
         </SidebarFooter>

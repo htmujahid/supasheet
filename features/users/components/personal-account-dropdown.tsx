@@ -55,7 +55,7 @@ export function PersonalAccountDropdown({
 
   className?: string;
 }) {
-  const personalAccountData = usePersonalAccountData(user.id, account);
+  const personalAccountData = usePersonalAccountData(user?.id, account);
 
   const signedInAsLabel = useMemo(() => {
     const email = user?.email ?? undefined;
