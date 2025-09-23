@@ -22,10 +22,10 @@
 - [x] Resource (CRUD)
 - [x] Customizable UI
 - [x] Internationalization (i18n)
+- [x] SQL Editor
 - [ ] Dashboards
 - [ ] Analytics
 - [ ] Reports
-- [ ] SQL Editor
 - [ ] File Storage
 - [ ] Notifications
 - [ ] Custom Actions
@@ -70,10 +70,14 @@ To get started with Supasheet, follow these steps:
 
 ## Technology Stack
 
-1. **Frontend**: Next.js, React, Tailwind CSS
+1. **Frontend**: Next.js, React, Tailwind CSS, Shadcn UI
 2. **Backend**: Supabase (PostgreSQL, Auth, Storage)
 3. **Deployment**: Vercel (for frontend), Supabase (for backend)
 4. **MISC**: Diceui, React Query, TanStack Table, React Hook Form, Zod, i18next
+
+## Credits
+
+* **Makerkit**
 
 ## Contributing
 
