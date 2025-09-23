@@ -5,7 +5,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client"
 
 import { GetResourceSchema } from "./validations";
 
-export function useColumnsSchema(id: string) {
+export function useColumnsSchema(schema: string, id: string) {
   return useQuery({
     queryKey: ["columns-schema", id],
     queryFn: async () => {
@@ -16,7 +16,8 @@ export function useColumnsSchema(id: string) {
         .from("columns")
         .select("*")
         .order("ordinal_position", { ascending: true })
-        .eq("relation", id);
+        .eq("schema", schema)
+        .eq("table", id);
 
       return columnResponse.data;
     },

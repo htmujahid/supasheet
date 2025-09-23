@@ -47,7 +47,7 @@ export function ResourceFormField({
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
     (relationship) =>
       relationship.source_column_name === column.name &&
-      relationship.target_table_schema === "public",
+      relationship.source_schema === column.schema,
   );
 
   return (

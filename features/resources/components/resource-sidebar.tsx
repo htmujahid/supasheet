@@ -38,9 +38,9 @@ export function ResourceSidebar({
 
   const uniqueSchemas = Array.from(
     new Set(resources.map((resource) => resource.schema)),
-  );
+  ).filter((schema) => schema !== "supasheet");
 
-  const [activeSchema, setActiveSchema] = useState(resources[0]?.schema);
+  const [activeSchema, setActiveSchema] = useState(uniqueSchemas[4] || "");
   const [search, setSearch] = useState("");
   const [activeResources, setActiveResources] = useState(
     resources.filter((resource) => resource.schema === activeSchema),

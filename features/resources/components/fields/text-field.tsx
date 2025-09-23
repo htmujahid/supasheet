@@ -15,6 +15,7 @@ export function TextField({ field, columnInput }: FieldProps) {
     <div className="relative w-full">
       <Textarea
         {...field}
+        rows={1}
         value={field.value as string}
         placeholder={placeholder}
         disabled={columnInput.disabled}

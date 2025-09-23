@@ -64,6 +64,7 @@ export function ForeignTableSheet({
   );
 
   const { data: columnsSchema } = useColumnsSchema(
+    relationship.target_table_schema,
     relationship.target_table_name,
   );
 
