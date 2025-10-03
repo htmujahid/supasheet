@@ -6,14 +6,14 @@ import { useParams } from "next/navigation";
 import { Monaco } from "@monaco-editor/react";
 import { Loader2, PlayIcon } from "lucide-react";
 
+import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 import { IStandaloneCodeEditor } from "../lib/types";
 import { useSqlData } from "../lib/use-sql-data";
 import { useSqlContext } from "./sql-context";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 
 const MonacoEditor = dynamic(() => import("./monaco-editor"), { ssr: false });
 
@@ -64,7 +64,7 @@ export default function SqlToRest() {
         </div>
       </header>
       <div className="px-4">
-        <div className="h-[calc(20vh)] w-full overflow-hidden border rounded-md">
+        <div className="h-[calc(20vh)] w-full overflow-hidden rounded-md border">
           <MonacoEditor
             id={id}
             editorRef={editorRef}

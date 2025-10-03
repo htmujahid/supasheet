@@ -23,9 +23,9 @@
 - [x] Customizable UI
 - [x] Internationalization (i18n)
 - [x] SQL Editor
-- [ ] Dashboards
+- [ ] Dashboard
 - [ ] Analytics
-- [ ] Reports
+- [ ] Report
 - [ ] File Storage
 - [ ] Notifications
 - [ ] Custom Actions
@@ -77,7 +77,7 @@ To get started with Supasheet, follow these steps:
 
 ## Credits
 
-* **Makerkit**
+- **Makerkit**
 
 ## Contributing
 

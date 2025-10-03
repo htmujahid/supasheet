@@ -13,6 +13,7 @@ const PathsSchema = z.object({
     home: z.string().min(1),
     account: z.string().min(1),
     resources: z.string().min(1),
+    chart: z.string().min(1),
   }),
 });
 
@@ -28,7 +29,8 @@ const pathsConfig = PathsSchema.parse({
   app: {
     home: "/home",
     account: "/home/account",
-    resources: "/home/resources",
+    resources: "/home/resource",
+    chart: "/home/chart",
   },
 } satisfies z.infer<typeof PathsSchema>);
 

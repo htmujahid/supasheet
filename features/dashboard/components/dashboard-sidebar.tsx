@@ -58,19 +58,32 @@ export function DashboardSidebar({
             placeholder="Type to search..."
           />
           <SidebarMenu className="mt-2 overflow-y-auto">
-            {activeItems.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={acitveItem?.id === item.id}
-                >
-                  <Link href={"/home/dashboards/" + item.id} title={item.name}>
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {activeItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="text-muted-foreground text-sm">
+                  No dashboards found
+                </div>
+                {search && (
+                  <div className="text-muted-foreground mt-1 text-xs">
+                    Try adjusting your search
+                  </div>
+                )}
+              </div>
+            ) : (
+              activeItems.map((item) => (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={acitveItem?.id === item.id}
+                  >
+                    <Link href={"/home/dashboard/" + item.id} title={item.name}>
+                      {item.icon}
+                      <span>{item.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))
+            )}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

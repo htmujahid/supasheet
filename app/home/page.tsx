@@ -22,10 +22,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { withI18n } from "@/lib/i18n/with-i18n";
 
 const quickLinks = [
   {
-    title: "Dashboards",
+    title: "Dashboard",
     description:
       "View and manage your dashboards with real-time analytics and customizable widgets",
     href: "/home/dashboard",
@@ -41,18 +42,18 @@ const quickLinks = [
     category: "Database",
   },
   {
-    title: "Resources",
+    title: "Resource",
     description:
       "Manage your data resources, tables, and relationships with visual tools",
-    href: "/home/resources",
+    href: "/home/resource",
     icon: FileText,
     category: "Table and Views",
   },
   {
     title: "Users",
     description:
-      "Manage user accounts, permissions, roles, and access controls",
-    href: "/home/users",
+      "Manage user accounts, permissions, roles, and authentication settings",
+    href: "/home/user",
     icon: Users,
     category: "Authentication",
   },
@@ -65,10 +66,10 @@ const quickLinks = [
     category: "Files",
   },
   {
-    title: "Reports",
+    title: "Report",
     description:
       "Generate comprehensive reports, export data, and create visualizations",
-    href: "/home/reports",
+    href: "/home/report",
     icon: PieChart,
     category: "Insights",
   },
@@ -76,13 +77,13 @@ const quickLinks = [
     title: "Audit Logs",
     description:
       "View system audit logs, track changes, and monitor security events",
-    href: "/home/audit-logs",
+    href: "/home/audit-log",
     icon: Shield,
     category: "Security",
   },
 ];
 
-export default function Home() {
+function Home() {
   return (
     <>
       <PrimarySidebar />
@@ -153,3 +154,5 @@ export default function Home() {
     </>
   );
 }
+
+export default withI18n(Home);

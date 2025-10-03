@@ -1,34 +1,36 @@
-import { FolderIcon } from "lucide-react";
+import { FolderIcon, FolderLockIcon } from "lucide-react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
+import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
+import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { StorageSidebar } from "@/features/storage/components/storage-sidebar";
-import { Separator } from "@/components/ui/separator";
-import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
-
-const items = [
-  {
-    name: "Bucket 1",
-    id: "bucket-1",
-    icon: <FolderIcon />,
-  },
-  {
-    name: "Bucket 2",
-    id: "bucket-2",
-    icon: <FolderIcon />,
-  },
-  {
-    name: "Bucket 3",
-    id: "bucket-3",
-    icon: <FolderIcon />,
-  },
-];
+import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 export default async function HomeStorageLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const client = await getSupabaseServerClient();
+
+  const { data: buckets } = await client.storage.listBuckets();
+
+  const items =
+    buckets?.map((bucket) => ({
+      id: bucket.id,
+      name: bucket.name,
+      icon: bucket.public ? <FolderIcon /> : <FolderLockIcon />,
+    })) ?? [];
+
+  if (items.length === 0) {
+    items.unshift({
+      id: "personal",
+      name: "Personal",
+      icon: <FolderIcon />,
+    });
+  }
+
   return (
     <>
       <PrimarySidebar>

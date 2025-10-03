@@ -1,16 +1,15 @@
 "use client";
 
-import * as React from "react";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
-  ChartAreaIcon,
+  AreaChart,
+  FileChartColumnIcon,
   FoldersIcon,
   Grid2X2PlusIcon,
+  Grid3X3Icon,
   ScrollTextIcon,
-  Table2Icon,
   TerminalSquareIcon,
   UserIcon,
   WarehouseIcon,
@@ -37,15 +36,21 @@ import { useUser } from "@/lib/supabase/hooks/use-user";
 const data = {
   navMain: [
     {
-      title: "Dashboards",
-      url: "/home/dashboards",
+      title: "Dashboard",
+      url: "/home/dashboard",
       icon: WarehouseIcon,
       isActive: true,
     },
     {
-      title: "Resources",
-      url: "/home/resources",
-      icon: Table2Icon,
+      title: "Chart",
+      url: "/home/chart",
+      icon: AreaChart,
+      isActive: false,
+    },
+    {
+      title: "Resource",
+      url: "/home/resource",
+      icon: Grid3X3Icon,
       isActive: false,
     },
     {
@@ -55,8 +60,8 @@ const data = {
       isActive: false,
     },
     {
-      title: "Users",
-      url: "/home/users",
+      title: "User",
+      url: "/home/user",
       icon: UserIcon,
       isActive: false,
     },
@@ -67,14 +72,14 @@ const data = {
       isActive: false,
     },
     {
-      title: "Reports",
-      url: "/home/reports",
-      icon: ChartAreaIcon,
+      title: "Report",
+      url: "/home/report",
+      icon: FileChartColumnIcon,
       isActive: false,
     },
     {
       title: "Audit Logs",
-      url: "/home/audit-logs",
+      url: "/home/audit-log",
       icon: ScrollTextIcon,
       isActive: false,
     },
@@ -115,7 +120,7 @@ export function PrimarySidebar({
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
                 <Link href="/home">
-                  <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                     <Grid2X2PlusIcon className="size-4" />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
@@ -158,7 +163,7 @@ export function PrimarySidebar({
             paths={paths}
             features={features}
             user={userData!}
-            account={{id: "", name: "", picture_url: ""}}
+            account={{ id: "", name: "", picture_url: "" }}
             signOutRequested={() => signOut.mutateAsync()}
           />
         </SidebarFooter>

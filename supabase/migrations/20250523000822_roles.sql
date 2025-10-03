@@ -1,5 +1,5 @@
 -- Custom types
-create type supasheet.app_permission as enum ('resource:accounts:select', 'resource:accounts:update', 'resource:accounts:insert', 'resource:accounts:delete');
+create type supasheet.app_permission as enum ('supasheet.accounts:select', 'supasheet.accounts:update', 'supasheet.accounts:insert', 'supasheet.accounts:delete');
 create type supasheet.app_role as enum ('x-admin', 'user');
 
 -- USER ROLES
@@ -77,15 +77,6 @@ create policy "User can view their own role" on supasheet.user_roles for select 
 create policy "User can view their own role permissions" on supasheet.role_permissions for select using (
   (select (supasheet.has_role(role)))
 );
-
--- create policy "Enable read access for authorized users"
--- on "supasheet"."resources"
--- as PERMISSIVE
--- for SELECT
--- to authenticated
--- using (
---   (select (supasheet.has_permission(id::supasheet.app_permission)))
--- );
 
 create or replace function supasheet.new_account_created_setup() 
 returns trigger 

@@ -8,11 +8,9 @@ export async function loadRolesPermissions() {
     .from(`user_roles`)
     .select("*");
 
-  const { data: rolePermissionsData, error: rolePermissionsError } = await client
-    .schema("supasheet")
-    .from(`role_permissions`)
-    .select("*");
-    
+  const { data: rolePermissionsData, error: rolePermissionsError } =
+    await client.schema("supasheet").from(`role_permissions`).select("*");
+
   if (rolePermissionsError) {
     console.error("Error loading role permissions:", rolePermissionsError);
     return [];
@@ -23,13 +21,14 @@ export async function loadRolesPermissions() {
     return [];
   }
 
-  return data?.map((userRole) => {
-    const permissions = rolePermissionsData?.filter(
-      (rp) => rp.role === userRole.role
-    ) || [];
-    return {
-      ...userRole,
-      permissions,
-    };
-  }) || [];
+  return (
+    data?.map((userRole) => {
+      const permissions =
+        rolePermissionsData?.filter((rp) => rp.role === userRole.role) || [];
+      return {
+        ...userRole,
+        permissions,
+      };
+    }) || []
+  );
 }

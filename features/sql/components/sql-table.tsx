@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+
 import { useParams } from "next/navigation";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -23,14 +24,14 @@ export function SqlTable() {
     () =>
       data.length > 0
         ? (Object.keys(data[0]).map((key) => ({
-          accessorKey: key,
-          header: ({ column }) => {
-            return <SqlColumnHeader column={column} title={key} />;
-          },
-          cell: ({ row }) => {
-            return <SqlRowCell row={row} title={key} />;
-          },
-        })) as ColumnDef<ResourceDataSchema, unknown>[])
+            accessorKey: key,
+            header: ({ column }) => {
+              return <SqlColumnHeader column={column} title={key} />;
+            },
+            cell: ({ row }) => {
+              return <SqlRowCell row={row} title={key} />;
+            },
+          })) as ColumnDef<ResourceDataSchema, unknown>[])
         : [],
     [data],
   );
@@ -52,8 +53,8 @@ export function SqlTable() {
   }
 
   return (
-    <div className="data-table-container [&>div>div>div]:!h-[calc(80vh-106px)] px-4 py-2 space-y-2">
-      <div className="flex justify-between gap-2 items-center">
+    <div className="data-table-container space-y-2 px-4 py-2 [&>div>div>div]:!h-[calc(80vh-106px)]">
+      <div className="flex items-center justify-between gap-2">
         <div className="text-base font-medium">Results</div>
         <div className="flex justify-between gap-2">
           <Button

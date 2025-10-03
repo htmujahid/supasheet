@@ -65,7 +65,7 @@ export function UserSidebar({
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <Link href="/home/users/preferences">
+                  <Link href="/home/user/preferences">
                     <SidebarMenuButton>
                       <UserCogIcon className="size-4" />
                       <span className="truncate">Preferences</span>

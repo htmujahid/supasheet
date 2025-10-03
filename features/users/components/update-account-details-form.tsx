@@ -19,7 +19,8 @@ import { Database } from "@/lib/database.types";
 import { useUpdateAccountData } from "../hooks/use-update-account";
 import { AccountDetailsSchema } from "../schema/account-details.schema";
 
-type UpdateUserDataParams = Database["supasheet"]["Tables"]["accounts"]["Update"];
+type UpdateUserDataParams =
+  Database["supasheet"]["Tables"]["accounts"]["Update"];
 
 export function UpdateAccountDetailsForm({
   displayName,

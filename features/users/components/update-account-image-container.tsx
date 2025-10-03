@@ -14,7 +14,7 @@ import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 import { useRevalidatePersonalAccountDataQuery } from "../hooks/use-personal-account-data";
 
-const AVATARS_BUCKET = "account_image";
+const AVATARS_BUCKET = "personal";
 
 export function UpdateAccountImageContainer({
   user,
@@ -164,5 +164,5 @@ async function getAvatarFileName(
   // the browser always fetches the latest image
   const uniqueId = nanoid(16);
 
-  return `${userId}.${extension}?v=${uniqueId}`;
+  return `${userId}/account-image.${extension}?v=${uniqueId}`;
 }

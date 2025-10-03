@@ -40,10 +40,14 @@ function getClassName(theme?: string) {
     return [...acc, curr];
   }, []);
 
-  return cn("bg-background text-foreground group/body overscroll-none min-h-screen antialiased", ...font, {
-    dark,
-    light,
-  });
+  return cn(
+    "bg-background text-foreground group/body min-h-screen overscroll-none antialiased",
+    ...font,
+    {
+      dark,
+      light,
+    },
+  );
 }
 
 async function getTheme() {

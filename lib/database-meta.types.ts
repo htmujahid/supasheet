@@ -2,13 +2,13 @@ import { Database } from "./database.types";
 
 export type ResourceDataSchema = Record<string, unknown>;
 
-export type DatabaseSchemas = keyof Database
+export type DatabaseSchemas = keyof Database;
 
 export type DatabaseTables<schema extends DatabaseSchemas> =
-  keyof Database[schema]['Tables']
+  keyof Database[schema]["Tables"];
 
-export type ColumnSchema = Database['supasheet']['Tables']['columns']['Row']
-export type TableSchema = Database['supasheet']['Tables']['tables']['Row']
+export type ColumnSchema = Database["supasheet"]["Tables"]["columns"]["Row"];
+export type TableSchema = Database["supasheet"]["Tables"]["tables"]["Row"];
 
 export type PrimaryKey = {
   name: string;
@@ -35,14 +35,16 @@ export type PaginatedData<T> = {
   perPage: number;
 };
 
-export type SchemaKey = keyof Database
-export type TablesForSchema<TSchema extends SchemaKey> = Database[TSchema] extends { Tables: infer TTables } 
-  ? TTables extends Record<string, unknown>
-    ? keyof TTables & string
-    : never
-  : never
-export type ViewsForSchema<TSchema extends SchemaKey> = Database[TSchema] extends { Views: infer TViews } 
-  ? TViews extends Record<string, unknown>
-    ? keyof TViews & string
-    : never
-  : never
+export type SchemaKey = keyof Database;
+export type TablesForSchema<TSchema extends SchemaKey> =
+  Database[TSchema] extends { Tables: infer TTables }
+    ? TTables extends Record<string, unknown>
+      ? keyof TTables & string
+      : never
+    : never;
+export type ViewsForSchema<TSchema extends SchemaKey> =
+  Database[TSchema] extends { Views: infer TViews }
+    ? TViews extends Record<string, unknown>
+      ? keyof TViews & string
+      : never
+    : never;
