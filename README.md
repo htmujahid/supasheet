@@ -23,13 +23,12 @@
 - [x] Customizable UI
 - [x] Internationalization (i18n)
 - [x] SQL Editor
-- [ ] Dashboard
-- [ ] Analytics
-- [ ] Report
-- [ ] File Storage
-- [ ] Notifications
-- [ ] Custom Actions
-- [ ] Custom Widgets
+- [x] Dashboard
+- [x] Analytics
+- [x] Report
+- [x] File Storage
+- [x] Chart
+- [x] Audit Logs
 
 ## Getting Started
 
