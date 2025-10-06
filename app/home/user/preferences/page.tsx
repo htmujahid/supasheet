@@ -13,7 +13,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AppearanceForm } from "@/features/users/components/appearance-form";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
 function PreferencesPage() {
   const supportsLanguageSelection = useSupportMultiLanguage();
@@ -66,4 +65,4 @@ function useSupportMultiLanguage() {
   return supportedLangs.length > 1;
 }
 
-export default withI18n(PreferencesPage);
+export default PreferencesPage;
