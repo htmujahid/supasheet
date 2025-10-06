@@ -1,5 +1,5 @@
 CREATE TABLE tasks (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
     title VARCHAR(500) NOT NULL,
     description TEXT,
     status task_status DEFAULT 'pending',
