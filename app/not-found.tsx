@@ -1,10 +1,8 @@
 import Link from "next/link";
 
-import { ArrowLeft, FileQuestionIcon } from "lucide-react";
+import { FileQuestionIcon } from "lucide-react";
 
-import { Trans } from "@/components/makerkit/trans";
 import { Button } from "@/components/ui/button";
-import { Heading } from "@/components/ui/heading";
 import { createI18nServerInstance } from "@/lib/i18n/i18n.server";
 import { withI18n } from "@/lib/i18n/with-i18n";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";

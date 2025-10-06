@@ -22,7 +22,7 @@ export default function SqlEditorNotFound() {
           </EmptyMedia>
           <EmptyTitle>SQL Snippet Not Found</EmptyTitle>
           <EmptyDescription>
-            The SQL snippet you're looking for doesn't exist or has been removed.
+            The SQL snippet you&apos;re looking for doesn&apos;t exist or has been removed.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

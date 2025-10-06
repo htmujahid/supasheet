@@ -22,7 +22,7 @@ export default function AuditLogNotFound() {
           </EmptyMedia>
           <EmptyTitle>Audit Log Not Found</EmptyTitle>
           <EmptyDescription>
-            The audit log entry you're looking for doesn't exist or has been removed.
+            The audit log entry you&apos;re looking for doesn&apos;t exist or has been removed.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
