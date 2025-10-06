@@ -12,6 +12,7 @@ import { ResourceDataSchema } from "@/lib/database-meta.types";
 import { loadColumnsSchema, loadReportData } from "../lib/loaders";
 import { getReportTableColumns } from "./report-table-columns";
 import { ReportTableToolbarActions } from "./report-table-toolbar-action";
+import { notFound } from "next/navigation";
 
 export function ReportTable({
   promises,
@@ -24,6 +25,10 @@ export function ReportTable({
   >;
 }) {
   const [columnsSchema, data] = use(promises);
+
+  if (!columnsSchema?.length) {
+    notFound();
+  }
 
   const columns = useMemo(
     () =>

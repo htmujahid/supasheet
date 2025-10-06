@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx supabase:*)",
+      "WebFetch(domain:supabase.com)",
+      "Bash(grep:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

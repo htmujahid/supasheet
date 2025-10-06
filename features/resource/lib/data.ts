@@ -13,36 +13,9 @@ export function useColumnsSchema(schema: string, id: string) {
 
       const columnResponse = await client
         .schema("supasheet")
-        .from("columns")
-        .select("*")
-        .order("ordinal_position", { ascending: true })
-        .eq("schema", schema)
-        .eq("table", id);
-
+        .rpc("get_columns", { schema_name: schema, table_name: id });
+      
       return columnResponse.data;
-    },
-    enabled: !!id,
-  });
-}
-
-export function useTableSchema(id: string) {
-  return useQuery({
-    queryKey: ["table-schema", id],
-    queryFn: async () => {
-      const client = getSupabaseBrowserClient();
-
-      const tableResponse = await client
-        .schema("supasheet")
-        .from("tables")
-        .select("*")
-        .eq("name", id)
-        .single();
-
-      if (tableResponse.error) {
-        return null;
-      }
-
-      return tableResponse.data;
     },
     enabled: !!id,
   });
@@ -132,50 +105,3 @@ export function useResourceData(
   });
 }
 
-export function useResources() {
-  return useQuery({
-    queryKey: ["resources"],
-    queryFn: async () => {
-      const client = getSupabaseBrowserClient();
-
-      const tableSchema = await client
-        .schema("supasheet")
-        .from("tables")
-        .select("*");
-      const tableResources =
-        tableSchema.data?.map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          group: resource.schema as string,
-        })) ?? [];
-
-      const viewSchema = await client
-        .schema("supasheet")
-        .from("views")
-        .select("*");
-      const viewResources =
-        viewSchema.data?.map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          group: resource.schema as string,
-        })) ?? [];
-
-      const materializedViewSchema = await client
-        .schema("supasheet")
-        .from("materialized_views")
-        .select("*");
-      const materializedViewResources =
-        materializedViewSchema.data?.map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          group: resource.schema as string,
-        })) ?? [];
-
-      return [
-        ...tableResources,
-        ...viewResources,
-        ...materializedViewResources,
-      ];
-    },
-  });
-}

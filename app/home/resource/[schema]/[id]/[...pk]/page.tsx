@@ -36,7 +36,7 @@ async function ViewPage({
   if (!tableSchema) return notFound();
 
   const columnsSchema = await loadColumnsSchema(id);
-  if (!columnsSchema) return notFound();
+  if (!columnsSchema?.length) return notFound();
 
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 

@@ -181,7 +181,7 @@ execute procedure supasheet.new_user_created_setup();
 -- Storage
 -- Account Image
 insert into storage.buckets (id, name, PUBLIC)
-values ('personal', 'personal', true);
+values ('account_image', 'account_image', true);
 
 -- Function: get the storage filename as a UUID.
 -- Useful if you want to name files with UUIDs related to an account
@@ -202,16 +202,16 @@ grant
     execute on function supasheet.get_storage_filename_as_uuid (text) to authenticated,
     service_role;
 
--- RLS policies for storage bucket personal
-create policy personal on storage.objects for all using (
-    bucket_id = 'personal'
+-- RLS policies for storage bucket account_image
+create policy account_image on storage.objects for all using (
+    bucket_id = 'account_image'
         and (            
             (storage.foldername(name))[1] = (select auth.uid()::text)
         )
     )
     with
     check (
-    bucket_id = 'personal'
+    bucket_id = 'account_image'
         and (
             (storage.foldername(name))[1] = (select auth.uid()::text)
         )

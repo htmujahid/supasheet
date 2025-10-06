@@ -22,12 +22,7 @@ import {
   ExtendedColumnFilter,
   ExtendedColumnSort,
 } from "@/interfaces/data-table/types/data-table";
-import {
-  DatabaseSchemas,
-  DatabaseTables,
-  Relationship,
-  ResourceDataSchema,
-} from "@/lib/database-meta.types";
+import type { Relationship, ResourceDataSchema } from "@/lib/database-meta.types";
 
 import { useColumnsSchema, useResourceData } from "../../lib/data";
 import { getSheetTableColumns } from "./sheet-table-columns";

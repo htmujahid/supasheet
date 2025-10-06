@@ -14,7 +14,7 @@ import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 import { useRevalidatePersonalAccountDataQuery } from "../hooks/use-personal-account-data";
 
-const AVATARS_BUCKET = "personal";
+const AVATARS_BUCKET = "account_image";
 
 export function UpdateAccountImageContainer({
   user,

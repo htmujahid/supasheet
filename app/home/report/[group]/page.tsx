@@ -10,6 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { loadReports } from "@/features/report/lib/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
@@ -19,12 +26,18 @@ async function ReportsPage({ params }: { params: Promise<{ group: string }> }) {
 
   if (!reports || reports.length === 0) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center">
-        <FileTextIcon className="text-muted-foreground mb-4 h-12 w-12" />
-        <h2 className="mb-2 text-xl font-semibold">No Report Available</h2>
-        <p className="text-muted-foreground">
-          No reports found for {group.replace("-", " ")}
-        </p>
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FileTextIcon />
+            </EmptyMedia>
+            <EmptyTitle>No Report Available</EmptyTitle>
+            <EmptyDescription>
+              No reports found for {group.replace("-", " ")}
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       </div>
     );
   }

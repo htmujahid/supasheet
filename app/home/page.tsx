@@ -1,85 +1,69 @@
 import Link from "next/link";
 
 import {
-  Activity,
-  ArrowRight,
-  BarChart3,
-  Database,
-  FileText,
-  HardDrive,
-  PieChart,
-  Shield,
-  Users,
+  AreaChart,
+  FileChartColumnIcon,
+  FoldersIcon,
+  Grid3X3Icon,
+  ScrollTextIcon,
+  TerminalSquareIcon,
+  UserIcon,
+  WarehouseIcon,
 } from "lucide-react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 const quickLinks = [
   {
     title: "Dashboard",
-    description:
-      "View and manage your dashboards with real-time analytics and customizable widgets",
+    description: "View and manage your dashboards",
     href: "/home/dashboard",
-    icon: BarChart3,
-    category: "Analytics",
-  },
-  {
-    title: "SQL Editor",
-    description:
-      "Execute SQL queries, manage database schemas, and optimize performance",
-    href: "/home/sql-editor",
-    icon: Database,
-    category: "Database",
+    icon: WarehouseIcon,
   },
   {
     title: "Resource",
-    description:
-      "Manage your data resources, tables, and relationships with visual tools",
+    description: "Manage tables, views and data",
     href: "/home/resource",
-    icon: FileText,
-    category: "Table and Views",
+    icon: Grid3X3Icon,
   },
   {
-    title: "Users",
-    description:
-      "Manage user accounts, permissions, roles, and authentication settings",
-    href: "/home/user",
-    icon: Users,
-    category: "Authentication",
+    title: "SQL Editor",
+    description: "Execute queries and manage schemas",
+    href: "/home/sql-editor",
+    icon: TerminalSquareIcon,
   },
   {
     title: "Storage",
-    description:
-      "Manage file storage, uploads, and organize your digital assets",
+    description: "Manage files and uploads",
     href: "/home/storage",
-    icon: HardDrive,
-    category: "Files",
+    icon: FoldersIcon,
+  },
+  {
+    title: "Chart",
+    description: "Create data visualizations",
+    href: "/home/chart",
+    icon: AreaChart,
   },
   {
     title: "Report",
-    description:
-      "Generate comprehensive reports, export data, and create visualizations",
+    description: "Generate and export reports",
     href: "/home/report",
-    icon: PieChart,
-    category: "Insights",
+    icon: FileChartColumnIcon,
+  },
+  {
+    title: "User",
+    description: "Manage user accounts and permissions",
+    href: "/home/user",
+    icon: UserIcon,
   },
   {
     title: "Audit Logs",
-    description:
-      "View system audit logs, track changes, and monitor security events",
+    description: "View system logs and track changes",
     href: "/home/audit-log",
-    icon: Shield,
-    category: "Security",
+    icon: ScrollTextIcon,
   },
 ];
 
@@ -88,66 +72,44 @@ function Home() {
     <>
       <PrimarySidebar />
       <SidebarInset>
-        <div className="w-full p-4 sm:p-6 lg:p-8">
-          <div className="mb-8 sm:mb-10 lg:mb-12">
-            <div className="mb-3 flex items-center gap-3 sm:mb-4 sm:gap-4">
-              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-                Welcome to SupaSheet
+        <div className="flex min-h-screen w-full items-center justify-center p-6">
+          <div className="w-full max-w-5xl">
+            <div className="mb-12 text-center">
+              <h1 className="text-foreground mb-3 text-3xl font-semibold tracking-tight">
+                Welcome to Supasheet
               </h1>
+              <p className="text-muted-foreground text-base">
+                Select a tool to get started
+              </p>
             </div>
-            <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed sm:max-w-3xl sm:text-base lg:text-lg">
-              Quick access to all your tools and resources. Everything you need
-              to manage your data, users, and analytics in one place.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
-            {quickLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Card key={link.href} className="group shadow-none">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        <div className="relative">
-                          <div className="rounded-xl border bg-white p-3 transition-colors duration-300 group-hover:bg-gray-50 sm:rounded-2xl sm:p-4">
-                            <Icon className="h-6 w-6 text-black sm:h-7 sm:w-7" />
-                          </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {quickLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Button
+                    key={link.href}
+                    asChild
+                    variant="outline"
+                    className="h-auto flex-col items-center gap-4 p-6 hover:bg-accent hover:border-primary/50 transition-all"
+                  >
+                    <Link href={link.href}>
+                      <div className="bg-muted flex size-14 items-center justify-center rounded-xl">
+                        <Icon className="size-7" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-foreground mb-1 text-sm font-medium">
+                          {link.title}
                         </div>
-                        <div>
-                          <CardTitle className="text-lg transition-colors group-hover:text-black sm:text-xl">
-                            {link.title}
-                          </CardTitle>
-                          <p className="text-muted-foreground mt-1 text-xs font-medium tracking-wide uppercase">
-                            {link.category}
-                          </p>
+                        <div className="text-muted-foreground text-xs leading-relaxed">
+                          {link.description}
                         </div>
                       </div>
-                      <Activity className="text-muted-foreground h-4 w-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:h-5 sm:w-5" />
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4 pt-0 sm:space-y-5 lg:space-y-6">
-                    <CardDescription className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
-                      {link.description}
-                    </CardDescription>
-                    <Button
-                      asChild
-                      size="sm"
-                      variant="outline"
-                      className="group/btn w-full"
-                    >
-                      <Link
-                        href={link.href}
-                        className="flex items-center justify-center gap-2"
-                      >
-                        Open
-                        <ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover/btn:translate-x-1 sm:h-4 sm:w-4" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    </Link>
+                  </Button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </SidebarInset>

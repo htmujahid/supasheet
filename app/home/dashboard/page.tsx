@@ -1,18 +1,28 @@
-import { FileText } from "lucide-react";
+import { WarehouseIcon } from "lucide-react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 async function HomeDashboardPage() {
   return (
     <div className="flex min-h-[calc(100vh-183px)] items-center justify-center">
-      <Alert className="max-w-md">
-        <FileText className="h-4 w-4" />
-        <AlertTitle>No Dashboard Selected</AlertTitle>
-        <AlertDescription>
-          Please select a dashboard from the sidebar to view its contents.
-        </AlertDescription>
-      </Alert>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <WarehouseIcon />
+          </EmptyMedia>
+          <EmptyTitle>No Dashboard Selected</EmptyTitle>
+          <EmptyDescription>
+            Please select a dashboard from the sidebar to view its contents.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     </div>
   );
 }

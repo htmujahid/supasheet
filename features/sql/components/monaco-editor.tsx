@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useRef } from "react";
+import { RefObject, useCallback, useRef } from "react";
 
 import Editor, { Monaco, OnMount } from "@monaco-editor/react";
 import { debounce } from "lodash";
@@ -12,8 +12,8 @@ import type { IStandaloneCodeEditor } from "../lib/types";
 export type MonacoEditorProps = {
   id: string;
   className?: string;
-  editorRef: MutableRefObject<IStandaloneCodeEditor | null>;
-  monacoRef: MutableRefObject<Monaco | null>;
+  editorRef: RefObject<IStandaloneCodeEditor | null>;
+  monacoRef: RefObject<Monaco | null>;
   autoFocus?: boolean;
   executeQuery: () => void;
   onMount?: (editor: IStandaloneCodeEditor) => void;

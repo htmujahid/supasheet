@@ -20,6 +20,7 @@ import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
+import { notFound } from "next/navigation";
 
 export function ResourceTable({
   promises,
@@ -35,6 +36,10 @@ export function ResourceTable({
   const [tableSchema, columnsSchema, data] = use(promises);
   const [rowAction, setRowAction] =
     useState<DataTableRowAction<ResourceDataSchema> | null>(null);
+
+  if (!columnsSchema?.length) {
+    notFound();
+  }
 
   const columns = useMemo(
     () =>

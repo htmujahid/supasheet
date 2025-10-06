@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { FolderPlus, RefreshCw, Search, Trash2, Upload } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,13 +38,16 @@ export function StorageToolbar({
   const handleDelete = async () => {
     if (selectedFiles.size === 0) return;
 
-    try {
-      await supabase.storage.from(bucketId).remove(Array.from(selectedFiles));
-      onSelectionChange(new Set()); // Clear selection after deletion
-      router.refresh();
-    } catch (error) {
-      console.error("Error deleting files:", error);
+    const { data, error } = await supabase.storage.from(bucketId).remove(Array.from(selectedFiles));
+    if (!data?.length) {
+      toast.error("You don't have permission to delete these files");
+    } else if (error) {
+      toast.error(error ?? "Failed to delete files");
+    } else {
+      toast.success("Files deleted successfully");
     }
+    onSelectionChange(new Set()); // Clear selection after deletion
+    router.refresh();
   };
 
   return (

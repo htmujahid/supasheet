@@ -21,7 +21,8 @@ import { AllFields } from "./all-fields";
 import { ArrayField } from "./array-field";
 import { ForeignKeyField } from "./foreign-key-field";
 import { ColumnInput } from "./types";
-import { getColumnInputField } from "./utils";
+import { FileField } from "./file-field";
+import { getColumnData } from "../../lib/columns";
 
 export function ResourceFormField({
   column,
@@ -41,12 +42,12 @@ export function ResourceFormField({
       data_type = "USER-DEFINED";
     }
 
-    columnInput = getColumnInputField({
+    columnInput = getColumnData({
       ...column,
       data_type,
     });
   } else {
-    columnInput = getColumnInputField(column);
+    columnInput = getColumnData(column);
   }
 
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
@@ -71,7 +72,15 @@ export function ResourceFormField({
           </FormLabel>
           <FormControl>
             <div>
-              {column.data_type === "ARRAY" ? (
+              {column.format === "file" ? (
+                <FileField
+                  form={form}
+                  columnInput={columnInput}
+                  field={field}
+                  control={form.control}
+                  columnSchema={column}
+                />
+              ) : column.data_type === "ARRAY" ? (
                 <ArrayField
                   form={form}
                   columnInput={columnInput}

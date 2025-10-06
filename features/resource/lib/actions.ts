@@ -24,7 +24,7 @@ export async function deleteResourceDataAction(input: {
 
   const { data, error } = await query.select("*");
 
-  revalidatePath(`/home/resource/${input.resourceName}`);
+  revalidatePath(`/home/resource/${input.schema}/${input.resourceName}`);
 
   return {
     data,

@@ -1,7 +1,13 @@
-import { FileText } from "lucide-react";
+import { TerminalSquareIcon } from "lucide-react";
 
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { withI18n } from "@/lib/i18n/with-i18n";
@@ -20,14 +26,18 @@ function SqlPage() {
         </div>
       </header>
       <div className="flex min-h-[calc(100vh-183px)] items-center justify-center">
-        <Alert className="max-w-md">
-          <FileText className="h-4 w-4" />
-          <AlertTitle>No SQL Snippet Selected</AlertTitle>
-          <AlertDescription>
-            Please select a SQL from the sidebar to view its contents or create
-            a new SQL.
-          </AlertDescription>
-        </Alert>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <TerminalSquareIcon />
+            </EmptyMedia>
+            <EmptyTitle>No SQL Snippet Selected</EmptyTitle>
+            <EmptyDescription>
+              Please select a SQL from the sidebar to view its contents or create
+              a new SQL.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       </div>
     </>
   );

@@ -30,6 +30,7 @@ import { ResourceDataSchema } from "@/lib/database-meta.types";
 
 import { AllFields } from "./all-fields";
 import { ColumnInput, FieldProps } from "./types";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 export function ArrayField({
   form,
@@ -99,7 +100,7 @@ export function ArrayField({
                   name={`${field.name}.${index}`}
                   render={({ field: inputField }) => (
                     <FormItem>
-                      <div className="flex gap-2">
+                      <ButtonGroup className="w-full flex gap-2">
                         <SortableItemHandle asChild>
                           <Button
                             variant="ghost"
@@ -109,25 +110,29 @@ export function ArrayField({
                             <GripVertical className="h-4 w-4" />
                           </Button>
                         </SortableItemHandle>
-                        <FormControl className="w-full">
-                          <AllFields
-                            field={inputField}
-                            columnInput={{
-                              ...columnInput,
-                              required: true,
-                              defaultValue: null,
-                            }}
-                          />
-                        </FormControl>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={() => fieldArray.remove(index)}
-                        >
-                          <XIcon className="size-4" />
-                        </Button>
-                      </div>
+                        <ButtonGroup className="flex-1">
+                          <FormControl className="w-full">
+                            <AllFields
+                              field={inputField}
+                              columnInput={{
+                                ...columnInput,
+                                required: true,
+                                defaultValue: null,
+                              }}
+                            />
+                          </FormControl>
+                        </ButtonGroup>
+                        <ButtonGroup>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => fieldArray.remove(index)}
+                          >
+                            <XIcon className="size-4" />
+                          </Button>
+                        </ButtonGroup>
+                      </ButtonGroup>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -136,59 +141,64 @@ export function ArrayField({
             ))}
           </div>
         </SortableContent>
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => fieldArray.append("")}
-            className="flex-1"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Item
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <SquarePenIcon size={16} aria-hidden="true" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <If condition={!columnInput.required}>
+        <ButtonGroup className="w-full flex gap-2">
+          <ButtonGroup className="flex-1">
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => fieldArray.append("")}
+              className="flex-1"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Item
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <SquarePenIcon size={16} aria-hidden="true" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <If condition={!columnInput.required}>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      fieldArray.remove();
+                      form.setValue(
+                        field.name as FieldPath<ResourceDataSchema>,
+                        null,
+                      );
+                    }}
+                  >
+                    Set null
+                  </DropdownMenuItem>
+                </If>
                 <DropdownMenuItem
-                  onClick={() => {
-                    fieldArray.remove();
-                    form.setValue(
-                      field.name as FieldPath<ResourceDataSchema>,
-                      null,
-                    );
-                  }}
+                  onClick={() =>
+                    form.setValue(field.name as FieldPath<ResourceDataSchema>, [])
+                  }
                 >
-                  Set null
+                  Set empty array
                 </DropdownMenuItem>
-              </If>
-              <DropdownMenuItem
-                onClick={() =>
-                  form.setValue(field.name as FieldPath<ResourceDataSchema>, [])
-                }
-              >
-                Set empty array
-              </DropdownMenuItem>
-              <If condition={columnInput.defaultValue}>
-                <DropdownMenuItem
-                  onClick={() => {
-                    fieldArray.remove();
-                    form.setValue(
-                      field.name as FieldPath<ResourceDataSchema>,
-                      "",
-                    );
-                  }}
-                >
-                  Set default value
-                </DropdownMenuItem>
-              </If>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                <If condition={columnInput.defaultValue}>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      fieldArray.remove();
+                      form.setValue(
+                        field.name as FieldPath<ResourceDataSchema>,
+                        "",
+                      );
+                    }}
+                  >
+                    Set default value
+                  </DropdownMenuItem>
+                </If>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        </ButtonGroup>
       </div>
     </Sortable>
   );

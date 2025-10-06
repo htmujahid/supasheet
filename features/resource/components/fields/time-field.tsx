@@ -3,26 +3,28 @@ import { Input } from "@/components/ui/input";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 export function TimeField({ field, columnInput }: FieldProps) {
   return (
-    <div className="relative w-full">
-      <Input
-        type="time"
-        {...field}
-        value={field.value as string}
-        disabled={columnInput.disabled}
-        className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-      />
-      <div className="absolute top-2.5 right-8 text-xs">
-        {field.value === "" && columnInput.defaultValue ? (
-          <span className="text-muted-foreground">DEFAULT VALUE</span>
-        ) : field.value === null ? (
-          <span className="text-muted-foreground">NULL</span>
-        ) : (
-          <span className="text-muted-foreground">EMPTY</span>
-        )}
-      </div>
+    <ButtonGroup className="w-full">
+      <ButtonGroup className="relative w-full">
+        <Input
+          type="time"
+          {...field}
+          value={field.value as string}
+          disabled={columnInput.disabled}
+        />
+        <div className="absolute top-2.5 right-10 text-xs">
+          {field.value === "" && columnInput.defaultValue ? (
+            <span className="text-muted-foreground">DEFAULT VALUE</span>
+          ) : field.value === null ? (
+            <span className="text-muted-foreground">NULL</span>
+          ) : (
+            <span className="text-muted-foreground">EMPTY</span>
+          )}
+        </div>
+      </ButtonGroup>
       <FieldOptionDropdown
         columnInput={columnInput}
         setValue={(value) => {
@@ -35,6 +37,6 @@ export function TimeField({ field, columnInput }: FieldProps) {
           NOW
         </DropdownMenuItem>
       </FieldOptionDropdown>
-    </div>
+    </ButtonGroup>
   );
 }

@@ -20,6 +20,8 @@ import {
 
 import { ResourcesGroup } from "./nav-resources";
 
+const SYSTEM_SCHEMAS = ["supasheet", "dashboards", "charts", "reports"];
+
 export function ResourceSidebar({
   resources,
 }: {
@@ -38,7 +40,7 @@ export function ResourceSidebar({
 
   const uniqueSchemas = Array.from(
     new Set(resources.map((resource) => resource.schema)),
-  ).filter((schema) => schema !== "supasheet");
+  ).filter((schema) => !SYSTEM_SCHEMAS.includes(schema));
 
   const [activeSchema, setActiveSchema] = useState(uniqueSchemas[0] || "");
   const [search, setSearch] = useState("");

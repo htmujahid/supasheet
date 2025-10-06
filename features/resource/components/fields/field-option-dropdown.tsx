@@ -7,6 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 import { ColumnInput } from "./types";
 
@@ -24,37 +26,35 @@ export function FieldOptionDropdown({
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="bg-background text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute end-2.5 top-2.5 flex w-fit items-center justify-center rounded-xs transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Subscribe"
-          type="button"
-        >
-          <SquarePenIcon size={16} aria-hidden="true" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end">
-        <If condition={!columnInput.required}>
-          <DropdownMenuItem
-            onClick={() => {
-              setValue(null);
-            }}
-          >
-            Set Null
-          </DropdownMenuItem>
-        </If>
-        <If condition={columnInput.defaultValue}>
-          <DropdownMenuItem
-            onClick={() => {
-              setValue("");
-            }}
-          >
-            Set Default
-          </DropdownMenuItem>
-        </If>
-        {children}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <ButtonGroup>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size={"icon"} className="">
+            <SquarePenIcon size={16} aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end">
+          <If condition={!columnInput.required}>
+            <DropdownMenuItem
+              onClick={() => {
+                setValue(null);
+              }}
+            >
+              Set Null
+            </DropdownMenuItem>
+          </If>
+          <If condition={columnInput.defaultValue}>
+            <DropdownMenuItem
+              onClick={() => {
+                setValue("");
+              }}
+            >
+              Set Default
+            </DropdownMenuItem>
+          </If>
+          {children}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </ButtonGroup>
   );
 }

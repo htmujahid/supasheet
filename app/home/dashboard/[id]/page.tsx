@@ -4,6 +4,7 @@ import { Dashboard3 } from "@/features/dashboard/components/dashboard-3";
 import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
 import { loadDashboardWidgets } from "@/features/dashboard/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
+import { notFound } from "next/navigation";
 
 async function DashboardPage({
   params,
@@ -14,6 +15,10 @@ async function DashboardPage({
 }) {
   const { id } = await params;
   const widgets = await loadDashboardWidgets(id);
+
+  if (widgets && widgets.length === 0) {
+    notFound();
+  }
 
   return (
     <div className="mx-auto grid max-w-6xl gap-2.5 p-4 md:grid-cols-2 lg:grid-cols-4">

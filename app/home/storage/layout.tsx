@@ -23,14 +23,6 @@ export default async function HomeStorageLayout({
       icon: bucket.public ? <FolderIcon /> : <FolderLockIcon />,
     })) ?? [];
 
-  if (items.length === 0) {
-    items.unshift({
-      id: "personal",
-      name: "Personal",
-      icon: <FolderIcon />,
-    });
-  }
-
   return (
     <>
       <PrimarySidebar>

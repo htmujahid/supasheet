@@ -51,16 +51,10 @@ INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet'
 INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views('supasheet');
 INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views('supasheet');
 
-
 INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns('public');
 INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('public');
 INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views('public');
 INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialized_views('public');
-
-INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns('dashboards');
-INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('dashboards');
-INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views('dashboards');
-INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialized_views('dashboards');
 
 INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns('reports');
 INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('reports');

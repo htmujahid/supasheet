@@ -27,7 +27,6 @@ import {
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
 
 import {
   createResourceDataAction,

@@ -39,14 +39,23 @@ export function ResourceRowCell({
     (r) => r.source_column_name === column.name,
   );
 
+  const value = row.original?.[column.name as keyof ResourceDataSchema];
+
+  if (column.format === "file") {
+    const files = value ? value?.toString().split(",") : [];
+    const filesCount = files.length;
+
+    if (filesCount === 0) { return null; }
+
+    return (
+      <div className="relative truncate select-none">{filesCount + " File" + (filesCount !== 1 ? "s" : "")}</div>
+    )
+  }
+
   if (cell === "json" || cell === "array") {
     return (
       <pre className="truncate">
-        {JSON.stringify(
-          row.original?.[column.name as keyof ResourceDataSchema],
-          null,
-          0,
-        )}
+        {value ? JSON.stringify(value, null, 2) : ''}
       </pre>
     );
   }
@@ -60,7 +69,7 @@ export function ResourceRowCell({
             relationship && "pl-6",
           )}
         >
-          {row.original?.[column.name as keyof ResourceDataSchema]?.toString()}
+          {value?.toString()}
           <If condition={relationship}>
             <Link
               href={prepareForeignKeyLink(

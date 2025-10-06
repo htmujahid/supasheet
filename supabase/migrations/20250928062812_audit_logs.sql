@@ -27,6 +27,7 @@ CREATE INDEX idx_audit_logs_user_type ON supasheet.audit_logs(user_type);
 CREATE INDEX idx_audit_logs_is_error ON supasheet.audit_logs(is_error) WHERE is_error = TRUE;
 CREATE INDEX idx_audit_logs_metadata ON supasheet.audit_logs USING GIN (metadata);
 
+-- add search path to this function
 CREATE OR REPLACE FUNCTION supasheet.create_audit_log(
     p_operation TEXT,
     p_schema_name TEXT,
