@@ -93,7 +93,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
 
 -- User 1 tasks (b73eb03e-fb7a-424d-84ff-18e2791ce0b1)
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Complete project proposal',
     'Draft and finalize the Q4 project proposal for the new marketing campaign',
     'in_progress',
@@ -111,7 +111,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-25 14:30:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Buy groceries',
     'Milk, bread, eggs, chicken, vegetables for the week',
     'pending',
@@ -129,7 +129,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-27 08:15:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Schedule dentist appointment',
     'Annual checkup and cleaning',
     'completed',
@@ -147,7 +147,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-26 10:45:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Review team performance reports',
     'Quarterly review for all direct reports',
     'pending',
@@ -165,7 +165,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-26 11:00:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Plan weekend trip',
     'Research and book hotel for the mountain getaway',
     'in_progress',
@@ -185,7 +185,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
 
 -- User 2 tasks (b73eb03e-fb7a-424d-84ff-18e2791ce0b4)
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Finish reading "Clean Code"',
     'Complete the remaining chapters and take notes',
     'in_progress',
@@ -203,7 +203,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-25 21:30:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Update resume',
     'Add recent projects and certifications',
     'pending',
@@ -221,7 +221,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-26 16:45:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Call mom',
     'Weekly check-in call with family',
     'completed',
@@ -239,7 +239,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-27 19:30:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Fix database performance issue',
     'Optimize slow queries in the user dashboard',
     'in_progress',
@@ -257,7 +257,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-27 14:20:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Learn Docker basics',
     'Complete online course and practice with sample projects',
     'pending',
@@ -275,7 +275,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-20 22:15:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Organize digital photos',
     'Sort and backup photos from the last 6 months',
     'completed',
@@ -293,7 +293,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-25 16:00:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Prepare presentation for tech talk',
     'Create slides on microservices architecture',
     'in_progress',
@@ -311,7 +311,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-27 11:20:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Renew car insurance',
     'Compare quotes and renew policy before expiration',
     'pending',
@@ -332,7 +332,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
 -- Add some tasks with no due dates
 INSERT INTO tasks (id, title, description, status, priority, account_id, due_date, completed_at, tags, is_important, completion, duration, color, notes, created_at, updated_at) VALUES
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Research investment options',
     'Look into index funds and retirement planning',
     'pending',
@@ -350,7 +350,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '2025-09-25 10:00:00+00'
 ),
 (
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     'Clean garage',
     'Organize tools and donate unused items',
     'pending',
