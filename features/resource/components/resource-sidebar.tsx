@@ -54,13 +54,13 @@ export function ResourceSidebar({
 
   const submenuItems = [] as { title: string; url: string }[];
 
-  const tables = resources.filter(
+  const tables = activeResources?.filter(
     (resource) =>
       resource.type === "table" &&
       !SYSTEM_SCHEMAS.includes(resource.schema),
   );
 
-  const views = resources.filter(
+  const views = activeResources?.filter(
     (resource) =>
       resource.type === "view" &&
       !SYSTEM_SCHEMAS.includes(resource.schema),
