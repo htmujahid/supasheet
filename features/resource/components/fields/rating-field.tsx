@@ -1,10 +1,10 @@
-import { FieldOptionDropdown } from "./field-option-dropdown";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Input } from "@/components/ui/input";
+import { Rating, RatingButton } from "@/components/kibo-ui/rating";
 
+import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
 
-export function TextField({ field, columnInput }: FieldProps) {
+export function RatingField({ field, columnInput }: FieldProps) {
   const placeholder =
     field.value === "" && columnInput.defaultValue
       ? "DEFAULT VALUE"
@@ -15,13 +15,11 @@ export function TextField({ field, columnInput }: FieldProps) {
   return (
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
-        <Input
-          type={columnInput.type}
-          {...field}
-          value={field.value as string}
-          placeholder={placeholder}
-          disabled={columnInput.disabled}
-        />
+      <Rating onValueChange={field.onChange} value={field.value as number}>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <RatingButton key={index} />
+        ))}
+      </Rating>
       </ButtonGroup>
       <FieldOptionDropdown
         columnInput={columnInput}

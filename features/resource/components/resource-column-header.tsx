@@ -41,9 +41,9 @@ export function ResourceColumnHeader<TData, TValue>({
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
-        {getColumnConstraintIcon(tableSchema, columnSchema)}
-        {title}
+        {/* {getColumnConstraintIcon(tableSchema, columnSchema)} */}
         {getDataTypeIcon(columnSchema)}
+        {title}
       </div>
     );
   }
@@ -51,14 +51,14 @@ export function ResourceColumnHeader<TData, TValue>({
   return (
     <div className="relative truncate">
       <div className="flex items-center gap-2">
-        {getColumnConstraintIcon(tableSchema, columnSchema)}
-        {title}
+        {/* {getColumnConstraintIcon(tableSchema, columnSchema)} */}
         {getDataTypeIcon(columnSchema)}
+        {title}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger
           className={cn(
-            "bg-accent hover:bg-background/50 [&_svg]:text-muted-foreground focus:ring-ring absolute top-1/2 right-0.25 -translate-y-1/2 transform rounded px-0.25 py-0.25 focus:ring-1 focus:outline-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "hidden bg-accent hover:bg-background/50 [&_svg]:text-muted-foreground focus:ring-ring absolute top-1/2 right-0.25 -translate-y-1/2 transform rounded px-0.25 py-0.25 focus:ring-1 focus:outline-none [&_svg]:size-4 [&_svg]:shrink-0",
             className,
           )}
           {...props}

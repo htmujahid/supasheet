@@ -1,10 +1,10 @@
-import { FieldOptionDropdown } from "./field-option-dropdown";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
+import { ButtonGroup } from "@/components/ui/button-group";
 
+import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
 
-export function TextField({ field, columnInput }: FieldProps) {
+export function MoneyField({ field, columnInput }: FieldProps) {
   const placeholder =
     field.value === "" && columnInput.defaultValue
       ? "DEFAULT VALUE"
@@ -12,13 +12,19 @@ export function TextField({ field, columnInput }: FieldProps) {
         ? "NULL"
         : "EMPTY";
 
+  const value = parseFloat(
+    ((field.value as string).startsWith("$")
+      ? (field.value as string).slice(1)
+      : (field.value as string) ?? "0").replace(/,/g, "")
+  ).toFixed(2);
+
   return (
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
         <Input
-          type={columnInput.type}
+          type="number"
           {...field}
-          value={field.value as string}
+          value={value}
           placeholder={placeholder}
           disabled={columnInput.disabled}
         />

@@ -5,10 +5,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
-import { FieldProps } from "./types";
-import { ButtonGroup } from "@/components/ui/button-group";
+import type { FieldProps } from "./types";
 
 export function SelectField({ field, columnInput }: FieldProps) {
   return (
@@ -34,8 +34,8 @@ export function SelectField({ field, columnInput }: FieldProps) {
           </SelectTrigger>
           <SelectContent>
             {columnInput.options?.map((option) => (
-              <SelectItem key={option} value={option}>
-                {option}
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
               </SelectItem>
             ))}
           </SelectContent>

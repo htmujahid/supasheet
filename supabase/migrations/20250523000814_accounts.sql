@@ -1,8 +1,3 @@
-create schema if not exists supasheet;
-
--- Initialize schema and extensions
-grant usage on schema supasheet to authenticated;
-
 /*
  * -------------------------------------------------------
  * Section: Accounts

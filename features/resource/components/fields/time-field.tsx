@@ -15,7 +15,7 @@ export function TimeField({ field, columnInput }: FieldProps) {
           value={field.value as string}
           disabled={columnInput.disabled}
         />
-        <div className="absolute top-2.5 right-10 text-xs">
+        <div className="absolute top-2.5 right-2 text-xs">
           {field.value === "" && columnInput.defaultValue ? (
             <span className="text-muted-foreground">DEFAULT VALUE</span>
           ) : field.value === null ? (

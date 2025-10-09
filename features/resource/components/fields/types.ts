@@ -1,27 +1,41 @@
+import type { ReactElement } from "react";
 import type { Control, ControllerRenderProps, UseFormReturn } from "react-hook-form";
 
 import type { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
 
 export type ColumnInput = {
   label: string;
-  variant:
+  type:
     | "uuid"
     | "text"
+    | "longtext"
     | "number"
     | "date"
     | "datetime"
     | "boolean"
     | "json"
     | "select"
-    | "multiSelect"
-    | "time";
-  icon: string | null;
+    | "time"
+    | "money"
+    | "file"
+    | "email"
+    | "tel"
+    | "url"
+    | "rating"
+    | "percentage"
+    | "color"
+    | "duration"
+    | "array";
+  icon: ReactElement | null;
   defaultValue: string | null;
   required: boolean;
   disabled: boolean;
   dynamicDisabled?: boolean;
   isArray: boolean;
-  options?: string[];
+  options?: {
+    label: string;
+    value: string;
+  }[];
 };
 
 export type FieldProps = {

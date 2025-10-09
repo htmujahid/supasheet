@@ -8,21 +8,33 @@ CREATE TABLE tasks (
 
     -- User association
     account_id UUID REFERENCES supasheet.accounts(id) ON DELETE CASCADE,
-    
+
     -- Dates
     due_date TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
-    
+
     -- Organization
     tags TEXT[],
     is_important BOOLEAN DEFAULT false,
-    
+
+    -- Progress tracking
+    completion PERCENTAGE,
+    duration DURATION,
+
+    -- File tracking
+    attachments FILE,
+
+    -- Customization
+    color COLOR,
+    notes TEXT,
+
     -- Audit fields
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 comment on column tasks.cover is '{"accept":"image/*"}';
+comment on column tasks.attachments is '{"accept":"*"}';
 
 revoke all on table tasks from authenticated, service_role;
 
@@ -183,7 +195,8 @@ create or replace view dashboards.task_list_simple as
 select
     title,
     status,
-    priority
+    priority,
+    completion
 from tasks
 order by created_at desc
 limit 10;
@@ -218,8 +231,10 @@ select
     title,
     status,
     priority,
+    completion,
+    duration,
     to_char(created_at, 'MM/DD HH24:MI') as created,
-    CASE 
+    CASE
         WHEN due_date < CURRENT_TIMESTAMP AND status != 'completed' THEN 'Overdue'
         WHEN due_date IS NULL THEN '-'
         ELSE to_char(due_date, 'MM/DD')
@@ -237,17 +252,19 @@ select
     substring(title, 1, 30) || CASE WHEN length(title) > 30 THEN '...' ELSE '' END as task,
     status,
     priority,
-    CASE 
-        WHEN tags IS NOT NULL AND array_length(tags, 1) > 0 
+    completion,
+    attachments,
+    CASE
+        WHEN tags IS NOT NULL AND array_length(tags, 1) > 0
         THEN array_to_string(tags[1:2], ', ')
         ELSE '-'
     END as tags,
     to_char(created_at, 'MM/DD') as created
 from tasks
-order by 
+order by
     case priority
         when 'urgent' then 1
-        when 'high' then 2  
+        when 'high' then 2
         when 'medium' then 3
         when 'low' then 4
     end,

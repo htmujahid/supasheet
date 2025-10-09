@@ -11,7 +11,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { getColumnCell, getColumnMeta } from "@/features/resource/lib/columns";
+import { getColumnData } from "@/features/resource/lib/columns";
 import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
@@ -20,6 +20,7 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
+import { AllCells } from "./cells/all-cells";
 
 export function ResourceRowCell({
   row,
@@ -32,8 +33,8 @@ export function ResourceRowCell({
   tableSchema: TableSchema | null;
   setRowAction: (action: DataTableRowAction<ResourceDataSchema> | null) => void;
 }) {
-  const meta = getColumnMeta(column);
-  const cell = getColumnCell(column);
+  const columnData = getColumnData(column);
+  // const cell = getColumnCell(column);
 
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
     (r) => r.source_column_name === column.name,
@@ -41,24 +42,24 @@ export function ResourceRowCell({
 
   const value = row.original?.[column.name as keyof ResourceDataSchema];
 
-  if (column.format === "file") {
-    const files = value ? value?.toString().split(",") : [];
-    const filesCount = files.length;
+  // if (column.format === "file") {
+  //   const files = value ? value?.toString().split(",") : [];
+  //   const filesCount = files.length;
 
-    if (filesCount === 0) { return null; }
+  //   if (filesCount === 0) { return null; }
 
-    return (
-      <div className="relative truncate select-none">{filesCount + " File" + (filesCount !== 1 ? "s" : "")}</div>
-    )
-  }
+  //   return (
+  //     <div className="relative truncate select-none">{filesCount + " File" + (filesCount !== 1 ? "s" : "")}</div>
+  //   )
+  // }
 
-  if (cell === "json" || cell === "array") {
-    return (
-      <pre className="truncate">
-        {value ? JSON.stringify(value, null, 2) : ''}
-      </pre>
-    );
-  }
+  // if (cell === "json" || cell === "array") {
+  //   return (
+  //     <pre className="truncate">
+  //       {value ? JSON.stringify(value, null, 2) : ''}
+  //     </pre>
+  //   );
+  // }
 
   return (
     <ContextMenu>
@@ -69,7 +70,8 @@ export function ResourceRowCell({
             relationship && "pl-6",
           )}
         >
-          {value?.toString()}
+          <AllCells columnInput={columnData} value={value} />
+          {/* {value?.toString()} */}
           <If condition={relationship}>
             <Link
               href={prepareForeignKeyLink(
@@ -77,7 +79,7 @@ export function ResourceRowCell({
                 row.original?.[
                   column.name as keyof ResourceDataSchema
                 ]?.toString() ?? "",
-                meta.variant,
+                columnData.type,
                 tableSchema ?? null,
               )}
               target="_blank"

@@ -567,7 +567,7 @@ BEGIN
     WHERE ur.account_id = auth.uid()
         AND (table_name IS NULL OR t.table = table_name)
         AND (schema_name IS NULL OR t.schema = schema_name)
-    ORDER BY t.ordinal_position;
+    ORDER BY (t.ordinal_position::int);
 END;
 $$;
 
