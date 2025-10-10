@@ -5,7 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
-import { EditIcon, FileCode2Icon, PlusIcon, TrashIcon } from "lucide-react";
+import { EditIcon, FileCode2Icon, PlusIcon, TerminalSquareIcon, TrashIcon } from "lucide-react";
 
 import {
   ContextMenu,
@@ -185,7 +185,12 @@ export function SqlSidebar() {
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
-        <div className="text-foreground text-base font-medium">Dashboard</div>
+        <SidebarMenuButton className="w-fit px-1.5">
+          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+            <TerminalSquareIcon className="size-4" />
+          </div>
+          <span className="truncate font-medium">SQL Editor</span>
+        </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">

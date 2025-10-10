@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { UserCogIcon } from "lucide-react";
+import { UserCogIcon, UserIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -33,7 +33,12 @@ export function UserSidebar({
     <Sidebar collapsible="none" className="hidden flex-1 md:flex">
       <SidebarHeader className="border-b">
         <SidebarMenuButton className="w-fit px-1.5">
+        <SidebarMenuButton className="w-fit px-1.5">
+          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+            <UserIcon className="size-4" />
+          </div>
           <span className="truncate font-medium">User</span>
+        </SidebarMenuButton>
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>

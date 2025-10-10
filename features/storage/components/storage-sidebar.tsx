@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { FolderIcon } from "lucide-react";
 
 export function StorageSidebar({
   items,
@@ -38,7 +39,12 @@ export function StorageSidebar({
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
-        <div className="text-foreground text-base font-medium">Storage</div>
+        <SidebarMenuButton className="w-fit px-1.5">
+          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+            <FolderIcon className="size-4" />
+          </div>
+          <span className="truncate font-medium">Storage</span>
+        </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">

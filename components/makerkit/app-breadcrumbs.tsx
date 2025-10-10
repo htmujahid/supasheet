@@ -4,6 +4,8 @@ import { Fragment } from "react";
 
 import { usePathname } from "next/navigation";
 
+import { useIsMobile } from "@/hooks/use-mobile";
+
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -25,6 +27,7 @@ export function AppBreadcrumbs(props: {
   const splitPath = pathName.split("/").filter(Boolean);
   const values = props.values ?? {};
   const maxDepth = props.maxDepth ?? 6;
+  const isMobile = useIsMobile();
 
   const Ellipsis = (
     <BreadcrumbItem>
@@ -32,11 +35,17 @@ export function AppBreadcrumbs(props: {
     </BreadcrumbItem>
   );
 
-  const showEllipsis = splitPath.length > maxDepth;
+  const showEllipsis = isMobile
+    ? splitPath.length > 2
+    : splitPath.length > maxDepth;
 
-  const visiblePaths = showEllipsis
-    ? ([splitPath[0], ...splitPath.slice(-maxDepth + 1)] as string[])
-    : splitPath;
+  const visiblePaths = isMobile
+    ? splitPath.length > 2
+      ? [splitPath[0], splitPath[splitPath.length - 1]]
+      : splitPath
+    : showEllipsis
+      ? ([splitPath[0], ...splitPath.slice(-maxDepth + 1)] as string[])
+      : splitPath;
 
   return (
     <Breadcrumb>
@@ -70,7 +79,14 @@ export function AppBreadcrumbs(props: {
                 </If>
               </BreadcrumbItem>
 
-              {index === 0 && showEllipsis && (
+              {index === 0 && showEllipsis && !isMobile && (
+                <>
+                  <BreadcrumbSeparator />
+                  {Ellipsis}
+                </>
+              )}
+
+              {index === 0 && showEllipsis && isMobile && (
                 <>
                   <BreadcrumbSeparator />
                   {Ellipsis}

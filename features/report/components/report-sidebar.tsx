@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { FileChartColumnIcon } from "lucide-react";
 
 export function ReportSidebar({
   items,
@@ -38,7 +39,12 @@ export function ReportSidebar({
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
-        <div className="text-foreground text-base font-medium">Report</div>
+        <SidebarMenuButton className="w-fit px-1.5">
+          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+            <FileChartColumnIcon className="size-4" />
+          </div>
+          <span className="truncate font-medium">Report</span>
+        </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">

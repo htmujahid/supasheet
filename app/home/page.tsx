@@ -5,6 +5,7 @@ import {
   FileChartColumnIcon,
   FoldersIcon,
   Grid3X3Icon,
+  ProportionsIcon,
   ScrollTextIcon,
   TerminalSquareIcon,
   UserIcon,
@@ -27,7 +28,7 @@ const quickLinks = [
     title: "Resource",
     description: "Manage tables, views and data",
     href: "/home/resource",
-    icon: Grid3X3Icon,
+    icon: ProportionsIcon,
   },
   {
     title: "SQL Editor",
@@ -72,43 +73,45 @@ function Home() {
     <>
       <PrimarySidebar />
       <SidebarInset>
-        <div className="flex min-h-screen w-full items-center justify-center p-6">
-          <div className="w-full max-w-5xl">
-            <div className="mb-12 text-center">
-              <h1 className="text-foreground mb-3 text-3xl font-semibold tracking-tight">
-                Welcome to Supasheet
-              </h1>
-              <p className="text-muted-foreground text-base">
-                Select a tool to get started
-              </p>
-            </div>
+        <div className="h-screen overflow-auto">
+          <div className="flex min-h-screen w-full items-center justify-center p-6">
+            <div className="w-full max-w-5xl">
+              <div className="mb-12 text-center">
+                <h1 className="text-foreground mb-3 text-3xl font-semibold tracking-tight">
+                  Welcome to Supasheet
+                </h1>
+                <p className="text-muted-foreground text-base">
+                  Select a tool to get started
+                </p>
+              </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {quickLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Button
-                    key={link.href}
-                    asChild
-                    variant="outline"
-                    className="h-auto flex-col items-center gap-4 p-6 hover:bg-accent hover:border-primary/50 transition-all"
-                  >
-                    <Link href={link.href}>
-                      <div className="bg-muted flex size-14 items-center justify-center rounded-xl">
-                        <Icon className="size-7" />
-                      </div>
-                      <div className="text-center">
-                        <div className="text-foreground mb-1 text-sm font-medium">
-                          {link.title}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {quickLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Button
+                      key={link.href}
+                      asChild
+                      variant="outline"
+                      className="h-auto flex-col items-center gap-4 p-6 hover:bg-accent hover:border-primary/50 transition-all"
+                    >
+                      <Link href={link.href}>
+                        <div className="bg-muted flex size-14 items-center justify-center rounded-xl">
+                          <Icon className="size-7" />
                         </div>
-                        <div className="text-muted-foreground text-xs leading-relaxed">
-                          {link.description}
+                        <div className="text-center">
+                          <div className="text-foreground mb-1 text-sm font-medium">
+                            {link.title}
+                          </div>
+                          <div className="text-muted-foreground text-xs leading-relaxed">
+                            {link.description}
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </Button>
-                );
-              })}
+                      </Link>
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
