@@ -25,8 +25,7 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
-
-const SYSTEM_SCHEMAS = ["supasheet", "dashboards", "charts", "reports"];
+import { SYSTEM_SCHEMAS } from "@/config/database.config";
 
 export function ResourceSidebar({
   resources,

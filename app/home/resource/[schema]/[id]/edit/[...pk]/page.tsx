@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { ResourceDetailView } from "@/features/resource/components/view/resource-detail-view";
-import { ResourceForiegnDataView } from "@/features/resource/components/view/resource-foriegn-data-view";
-import { ResourceMetadataView } from "@/features/resource/components/view/resource-metadata-view";
+import { ResourceEditForm } from "@/features/resource/components/resource-edit-form";
 import {
   loadColumnsSchema,
   loadSingleResourceData,
@@ -15,7 +13,7 @@ import {
 } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function ViewPage({
+async function EditPage({
   params,
 }: {
   params: Promise<{
@@ -51,33 +49,15 @@ async function ViewPage({
   );
   if (!singleResourceData) return notFound();
 
-  const pkValues = pk.join("/");
-  const editUrl = `/home/resource/${schema}/${id}/edit/${pkValues}`;
-
   return (
     <div className="mx-auto max-w-3xl p-4">
-      <div className="flex flex-col gap-4">
-        {/* Resource Details */}
-        <ResourceDetailView
-          editUrl={editUrl}
-          columnsSchema={columnsSchema ?? []}
-          singleResourceData={singleResourceData ?? {}}
-        />
-
-        {/* Metadata */}
-        <ResourceMetadataView
-          columnsSchema={columnsSchema ?? []}
-          singleResourceData={singleResourceData ?? {}}
-        />
-
-        {/* Foreign Key Data */}
-        <ResourceForiegnDataView
-          tableSchema={tableSchema}
-          singleResourceData={singleResourceData ?? {}}
-        />
-      </div>
+      <ResourceEditForm
+        tableSchema={tableSchema}
+        columnsSchema={columnsSchema ?? []}
+        data={singleResourceData}
+      />
     </div>
   );
 }
 
-export default withI18n(ViewPage);
+export default withI18n(EditPage);

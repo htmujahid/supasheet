@@ -1,10 +1,8 @@
-"use client";
+'use client';
 
-import { Fragment } from "react";
+import { Fragment } from 'react';
 
-import { usePathname } from "next/navigation";
-
-import { useIsMobile } from "@/hooks/use-mobile";
+import { usePathname } from 'next/navigation';
 
 import {
   Breadcrumb,
@@ -13,21 +11,20 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "../ui/breadcrumb";
-import { If } from "./if";
-import { Trans } from "./trans";
+} from '../ui/breadcrumb';
+import { If } from './if';
+import { Trans } from './trans';
 
-const unslugify = (slug: string) => slug.replace(/-/g, " ");
+const unslugify = (slug: string) => slug.replace(/-/g, ' ');
 
 export function AppBreadcrumbs(props: {
   values?: Record<string, string>;
   maxDepth?: number;
 }) {
   const pathName = usePathname();
-  const splitPath = pathName.split("/").filter(Boolean);
+  const splitPath = pathName.split('/').filter(Boolean);
   const values = props.values ?? {};
-  const maxDepth = props.maxDepth ?? 6;
-  const isMobile = useIsMobile();
+  const maxDepth = props.maxDepth ?? 3;
 
   const Ellipsis = (
     <BreadcrumbItem>
@@ -35,17 +32,11 @@ export function AppBreadcrumbs(props: {
     </BreadcrumbItem>
   );
 
-  const showEllipsis = isMobile
-    ? splitPath.length > 2
-    : splitPath.length > maxDepth;
+  const showEllipsis = splitPath.length > maxDepth;
 
-  const visiblePaths = isMobile
-    ? splitPath.length > 2
-      ? [splitPath[0], splitPath[splitPath.length - 1]]
-      : splitPath
-    : showEllipsis
-      ? ([splitPath[0], ...splitPath.slice(-maxDepth + 1)] as string[])
-      : splitPath;
+  const visiblePaths = showEllipsis
+    ? ([splitPath[0], ...splitPath.slice(-maxDepth + 1)] as string[])
+    : splitPath;
 
   return (
     <Breadcrumb>
@@ -63,15 +54,15 @@ export function AppBreadcrumbs(props: {
 
           return (
             <Fragment key={index}>
-              <BreadcrumbItem className={"capitalize lg:text-xs"}>
+              <BreadcrumbItem className={'capitalize lg:text-xs'}>
                 <If
                   condition={index < visiblePaths.length - 1}
                   fallback={label}
                 >
                   <BreadcrumbLink
                     href={
-                      "/" +
-                      splitPath.slice(0, splitPath.indexOf(path) + 1).join("/")
+                      '/' +
+                      splitPath.slice(0, splitPath.indexOf(path) + 1).join('/')
                     }
                   >
                     {label}
@@ -79,14 +70,7 @@ export function AppBreadcrumbs(props: {
                 </If>
               </BreadcrumbItem>
 
-              {index === 0 && showEllipsis && !isMobile && (
-                <>
-                  <BreadcrumbSeparator />
-                  {Ellipsis}
-                </>
-              )}
-
-              {index === 0 && showEllipsis && isMobile && (
+              {index === 0 && showEllipsis && (
                 <>
                   <BreadcrumbSeparator />
                   {Ellipsis}

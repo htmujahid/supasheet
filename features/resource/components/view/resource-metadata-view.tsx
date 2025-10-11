@@ -1,5 +1,17 @@
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { ColumnSchema } from "@/lib/database-meta.types";
+
+import { getColumnMetadata } from "../../lib/columns";
+import { AllCells } from "../cells/all-cells";
+import { getDataTypeIcon } from "../icons";
 
 export function ResourceMetadataView({
   columnsSchema,
@@ -16,35 +28,40 @@ export function ResourceMetadataView({
   if (!metadataColumns.length) return null;
 
   return (
-    <div className="space-y-2.5">
-      <h3 className="text-base font-medium">Metadata</h3>
-      <div className="bg-background overflow-hidden rounded-md border">
-        <Table>
-          <TableBody>
-            {metadataColumns.map((column) => {
-              const value =
-                singleResourceData?.[
-                  column.name as keyof typeof singleResourceData
-                ];
-              return (
-                <TableRow
-                  key={column.id}
-                  className="*:border-border hover:bg-transparent [&>:not(:last-child)]:border-r"
-                >
-                  <TableCell className="bg-muted/50 w-1/4 py-2 font-medium">
-                    {column.name as string}
-                  </TableCell>
-                  <TableCell className="py-2">
-                    <span className="text-muted-foreground text-sm">
-                      {value ? new Date(value as string).toLocaleString() : ""}
-                    </span>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Metadata</CardTitle>
+        <CardDescription>
+          Timestamps and other metadata information
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-0">
+        {metadataColumns.map((column, index) => {
+          const value =
+            singleResourceData?.[
+              column.name as keyof typeof singleResourceData
+            ];
+
+          const icon = getDataTypeIcon(column);
+          const columnMetadata = getColumnMetadata(column);
+
+          return (
+            <div key={column.id}>
+              <div className="flex items-start gap-4 py-3">
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                  <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+                    {column.name as string} {icon}
+                  </Label>
+                  <div className="text-sm text-muted-foreground">
+                    <AllCells columnMetadata={columnMetadata} value={value} />
+                  </div>
+                </div>
+              </div>
+              {index < metadataColumns.length - 1 && <Separator />}
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
   );
 }
