@@ -22,7 +22,8 @@ export default function StorageNotFound() {
           </EmptyMedia>
           <EmptyTitle>Bucket Not Found</EmptyTitle>
           <EmptyDescription>
-            The storage bucket you&apos;re looking for doesn&apos;t exist or has been removed.
+            The storage bucket you&apos;re looking for doesn&apos;t exist or has
+            been removed.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

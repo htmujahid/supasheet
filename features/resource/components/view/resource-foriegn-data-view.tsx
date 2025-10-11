@@ -56,7 +56,7 @@ export function ResourceForiegnDataView({
                     {isValue
                       ? relationship.target_table_name
                       : relationship.source_table_name}{" "}
-                    <LinkIcon className="size-4 text-muted-foreground shrink-0" />
+                    <LinkIcon className="text-muted-foreground size-4 shrink-0" />
                   </Label>
                   <Link
                     href={link}

@@ -1,10 +1,11 @@
+import { notFound } from "next/navigation";
+
 import { Dashboard1 } from "@/features/dashboard/components/dashboard-1";
 import { Dashboard2 } from "@/features/dashboard/components/dashboard-2";
 import { Dashboard3 } from "@/features/dashboard/components/dashboard-3";
 import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
 import { loadDashboardWidgets } from "@/features/dashboard/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { notFound } from "next/navigation";
 
 async function DashboardPage({
   params,

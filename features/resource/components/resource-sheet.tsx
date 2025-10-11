@@ -51,7 +51,9 @@ export function ResourceSheet({
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
   const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
 
-  const primaryKeys = (tableSchema?.primary_keys as PrimaryKey[] ?? [])?.map((key) => key.name);
+  const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
+    (key) => key.name,
+  );
 
   const form = useForm<ResourceDataSchema>({
     defaultValues:
@@ -167,7 +169,9 @@ export function ResourceSheet({
           >
             {columnsSchema
               .filter(
-                (column) => !READONLY_COLUMNS.includes(column.name as string) && !primaryKeys.includes(column.name as string),
+                (column) =>
+                  !READONLY_COLUMNS.includes(column.name as string) &&
+                  !primaryKeys.includes(column.name as string),
               )
               .map((column) => (
                 <ResourceFormField

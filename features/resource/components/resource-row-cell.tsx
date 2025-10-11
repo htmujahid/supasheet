@@ -20,6 +20,7 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
+
 import { AllCells } from "./cells/all-cells";
 import { ArrayCell } from "./cells/array-cell";
 
@@ -51,13 +52,11 @@ export function ResourceRowCell({
             relationship && "pl-6",
           )}
         >
-          {
-            columnData.isArray ? (
-              <ArrayCell value={value as any[]} />
-            ) : (
-              <AllCells columnMetadata={columnData} value={value} />
-            )
-          }
+          {columnData.isArray ? (
+            <ArrayCell value={value as any[]} />
+          ) : (
+            <AllCells columnMetadata={columnData} value={value} />
+          )}
           {/* {value?.toString()} */}
           <If condition={relationship}>
             <Link
@@ -81,9 +80,7 @@ export function ResourceRowCell({
         <ContextMenuItem
           onClick={() => {
             navigator.clipboard.writeText(
-              row.original
-                ? JSON.stringify(row.original, null, 2)
-                : ""
+              row.original ? JSON.stringify(row.original, null, 2) : "",
             );
           }}
         >

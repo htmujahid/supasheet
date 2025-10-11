@@ -8,6 +8,7 @@ import {
 
 import { If } from "@/components/makerkit/if";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +31,6 @@ import { ResourceDataSchema } from "@/lib/database-meta.types";
 
 import { AllFields } from "./all-fields";
 import { ColumnMetadata, FieldProps } from "./types";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 export function ArrayField({
   form,
@@ -100,7 +100,7 @@ export function ArrayField({
                   name={`${field.name}.${index}`}
                   render={({ field: inputField }) => (
                     <FormItem>
-                      <ButtonGroup className="w-full flex gap-2">
+                      <ButtonGroup className="flex w-full gap-2">
                         <SortableItemHandle asChild>
                           <Button
                             variant="ghost"
@@ -141,9 +141,8 @@ export function ArrayField({
             ))}
           </div>
         </SortableContent>
-        <ButtonGroup className="w-full flex gap-2">
+        <ButtonGroup className="flex w-full gap-2">
           <ButtonGroup className="flex-1">
-
             <Button
               type="button"
               variant="outline"
@@ -177,7 +176,10 @@ export function ArrayField({
                 </If>
                 <DropdownMenuItem
                   onClick={() =>
-                    form.setValue(field.name as FieldPath<ResourceDataSchema>, [])
+                    form.setValue(
+                      field.name as FieldPath<ResourceDataSchema>,
+                      [],
+                    )
                   }
                 >
                   Set empty array

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 import {
   Breadcrumb,
@@ -11,18 +11,18 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '../ui/breadcrumb';
-import { If } from './if';
-import { Trans } from './trans';
+} from "../ui/breadcrumb";
+import { If } from "./if";
+import { Trans } from "./trans";
 
-const unslugify = (slug: string) => slug.replace(/-/g, ' ');
+const unslugify = (slug: string) => slug.replace(/-/g, " ");
 
 export function AppBreadcrumbs(props: {
   values?: Record<string, string>;
   maxDepth?: number;
 }) {
   const pathName = usePathname();
-  const splitPath = pathName.split('/').filter(Boolean);
+  const splitPath = pathName.split("/").filter(Boolean);
   const values = props.values ?? {};
   const maxDepth = props.maxDepth ?? 3;
 
@@ -54,15 +54,15 @@ export function AppBreadcrumbs(props: {
 
           return (
             <Fragment key={index}>
-              <BreadcrumbItem className={'capitalize lg:text-xs'}>
+              <BreadcrumbItem className={"capitalize lg:text-xs"}>
                 <If
                   condition={index < visiblePaths.length - 1}
                   fallback={label}
                 >
                   <BreadcrumbLink
                     href={
-                      '/' +
-                      splitPath.slice(0, splitPath.indexOf(path) + 1).join('/')
+                      "/" +
+                      splitPath.slice(0, splitPath.indexOf(path) + 1).join("/")
                     }
                   >
                     {label}

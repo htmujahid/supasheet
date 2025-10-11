@@ -16,13 +16,13 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 
+import { getColumnMetadata } from "../../lib/columns";
 import { getDataTypeIcon } from "../icons";
 import { AllFields } from "./all-fields";
 import { ArrayField } from "./array-field";
+import { FileField } from "./file-field";
 import { ForeignKeyField } from "./foreign-key-field";
 import { ColumnMetadata } from "./types";
-import { FileField } from "./file-field";
-import { getColumnMetadata } from "../../lib/columns";
 
 export function ResourceFormField({
   columnSchema,

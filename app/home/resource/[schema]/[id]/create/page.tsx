@@ -5,10 +5,7 @@ import {
   loadColumnsSchema,
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
-import {
-  DatabaseSchemas,
-  DatabaseTables,
-} from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 async function CreatePage({

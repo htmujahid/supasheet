@@ -4,20 +4,21 @@ import {
   CalendarDaysIcon,
   ChevronDownIcon,
   ClockIcon,
-  PaperclipIcon,
   HashIcon,
   LinkIcon,
   ListIcon,
   MailIcon,
   PaletteIcon,
+  PaperclipIcon,
   PercentIcon,
   PhoneIcon,
   StarIcon,
   TimerIcon,
-  ToggleLeftIcon
+  ToggleLeftIcon,
 } from "lucide-react";
 
 import { ColumnSchema } from "@/lib/database-meta.types";
+
 import { ColumnMetadata } from "../components/fields/types";
 
 export function getColumnCell(columnSchema: ColumnSchema) {
@@ -35,7 +36,9 @@ export function getColumnCell(columnSchema: ColumnSchema) {
 }
 
 export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
-  let format = columnSchema.format?.startsWith("_") ? columnSchema.format?.slice(1) : columnSchema.format;
+  let format = columnSchema.format?.startsWith("_")
+    ? columnSchema.format?.slice(1)
+    : columnSchema.format;
 
   let defaultValue: string | null = null;
 
@@ -63,20 +66,22 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
         label: option,
         value: option,
       })) ?? [],
-  }
+  };
 
   if (format === "file") {
     return {
       ...baseOptions,
       type: "file",
-      icon: <PaperclipIcon className="size-4 text-muted-foreground shrink-0" />,
+      icon: <PaperclipIcon className="text-muted-foreground size-4 shrink-0" />,
     };
   }
 
   if (columnSchema.data_type === "USER-DEFINED") {
     return {
       ...baseOptions,
-      icon: <ChevronDownIcon className="size-4 text-muted-foreground shrink-0" />,
+      icon: (
+        <ChevronDownIcon className="text-muted-foreground size-4 shrink-0" />
+      ),
       type: "select",
     };
   }
@@ -101,56 +106,56 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "email",
-        icon: <MailIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <MailIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "tel":
       return {
         ...baseOptions,
         type: "tel",
-        icon: <PhoneIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <PhoneIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "url":
       return {
         ...baseOptions,
         type: "url",
-        icon: <LinkIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <LinkIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "rating":
       return {
         ...baseOptions,
         type: "rating",
-        icon: <StarIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <StarIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "percentage":
       return {
         ...baseOptions,
         type: "percentage",
-        icon: <PercentIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <PercentIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "color":
       return {
         ...baseOptions,
         type: "color",
-        icon: <PaletteIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <PaletteIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "duration":
       return {
         ...baseOptions,
         type: "duration",
-        icon: <TimerIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <TimerIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "uuid":
       return {
         ...baseOptions,
         type: "uuid",
-        icon: <HashIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <HashIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "character":
@@ -158,14 +163,18 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "text",
-        icon: <code className="text-muted-foreground font-mono text-sm">ab</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">ab</code>
+        ),
       };
 
     case "text":
       return {
         ...baseOptions,
         type: "longtext",
-        icon: <code className="text-muted-foreground font-mono text-sm">AB</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">AB</code>
+        ),
       };
 
     case "bit":
@@ -173,14 +182,16 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "number",
-        icon: <BinaryIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: <BinaryIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "bytea":
       return {
         ...baseOptions,
         type: "number",
-        icon: <code className="text-muted-foreground font-mono text-sm">\x0</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">\x0</code>
+        ),
       };
 
     case "double precision":
@@ -190,7 +201,9 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "number",
-        icon: <code className="text-muted-foreground font-mono text-sm">1.23</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">1.23</code>
+        ),
       };
 
     case "int8":
@@ -199,7 +212,9 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "number",
-        icon: <code className="text-muted-foreground font-mono text-sm">123</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">123</code>
+        ),
       };
 
     case "int2":
@@ -208,7 +223,9 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "number",
-        icon: <code className="text-muted-foreground font-mono text-sm">123</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">123</code>
+        ),
       };
 
     case "int4":
@@ -217,21 +234,27 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "number",
-        icon: <code className="text-muted-foreground font-mono text-sm">123</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">123</code>
+        ),
       };
 
     case "money":
       return {
         ...baseOptions,
         type: "money",
-        icon: <code className="text-muted-foreground font-mono text-sm">$</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">$</code>
+        ),
       };
 
     case "date":
       return {
         ...baseOptions,
         type: "date",
-        icon: <CalendarDaysIcon className="size-4 text-muted-foreground shrink-0" />
+        icon: (
+          <CalendarDaysIcon className="text-muted-foreground size-4 shrink-0" />
+        ),
       };
 
     case "time":
@@ -239,7 +262,7 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "time",
-        icon: <ClockIcon className="size-4 text-muted-foreground shrink-0" />
+        icon: <ClockIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "timestamptz":
@@ -247,7 +270,9 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "datetime",
-        icon: <CalendarClockIcon className="size-4 text-muted-foreground shrink-0" />
+        icon: (
+          <CalendarClockIcon className="text-muted-foreground size-4 shrink-0" />
+        ),
       };
 
     case "json":
@@ -255,14 +280,18 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       return {
         ...baseOptions,
         type: "json",
-        icon: <code className="text-muted-foreground font-mono text-sm">{`{}`}</code>,
+        icon: (
+          <code className="text-muted-foreground font-mono text-sm">{`{}`}</code>
+        ),
       };
 
     case "bool":
       return {
         ...baseOptions,
         type: "boolean",
-        icon: <ToggleLeftIcon className="size-4 text-muted-foreground shrink-0" />,
+        icon: (
+          <ToggleLeftIcon className="text-muted-foreground size-4 shrink-0" />
+        ),
       };
 
     default:

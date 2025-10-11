@@ -12,7 +12,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
-import { PrimaryKey, ResourceDataSchema, TableSchema } from "@/lib/database-meta.types";
+import {
+  PrimaryKey,
+  ResourceDataSchema,
+  TableSchema,
+} from "@/lib/database-meta.types";
 
 export function ResourceTableRowActions({
   row,

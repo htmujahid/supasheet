@@ -5,7 +5,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
-import { EditIcon, FileCode2Icon, PlusIcon, TerminalSquareIcon, TrashIcon } from "lucide-react";
+import {
+  EditIcon,
+  FileCode2Icon,
+  PlusIcon,
+  TerminalSquareIcon,
+  TrashIcon,
+} from "lucide-react";
 
 import {
   ContextMenu,

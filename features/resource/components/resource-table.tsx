@@ -2,6 +2,8 @@
 
 import { use, useMemo, useState } from "react";
 
+import { notFound } from "next/navigation";
+
 import { If } from "@/components/makerkit/if";
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
@@ -20,7 +22,6 @@ import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
-import { notFound } from "next/navigation";
 
 export function ResourceTable({
   promises,

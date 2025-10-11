@@ -1,3 +1,4 @@
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Select,
   SelectContent,
@@ -5,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";

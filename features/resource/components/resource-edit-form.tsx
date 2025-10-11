@@ -49,7 +49,7 @@ export function ResourceEditForm({
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const primaryKeys = (tableSchema?.primary_keys as PrimaryKey[] ?? [])?.map(
+  const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
     (key) => key.name,
   );
 
@@ -120,7 +120,9 @@ export function ResourceEditForm({
           <div className="flex items-start justify-between">
             <div className="space-y-1.5">
               <CardTitle>Edit {id}</CardTitle>
-              <CardDescription>Update the resource and save changes</CardDescription>
+              <CardDescription>
+                Update the resource and save changes
+              </CardDescription>
             </div>
             <Button
               variant="destructive"
@@ -135,10 +137,7 @@ export function ResourceEditForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onUpdate)}
-              className="space-y-6"
-            >
+            <form onSubmit={form.handleSubmit(onUpdate)} className="space-y-6">
               {columnsSchema
                 .filter(
                   (column) =>

@@ -22,7 +22,8 @@ export default function ResourceNotFound() {
           </EmptyMedia>
           <EmptyTitle>Resource Not Found</EmptyTitle>
           <EmptyDescription>
-            The table or resource you&apos;re looking for doesn&apos;t exist or has been removed.
+            The table or resource you&apos;re looking for doesn&apos;t exist or
+            has been removed.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

@@ -3,9 +3,16 @@ import Link from "next/link";
 import { FileQuestionIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { createI18nServerInstance } from "@/lib/i18n/i18n.server";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -17,7 +24,6 @@ export const generateMetadata = async () => {
 };
 
 async function NotFoundPage() {
-
   return (
     <div className={"flex h-screen flex-1 flex-col"}>
       <div
@@ -45,6 +51,6 @@ async function NotFoundPage() {
       </div>
     </div>
   );
-};
+}
 
 export default withI18n(NotFoundPage);

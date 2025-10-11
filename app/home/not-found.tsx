@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { FileQuestionIcon } from "lucide-react";
 
+import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -11,10 +12,9 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { SidebarInset } from "@/components/ui/sidebar";
 import { createI18nServerInstance } from "@/lib/i18n/i18n.server";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { SidebarInset } from "@/components/ui/sidebar";
-import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -43,8 +43,8 @@ async function NotFoundPage() {
                 </EmptyMedia>
                 <EmptyTitle>404 - Page Not Found</EmptyTitle>
                 <EmptyDescription>
-                  The page you&apos;re looking for doesn&apos;t exist or has been
-                  moved.
+                  The page you&apos;re looking for doesn&apos;t exist or has
+                  been moved.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
@@ -58,6 +58,6 @@ async function NotFoundPage() {
       </SidebarInset>
     </>
   );
-};
+}
 
 export default withI18n(NotFoundPage);

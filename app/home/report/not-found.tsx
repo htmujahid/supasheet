@@ -22,7 +22,8 @@ export default function ReportNotFound() {
           </EmptyMedia>
           <EmptyTitle>Report Not Found</EmptyTitle>
           <EmptyDescription>
-            The report you&apos;re looking for doesn&apos;t exist or has been removed.
+            The report you&apos;re looking for doesn&apos;t exist or has been
+            removed.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

@@ -2,6 +2,8 @@
 
 import { use, useMemo } from "react";
 
+import { notFound } from "next/navigation";
+
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/interfaces/data-table/components/data-table-filter-list";
@@ -12,7 +14,6 @@ import { ResourceDataSchema } from "@/lib/database-meta.types";
 import { loadColumnsSchema, loadReportData } from "../lib/loaders";
 import { getReportTableColumns } from "./report-table-columns";
 import { ReportTableToolbarActions } from "./report-table-toolbar-action";
-import { notFound } from "next/navigation";
 
 export function ReportTable({
   promises,

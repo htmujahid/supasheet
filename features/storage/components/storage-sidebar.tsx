@@ -5,6 +5,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { FolderIcon } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -15,7 +17,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FolderIcon } from "lucide-react";
 
 export function StorageSidebar({
   items,

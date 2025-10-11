@@ -1,8 +1,8 @@
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Textarea } from "@/components/ui/textarea";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 export function LongtextField({ field, columnMetadata }: FieldProps) {
   const placeholder =

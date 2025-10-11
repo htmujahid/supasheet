@@ -1,3 +1,4 @@
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Select,
   SelectContent,
@@ -8,7 +9,6 @@ import {
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 export function BooleanField({ field, columnMetadata }: FieldProps) {
   return (

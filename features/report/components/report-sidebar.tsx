@@ -5,6 +5,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { FileChartColumnIcon } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -15,7 +17,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FileChartColumnIcon } from "lucide-react";
 
 export function ReportSidebar({
   items,

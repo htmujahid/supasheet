@@ -22,7 +22,8 @@ export default function DashboardNotFound() {
           </EmptyMedia>
           <EmptyTitle>Dashboard Not Found</EmptyTitle>
           <EmptyDescription>
-            The dashboard you&apos;re looking for doesn&apos;t exist or has been removed.
+            The dashboard you&apos;re looking for doesn&apos;t exist or has been
+            removed.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

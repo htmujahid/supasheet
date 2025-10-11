@@ -33,8 +33,8 @@ function SqlPage() {
             </EmptyMedia>
             <EmptyTitle>No SQL Snippet Selected</EmptyTitle>
             <EmptyDescription>
-              Please select a SQL from the sidebar to view its contents or create
-              a new SQL.
+              Please select a SQL from the sidebar to view its contents or
+              create a new SQL.
             </EmptyDescription>
           </EmptyHeader>
         </Empty>

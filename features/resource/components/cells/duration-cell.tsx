@@ -1,8 +1,8 @@
-export function DurationCell({ 
-//value in milliseconds -> convert to readable format and return the value
-  value 
-}: { 
-  value: string 
+export function DurationCell({
+  //value in milliseconds -> convert to readable format and return the value
+  value,
+}: {
+  value: string;
 }) {
   const milliseconds = parseInt(value, 10);
   if (isNaN(milliseconds)) {
@@ -11,7 +11,7 @@ export function DurationCell({
 
   const seconds = Math.floor((milliseconds / 1000) % 60);
   const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-  const hours = Math.floor((milliseconds / (1000 * 60 * 60)));
+  const hours = Math.floor(milliseconds / (1000 * 60 * 60));
 
   const parts = [];
   if (hours > 0) parts.push(`${hours}h`);
@@ -22,6 +22,5 @@ export function DurationCell({
     return <span>{milliseconds}ms</span>;
   }
 
-
-  return <span>{parts.join(' ')}</span>;
+  return <span>{parts.join(" ")}</span>;
 }

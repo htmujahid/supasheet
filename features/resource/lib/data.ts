@@ -14,7 +14,7 @@ export function useColumnsSchema(schema: string, id: string) {
       const columnResponse = await client
         .schema("supasheet")
         .rpc("get_columns", { schema_name: schema, table_name: id });
-      
+
       return columnResponse.data;
     },
     enabled: !!id,
@@ -104,4 +104,3 @@ export function useResourceData(
     enabled: !!id,
   });
 }
-

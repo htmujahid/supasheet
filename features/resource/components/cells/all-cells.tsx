@@ -10,37 +10,46 @@ import { RatingCell } from "./rating-cell";
 
 export function AllCells({
   columnMetadata,
-  value
+  value,
 }: {
-  columnMetadata: ColumnMetadata
-  value: unknown
+  columnMetadata: ColumnMetadata;
+  value: unknown;
 }) {
   switch (columnMetadata.type) {
     case "boolean":
-      return <BooleanCell value={value as string} />
+      return <BooleanCell value={value as string} />;
     case "color":
-      return <ColorCell value={value as string} />
+      return <ColorCell value={value as string} />;
     case "percentage":
-      return <PercentageCell value={value as number} />
+      return <PercentageCell value={value as number} />;
     case "duration":
-      return <DurationCell value={value as string} />
+      return <DurationCell value={value as string} />;
     case "file":
-      return <FileCell value={value as string[]} />
+      return <FileCell value={value as string[]} />;
     case "rating":
-      return <RatingCell value={value as number | null} />
+      return <RatingCell value={value as number | null} />;
     case "select":
-      return <EnumCell value={value as string} />
+      return <EnumCell value={value as string} />;
     case "money":
-      return value ? `${value}` : '';
+      return value ? `${value}` : "";
     case "json":
-      return <pre className="truncate">{value ? JSON.stringify(value, null, 2) : ''}</pre>;
+      return (
+        <pre className="truncate">
+          {value ? JSON.stringify(value, null, 2) : ""}
+        </pre>
+      );
     case "date":
-      return value ? new Date(value as string).toLocaleDateString() : '';
+      return value ? new Date(value as string).toLocaleDateString() : "";
     case "datetime":
-      return value ? new Date(value as string).toLocaleString() : '';
+      return value ? new Date(value as string).toLocaleString() : "";
     case "time":
-      return value ? new Date(`1970-01-01T${value as string}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+      return value
+        ? new Date(`1970-01-01T${value as string}Z`).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : "";
     default:
-      return value?.toString()
+      return value?.toString();
   }
 }

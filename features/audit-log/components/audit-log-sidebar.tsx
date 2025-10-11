@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import Link from "next/link";
 
+import { ScrollTextIcon } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -14,7 +16,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ScrollTextIcon } from "lucide-react";
 
 export function AuditLogsSidebar({
   items,

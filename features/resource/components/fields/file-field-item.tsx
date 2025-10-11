@@ -1,17 +1,27 @@
-import { AlertCircleIcon, XIcon } from "lucide-react"
-import { formatBytes, type FileMetadata, type FileWithPreview } from "@/hooks/use-file-upload"
-import { Button } from "@/components/ui/button"
-import type { UploadProgress } from "./types"
-import { FileFieldIcon } from "./file-field-icon"
+import { AlertCircleIcon, XIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  type FileMetadata,
+  type FileWithPreview,
+  formatBytes,
+} from "@/hooks/use-file-upload";
+
+import { FileFieldIcon } from "./file-field-icon";
+import type { UploadProgress } from "./types";
 
 type FileFieldItemProps = {
-  file: FileWithPreview
-  progress?: UploadProgress
-  onRemove: (fileId: string, fileUrl?: string) => void
-}
+  file: FileWithPreview;
+  progress?: UploadProgress;
+  onRemove: (fileId: string, fileUrl?: string) => void;
+};
 
-export function FileFieldItem({ file, progress, onRemove }: FileFieldItemProps) {
-  const isUploading = progress && !progress.completed
+export function FileFieldItem({
+  file,
+  progress,
+  onRemove,
+}: FileFieldItemProps) {
+  const isUploading = progress && !progress.completed;
 
   return (
     <div
@@ -28,7 +38,9 @@ export function FileFieldItem({ file, progress, onRemove }: FileFieldItemProps) 
               {file.file instanceof File ? file.file.name : file.file.name}
             </p>
             <p className="text-muted-foreground text-xs">
-              {formatBytes(file.file instanceof File ? file.file.size : file.file.size)}
+              {formatBytes(
+                file.file instanceof File ? file.file.size : file.file.size,
+              )}
             </p>
           </div>
         </div>
@@ -37,8 +49,11 @@ export function FileFieldItem({ file, progress, onRemove }: FileFieldItemProps) 
           variant="ghost"
           className="text-muted-foreground/80 hover:text-foreground -me-2 size-8 hover:bg-transparent"
           onClick={() => {
-            const fileUrl = file.file instanceof File ? undefined : (file.file as FileMetadata).url
-            onRemove(file.id, fileUrl)
+            const fileUrl =
+              file.file instanceof File
+                ? undefined
+                : (file.file as FileMetadata).url;
+            onRemove(file.id, fileUrl);
           }}
           aria-label="Remove file"
         >
@@ -70,5 +85,5 @@ export function FileFieldItem({ file, progress, onRemove }: FileFieldItemProps) 
         </>
       )}
     </div>
-  )
+  );
 }

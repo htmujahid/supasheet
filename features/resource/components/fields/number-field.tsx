@@ -1,8 +1,8 @@
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 export function NumberField({ field, columnMetadata }: FieldProps) {
   const placeholder =

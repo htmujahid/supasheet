@@ -5,8 +5,28 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { ChevronDown, ChevronRight, EyeIcon, ProportionsIcon, Table2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  EyeIcon,
+  ProportionsIcon,
+  Table2,
+} from "lucide-react";
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -21,10 +41,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Separator } from "@/components/ui/separator";
 import { SYSTEM_SCHEMAS } from "@/config/database.config";
 
 export function ResourceSidebar({
@@ -56,14 +72,12 @@ export function ResourceSidebar({
 
   const tables = activeResources?.filter(
     (resource) =>
-      resource.type === "table" &&
-      !SYSTEM_SCHEMAS.includes(resource.schema),
+      resource.type === "table" && !SYSTEM_SCHEMAS.includes(resource.schema),
   );
 
   const views = activeResources?.filter(
     (resource) =>
-      resource.type === "view" &&
-      !SYSTEM_SCHEMAS.includes(resource.schema),
+      resource.type === "view" && !SYSTEM_SCHEMAS.includes(resource.schema),
   );
 
   return (
@@ -71,7 +85,7 @@ export function ResourceSidebar({
       collapsible="none"
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
     >
-      <SidebarHeader className="gap-2.5  p-2.5">
+      <SidebarHeader className="gap-2.5 p-2.5">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
@@ -125,49 +139,51 @@ export function ResourceSidebar({
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>Tables</SidebarGroupLabel>
           <SidebarMenu className="overflow-y-auto">
-            {
-              tables.map((item) => (
-                <Collapsible key={item.id} asChild defaultOpen={activeResource?.id === item.id}>
-                  <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={activeResource?.id === item.id}
+            {tables.map((item) => (
+              <Collapsible
+                key={item.id}
+                asChild
+                defaultOpen={activeResource?.id === item.id}
+              >
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={activeResource?.id === item.id}
+                  >
+                    <Link
+                      href={"/home/resource/" + item.schema + "/" + item.id}
+                      title={item.name}
                     >
-                      <Link
-                        href={"/home/resource/" + item.schema + "/" + item.id}
-                        title={item.name}
-                      >
-                        <Table2 className="size-4 shrink-0" />
-                        <span>{item.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                    {submenuItems?.length ? (
-                      <>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuAction className="data-[state=open]:rotate-90">
-                            <ChevronRight />
-                            <span className="sr-only">Toggle</span>
-                          </SidebarMenuAction>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {submenuItems?.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton asChild>
-                                  <a href={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                  </a>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </>
-                    ) : null}
-                  </SidebarMenuItem>
-                </Collapsible>
-              ))
-            }
+                      <Table2 className="size-4 shrink-0" />
+                      <span>{item.name}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  {submenuItems?.length ? (
+                    <>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuAction className="data-[state=open]:rotate-90">
+                          <ChevronRight />
+                          <span className="sr-only">Toggle</span>
+                        </SidebarMenuAction>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {submenuItems?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <a href={subItem.url}>
+                                  <span>{subItem.title}</span>
+                                </a>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </>
+                  ) : null}
+                </SidebarMenuItem>
+              </Collapsible>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
 
@@ -180,7 +196,7 @@ export function ResourceSidebar({
                   <Link
                     href={"/home/resource/" + item.schema + "/" + item.id}
                     title={item.name}
-                  >                    
+                  >
                     <EyeIcon className="size-4 shrink-0" />
                     <span>{item.name}</span>
                   </Link>

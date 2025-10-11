@@ -19,8 +19,8 @@ async function HomeUsersPage() {
           </EmptyMedia>
           <EmptyTitle>No Item Selected</EmptyTitle>
           <EmptyDescription>
-            Please select a sidebar item from the sidebar to view its contents or
-            update your profile.
+            Please select a sidebar item from the sidebar to view its contents
+            or update your profile.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

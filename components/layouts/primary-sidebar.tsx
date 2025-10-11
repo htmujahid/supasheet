@@ -16,6 +16,7 @@ import {
   WarehouseIcon,
 } from "lucide-react";
 
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import {
   Sidebar,
   SidebarContent,
@@ -27,14 +28,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-
 import featuresFlagConfig from "@/config/feature-flags.config";
 import pathsConfig from "@/config/paths.config";
 import { PersonalAccountDropdown } from "@/features/users/components/personal-account-dropdown";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useSignOut } from "@/lib/supabase/hooks/use-sign-out";
 import { useUser } from "@/lib/supabase/hooks/use-user";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 // This is sample data
 const data = {
@@ -180,10 +179,10 @@ export function PrimarySidebar({
       </Sidebar>
       {isMobile && props.children && (
         <Drawer>
-          <DrawerTrigger className="fixed! bottom-4 left-4 z-10 p-1.5 bg-primary text-primary-foreground rounded-md"><MenuIcon className="size-4" /></DrawerTrigger>
-          <DrawerContent>
-            {props.children}
-          </DrawerContent>
+          <DrawerTrigger className="bg-primary text-primary-foreground fixed! bottom-4 left-4 z-10 rounded-md p-1.5">
+            <MenuIcon className="size-4" />
+          </DrawerTrigger>
+          <DrawerContent>{props.children}</DrawerContent>
         </Drawer>
       )}
     </>

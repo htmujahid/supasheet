@@ -44,7 +44,7 @@ export function ResourceCreateForm({
   const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
   const router = useRouter();
 
-  const primaryKeys = (tableSchema?.primary_keys as PrimaryKey[] ?? [])?.map(
+  const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
     (key) => key.name,
   );
 
@@ -104,14 +104,13 @@ export function ResourceCreateForm({
     <Card>
       <CardHeader>
         <CardTitle>Create {id}</CardTitle>
-        <CardDescription>Create a new resource and save changes</CardDescription>
+        <CardDescription>
+          Create a new resource and save changes
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onCreate)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onCreate)} className="space-y-6">
             {columnsSchema
               .filter(
                 (column) =>

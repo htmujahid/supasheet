@@ -1,7 +1,15 @@
 import type { ReactElement } from "react";
-import type { Control, ControllerRenderProps, UseFormReturn } from "react-hook-form";
 
-import type { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
+import type {
+  Control,
+  ControllerRenderProps,
+  UseFormReturn,
+} from "react-hook-form";
+
+import type {
+  ColumnSchema,
+  ResourceDataSchema,
+} from "@/lib/database-meta.types";
 
 export type ColumnMetadata = {
   label: string;
@@ -61,9 +69,9 @@ export type FileFieldConfig = {
 };
 
 export type FileFieldProps = {
-  form: UseFormReturn<ResourceDataSchema>
-  columnMetadata: FieldProps["columnMetadata"]
-  field: FieldProps["field"]
-  control: Control<ResourceDataSchema>
-  columnSchema: ColumnSchema
-}
+  form: UseFormReturn<ResourceDataSchema>;
+  columnMetadata: FieldProps["columnMetadata"];
+  field: FieldProps["field"];
+  control: Control<ResourceDataSchema>;
+  columnSchema: ColumnSchema;
+};

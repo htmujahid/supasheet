@@ -38,7 +38,9 @@ export function StorageToolbar({
   const handleDelete = async () => {
     if (selectedFiles.size === 0) return;
 
-    const { data, error } = await supabase.storage.from(bucketId).remove(Array.from(selectedFiles));
+    const { data, error } = await supabase.storage
+      .from(bucketId)
+      .remove(Array.from(selectedFiles));
     if (!data?.length) {
       toast.error("You don't have permission to delete these files");
     } else if (error) {

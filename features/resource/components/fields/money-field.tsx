@@ -1,5 +1,5 @@
-import { Input } from "@/components/ui/input";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Input } from "@/components/ui/input";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
@@ -15,7 +15,8 @@ export function MoneyField({ field, columnMetadata }: FieldProps) {
   const value = parseFloat(
     ((field.value as string).startsWith("$")
       ? (field.value as string).slice(1)
-      : (field.value as string) ?? "0").replace(/,/g, "")
+      : ((field.value as string) ?? "0")
+    ).replace(/,/g, ""),
   ).toFixed(2);
 
   return (

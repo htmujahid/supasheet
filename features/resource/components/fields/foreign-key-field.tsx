@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { If } from "@/components/makerkit/if";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Relationship } from "@/lib/database-meta.types";
@@ -8,7 +9,6 @@ import { Relationship } from "@/lib/database-meta.types";
 import { ForeignTableSheet } from "../sheet-table/foreign-table-sheet";
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 export function ForeignKeyField({
   field,

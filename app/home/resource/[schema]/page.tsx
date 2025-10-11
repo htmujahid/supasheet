@@ -19,8 +19,8 @@ async function HomeResourcesPage() {
           </EmptyMedia>
           <EmptyTitle>No Resource Selected</EmptyTitle>
           <EmptyDescription>
-            Please select a table from the sidebar to view its contents or create
-            a new record.
+            Please select a table from the sidebar to view its contents or
+            create a new record.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

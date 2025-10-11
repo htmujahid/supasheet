@@ -1,7 +1,7 @@
-import { FieldOptionDropdown } from "./field-option-dropdown";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 
+import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
 
 export function TextField({ field, columnMetadata }: FieldProps) {

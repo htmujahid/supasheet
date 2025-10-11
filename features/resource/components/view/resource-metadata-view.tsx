@@ -52,7 +52,7 @@ export function ResourceMetadataView({
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
                     {column.name as string} {icon}
                   </Label>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     <AllCells columnMetadata={columnMetadata} value={value} />
                   </div>
                 </div>

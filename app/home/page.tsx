@@ -92,7 +92,7 @@ function Home() {
                       key={link.href}
                       asChild
                       variant="outline"
-                      className="h-auto flex-col items-center gap-4 p-6 hover:bg-accent hover:border-primary/50 transition-all"
+                      className="hover:bg-accent hover:border-primary/50 h-auto flex-col items-center gap-4 p-6 transition-all"
                     >
                       <Link href={link.href}>
                         <div className="bg-muted flex size-14 items-center justify-center rounded-xl">
