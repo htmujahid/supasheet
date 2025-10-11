@@ -29,8 +29,8 @@ async function HomeResourcePage(props: {
   const search = resourceSearchParamsCache.parse(searchParams);
 
   const promises = Promise.all([
-    loadTableSchema(id),
-    loadColumnsSchema(id),
+    loadTableSchema(schema, id),
+    loadColumnsSchema(schema, id),
     loadResourceData(schema, id, search),
   ]);
 

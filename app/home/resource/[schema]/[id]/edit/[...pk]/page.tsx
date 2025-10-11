@@ -28,10 +28,10 @@ async function EditPage({
     pk: string[];
   };
 
-  const tableSchema = await loadTableSchema(id);
+  const tableSchema = await loadTableSchema(schema, id);
   if (!tableSchema) return notFound();
 
-  const columnsSchema = await loadColumnsSchema(id);
+  const columnsSchema = await loadColumnsSchema(schema, id);
   if (!columnsSchema?.length) return notFound();
 
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];

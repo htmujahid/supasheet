@@ -24,10 +24,10 @@ async function CreatePage({
     id: DatabaseTables<typeof schema>;
   };
 
-  const tableSchema = await loadTableSchema(id);
+  const tableSchema = await loadTableSchema(schema, id);
   if (!tableSchema) return notFound();
 
-  const columnsSchema = await loadColumnsSchema(id);
+  const columnsSchema = await loadColumnsSchema(schema, id);
   if (!columnsSchema?.length) return notFound();
 
   return (

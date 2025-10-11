@@ -81,6 +81,18 @@ export function ResourceRowCell({
         <ContextMenuItem
           onClick={() => {
             navigator.clipboard.writeText(
+              row.original
+                ? JSON.stringify(row.original, null, 2)
+                : ""
+            );
+          }}
+        >
+          <CopyIcon className="size-4" />
+          Copy Row
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            navigator.clipboard.writeText(
               row.original?.[
                 columnSchema.name as keyof ResourceDataSchema
               ]?.toString() ?? "",
@@ -91,7 +103,6 @@ export function ResourceRowCell({
           Copy Cell Content
         </ContextMenuItem>
         <If condition={tableSchema}>
-          <ContextMenuSeparator />
           <ContextMenuItem
             onClick={() =>
               setRowAction({
@@ -103,6 +114,7 @@ export function ResourceRowCell({
             <EditIcon className="size-4" />
             Edit Row
           </ContextMenuItem>
+          <ContextMenuSeparator />
           <ContextMenuItem
             variant="destructive"
             onClick={() =>

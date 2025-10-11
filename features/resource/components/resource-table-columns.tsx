@@ -7,7 +7,6 @@ import { getColumnMeta } from "@/features/resource/lib/columns";
 import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
-  PrimaryKey,
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
@@ -25,8 +24,6 @@ export function getResourceTableColumns({
     rowAction: DataTableRowAction<ResourceDataSchema> | null,
   ) => void;
 }) {
-  const primaryKeys = (tableSchema?.primary_keys as PrimaryKey[]) ?? [];
-
   return [
     ...(tableSchema
       ? [
@@ -92,7 +89,7 @@ export function getResourceTableColumns({
               return (
                 <ResourceTableRowActions
                   row={row}
-                  href={`/home/resource/${tableSchema.schema}/${tableSchema.name}/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`}
+                  tableSchema={tableSchema}
                   setRowAction={setRowAction}
                 />
               );

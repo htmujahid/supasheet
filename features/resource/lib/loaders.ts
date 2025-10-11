@@ -3,22 +3,22 @@ import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { ResourceSearchParams } from "./validations";
 
-export async function loadColumnsSchema(id: string) {
+export async function loadColumnsSchema(schema: string, id: string) {
   const client = await getSupabaseServerClient();
 
   const columnResponse = await client
     .schema("supasheet")
-    .rpc("get_columns", { table_name: id });
+    .rpc("get_columns", { schema_name: schema, table_name: id });
 
   return columnResponse.data;
 }
 
-export async function loadTableSchema(id: string) {
+export async function loadTableSchema(schema: string, id: string) {
   const client = await getSupabaseServerClient();
 
   const tableResponse = await client
     .schema("supasheet")
-    .rpc("get_tables", { table_name: id });
+    .rpc("get_tables", { schema_name: schema, table_name: id });
 
   if (tableResponse.error) {
     return null;
