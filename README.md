@@ -3,7 +3,7 @@
   Supasheet
   </h1>
   <h3 align="center"><strong>The admin panel you've been waiting for</strong></h3>
-  <p>Supasheet is a powerful admin panel designed to work seamlessly with Supabase. It provides an intuitive interface for managing your data, users, and settings, making it easier than ever to build and maintain your applications.</p>
+  <p>Supasheet is an opinionated admin panel designed to work seamlessly with Supabase. It provides an intuitive interface for managing your data, users, and settings, making it easier than ever to build and maintain your applications.</p>
   <p>Try out Supasheet using our hosted version at <a href="https://supasheet.app">supasheet.app</a></p>
 </div>
 
