@@ -4,9 +4,9 @@ import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 import { ButtonGroup } from "@/components/ui/button-group";
 
-export function NumberField({ field, columnInput }: FieldProps) {
+export function NumberField({ field, columnMetadata }: FieldProps) {
   const placeholder =
-    field.value === "" && columnInput.defaultValue
+    field.value === "" && columnMetadata.defaultValue
       ? "DEFAULT VALUE"
       : field.value === null
         ? "NULL"
@@ -20,11 +20,11 @@ export function NumberField({ field, columnInput }: FieldProps) {
           {...field}
           value={field.value as string}
           placeholder={placeholder}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
         />
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

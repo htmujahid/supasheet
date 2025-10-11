@@ -20,85 +20,85 @@ import { getDataTypeIcon } from "../icons";
 import { AllFields } from "./all-fields";
 import { ArrayField } from "./array-field";
 import { ForeignKeyField } from "./foreign-key-field";
-import { ColumnInput } from "./types";
+import { ColumnMetadata } from "./types";
 import { FileField } from "./file-field";
-import { getColumnData } from "../../lib/columns";
+import { getColumnMetadata } from "../../lib/columns";
 
 export function ResourceFormField({
-  column,
+  columnSchema,
   tableSchema,
   form,
 }: {
-  column: ColumnSchema;
+  columnSchema: ColumnSchema;
   tableSchema: TableSchema | null;
   form: UseFormReturn<ResourceDataSchema>;
 }) {
-  let columnInput: ColumnInput;
+  let columnMetadata: ColumnMetadata;
 
-  if (column.data_type === "ARRAY") {
-    let data_type = column.actual_type?.toString().slice(1) ?? null;
+  if (columnSchema.data_type === "ARRAY") {
+    let data_type = columnSchema.actual_type?.toString().slice(1) ?? null;
 
-    if ((column.enums as string[])?.length) {
+    if ((columnSchema.enums as string[])?.length) {
       data_type = "USER-DEFINED";
     }
 
-    columnInput = getColumnData({
-      ...column,
+    columnMetadata = getColumnMetadata({
+      ...columnSchema,
       data_type,
     });
   } else {
-    columnInput = getColumnData(column);
+    columnMetadata = getColumnMetadata(columnSchema);
   }
 
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
     (relationship) =>
-      relationship.source_column_name === column.name &&
-      relationship.source_schema === column.schema,
+      relationship.source_column_name === columnSchema.name &&
+      relationship.source_schema === columnSchema.schema,
   );
 
   return (
     <FormField
-      key={column.id}
+      key={columnSchema.id}
       control={form.control}
-      disabled={columnInput.disabled}
-      name={column.name as FieldPath<ResourceDataSchema>}
+      disabled={columnMetadata.disabled}
+      name={columnSchema.name as FieldPath<ResourceDataSchema>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {column.name as string} {getDataTypeIcon(column)}{" "}
-            {columnInput.required && (
+            {columnSchema.name as string} {getDataTypeIcon(columnSchema)}{" "}
+            {columnMetadata.required && (
               <span className="text-destructive">*</span>
             )}
           </FormLabel>
           <FormControl>
             <div>
-              {column.format === "file" ? (
+              {columnSchema.format === "file" ? (
                 <FileField
                   form={form}
-                  columnInput={columnInput}
+                  columnMetadata={columnMetadata}
                   field={field}
                   control={form.control}
-                  columnSchema={column}
+                  columnSchema={columnSchema}
                 />
-              ) : column.data_type === "ARRAY" ? (
+              ) : columnSchema.data_type === "ARRAY" ? (
                 <ArrayField
                   form={form}
-                  columnInput={columnInput}
+                  columnMetadata={columnMetadata}
                   field={field}
                   control={form.control}
                 />
               ) : relationship ? (
                 <ForeignKeyField
                   field={field}
-                  columnInput={columnInput}
+                  columnMetadata={columnMetadata}
                   relationship={relationship}
                 />
               ) : (
-                <AllFields field={field} columnInput={columnInput} />
+                <AllFields field={field} columnMetadata={columnMetadata} />
               )}
             </div>
           </FormControl>
-          <If condition={columnInput.defaultValue}>
+          <If condition={columnMetadata.defaultValue}>
             {(defaultValue) => (
               <FormDescription>DEFAULT: {defaultValue}</FormDescription>
             )}

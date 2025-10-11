@@ -13,39 +13,39 @@ import { TimeField } from "./time-field";
 import { FieldProps } from "./types";
 import { UuidField } from "./uuid-field";
 
-export function AllFields({ field, columnInput }: FieldProps) {
-  switch (columnInput.type) {
+export function AllFields({ field, columnMetadata }: FieldProps) {
+  switch (columnMetadata.type) {
     case "uuid":
-      return <UuidField field={field} columnInput={columnInput} />;
+      return <UuidField field={field} columnMetadata={columnMetadata} />;
     case "money":
-      return <MoneyField field={field} columnInput={columnInput} />;
+      return <MoneyField field={field} columnMetadata={columnMetadata} />;
     case "number":
     case "percentage":
-      return <NumberField field={field} columnInput={columnInput} />;
+      return <NumberField field={field} columnMetadata={columnMetadata} />;
     case "boolean":
-      return <BooleanField field={field} columnInput={columnInput} />;
+      return <BooleanField field={field} columnMetadata={columnMetadata} />;
     case "select":
-      return <SelectField field={field} columnInput={columnInput} />;
+      return <SelectField field={field} columnMetadata={columnMetadata} />;
     case "date":
-      return <DateField field={field} columnInput={columnInput} />;
+      return <DateField field={field} columnMetadata={columnMetadata} />;
     case "time":
-      return <TimeField field={field} columnInput={columnInput} />;
+      return <TimeField field={field} columnMetadata={columnMetadata} />;
     case "datetime":
-      return <DatetimeField field={field} columnInput={columnInput} />;
+      return <DatetimeField field={field} columnMetadata={columnMetadata} />;
     case "json":
-      return <JsonField field={field} columnInput={columnInput} />;
+      return <JsonField field={field} columnMetadata={columnMetadata} />;
     case "longtext":
-      return <LongtextField field={field} columnInput={columnInput} />;
+      return <LongtextField field={field} columnMetadata={columnMetadata} />;
     case "rating":
-      return <RatingField field={field} columnInput={columnInput} />;
+      return <RatingField field={field} columnMetadata={columnMetadata} />;
     case "duration":
-      return <DurationField field={field} columnInput={columnInput} />;
+      return <DurationField field={field} columnMetadata={columnMetadata} />;
     case "color":
     case "email":
     case "tel":
     case "text":
     case "url":
     default:
-      return <TextField field={field} columnInput={columnInput} />;
+      return <TextField field={field} columnMetadata={columnMetadata} />;
   }
 }

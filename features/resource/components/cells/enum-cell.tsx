@@ -1,5 +1,5 @@
 import { Badge, badgeVariants } from "@/components/ui/badge";
-import { ColumnInput } from "../fields/types";
+import { ColumnMetadata } from "../fields/types";
 
 export function EnumCell({
   value,

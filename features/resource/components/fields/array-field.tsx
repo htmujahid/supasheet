@@ -29,17 +29,17 @@ import {
 import { ResourceDataSchema } from "@/lib/database-meta.types";
 
 import { AllFields } from "./all-fields";
-import { ColumnInput, FieldProps } from "./types";
+import { ColumnMetadata, FieldProps } from "./types";
 import { ButtonGroup } from "@/components/ui/button-group";
 
 export function ArrayField({
   form,
-  columnInput,
+  columnMetadata,
   field,
   control,
 }: {
   form: UseFormReturn<ResourceDataSchema>;
-  columnInput: ColumnInput;
+  columnMetadata: ColumnMetadata;
   field: FieldProps["field"];
   control: Control<ResourceDataSchema>;
 }) {
@@ -85,7 +85,7 @@ export function ArrayField({
             Empty array []
           </p>
         </If>
-        <If condition={field.value === "" && columnInput.defaultValue}>
+        <If condition={field.value === "" && columnMetadata.defaultValue}>
           <p className="text-muted-foreground py-2 text-center text-sm">
             DEFAULT VALUE
           </p>
@@ -114,8 +114,8 @@ export function ArrayField({
                           <FormControl className="w-full">
                             <AllFields
                               field={inputField}
-                              columnInput={{
-                                ...columnInput,
+                              columnMetadata={{
+                                ...columnMetadata,
                                 required: true,
                                 defaultValue: null,
                               }}
@@ -162,7 +162,7 @@ export function ArrayField({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <If condition={!columnInput.required}>
+                <If condition={!columnMetadata.required}>
                   <DropdownMenuItem
                     onClick={() => {
                       fieldArray.remove();
@@ -182,7 +182,7 @@ export function ArrayField({
                 >
                   Set empty array
                 </DropdownMenuItem>
-                <If condition={columnInput.defaultValue}>
+                <If condition={columnMetadata.defaultValue}>
                   <DropdownMenuItem
                     onClick={() => {
                       fieldArray.remove();

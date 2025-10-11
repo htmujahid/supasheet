@@ -1,4 +1,4 @@
-import { ColumnInput } from "../fields/types";
+import { ColumnMetadata } from "../fields/types";
 import { ArrayCell } from "./array-cell";
 import { BooleanCell } from "./boolean-cell";
 import { ColorCell } from "./color-cell";
@@ -9,13 +9,13 @@ import { PercentageCell } from "./percentage-cell";
 import { RatingCell } from "./rating-cell";
 
 export function AllCells({
-  columnInput,
+  columnMetadata,
   value
 }: {
-  columnInput: ColumnInput
+  columnMetadata: ColumnMetadata
   value: unknown
 }) {
-  switch (columnInput.type) {
+  switch (columnMetadata.type) {
     case "boolean":
       return <BooleanCell value={value as string} />
     case "color":
@@ -32,8 +32,6 @@ export function AllCells({
       return <EnumCell value={value as string} />
     case "money":
       return value ? `${value}` : '';
-    case "array":
-      return <ArrayCell value={value as string[] | null} />
     case "json":
       return <pre className="truncate">{value ? JSON.stringify(value, null, 2) : ''}</pre>;
     case "date":

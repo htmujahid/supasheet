@@ -16,7 +16,7 @@ import { FileFieldItem } from "./file-field-item"
 import { FileFieldEmptyState } from "./file-field-empty-state"
 import type { FileFieldProps, UploadProgress, FileFieldConfig } from "./types"
 
-export function FileField({ form, columnInput, field, control, columnSchema }: FileFieldProps) {
+export function FileField({ form, columnMetadata, field, control, columnSchema }: FileFieldProps) {
   const client = useSupabase()
 
   // Parse configuration from column comment
@@ -197,7 +197,7 @@ export function FileField({ form, columnInput, field, control, columnSchema }: F
       >
         <input
           {...getInputProps()}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
           className="sr-only"
           aria-label="Upload files"
         />

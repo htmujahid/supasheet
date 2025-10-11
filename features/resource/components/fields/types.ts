@@ -3,7 +3,7 @@ import type { Control, ControllerRenderProps, UseFormReturn } from "react-hook-f
 
 import type { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
 
-export type ColumnInput = {
+export type ColumnMetadata = {
   label: string;
   type:
     | "uuid"
@@ -40,7 +40,7 @@ export type ColumnInput = {
 
 export type FieldProps = {
   field: ControllerRenderProps<ResourceDataSchema, string>;
-  columnInput: ColumnInput;
+  columnMetadata: ColumnMetadata;
   disabled?: boolean;
 };
 
@@ -62,7 +62,7 @@ export type FileFieldConfig = {
 
 export type FileFieldProps = {
   form: UseFormReturn<ResourceDataSchema>
-  columnInput: FieldProps["columnInput"]
+  columnMetadata: FieldProps["columnMetadata"]
   field: FieldProps["field"]
   control: Control<ResourceDataSchema>
   columnSchema: ColumnSchema

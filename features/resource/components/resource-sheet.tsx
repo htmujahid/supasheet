@@ -172,7 +172,7 @@ export function ResourceSheet({
               .map((column) => (
                 <ResourceFormField
                   key={column.id}
-                  column={column}
+                  columnSchema={column}
                   tableSchema={tableSchema}
                   form={form}
                 />

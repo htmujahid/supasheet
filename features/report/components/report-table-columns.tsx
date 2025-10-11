@@ -25,7 +25,7 @@ export function getReportTableColumns({
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
         <ResourceRowCell
           row={row}
-          column={c}
+          columnSchema={c}
           tableSchema={null}
           setRowAction={() => {}}
         />

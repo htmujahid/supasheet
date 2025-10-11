@@ -1,24 +1,24 @@
-import { 
-  BinaryIcon, 
-  CalendarClockIcon, 
-  CalendarDaysIcon, 
-  ChevronDownIcon, 
-  ClockIcon, 
-  PaperclipIcon, 
-  HashIcon, 
-  LinkIcon, 
-  ListIcon, 
-  MailIcon, 
-  PaletteIcon, 
-  PercentIcon, 
-  PhoneIcon, 
-  StarIcon, 
-  TimerIcon, 
-  ToggleLeftIcon 
+import {
+  BinaryIcon,
+  CalendarClockIcon,
+  CalendarDaysIcon,
+  ChevronDownIcon,
+  ClockIcon,
+  PaperclipIcon,
+  HashIcon,
+  LinkIcon,
+  ListIcon,
+  MailIcon,
+  PaletteIcon,
+  PercentIcon,
+  PhoneIcon,
+  StarIcon,
+  TimerIcon,
+  ToggleLeftIcon
 } from "lucide-react";
 
 import { ColumnSchema } from "@/lib/database-meta.types";
-import { ColumnInput } from "../components/fields/types";
+import { ColumnMetadata } from "../components/fields/types";
 
 export function getColumnCell(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
@@ -34,7 +34,7 @@ export function getColumnCell(columnSchema: ColumnSchema) {
   }
 }
 
-export function getColumnData(columnSchema: ColumnSchema): ColumnInput {
+export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
   let format = columnSchema.format?.startsWith("_") ? columnSchema.format?.slice(1) : columnSchema.format;
 
   let defaultValue: string | null = null;
@@ -59,91 +59,98 @@ export function getColumnData(columnSchema: ColumnSchema): ColumnInput {
     required,
     isArray,
     options:
-    (columnSchema.enums as string[])?.map((option) => ({
-      label: option,
-      value: option,
-    })) ?? [],
+      (columnSchema.enums as string[])?.map((option) => ({
+        label: option,
+        value: option,
+      })) ?? [],
   }
 
-  switch (format) {
-    case "file":
-      return {
-        ...baseOptions,
-        type: "file",
-        icon: <PaperclipIcon className="size-4 text-muted-foreground shrink-0" />,
+  if (format === "file") {
+    return {
+      ...baseOptions,
+      type: "file",
+      icon: <PaperclipIcon className="size-4 text-muted-foreground shrink-0" />,
     };
+  }
 
+  if (columnSchema.data_type === "USER-DEFINED") {
+    return {
+      ...baseOptions,
+      icon: <ChevronDownIcon className="size-4 text-muted-foreground shrink-0" />,
+      type: "select",
+    };
+  }
+
+  // switch (columnSchema.data_type) {
+  //   case "USER-DEFINED":
+  //     return {
+  //       ...baseOptions,
+  //       icon: <ChevronDownIcon className="size-4 text-muted-foreground shrink-0" />,
+  //       type: "select",
+  //     };
+  //   case "ARRAY":
+  //     return {
+  //       ...baseOptions,
+  //       icon: <ListIcon className="size-4 text-muted-foreground shrink-0" />,
+  //       type: "array",
+  //     };
+  // }
+
+  switch (format) {
     case "email":
       return {
         ...baseOptions,
         type: "email",
         icon: <MailIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
+      };
 
     case "tel":
       return {
         ...baseOptions,
         type: "tel",
         icon: <PhoneIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
+      };
 
     case "url":
       return {
         ...baseOptions,
         type: "url",
         icon: <LinkIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
+      };
 
     case "rating":
       return {
         ...baseOptions,
         type: "rating",
         icon: <StarIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
+      };
 
     case "percentage":
       return {
         ...baseOptions,
         type: "percentage",
         icon: <PercentIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
+      };
 
     case "color":
       return {
         ...baseOptions,
         type: "color",
         icon: <PaletteIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
+      };
 
     case "duration":
       return {
         ...baseOptions,
         type: "duration",
         icon: <TimerIcon className="size-4 text-muted-foreground shrink-0" />,
-    };
-  }
+      };
 
-  switch (columnSchema.data_type) {
-    case "USER-DEFINED":
+    case "uuid":
       return {
         ...baseOptions,
-        icon: <ChevronDownIcon className="size-4 text-muted-foreground shrink-0" />,
-        type: "select",
-      };
-    case "ARRAY":
-      return {
-        ...baseOptions,
-        icon: <ListIcon className="size-4 text-muted-foreground shrink-0" />,
-        type: "array",
-      };
-    }
-    
-    switch (format) {
-      case "uuid":
-        return {
-          ...baseOptions,
-          type: "uuid",
-          icon: <HashIcon className="size-4 text-muted-foreground shrink-0" />,
+        type: "uuid",
+        icon: <HashIcon className="size-4 text-muted-foreground shrink-0" />,
       };
 
     case "character":
@@ -266,70 +273,6 @@ export function getColumnData(columnSchema: ColumnSchema): ColumnInput {
       };
   }
 }
-
-// export function getColumnVariant(format?: string): {variant: ColumnInput["variant"]} {
-//   switch (format) {
-//     case "uuid":
-//       return {
-//         variant: "uuid",
-//       };
-
-//     case "character":
-//     case "varchar":
-//     case "text":
-//     case "bit":
-//     case "varbit":
-//     case "bytea":
-//       return {
-//         variant: "text",
-//       };
-
-//     case "double precision":
-//     case "real":
-//     case "bigint":
-//     case "bigserial":
-//     case "integer":
-//     case "numeric":
-//     case "smallint":
-//     case "smallserial":
-//     case "serial":
-//     case "money":
-//       return {
-//         variant: "number",
-//       };
-
-//     case "date":
-//       return {
-//         variant: "date",
-//       };
-//     case "time":
-//     case "timetz":
-//       return {
-//         variant: "time",
-//       };
-//     case "timestamptz":
-//     case "timestamp":
-//       return {
-//         variant: "datetime",
-//       };
-
-//     case "json":
-//     case "jsonb":
-//       return {
-//         variant: "json",
-//       };
-
-//     case "bool":
-//       return {
-//         variant: "boolean",
-//       };
-
-//     default:
-//       return {
-//         variant: "text",
-//       };
-//   }
-// }
 
 export function getColumnMeta(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {

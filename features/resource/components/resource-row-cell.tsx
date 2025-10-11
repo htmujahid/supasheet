@@ -11,7 +11,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { getColumnData } from "@/features/resource/lib/columns";
+import { getColumnMetadata } from "@/features/resource/lib/columns";
 import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
@@ -21,45 +21,26 @@ import {
 } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
 import { AllCells } from "./cells/all-cells";
+import { ArrayCell } from "./cells/array-cell";
 
 export function ResourceRowCell({
   row,
-  column,
+  columnSchema,
   tableSchema,
   setRowAction,
 }: {
   row: Row<ResourceDataSchema>;
-  column: ColumnSchema;
+  columnSchema: ColumnSchema;
   tableSchema: TableSchema | null;
   setRowAction: (action: DataTableRowAction<ResourceDataSchema> | null) => void;
 }) {
-  const columnData = getColumnData(column);
-  // const cell = getColumnCell(column);
+  const columnData = getColumnMetadata(columnSchema);
 
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
-    (r) => r.source_column_name === column.name,
+    (r) => r.source_column_name === columnSchema.name,
   );
 
-  const value = row.original?.[column.name as keyof ResourceDataSchema];
-
-  // if (column.format === "file") {
-  //   const files = value ? value?.toString().split(",") : [];
-  //   const filesCount = files.length;
-
-  //   if (filesCount === 0) { return null; }
-
-  //   return (
-  //     <div className="relative truncate select-none">{filesCount + " File" + (filesCount !== 1 ? "s" : "")}</div>
-  //   )
-  // }
-
-  // if (cell === "json" || cell === "array") {
-  //   return (
-  //     <pre className="truncate">
-  //       {value ? JSON.stringify(value, null, 2) : ''}
-  //     </pre>
-  //   );
-  // }
+  const value = row.original?.[columnSchema.name as keyof ResourceDataSchema];
 
   return (
     <ContextMenu>
@@ -70,14 +51,20 @@ export function ResourceRowCell({
             relationship && "pl-6",
           )}
         >
-          <AllCells columnInput={columnData} value={value} />
+          {
+            columnData.isArray ? (
+              <ArrayCell value={value as any[]} />
+            ) : (
+              <AllCells columnMetadata={columnData} value={value} />
+            )
+          }
           {/* {value?.toString()} */}
           <If condition={relationship}>
             <Link
               href={prepareForeignKeyLink(
-                column.name as string,
+                columnSchema.name as string,
                 row.original?.[
-                  column.name as keyof ResourceDataSchema
+                  columnSchema.name as keyof ResourceDataSchema
                 ]?.toString() ?? "",
                 columnData.type,
                 tableSchema ?? null,
@@ -95,7 +82,7 @@ export function ResourceRowCell({
           onClick={() => {
             navigator.clipboard.writeText(
               row.original?.[
-                column.name as keyof ResourceDataSchema
+                columnSchema.name as keyof ResourceDataSchema
               ]?.toString() ?? "",
             );
           }}
@@ -138,11 +125,11 @@ function prepareForeignKeyLink(
   key: string,
   value: string,
   variant: string,
-  table: TableSchema | null,
+  tableSchema: TableSchema | null,
 ) {
-  if (!table) return "#";
+  if (!tableSchema) return "#";
 
-  const relationships = table.relationships as Relationship[];
+  const relationships = tableSchema.relationships as Relationship[];
 
   const relationship = relationships.find((r) => r.source_column_name === key);
 

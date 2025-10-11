@@ -10,18 +10,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 
-import { ColumnInput } from "./types";
+import { ColumnMetadata } from "./types";
 
 export function FieldOptionDropdown({
-  columnInput,
+  columnMetadata,
   setValue,
   children,
 }: {
-  columnInput: ColumnInput;
+  columnMetadata: ColumnMetadata;
   setValue: (value: string | null | undefined) => void;
   children?: React.ReactNode;
 }) {
-  if (!children && columnInput.required && !columnInput.defaultValue) {
+  if (!children && columnMetadata.required && !columnMetadata.defaultValue) {
     return null;
   }
 
@@ -34,7 +34,7 @@ export function FieldOptionDropdown({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end">
-          <If condition={!columnInput.required}>
+          <If condition={!columnMetadata.required}>
             <DropdownMenuItem
               onClick={() => {
                 setValue(null);
@@ -43,7 +43,7 @@ export function FieldOptionDropdown({
               Set Null
             </DropdownMenuItem>
           </If>
-          <If condition={columnInput.defaultValue}>
+          <If condition={columnMetadata.defaultValue}>
             <DropdownMenuItem
               onClick={() => {
                 setValue("");

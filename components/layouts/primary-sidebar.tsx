@@ -8,7 +8,6 @@ import {
   FileChartColumnIcon,
   FoldersIcon,
   Grid2X2PlusIcon,
-  Grid3X3Icon,
   MenuIcon,
   ProportionsIcon,
   ScrollTextIcon,

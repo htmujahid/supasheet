@@ -138,7 +138,7 @@ export function ResourceSidebar({
                         href={"/home/resource/" + item.schema + "/" + item.id}
                         title={item.name}
                       >
-                        <Table2 className="mr-2 size-4 shrink-0" />
+                        <Table2 className="size-4 shrink-0" />
                         <span>{item.name}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -182,7 +182,7 @@ export function ResourceSidebar({
                     href={"/home/resource/" + item.schema + "/" + item.id}
                     title={item.name}
                   >                    
-                    <EyeIcon />
+                    <EyeIcon className="size-4 shrink-0" />
                     <span>{item.name}</span>
                   </Link>
                 </SidebarMenuButton>

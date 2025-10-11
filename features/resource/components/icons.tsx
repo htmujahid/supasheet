@@ -1,7 +1,7 @@
 import { ColumnSchema } from "@/lib/database-meta.types";
-import { getColumnData } from "../lib/columns";
+import { getColumnMetadata } from "../lib/columns";
 
 export function getDataTypeIcon(columnSchema: ColumnSchema) {
-  const { icon } = getColumnData(columnSchema);
+  const { icon } = getColumnMetadata(columnSchema);
   return icon;
 }

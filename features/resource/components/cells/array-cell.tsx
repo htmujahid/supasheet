@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 export function ArrayCell({
   value
 }: {
-  value: string[] | null
+  value: any[] | null
 }) {
   return (
     <div className="flex gap-1">

@@ -6,9 +6,9 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 
-export function UuidField({ field, columnInput }: FieldProps) {
+export function UuidField({ field, columnMetadata }: FieldProps) {
   const placeholder =
-    field.value === "" && columnInput.defaultValue
+    field.value === "" && columnMetadata.defaultValue
       ? "DEFAULT VALUE"
       : field.value === null
         ? "NULL"
@@ -22,17 +22,17 @@ export function UuidField({ field, columnInput }: FieldProps) {
           value={field.value as string}
           placeholder={placeholder}
           defaultValue={
-            columnInput.defaultValue === "gen_random_uuid()" ||
-              columnInput.defaultValue === "gen_random_uuid()"
+            columnMetadata.defaultValue === "gen_random_uuid()" ||
+              columnMetadata.defaultValue === "gen_random_uuid()"
               ? crypto.randomUUID()
               : undefined
           }
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
           type="text"
         />
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

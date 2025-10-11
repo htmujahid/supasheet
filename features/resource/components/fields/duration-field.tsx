@@ -5,7 +5,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import type { FieldProps } from "./types";
 import { FieldOptionDropdown } from "./field-option-dropdown";
 
-export function DurationField({ field, columnInput }: FieldProps) {
+export function DurationField({ field, columnMetadata }: FieldProps) {
   const [hours, setHours] = useState(0)
   const [minutes, setMinutes] = useState(0)
   const [seconds, setSeconds] = useState(0)
@@ -59,7 +59,7 @@ export function DurationField({ field, columnInput }: FieldProps) {
             type="number"
             value={hours}
             onChange={handleHoursChange}
-            disabled={columnInput.disabled}
+            disabled={columnMetadata.disabled}
           />
         </InputGroup>
         <InputGroup>
@@ -68,7 +68,7 @@ export function DurationField({ field, columnInput }: FieldProps) {
             type="number"
             value={minutes}
             onChange={handleMinutesChange}
-            disabled={columnInput.disabled}
+            disabled={columnMetadata.disabled}
           />
         </InputGroup>
         <InputGroup>
@@ -78,12 +78,12 @@ export function DurationField({ field, columnInput }: FieldProps) {
             step="0.001"
             value={seconds}
             onChange={handleSecondsChange}
-            disabled={columnInput.disabled}
+            disabled={columnMetadata.disabled}
           />
         </InputGroup>
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

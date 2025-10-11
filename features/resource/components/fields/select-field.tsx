@@ -10,7 +10,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
 
-export function SelectField({ field, columnInput }: FieldProps) {
+export function SelectField({ field, columnMetadata }: FieldProps) {
   return (
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
@@ -21,10 +21,10 @@ export function SelectField({ field, columnInput }: FieldProps) {
           }}
           value={field.value as string}
           defaultValue={field.value?.toString()}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
         >
           <SelectTrigger className="w-full [&>svg]:hidden">
-            {field.value === "" && columnInput.defaultValue ? (
+            {field.value === "" && columnMetadata.defaultValue ? (
               <span className="text-muted-foreground">DEFAULT VALUE</span>
             ) : field.value === null ? (
               <span className="text-muted-foreground">NULL</span>
@@ -33,7 +33,7 @@ export function SelectField({ field, columnInput }: FieldProps) {
             )}
           </SelectTrigger>
           <SelectContent>
-            {columnInput.options?.map((option) => (
+            {columnMetadata.options?.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
@@ -42,7 +42,7 @@ export function SelectField({ field, columnInput }: FieldProps) {
         </Select>
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

@@ -12,7 +12,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 
 export function ForeignKeyField({
   field,
-  columnInput,
+  columnMetadata,
   relationship,
 }: FieldProps & {
   relationship: Relationship;
@@ -25,9 +25,9 @@ export function ForeignKeyField({
         <Input
           {...field}
           value={field.value as string}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
           placeholder={
-            field.value === "" && columnInput.defaultValue
+            field.value === "" && columnMetadata.defaultValue
               ? "DEFAULT VALUE"
               : field.value === null
                 ? "NULL"
@@ -36,7 +36,7 @@ export function ForeignKeyField({
         />
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

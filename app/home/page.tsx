@@ -4,7 +4,6 @@ import {
   AreaChart,
   FileChartColumnIcon,
   FoldersIcon,
-  Grid3X3Icon,
   ProportionsIcon,
   ScrollTextIcon,
   TerminalSquareIcon,

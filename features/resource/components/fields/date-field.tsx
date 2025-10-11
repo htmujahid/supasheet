@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 
-export function DateField({ field, columnInput }: FieldProps) {
+export function DateField({ field, columnMetadata }: FieldProps) {
   return (
     <ButtonGroup className="w-full">
       <ButtonGroup className="relative w-full">
@@ -13,10 +13,10 @@ export function DateField({ field, columnInput }: FieldProps) {
           type="date"
           {...field}
           value={field.value as string}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
         />
         <div className="absolute top-2.5 right-10 text-xs">
-          {field.value === "" && columnInput.defaultValue ? (
+          {field.value === "" && columnMetadata.defaultValue ? (
             <span className="text-muted-foreground">DEFAULT VALUE</span>
           ) : field.value === null ? (
             <span className="text-muted-foreground">NULL</span>
@@ -26,7 +26,7 @@ export function DateField({ field, columnInput }: FieldProps) {
         </div>
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

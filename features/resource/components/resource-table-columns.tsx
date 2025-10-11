@@ -73,7 +73,7 @@ export function getResourceTableColumns({
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
         <ResourceRowCell
           row={row}
-          column={c}
+          columnSchema={c}
           tableSchema={tableSchema ?? null}
           setRowAction={setRowAction}
         />

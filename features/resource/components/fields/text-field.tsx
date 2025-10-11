@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 
 import type { FieldProps } from "./types";
 
-export function TextField({ field, columnInput }: FieldProps) {
+export function TextField({ field, columnMetadata }: FieldProps) {
   const placeholder =
-    field.value === "" && columnInput.defaultValue
+    field.value === "" && columnMetadata.defaultValue
       ? "DEFAULT VALUE"
       : field.value === null
         ? "NULL"
@@ -16,15 +16,15 @@ export function TextField({ field, columnInput }: FieldProps) {
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
         <Input
-          type={columnInput.type}
+          type={columnMetadata.type}
           {...field}
           value={field.value as string}
           placeholder={placeholder}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
         />
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

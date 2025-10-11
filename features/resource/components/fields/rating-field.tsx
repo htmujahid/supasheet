@@ -4,9 +4,9 @@ import { Rating, RatingButton } from "@/components/kibo-ui/rating";
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
 
-export function RatingField({ field, columnInput }: FieldProps) {
+export function RatingField({ field, columnMetadata }: FieldProps) {
   const placeholder =
-    field.value === "" && columnInput.defaultValue
+    field.value === "" && columnMetadata.defaultValue
       ? "DEFAULT VALUE"
       : field.value === null
         ? "NULL"
@@ -22,7 +22,7 @@ export function RatingField({ field, columnInput }: FieldProps) {
       </Rating>
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}

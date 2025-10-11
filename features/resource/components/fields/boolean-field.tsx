@@ -10,7 +10,7 @@ import { FieldOptionDropdown } from "./field-option-dropdown";
 import { FieldProps } from "./types";
 import { ButtonGroup } from "@/components/ui/button-group";
 
-export function BooleanField({ field, columnInput }: FieldProps) {
+export function BooleanField({ field, columnMetadata }: FieldProps) {
   return (
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
@@ -20,10 +20,10 @@ export function BooleanField({ field, columnInput }: FieldProps) {
             field.onChange(value);
           }}
           value={field.value as string}
-          disabled={columnInput.disabled}
+          disabled={columnMetadata.disabled}
         >
           <SelectTrigger className="w-full [&>svg]:hidden">
-            {field.value === "" && columnInput.defaultValue ? (
+            {field.value === "" && columnMetadata.defaultValue ? (
               <span className="text-muted-foreground">DEFAULT VALUE</span>
             ) : field.value === null ? (
               <span className="text-muted-foreground">NULL</span>
@@ -38,7 +38,7 @@ export function BooleanField({ field, columnInput }: FieldProps) {
         </Select>
       </ButtonGroup>
       <FieldOptionDropdown
-        columnInput={columnInput}
+        columnMetadata={columnMetadata}
         setValue={(value) => {
           field.onChange(value);
         }}
