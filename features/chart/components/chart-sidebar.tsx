@@ -40,7 +40,7 @@ export function ChartSidebar({
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
         <SidebarMenuButton className="w-fit px-1.5">
-          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+          <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
             <AreaChartIcon className="size-4" />
           </div>
           <span className="truncate font-medium">Chart</span>
