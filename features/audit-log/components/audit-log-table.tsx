@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useMemo } from "react";
+import { useMemo } from "react";
 
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
@@ -14,12 +14,10 @@ import { auditLogTableColumns } from "./audit-log-table-columns";
 import { AuditLogTableToolbarActions } from "./audit-log-table-toolbar-actions";
 
 interface AuditLogTableProps {
-  promise: Promise<Awaited<ReturnType<typeof loadAuditLogs>>>;
+  data: Awaited<ReturnType<typeof loadAuditLogs>>;
 }
 
-export function AuditLogTable({ promise }: AuditLogTableProps) {
-  const data = use(promise);
-
+export function AuditLogTable({ data }: AuditLogTableProps) {
   const columns = useMemo(() => auditLogTableColumns, []);
 
   const { table, shallow, throttleMs, debounceMs } =

@@ -11,6 +11,7 @@ import { reportSearchParamsCache } from "@/features/report/lib/validations";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
+import { notFound } from "next/navigation";
 
 async function HomeResourcePage(props: {
   params: Promise<{
@@ -23,10 +24,14 @@ async function HomeResourcePage(props: {
   const searchParams = await props.searchParams;
   const search = reportSearchParamsCache.parse(searchParams);
 
-  const promises = Promise.all([
+  const [columnsSchema, data] = await Promise.all([
     loadColumnsSchema(report),
     loadReportData(report, search),
   ]);
+
+  if (!columnsSchema || !data) {
+    notFound();
+  }
 
   return (
     <div className="px-4">
@@ -54,7 +59,7 @@ async function HomeResourcePage(props: {
           />
         }
       >
-        <ReportTable promises={promises} />
+        <ReportTable columnsSchema={columnsSchema} data={data} />
       </Suspense>
     </div>
   );

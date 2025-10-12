@@ -16,20 +16,16 @@ import { getReportTableColumns } from "./report-table-columns";
 import { ReportTableToolbarActions } from "./report-table-toolbar-action";
 
 export function ReportTable({
-  promises,
+  columnsSchema,
+  data,
 }: {
-  promises: Promise<
-    [
-      Awaited<ReturnType<typeof loadColumnsSchema>>,
-      Awaited<ReturnType<typeof loadReportData>>,
-    ]
-  >;
+  columnsSchema: Awaited<ReturnType<typeof loadColumnsSchema>>;
+  data: Awaited<ReturnType<typeof loadReportData>>;
 }) {
-  const [columnsSchema, data] = use(promises);
 
-  if (!columnsSchema?.length) {
-    notFound();
-  }
+  // if (!columnsSchema?.length) {
+  //   notFound();
+  // }
 
   const columns = useMemo(
     () =>

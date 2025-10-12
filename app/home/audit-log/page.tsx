@@ -5,6 +5,7 @@ import { loadAuditLogs } from "@/features/audit-log/lib/loaders";
 import { auditLogSearchParamsCache } from "@/features/audit-log/lib/validations";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { withI18n } from "@/lib/i18n/with-i18n";
+import { notFound } from "next/navigation";
 
 interface AuditLogPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -14,7 +15,11 @@ async function AuditLogPage(props: AuditLogPageProps) {
   const searchParams = await props.searchParams;
   const params = auditLogSearchParamsCache.parse(searchParams);
 
-  const auditLogsPromise = loadAuditLogs(params);
+  const data = await loadAuditLogs(params);
+
+  if (!data) {
+    notFound();
+  }
 
   return (
     <div className="flex flex-col gap-4 px-4">
@@ -41,7 +46,7 @@ async function AuditLogPage(props: AuditLogPageProps) {
           />
         }
       >
-        <AuditLogTable promise={auditLogsPromise} />
+        <AuditLogTable data={data} />
       </Suspense>
     </div>
   );
