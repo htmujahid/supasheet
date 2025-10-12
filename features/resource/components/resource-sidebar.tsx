@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -44,15 +44,18 @@ import {
 import { SYSTEM_SCHEMAS } from "@/config/database.config";
 
 export function ResourceSidebar({
-  resources,
+  resourcesPromise,
 }: {
-  resources: {
-    name: string;
-    id: string;
-    schema: string;
-    type: string;
-  }[];
+  resourcesPromise: Promise<
+    {
+      name: string;
+      id: string;
+      schema: string;
+      type: string;
+    }[]
+  >;
 }) {
+  const resources = use(resourcesPromise);
   const params = useParams();
 
   const activeResource = resources.find(

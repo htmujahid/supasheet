@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 import Link from "next/link";
 
-import { ScrollTextIcon } from "lucide-react";
+import { DatabaseIcon, ScrollTextIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,14 +18,19 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AuditLogsSidebar({
-  items,
+  schemasPromise,
 }: {
-  items: {
-    name: string;
-    id: string;
-    icon: React.ReactNode;
-  }[];
+  schemasPromise: Promise<{ schema: string }[]>;
 }) {
+  const schemas = use(schemasPromise);
+
+  const items =
+    schemas.map((schema) => ({
+      name: schema.schema,
+      id: schema.schema,
+      icon: <DatabaseIcon />,
+    })) ?? [];
+
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
 

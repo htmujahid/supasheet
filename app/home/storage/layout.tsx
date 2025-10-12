@@ -1,32 +1,32 @@
-import { FolderIcon, FolderLockIcon } from "lucide-react";
+import { Suspense } from "react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { StorageSidebar } from "@/features/storage/components/storage-sidebar";
+import { StorageSidebarSkeleton } from "@/features/storage/components/storage-sidebar-skeleton";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-export default async function HomeStorageLayout({
+async function loadBuckets() {
+  const client = await getSupabaseServerClient();
+  const { data: buckets } = await client.storage.listBuckets();
+  return buckets;
+}
+
+export default function HomeStorageLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const client = await getSupabaseServerClient();
-
-  const { data: buckets } = await client.storage.listBuckets();
-
-  const items =
-    buckets?.map((bucket) => ({
-      id: bucket.id,
-      name: bucket.name,
-      icon: bucket.public ? <FolderIcon /> : <FolderLockIcon />,
-    })) ?? [];
+  const bucketsPromise = loadBuckets();
 
   return (
     <>
       <PrimarySidebar>
-        <StorageSidebar items={items} />
+        <Suspense fallback={<StorageSidebarSkeleton />}>
+          <StorageSidebar bucketsPromise={bucketsPromise} />
+        </Suspense>
       </PrimarySidebar>
       <SidebarInset>
         <div className="w-full flex-1">

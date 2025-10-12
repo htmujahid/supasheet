@@ -1,30 +1,26 @@
-import { LayoutDashboardIcon } from "lucide-react";
+import { Suspense } from "react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/features/dashboard/components/dashboard-sidebar";
+import { DashboardSidebarSkeleton } from "@/features/dashboard/components/dashboard-sidebar-skeleton";
 import { loadDashboards } from "@/features/dashboard/loaders";
 
-export default async function HomeDashboardLayout({
+export default function HomeDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const dashboards = await loadDashboards();
-
-  const items =
-    dashboards?.map((dashboard) => ({
-      name: dashboard.group_name,
-      id: dashboard.group_name,
-      icon: <LayoutDashboardIcon />,
-    })) || [];
+  const dashboardsPromise = loadDashboards();
 
   return (
     <>
       <PrimarySidebar>
-        <DashboardSidebar items={items} />
+        <Suspense fallback={<DashboardSidebarSkeleton />}>
+          <DashboardSidebar dashboardsPromise={dashboardsPromise} />
+        </Suspense>
       </PrimarySidebar>
       <SidebarInset>
         <div className="w-full flex-1">

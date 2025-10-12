@@ -1,30 +1,26 @@
-import { DatabaseIcon } from "lucide-react";
+import { Suspense } from "react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AuditLogsSidebar } from "@/features/audit-log/components/audit-log-sidebar";
+import { AuditLogsSidebarSkeleton } from "@/features/audit-log/components/audit-log-sidebar-skeleton";
 import { loadSchemas } from "@/features/audit-log/lib/loaders";
 
-export default async function HomeAuditLogsLayout({
+export default function HomeAuditLogsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const schemas = await loadSchemas();
-
-  const items =
-    schemas.map((schema) => ({
-      name: schema.schema,
-      id: schema.schema,
-      icon: <DatabaseIcon />,
-    })) ?? [];
+  const schemasPromise = loadSchemas();
 
   return (
     <>
       <PrimarySidebar>
-        <AuditLogsSidebar items={items} />
+        <Suspense fallback={<AuditLogsSidebarSkeleton />}>
+          <AuditLogsSidebar schemasPromise={schemasPromise} />
+        </Suspense>
       </PrimarySidebar>
       <SidebarInset>
         <div className="w-full flex-1">

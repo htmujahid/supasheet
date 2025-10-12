@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { FolderIcon } from "lucide-react";
+import { FolderIcon, FolderLockIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -19,14 +19,21 @@ import {
 } from "@/components/ui/sidebar";
 
 export function StorageSidebar({
-  items,
+  bucketsPromise,
 }: {
-  items: {
-    name: string;
-    id: string;
-    icon: React.ReactNode;
-  }[];
+  bucketsPromise: Promise<
+    { id: string; name: string; public: boolean }[] | null
+  >;
 }) {
+  const buckets = use(bucketsPromise);
+
+  const items =
+    buckets?.map((bucket) => ({
+      id: bucket.id,
+      name: bucket.name,
+      icon: bucket.public ? <FolderIcon /> : <FolderLockIcon />,
+    })) ?? [];
+
   const params = useParams();
 
   const acitveItem = items.find((resource) => resource.id === params?.id);

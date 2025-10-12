@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { WarehouseIcon } from "lucide-react";
+import { LayoutDashboardIcon, WarehouseIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -19,14 +19,19 @@ import {
 } from "@/components/ui/sidebar";
 
 export function DashboardSidebar({
-  items,
+  dashboardsPromise,
 }: {
-  items: {
-    name: string;
-    id: string;
-    icon: React.ReactNode;
-  }[];
+  dashboardsPromise: Promise<{ group_name: string }[] | null>;
 }) {
+  const dashboards = use(dashboardsPromise);
+
+  const items =
+    dashboards?.map((dashboard) => ({
+      name: dashboard.group_name,
+      id: dashboard.group_name,
+      icon: <LayoutDashboardIcon />,
+    })) || [];
+
   const params = useParams();
 
   const acitveItem = items.find((resource) => resource.id === params?.id);

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { AreaChartIcon } from "lucide-react";
+import { AreaChartIcon, ChartColumnStackedIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -19,14 +19,19 @@ import {
 } from "@/components/ui/sidebar";
 
 export function ChartSidebar({
-  items,
+  chartsPromise,
 }: {
-  items: {
-    name: string;
-    id: string;
-    icon: React.ReactNode;
-  }[];
+  chartsPromise: Promise<{ group_name: string }[] | null>;
 }) {
+  const charts = use(chartsPromise);
+
+  const items =
+    charts?.map((chart) => ({
+      id: chart.group_name,
+      name: chart.group_name,
+      icon: <ChartColumnStackedIcon />,
+    })) ?? [];
+
   const params = useParams();
 
   const acitveItem = items.find((resource) => resource.id === params?.id);

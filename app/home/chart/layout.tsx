@@ -1,30 +1,26 @@
-import { ChartColumnStackedIcon } from "lucide-react";
+import { Suspense } from "react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ChartSidebar } from "@/features/chart/components/chart-sidebar";
+import { ChartSidebarSkeleton } from "@/features/chart/components/chart-sidebar-skeleton";
 import { loadChartGroups } from "@/features/chart/lib/loaders";
 
-export default async function ChartLayout({
+export default function ChartLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const charts = await loadChartGroups();
-
-  const items =
-    charts?.map((chart) => ({
-      id: chart.group_name,
-      name: chart.group_name,
-      icon: <ChartColumnStackedIcon />,
-    })) ?? [];
+  const chartsPromise = loadChartGroups();
 
   return (
     <>
       <PrimarySidebar>
-        <ChartSidebar items={items} />
+        <Suspense fallback={<ChartSidebarSkeleton />}>
+          <ChartSidebar chartsPromise={chartsPromise} />
+        </Suspense>
       </PrimarySidebar>
       <SidebarInset>
         <div className="w-full flex-1">

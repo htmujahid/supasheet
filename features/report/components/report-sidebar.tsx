@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { FileChartColumnIcon } from "lucide-react";
+import { FileChartColumnIcon, FileSpreadsheetIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -19,14 +19,19 @@ import {
 } from "@/components/ui/sidebar";
 
 export function ReportSidebar({
-  items,
+  reportsPromise,
 }: {
-  items: {
-    name: string;
-    id: string;
-    icon: React.ReactNode;
-  }[];
+  reportsPromise: Promise<{ group_name: string }[] | null>;
 }) {
+  const reports = use(reportsPromise);
+
+  const items =
+    reports?.map((report) => ({
+      name: report.group_name,
+      id: report.group_name,
+      icon: <FileSpreadsheetIcon />,
+    })) || [];
+
   const params = useParams();
 
   const acitveItem = items.find((resource) => resource.id === params?.id);

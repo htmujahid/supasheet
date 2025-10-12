@@ -1,21 +1,26 @@
+import { Suspense } from "react";
+
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ResourceSidebar } from "@/features/resource/components/resource-sidebar";
+import { ResourceSidebarSkeleton } from "@/features/resource/components/resource-sidebar-skeleton";
 import { loadResources } from "@/features/resource/lib/loaders";
 
-export default async function HomeResourceLayout({
+export default function HomeResourceLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const resources = await loadResources();
+  const resourcesPromise = loadResources();
 
   return (
     <>
       <PrimarySidebar>
-        <ResourceSidebar resources={resources} />
+        <Suspense fallback={<ResourceSidebarSkeleton />}>
+          <ResourceSidebar resourcesPromise={resourcesPromise} />
+        </Suspense>
       </PrimarySidebar>
       <SidebarInset>
         <div className="w-full flex-1">

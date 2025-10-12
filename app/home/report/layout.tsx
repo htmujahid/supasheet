@@ -1,30 +1,26 @@
-import { FileSpreadsheetIcon } from "lucide-react";
+import { Suspense } from "react";
 
 import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ReportSidebar } from "@/features/report/components/report-sidebar";
+import { ReportSidebarSkeleton } from "@/features/report/components/report-sidebar-skeleton";
 import { loadReportGroups } from "@/features/report/lib/loaders";
 
-export default async function HomeReportsLayout({
+export default function HomeReportsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const reports = await loadReportGroups();
-
-  const items =
-    reports?.map((report) => ({
-      name: report.group_name,
-      id: report.group_name,
-      icon: <FileSpreadsheetIcon />,
-    })) || [];
+  const reportsPromise = loadReportGroups();
 
   return (
     <>
       <PrimarySidebar>
-        <ReportSidebar items={items} />
+        <Suspense fallback={<ReportSidebarSkeleton />}>
+          <ReportSidebar reportsPromise={reportsPromise} />
+        </Suspense>
       </PrimarySidebar>
       <SidebarInset>
         <div className="w-full flex-1">
