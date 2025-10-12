@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-
 import { ResourceTable } from "@/features/resource/components/resource-table";
 import {
   loadColumnsSchema,
@@ -7,7 +5,6 @@ import {
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
-import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
 import { notFound } from "next/navigation";
