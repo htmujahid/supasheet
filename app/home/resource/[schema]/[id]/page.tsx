@@ -28,7 +28,7 @@ async function HomeResourcePage(props: {
   const searchParams = await props.searchParams;
   const search = resourceSearchParamsCache.parse(searchParams);
 
-  const promises = Promise.all([
+  const [tableSchema, columnsSchema, data] = await Promise.all([
     loadTableSchema(schema, id),
     loadColumnsSchema(schema, id),
     loadResourceData(schema, id, search),
@@ -60,7 +60,11 @@ async function HomeResourcePage(props: {
           />
         }
       >
-        <ResourceTable promises={promises} />
+        <ResourceTable
+          tableSchema={tableSchema}
+          columnsSchema={columnsSchema}
+          data={data}
+        />
       </Suspense>
     </div>
   );

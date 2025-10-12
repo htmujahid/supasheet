@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { memo, useCallback, useMemo } from "react";
 import { Row } from "@tanstack/react-table";
 import { EditIcon, EllipsisIcon, TrashIcon, ViewIcon } from "lucide-react";
 
@@ -18,7 +19,7 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 
-export function ResourceTableRowActions({
+export const ResourceTableRowActions = memo(function ResourceTableRowActions({
   row,
   tableSchema,
   setRowAction,
@@ -31,8 +32,23 @@ export function ResourceTableRowActions({
 }) {
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
-  const viewHref = `/home/resource/${tableSchema.schema}/${tableSchema.name}/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`;
-  const editHref = `/home/resource/${tableSchema.schema}/${tableSchema.name}/edit/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`;
+  // Memoize href calculations to avoid recreating on every render
+  const viewHref = useMemo(
+    () =>
+      `/home/resource/${tableSchema.schema}/${tableSchema.name}/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`,
+    [tableSchema.schema, tableSchema.name, primaryKeys, row.original],
+  );
+
+  const editHref = useMemo(
+    () =>
+      `/home/resource/${tableSchema.schema}/${tableSchema.name}/edit/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`,
+    [tableSchema.schema, tableSchema.name, primaryKeys, row.original],
+  );
+
+  // Memoize onSelect handler to avoid creating new function on every render
+  const handleDelete = useCallback(() => {
+    setRowAction({ row, variant: "delete" });
+  }, [setRowAction, row]);
 
   return (
     <DropdownMenu>
@@ -55,14 +71,11 @@ export function ResourceTableRowActions({
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          variant="destructive"
-          onSelect={() => setRowAction({ row, variant: "delete" })}
-        >
+        <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
           <TrashIcon className="size-4" />
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

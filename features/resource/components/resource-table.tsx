@@ -1,8 +1,6 @@
 "use client";
 
-import { use, useMemo, useState } from "react";
-
-import { notFound } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 
 import { If } from "@/components/makerkit/if";
 import { DataTable } from "@/interfaces/data-table/components/data-table";
@@ -18,39 +16,41 @@ import {
   loadResourceData,
   loadTableSchema,
 } from "../lib/loaders";
-import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
+import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
 
 export function ResourceTable({
-  promises,
+  tableSchema,
+  columnsSchema,
+  data,
 }: {
-  promises: Promise<
-    [
-      Awaited<ReturnType<typeof loadTableSchema>>,
-      Awaited<ReturnType<typeof loadColumnsSchema>>,
-      Awaited<ReturnType<typeof loadResourceData>>,
-    ]
-  >;
+  tableSchema: Awaited<ReturnType<typeof loadTableSchema>> | null;
+  columnsSchema: Awaited<ReturnType<typeof loadColumnsSchema>> | null;
+  data: Awaited<ReturnType<typeof loadResourceData>> | null;
 }) {
-  const [tableSchema, columnsSchema, data] = use(promises);
   const [rowAction, setRowAction] =
     useState<DataTableRowAction<ResourceDataSchema> | null>(null);
 
-  if (!columnsSchema?.length) {
-    notFound();
-  }
+  const handleSetRowAction = useCallback(
+    (action: DataTableRowAction<ResourceDataSchema> | null) => {
+      setRowAction(action);
+    },
+    [],
+  );
 
   const columns = useMemo(
     () =>
       getResourceTableColumns({
         columnsSchema: columnsSchema ?? [],
         tableSchema,
-        setRowAction,
+        setRowAction: handleSetRowAction,
       }),
-    [columnsSchema, tableSchema, setRowAction],
+    [columnsSchema, tableSchema, handleSetRowAction],
   );
+
+  const getRowId = useCallback((row: ResourceDataSchema) => row.id as string, []);
 
   const { table, shallow, throttleMs, debounceMs } =
     useDataTable<ResourceDataSchema>({
@@ -63,7 +63,7 @@ export function ResourceTable({
       initialState: {
         columnPinning: { left: ["select"], right: ["actions"] },
       },
-      getRowId: (row) => row.id as string,
+      getRowId,
       shallow: false,
       clearOnDefault: true,
     });

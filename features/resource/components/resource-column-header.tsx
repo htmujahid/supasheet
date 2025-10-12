@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import type { Column } from "@tanstack/react-table";
 import {
   ChevronDown,
@@ -20,12 +21,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
-import { Tables } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
 
 import { getDataTypeIcon } from "./icons";
 
-export function ResourceColumnHeader<TData, TValue>({
+export const ResourceColumnHeader = memo(function ResourceColumnHeader<TData, TValue>({
   column,
   title,
   className,
@@ -116,7 +116,12 @@ export function ResourceColumnHeader<TData, TValue>({
       </DropdownMenu>
     </div>
   );
-}
+}) as <TData, TValue>(props: React.ComponentProps<typeof DropdownMenuTrigger> & {
+  column: Column<TData, TValue>;
+  title: string;
+  tableSchema: TableSchema | null;
+  columnSchema: ColumnSchema;
+}) => React.ReactElement;
 
 function getColumnConstraintIcon(
   tableSchema: TableSchema | null,

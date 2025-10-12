@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { memo, useCallback, useMemo } from "react";
 import { Row } from "@tanstack/react-table";
 import { ArrowUpRightIcon, CopyIcon, EditIcon, TrashIcon } from "lucide-react";
 
@@ -24,7 +25,7 @@ import { cn } from "@/lib/utils";
 import { AllCells } from "./cells/all-cells";
 import { ArrayCell } from "./cells/array-cell";
 
-export function ResourceRowCell({
+export const ResourceRowCell = memo(function ResourceRowCell({
   row,
   columnSchema,
   tableSchema,
@@ -35,13 +36,43 @@ export function ResourceRowCell({
   tableSchema: TableSchema | null;
   setRowAction: (action: DataTableRowAction<ResourceDataSchema> | null) => void;
 }) {
-  const columnData = getColumnMetadata(columnSchema);
+  // Memoize expensive calculations to avoid recalculating on every render
+  const columnData = useMemo(() => getColumnMetadata(columnSchema), [columnSchema]);
 
-  const relationship = (tableSchema?.relationships as Relationship[])?.find(
-    (r) => r.source_column_name === columnSchema.name,
+  const relationship = useMemo(
+    () =>
+      (tableSchema?.relationships as Relationship[])?.find(
+        (r) => r.source_column_name === columnSchema.name,
+      ),
+    [tableSchema?.relationships, columnSchema.name],
   );
 
   const value = row.original?.[columnSchema.name as keyof ResourceDataSchema];
+
+  // Memoize onClick handlers to avoid creating new functions on every render
+  const handleCopyRow = useCallback(() => {
+    navigator.clipboard.writeText(
+      row.original ? JSON.stringify(row.original, null, 2) : "",
+    );
+  }, [row.original]);
+
+  const handleCopyCell = useCallback(() => {
+    navigator.clipboard.writeText(value?.toString() ?? "");
+  }, [value]);
+
+  const handleEdit = useCallback(() => {
+    setRowAction({
+      variant: "update",
+      row: row,
+    });
+  }, [setRowAction, row]);
+
+  const handleDelete = useCallback(() => {
+    setRowAction({
+      variant: "delete",
+      row: row,
+    });
+  }, [setRowAction, row]);
 
   return (
     <ContextMenu>
@@ -77,50 +108,21 @@ export function ResourceRowCell({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-52">
-        <ContextMenuItem
-          onClick={() => {
-            navigator.clipboard.writeText(
-              row.original ? JSON.stringify(row.original, null, 2) : "",
-            );
-          }}
-        >
+        <ContextMenuItem onClick={handleCopyRow}>
           <CopyIcon className="size-4" />
           Copy Row
         </ContextMenuItem>
-        <ContextMenuItem
-          onClick={() => {
-            navigator.clipboard.writeText(
-              row.original?.[
-                columnSchema.name as keyof ResourceDataSchema
-              ]?.toString() ?? "",
-            );
-          }}
-        >
+        <ContextMenuItem onClick={handleCopyCell}>
           <CopyIcon className="size-4" />
           Copy Cell Content
         </ContextMenuItem>
         <If condition={tableSchema}>
-          <ContextMenuItem
-            onClick={() =>
-              setRowAction({
-                variant: "update",
-                row: row,
-              })
-            }
-          >
+          <ContextMenuItem onClick={handleEdit}>
             <EditIcon className="size-4" />
             Edit Row
           </ContextMenuItem>
           <ContextMenuSeparator />
-          <ContextMenuItem
-            variant="destructive"
-            onClick={() =>
-              setRowAction({
-                variant: "delete",
-                row: row,
-              })
-            }
-          >
+          <ContextMenuItem variant="destructive" onClick={handleDelete}>
             <TrashIcon className="size-4" />
             Delete Row
           </ContextMenuItem>
@@ -128,7 +130,7 @@ export function ResourceRowCell({
       </ContextMenuContent>
     </ContextMenu>
   );
-}
+});
 
 function prepareForeignKeyLink(
   key: string,

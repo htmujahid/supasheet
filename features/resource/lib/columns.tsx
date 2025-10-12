@@ -6,7 +6,6 @@ import {
   ClockIcon,
   HashIcon,
   LinkIcon,
-  ListIcon,
   MailIcon,
   PaletteIcon,
   PaperclipIcon,
@@ -85,21 +84,6 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       type: "select",
     };
   }
-
-  // switch (columnSchema.data_type) {
-  //   case "USER-DEFINED":
-  //     return {
-  //       ...baseOptions,
-  //       icon: <ChevronDownIcon className="size-4 text-muted-foreground shrink-0" />,
-  //       type: "select",
-  //     };
-  //   case "ARRAY":
-  //     return {
-  //       ...baseOptions,
-  //       icon: <ListIcon className="size-4 text-muted-foreground shrink-0" />,
-  //       type: "array",
-  //     };
-  // }
 
   switch (format) {
     case "email":

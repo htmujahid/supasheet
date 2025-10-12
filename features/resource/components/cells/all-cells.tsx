@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import { ColumnMetadata } from "../fields/types";
 import { ArrayCell } from "./array-cell";
 import { BooleanCell } from "./boolean-cell";
@@ -8,7 +10,7 @@ import { FileCell } from "./file-cell";
 import { PercentageCell } from "./percentage-cell";
 import { RatingCell } from "./rating-cell";
 
-export function AllCells({
+export const AllCells = memo(function AllCells({
   columnMetadata,
   value,
 }: {
@@ -52,4 +54,4 @@ export function AllCells({
     default:
       return value?.toString();
   }
-}
+});
