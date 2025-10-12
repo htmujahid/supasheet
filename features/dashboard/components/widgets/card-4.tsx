@@ -8,8 +8,8 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { DatabaseTables } from "@/lib/database-meta.types";
 
-import { loadWidget } from "../../loaders";
-import { DashboardWidgetsSchema } from "../../types";
+import { loadWidget } from "../../lib/loaders";
+import { DashboardWidgetsSchema } from "../../lib/types";
 
 export async function Card4({ widget }: { widget: DashboardWidgetsSchema }) {
   const data = (

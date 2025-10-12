@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/card";
 import { DatabaseTables } from "@/lib/database-meta.types";
 
-import { loadWidget } from "../../loaders";
-import { DashboardWidgetsSchema } from "../../types";
+import { loadWidget } from "../../lib/loaders";
+import { DashboardWidgetsSchema } from "../../lib/types";
 
 export async function Card1({ widget }: { widget: DashboardWidgetsSchema }) {
   const widgetData = (

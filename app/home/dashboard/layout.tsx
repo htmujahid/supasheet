@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/features/dashboard/components/dashboard-sidebar";
 import { DashboardSidebarSkeleton } from "@/features/dashboard/components/dashboard-sidebar-skeleton";
-import { loadDashboards } from "@/features/dashboard/loaders";
+import { loadDashboards } from "@/features/dashboard/lib/loaders";
 
 export default function HomeDashboardLayout({
   children,

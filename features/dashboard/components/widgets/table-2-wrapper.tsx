@@ -1,7 +1,7 @@
 import { DatabaseTables } from "@/lib/database-meta.types";
 
-import { loadWidget } from "../../loaders";
-import { DashboardWidgetsSchema } from "../../types";
+import { loadWidget } from "../../lib/loaders";
+import { DashboardWidgetsSchema } from "../../lib/types";
 import { Table2Widget } from "./table-2";
 
 export async function Table2Wrapper({

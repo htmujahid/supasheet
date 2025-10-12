@@ -1,4 +1,4 @@
-import { DashboardWidgetsSchema } from "../types";
+import { DashboardWidgetsSchema } from "../lib/types";
 import { Card1 } from "./widgets/card-1";
 import { Card2 } from "./widgets/card-2";
 import { Card3 } from "./widgets/card-3";
