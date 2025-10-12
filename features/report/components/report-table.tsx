@@ -1,8 +1,6 @@
 "use client";
 
-import { use, useMemo } from "react";
-
-import { notFound } from "next/navigation";
+import { useMemo } from "react";
 
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
@@ -22,11 +20,6 @@ export function ReportTable({
   columnsSchema: Awaited<ReturnType<typeof loadColumnsSchema>>;
   data: Awaited<ReturnType<typeof loadReportData>>;
 }) {
-
-  // if (!columnsSchema?.length) {
-  //   notFound();
-  // }
-
   const columns = useMemo(
     () =>
       getReportTableColumns({
