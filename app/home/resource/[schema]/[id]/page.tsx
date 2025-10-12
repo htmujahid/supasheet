@@ -10,6 +10,7 @@ import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
+import { notFound } from "next/navigation";
 
 async function HomeResourcePage(props: {
   params: Promise<{
@@ -34,38 +35,17 @@ async function HomeResourcePage(props: {
     loadResourceData(schema, id, search),
   ]);
 
+  if (!columnsSchema) {
+    notFound();
+  }
+
   return (
     <div className="px-4">
-      <Suspense
-        fallback={
-          <DataTableSkeleton
-            columnCount={7}
-            rowCount={100}
-            filterCount={2}
-            cellWidths={[
-              "64px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-            ]}
-            shrinkZero
-          />
-        }
-      >
-        <ResourceTable
-          tableSchema={tableSchema}
-          columnsSchema={columnsSchema}
-          data={data}
-        />
-      </Suspense>
+      <ResourceTable
+        tableSchema={tableSchema}
+        columnsSchema={columnsSchema}
+        data={data}
+      />
     </div>
   );
 }
