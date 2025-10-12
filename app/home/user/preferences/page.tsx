@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AppearanceForm } from "@/features/users/components/appearance-form";
+import { AppearanceForm } from "@/features/user/components/appearance-form";
 
 function PreferencesPage() {
   const supportsLanguageSelection = useSupportMultiLanguage();

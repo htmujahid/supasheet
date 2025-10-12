@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import pathsConfig from "@/config/paths.config";
-import { MultiFactorAuthFactorsList } from "@/features/users/components/mfa/multi-factor-auth-list";
-import { UpdatePasswordFormContainer } from "@/features/users/components/password/update-password-container";
+import { MultiFactorAuthFactorsList } from "@/features/user/components/mfa/multi-factor-auth-list";
+import { UpdatePasswordFormContainer } from "@/features/user/components/password/update-password-container";
 import { withI18n } from "@/lib/i18n/with-i18n";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";

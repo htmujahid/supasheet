@@ -9,7 +9,7 @@ import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { UserSidebar } from "@/features/users/components/user-sidebar";
+import { UserSidebar } from "@/features/user/components/user-sidebar";
 
 const items = [
   {

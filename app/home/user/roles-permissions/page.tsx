@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { loadRolesPermissions } from "@/features/users/lib/loaders";
+import { loadRolesPermissions } from "@/features/user/lib/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 async function RolesPermissionsPage() {

@@ -1,4 +1,4 @@
-import { ProfileContainer } from "@/features/users/components/profile-container";
+import { ProfileContainer } from "@/features/user/components/profile-container";
 import { withI18n } from "@/lib/i18n/with-i18n";
 import { requireUserInServerComponent } from "@/lib/server/require-user-in-server-component";
 

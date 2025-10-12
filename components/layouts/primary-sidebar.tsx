@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/sidebar";
 import featuresFlagConfig from "@/config/feature-flags.config";
 import pathsConfig from "@/config/paths.config";
-import { PersonalAccountDropdown } from "@/features/users/components/personal-account-dropdown";
+import { PersonalAccountDropdown } from "@/features/user/components/personal-account-dropdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSignOut } from "@/lib/supabase/hooks/use-sign-out";
 import { useUser } from "@/lib/supabase/hooks/use-user";

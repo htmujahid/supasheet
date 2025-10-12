@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/card";
 import authConfig from "@/config/auth.config";
 import pathsConfig from "@/config/paths.config";
-import { UpdateEmailFormContainer } from "@/features/users/components/email/update-email-form-container";
-import { LinkAccountsList } from "@/features/users/components/link-accounts";
+import { UpdateEmailFormContainer } from "@/features/user/components/email/update-email-form-container";
+import { LinkAccountsList } from "@/features/user/components/link-accounts";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 function IdentitiesPage() {
