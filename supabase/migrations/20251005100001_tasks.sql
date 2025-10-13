@@ -49,23 +49,23 @@ alter table tasks enable row level security;
 create policy tasks_select on tasks
     for all
     to authenticated
-    using (account_id = auth.uid() and supasheet.has_permission('supasheet.accounts:select'));
+    using (account_id = auth.uid() and supasheet.has_permission('supasheet.tasks:select'));
 
 create policy tasks_insert on tasks
     for insert
     to authenticated
-    with check (supasheet.has_permission('supasheet.accounts:insert'));
+    with check (supasheet.has_permission('supasheet.tasks:insert'));
 
 create policy tasks_update on tasks
     for update
     to authenticated
-    using (account_id = auth.uid() and supasheet.has_permission('supasheet.accounts:update'))
-    with check (account_id = auth.uid() and supasheet.has_permission('supasheet.accounts:update'));
+    using (account_id = auth.uid() and supasheet.has_permission('supasheet.tasks:update'))
+    with check (account_id = auth.uid() and supasheet.has_permission('supasheet.tasks:update'));
 
 create policy tasks_delete on tasks
     for delete
     to authenticated
-    using (account_id = auth.uid() and supasheet.has_permission('supasheet.accounts:delete'));
+    using (account_id = auth.uid() and supasheet.has_permission('supasheet.tasks:delete'));
 
 
 -- create a view of tasks with account name
