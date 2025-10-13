@@ -18,7 +18,7 @@ export function StorageBreadcrumb({
   const pathParts = currentPath ? currentPath.split("/").filter(Boolean) : [];
 
   return (
-    <div className="flex items-center gap-1 border-b p-2 text-sm">
+    <div className="flex items-center gap-1 border-b p-2 text-sm overflow-x-auto">
       <Button
         variant="ghost"
         size="sm"

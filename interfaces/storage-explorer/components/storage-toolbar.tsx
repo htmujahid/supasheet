@@ -8,7 +8,7 @@ import { FolderPlus, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
 import { CreateFolderDialog } from "./create-folder-dialog";
@@ -53,7 +53,7 @@ export function StorageToolbar({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex items-center justify-between gap-4 overflow-x-auto h-10">
       <div className="flex flex-1 items-center gap-2">
         <Button
           variant="outline"
@@ -93,19 +93,20 @@ export function StorageToolbar({
         </Button>
       </div>
 
-      <div className="relative max-w-xs">
-        <Search className="text-muted-foreground absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2" />
-        <Input
-          type="search"
-          placeholder="Search files..."
+
+      <InputGroup className="w-64 ">
+        <InputGroupInput
+          placeholder="Search Files..."
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
             onSearchChange(e.target.value);
           }}
-          className="w-full pl-8"
         />
-      </div>
+        <InputGroupAddon>
+          <Search />
+        </InputGroupAddon>
+      </InputGroup>
 
       <UploadDialog
         open={uploadDialogOpen}

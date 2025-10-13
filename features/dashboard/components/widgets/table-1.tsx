@@ -34,7 +34,7 @@ export function Table1Widget({
 
   if (!data || data.length === 0) {
     return (
-      <Card className="col-span-2">
+      <Card className="col-span-1 md:col-span-2">
         <CardHeader>
           <CardTitle>{widget.name}</CardTitle>
           <CardDescription>{widget.description}</CardDescription>
@@ -57,14 +57,14 @@ export function Table1Widget({
   );
 
   return (
-    <Card className="col-span-2">
+    <Card className="col-span-1 md:col-span-2">
       <CardHeader>
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <CardTitle>{widget.name}</CardTitle>
             <CardDescription>{widget.description}</CardDescription>
           </div>
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="text-muted-foreground absolute top-2.5 left-2 h-4 w-4" />
             <Input
               placeholder="Search..."
@@ -76,27 +76,29 @@ export function Table1Widget({
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {columns.map((column) => (
-                <TableHead key={column} className="font-medium">
-                  {column.charAt(0).toUpperCase() +
-                    column.slice(1).replace(/_/g, " ")}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredData.slice(0, 10).map((row, index) => (
-              <TableRow key={index}>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column}>{row[column] || "-"}</TableCell>
+                  <TableHead key={column} className="font-medium">
+                    {column.charAt(0).toUpperCase() +
+                      column.slice(1).replace(/_/g, " ")}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredData.slice(0, 10).map((row, index) => (
+                <TableRow key={index}>
+                  {columns.map((column) => (
+                    <TableCell key={column}>{row[column] || "-"}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
         {widget.caption && (
           <p className="text-muted-foreground mt-2 text-xs">{widget.caption}</p>
         )}
