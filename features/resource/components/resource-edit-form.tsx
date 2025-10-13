@@ -185,6 +185,7 @@ export function ResourceEditForm({
           onOpenChange={setIsDeleteDialogOpen}
           resources={[data]}
           tableSchema={tableSchema}
+          columnSchema={columnsSchema}
           showTrigger={false}
           onSuccess={() => router.push(`/home/resource/${schema}/${id}`)}
         />

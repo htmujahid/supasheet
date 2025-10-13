@@ -37,6 +37,7 @@ export function ResourceTableToolbarActions({
       {table.getFilteredSelectedRowModel().rows.length > 0 && tableSchema && permissions.canDelete ? (
         <DeleteResourceDialog
           tableSchema={tableSchema}
+          columnSchema={columnsSchema}
           resources={table
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}

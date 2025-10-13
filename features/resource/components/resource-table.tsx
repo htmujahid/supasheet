@@ -92,6 +92,7 @@ export function ResourceTable({
           onOpenChange={() => setRowAction(null)}
           resources={rowAction?.row.original ? [rowAction?.row.original] : []}
           tableSchema={tableSchema ?? null}
+          columnSchema={columnsSchema ?? []}
           showTrigger={false}
           onSuccess={() => rowAction?.row.toggleSelected(false)}
         />

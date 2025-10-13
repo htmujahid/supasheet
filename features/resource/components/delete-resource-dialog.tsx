@@ -32,17 +32,20 @@ import {
 import { deleteResourceDataAction } from "@/features/resource/lib/actions";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
+  ColumnSchema,
   DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
 interface DeleteResourceDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   resources: Row<ResourceDataSchema>["original"][];
   tableSchema: TableSchema | null;
+  columnSchema: ColumnSchema[];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
@@ -50,10 +53,12 @@ interface DeleteResourceDialogProps
 export function DeleteResourceDialog({
   resources,
   tableSchema,
+  columnSchema,
   showTrigger = true,
   onSuccess,
   ...props
 }: DeleteResourceDialogProps) {
+  const supabase = useSupabase();
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
 
   const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
@@ -92,6 +97,29 @@ export function DeleteResourceDialog({
       if (error) {
         toast.error(error.message);
         return;
+      }
+
+      const fileNames = columnSchema
+        ? resources.flatMap((r) =>
+          columnSchema
+            .flatMap((c) => {
+              if (c.format !== "file") return null;
+              const fileUrls = r[c.name as string] as string[] | null;
+              if (!fileUrls?.length) return null;
+              return fileUrls?.map((url) => {
+                const parts = url.split("/");
+                if (parts.length < 2) return null;
+                return c.name + "/" + parts[parts.length - 1];
+              });
+            })
+            .filter(Boolean)
+        )
+        : [];
+
+      if (fileNames.length > 0) {
+        await supabase.storage.from("uploads").remove(
+          fileNames.map((name) => `${schema}/${id}/${name}`)
+        );
       }
 
       props.onOpenChange?.(false);

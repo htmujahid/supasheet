@@ -70,6 +70,7 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
   if (format === "file") {
     return {
       ...baseOptions,
+      isArray: false, // special case for file upload
       type: "file",
       icon: <PaperclipIcon className="text-muted-foreground size-4 shrink-0" />,
     };
