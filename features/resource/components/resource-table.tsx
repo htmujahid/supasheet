@@ -16,8 +16,8 @@ import {
   loadResourceData,
   loadTableSchema,
 } from "../lib/loaders";
-import { ResourceSheet } from "./resource-sheet";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
+import { ResourceSheet } from "./resource-sheet";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
 
@@ -50,7 +50,10 @@ export function ResourceTable({
     [columnsSchema, tableSchema, handleSetRowAction],
   );
 
-  const getRowId = useCallback((row: ResourceDataSchema) => row.id as string, []);
+  const getRowId = useCallback(
+    (row: ResourceDataSchema) => row.id as string,
+    [],
+  );
 
   const { table, shallow, throttleMs, debounceMs } =
     useDataTable<ResourceDataSchema>({

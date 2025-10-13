@@ -10,6 +10,5 @@ interface AuditLogDetailContainerProps {
 export function AuditLogDetailContainer({
   auditLog,
 }: AuditLogDetailContainerProps) {
-
   return <AuditLogDetailView auditLog={auditLog!} />;
 }

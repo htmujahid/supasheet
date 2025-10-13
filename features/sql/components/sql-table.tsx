@@ -17,7 +17,7 @@ import { SqlRowCell } from "./sql-row-cell";
 
 export function SqlTable() {
   // Extract column names dynamically from the first data row
-  const id = useParams<{ id: string }>().id;
+  const { snippet } = useParams<{ snippet: string }>();
   const { data } = useSqlContext();
 
   const columns = useMemo(
@@ -62,7 +62,7 @@ export function SqlTable() {
             size="sm"
             onClick={() =>
               exportTableToCSV(table, {
-                filename: `sql-query-${id}`,
+                filename: `sql-query-${snippet}`,
                 excludeColumns: ["select", "actions"],
               })
             }

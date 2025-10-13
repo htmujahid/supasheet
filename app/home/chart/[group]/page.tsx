@@ -6,13 +6,13 @@ import { withI18n } from "@/lib/i18n/with-i18n";
 
 interface ChartDetailPageProps {
   params: Promise<{
-    id: string;
+    group: string;
   }>;
 }
 
 async function ChartDetailPage({ params }: ChartDetailPageProps) {
-  const { id } = await params;
-  const charts = await loadCharts(id);
+  const { group } = await params;
+  const charts = await loadCharts(group);
 
   if (charts && charts.length === 0) {
     notFound();

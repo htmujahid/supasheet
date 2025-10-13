@@ -75,7 +75,7 @@ export function ResourceSidebar({
     {
       title: `Form View`,
       url: `/home/resource/${activeResource?.schema}/${activeResource?.id}/create`,
-    }
+    },
   ] as { title: string; url: string }[];
 
   const tables = activeResources?.filter(

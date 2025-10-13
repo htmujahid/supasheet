@@ -15,8 +15,8 @@ import {
 import { exportTableToCSV } from "@/lib/export";
 
 import { DeleteResourceDialog } from "./delete-resource-dialog";
-import { ResourceSheet } from "./resource-sheet";
 import { useResourceContext } from "./resource-context";
+import { ResourceSheet } from "./resource-sheet";
 
 interface ResourceTableToolbarActionsProps {
   table: Table<ResourceDataSchema>;
@@ -34,7 +34,9 @@ export function ResourceTableToolbarActions({
 
   return (
     <div className="flex flex-1 items-center justify-end gap-2">
-      {table.getFilteredSelectedRowModel().rows.length > 0 && tableSchema && permissions.canDelete ? (
+      {table.getFilteredSelectedRowModel().rows.length > 0 &&
+      tableSchema &&
+      permissions.canDelete ? (
         <DeleteResourceDialog
           tableSchema={tableSchema}
           columnSchema={columnsSchema}

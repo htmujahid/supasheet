@@ -18,7 +18,7 @@ import { useSqlContext } from "./sql-context";
 const MonacoEditor = dynamic(() => import("./monaco-editor"), { ssr: false });
 
 export default function SqlToRest() {
-  const { id } = useParams<{ id: string }>();
+  const { snippet } = useParams<{ snippet: string }>();
   const { isLoading } = useSqlContext();
 
   const sqlData = useSqlData();
@@ -66,7 +66,7 @@ export default function SqlToRest() {
       <div className="px-4">
         <div className="h-[calc(20vh)] w-full overflow-hidden rounded-md border">
           <MonacoEditor
-            id={id}
+            id={snippet}
             editorRef={editorRef}
             monacoRef={monacoRef}
             executeQuery={executeQuery}

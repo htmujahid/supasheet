@@ -1,8 +1,9 @@
+import { notFound } from "next/navigation";
+
 import { AuditLogTable } from "@/features/audit-log/components/audit-log-table";
 import { loadAuditLogs } from "@/features/audit-log/lib/loaders";
 import { auditLogSearchParamsCache } from "@/features/audit-log/lib/validations";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { notFound } from "next/navigation";
 
 interface AuditLogPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 
-import { ResourceCreateForm } from "@/features/resource/components/resource-create-form";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
+import { ResourceCreateForm } from "@/features/resource/components/resource-create-form";
 import {
   loadColumnsSchema,
-  loadTableSchema,
   loadResourcePermissions,
+  loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";

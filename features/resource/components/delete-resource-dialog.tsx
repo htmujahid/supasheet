@@ -101,25 +101,25 @@ export function DeleteResourceDialog({
 
       const fileNames = columnSchema
         ? resources.flatMap((r) =>
-          columnSchema
-            .flatMap((c) => {
-              if (c.format !== "file") return null;
-              const fileUrls = r[c.name as string] as string[] | null;
-              if (!fileUrls?.length) return null;
-              return fileUrls?.map((url) => {
-                const parts = url.split("/");
-                if (parts.length < 2) return null;
-                return c.name + "/" + parts[parts.length - 1];
-              });
-            })
-            .filter(Boolean)
-        )
+            columnSchema
+              .flatMap((c) => {
+                if (c.format !== "file") return null;
+                const fileUrls = r[c.name as string] as string[] | null;
+                if (!fileUrls?.length) return null;
+                return fileUrls?.map((url) => {
+                  const parts = url.split("/");
+                  if (parts.length < 2) return null;
+                  return c.name + "/" + parts[parts.length - 1];
+                });
+              })
+              .filter(Boolean),
+          )
         : [];
 
       if (fileNames.length > 0) {
-        await supabase.storage.from("uploads").remove(
-          fileNames.map((name) => `${schema}/${id}/${name}`)
-        );
+        await supabase.storage
+          .from("uploads")
+          .remove(fileNames.map((name) => `${schema}/${id}/${name}`));
       }
 
       props.onOpenChange?.(false);

@@ -34,9 +34,9 @@ export function StorageSidebar({
       icon: bucket.public ? <FolderIcon /> : <FolderLockIcon />,
     })) ?? [];
 
-  const params = useParams();
+  const params = useParams<{ bucket: string }>();
 
-  const acitveItem = items.find((resource) => resource.id === params?.id);
+  const activeItem = items.find((resource) => resource.id === params?.bucket);
 
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
@@ -76,7 +76,7 @@ export function StorageSidebar({
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton
                   asChild
-                  isActive={acitveItem?.id === item.id}
+                  isActive={activeItem?.id === item.id}
                 >
                   <Link href={"/home/storage/" + item.id} title={item.name}>
                     {item.icon}

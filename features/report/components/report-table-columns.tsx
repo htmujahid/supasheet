@@ -2,6 +2,7 @@ import { Column, ColumnDef, Row } from "@tanstack/react-table";
 
 import { getColumnMeta } from "@/features/resource/lib/columns";
 import { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
+
 import { ReportColumnHeader } from "./report-column-header";
 import { ReportRowCell } from "./report-row-cell";
 
@@ -23,10 +24,7 @@ export function getReportTableColumns({
         />
       ),
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
-        <ReportRowCell
-          row={row}
-          columnSchema={c}
-        />
+        <ReportRowCell row={row} columnSchema={c} />
       ),
       size: 170,
       enableColumnFilter: true,

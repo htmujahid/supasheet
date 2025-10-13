@@ -6,7 +6,6 @@ interface AuditLogDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-
 async function AuditLogDetailPage(props: AuditLogDetailPageProps) {
   const { id } = await props.params;
   const auditLog = await loadSingleAuditLog(id);

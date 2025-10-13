@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
 
+import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import { ResourceDetailView } from "@/features/resource/components/view/resource-detail-view";
 import { ResourceForiegnDataView } from "@/features/resource/components/view/resource-foriegn-data-view";
 import { ResourceMetadataView } from "@/features/resource/components/view/resource-metadata-view";
-import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import {
   loadColumnsSchema,
+  loadResourcePermissions,
   loadSingleResourceData,
   loadTableSchema,
-  loadResourcePermissions,
 } from "@/features/resource/lib/loaders";
 import {
   DatabaseSchemas,

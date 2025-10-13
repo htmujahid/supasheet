@@ -60,7 +60,7 @@ export function CreateFolderDialog({
         toast.success(`Successfully created folder "${folderName.trim()}"`);
       }
     });
-  };
+  }
 
   const handleClose = () => {
     setFolderName("");

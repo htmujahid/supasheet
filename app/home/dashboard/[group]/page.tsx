@@ -8,11 +8,11 @@ async function DashboardPage({
   params,
 }: {
   params: Promise<{
-    id: string;
+    group: string;
   }>;
 }) {
-  const { id } = await params;
-  const widgets = await loadDashboardWidgets(id);
+  const { group } = await params;
+  const widgets = await loadDashboardWidgets(group);
 
   if (widgets && widgets.length === 0) {
     notFound();
@@ -25,7 +25,6 @@ async function DashboardPage({
       ))}
     </div>
   );
-
 }
 
 export default withI18n(DashboardPage);

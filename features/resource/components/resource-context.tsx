@@ -15,12 +15,12 @@ const ResourceContext = createContext<{ permissions: ResourcePermissions }>({
     canInsert: false,
     canUpdate: false,
     canDelete: false,
-  }
+  },
 });
 
 export function ResourceContextProvider({
   children,
-  permissions
+  permissions,
 }: {
   children: ReactNode;
   permissions: ResourcePermissions;

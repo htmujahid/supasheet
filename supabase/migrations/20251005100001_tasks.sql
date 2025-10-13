@@ -124,10 +124,10 @@ insert into supasheet.role_permissions (role, permission) values ('user', 'repor
 insert into supasheet.role_permissions (role, permission) values ('user', 'dashboards.task_summary:select');
 
 insert into supasheet.reports (name, description, "group", view_name, filter_field, is_active) values
-('Task Report', 'Report of all tasks with account names', 'Tasks', 'task_report', 'created_at', true);
+('Task Report', 'Report of all tasks with account names', 'tasks', 'task_report', 'created_at', true);
 
 insert into supasheet.dashboards (name, description, "group", widget_type, view_name, is_active) values
-('Task Summary', 'Summary of active tasks', 'Tasks', 'card_1', 'task_summary', true);
+('Task Summary', 'Summary of active tasks', 'tasks', 'card_1', 'task_summary', true);
 
 
 ----------------------------------------------------------------
@@ -184,9 +184,9 @@ insert into supasheet.role_permissions (role, permission) values
 
 -- Insert dashboard widget entries
 insert into supasheet.dashboards (name, description, caption, "group", widget_type, view_name, is_active) values
-    ('Task Overview', 'Completed vs Active tasks', '', 'Tasks', 'card_2', 'task_completion_rate', true),
-    ('Status Breakdown', 'Tasks by current status', 'Completed Tasks', 'Tasks', 'card_3', 'tasks_by_status', true),
-    ('Priority Alert', 'High priority items', '', 'Tasks', 'card_4', 'task_urgent_count', true);
+    ('Task Overview', 'Completed vs Active tasks', '', 'tasks', 'card_2', 'task_completion_rate', true),
+    ('Status Breakdown', 'Tasks by current status', 'Completed Tasks', 'tasks', 'card_3', 'tasks_by_status', true),
+    ('Priority Alert', 'High priority items', '', 'tasks', 'card_4', 'task_urgent_count', true);
 
 
 
@@ -283,10 +283,10 @@ insert into supasheet.role_permissions (role, permission) values
 
 -- Insert dashboard widget entries for new tables
 insert into supasheet.dashboards (name, description, caption, "group", widget_type, view_name, is_active) values
-    ('Recent Tasks', 'Latest tasks in the system', 'Last 10 tasks', 'Tasks', 'table_1', 'task_list_simple', true),
-    ('Priority Queue', 'Active tasks by priority', 'Next 10 items', 'Tasks', 'table_1', 'active_tasks_simple', true),
-    ('Task Overview', 'Detailed task listing', 'Recent activity', 'Tasks', 'table_2', 'task_list_detailed', true),
-    ('Task Analytics', 'Task breakdown with tags', 'Priority sorted', 'Tasks', 'table_2', 'task_analytics_detailed', true);
+    ('Recent Tasks', 'Latest tasks in the system', 'Last 10 tasks', 'tasks', 'table_1', 'task_list_simple', true),
+    ('Priority Queue', 'Active tasks by priority', 'Next 10 items', 'tasks', 'table_1', 'active_tasks_simple', true),
+    ('Task Overview', 'Detailed task listing', 'Recent activity', 'tasks', 'table_2', 'task_list_detailed', true),
+    ('Task Analytics', 'Task breakdown with tags', 'Priority sorted', 'tasks', 'table_2', 'task_analytics_detailed', true);
 
 
 ----------------------------------------------------------------
@@ -375,11 +375,11 @@ insert into supasheet.role_permissions (role, permission) values
 
 -- Insert dashboard widget entries for charts
 insert into supasheet.charts (name, description, caption, "group", chart_type, view_name, is_active) values
-    ('Task Trend', 'Task creation trend over last 7 days', '', 'Tasks', 'area', 'task_trend_area', true),
-    ('Priority Breakdown', 'Tasks grouped by priority level', '', 'Tasks', 'bar', 'task_priority_bar', true),
-    ('Completion Rate', 'Daily task completion over 2 weeks', '', 'Tasks', 'line', 'task_completion_line', true),
-    ('Status Distribution', 'Current task status breakdown', '', 'Tasks', 'pie', 'task_status_pie', true),
-    ('Priority Metrics', 'Task metrics across priorities', '', 'Tasks', 'radar', 'task_metrics_radar', true);
+    ('Task Trend', 'Task creation trend over last 7 days', '', 'tasks', 'area', 'task_trend_area', true),
+    ('Priority Breakdown', 'Tasks grouped by priority level', '', 'tasks', 'bar', 'task_priority_bar', true),
+    ('Completion Rate', 'Daily task completion over 2 weeks', '', 'tasks', 'line', 'task_completion_line', true),
+    ('Status Distribution', 'Current task status breakdown', '', 'tasks', 'pie', 'task_status_pie', true),
+    ('Priority Metrics', 'Task metrics across priorities', '', 'tasks', 'radar', 'task_metrics_radar', true);
 
 
 ----------------------------------------------------------------

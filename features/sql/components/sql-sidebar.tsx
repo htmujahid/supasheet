@@ -138,7 +138,7 @@ function SqlSnippetItem({
 }
 
 export function SqlSidebar() {
-  const params = useParams();
+  const params = useParams<{ snippet: string }>();
   const router = useRouter();
   const [items = [], setItems] = useLocalStorage<
     {
@@ -149,7 +149,7 @@ export function SqlSidebar() {
   const [isEditing, setIsEditing] = useState(false);
   const [newSnippetName, setNewSnippetName] = useState("");
 
-  const activeItem = items?.find((item) => item.id === params?.id);
+  const activeItem = items?.find((item) => item.id === params?.snippet);
 
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);

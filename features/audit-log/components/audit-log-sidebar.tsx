@@ -27,7 +27,7 @@ export function AuditLogsSidebar({
   const items =
     schemas.map((schema) => ({
       name: schema.schema,
-      id: schema.schema,
+      schema: schema.schema,
       icon: <DatabaseIcon />,
     })) ?? [];
 
@@ -81,7 +81,7 @@ export function AuditLogsSidebar({
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
                     <Link
-                      href={`/home/audit-log?filters=[{"id":"schema_name","value":"${item.id}","variant":"text","operator":"eq","filterId":"Bx4Aglmk"}]`}
+                      href={`/home/audit-log?filters=[{"id":"schema_name","value":"${item.schema}","variant":"text","operator":"eq","filterId":"Bx4Aglmk"}]`}
                       title={item.name}
                     >
                       {item.icon}

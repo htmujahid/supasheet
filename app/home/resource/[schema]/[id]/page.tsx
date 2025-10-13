@@ -1,15 +1,16 @@
-import { ResourceTable } from "@/features/resource/components/resource-table";
+import { notFound } from "next/navigation";
+
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
+import { ResourceTable } from "@/features/resource/components/resource-table";
 import {
   loadColumnsSchema,
   loadResourceData,
-  loadTableSchema,
   loadResourcePermissions,
+  loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { notFound } from "next/navigation";
 
 async function HomeResourcePage(props: {
   params: Promise<{

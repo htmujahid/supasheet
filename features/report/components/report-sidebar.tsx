@@ -32,9 +32,9 @@ export function ReportSidebar({
       icon: <FileSpreadsheetIcon />,
     })) || [];
 
-  const params = useParams();
+  const params = useParams<{ group: string }>();
 
-  const acitveItem = items.find((resource) => resource.id === params?.id);
+  const activeItem = items.find((resource) => resource.id === params?.group);
 
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
@@ -86,7 +86,7 @@ export function ReportSidebar({
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
                     asChild
-                    isActive={acitveItem?.id === item.id}
+                    isActive={activeItem?.id === item.id}
                   >
                     <Link href={"/home/report/" + item.id} title={item.name}>
                       {item.icon}

@@ -1,6 +1,7 @@
+import { memo, useCallback, useMemo } from "react";
+
 import Link from "next/link";
 
-import { memo, useCallback, useMemo } from "react";
 import { Row } from "@tanstack/react-table";
 import { ArrowUpRightIcon, CopyIcon, EditIcon, TrashIcon } from "lucide-react";
 
@@ -37,7 +38,10 @@ export const ResourceRowCell = memo(function ResourceRowCell({
   setRowAction: (action: DataTableRowAction<ResourceDataSchema> | null) => void;
 }) {
   // Memoize expensive calculations to avoid recalculating on every render
-  const columnData = useMemo(() => getColumnMetadata(columnSchema), [columnSchema]);
+  const columnData = useMemo(
+    () => getColumnMetadata(columnSchema),
+    [columnSchema],
+  );
 
   const relationship = useMemo(
     () =>

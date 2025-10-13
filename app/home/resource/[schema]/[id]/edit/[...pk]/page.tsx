@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 
-import { ResourceEditForm } from "@/features/resource/components/resource-edit-form";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
+import { ResourceEditForm } from "@/features/resource/components/resource-edit-form";
 import {
   loadColumnsSchema,
+  loadResourcePermissions,
   loadSingleResourceData,
   loadTableSchema,
-  loadResourcePermissions,
 } from "@/features/resource/lib/loaders";
 import {
   DatabaseSchemas,

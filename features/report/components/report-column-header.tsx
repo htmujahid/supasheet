@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+
 import type { Column } from "@tanstack/react-table";
 import {
   ChevronDown,
@@ -18,10 +19,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
-import { cn } from "@/lib/utils";
 import { formatTitle } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
-export const ReportColumnHeader = memo(function ReportColumnHeader<TData, TValue>({
+export const ReportColumnHeader = memo(function ReportColumnHeader<
+  TData,
+  TValue,
+>({
   column,
   title,
   className,
@@ -44,9 +48,7 @@ export const ReportColumnHeader = memo(function ReportColumnHeader<TData, TValue
 
   return (
     <div className="relative truncate">
-      <div className="flex items-center gap-2">
-        {formatTitle(title)}
-      </div>
+      <div className="flex items-center gap-2">{formatTitle(title)}</div>
       <DropdownMenu>
         <DropdownMenuTrigger
           className={cn(
@@ -108,9 +110,11 @@ export const ReportColumnHeader = memo(function ReportColumnHeader<TData, TValue
       </DropdownMenu>
     </div>
   );
-}) as <TData, TValue>(props: React.ComponentProps<typeof DropdownMenuTrigger> & {
-  column: Column<TData, TValue>;
-  title: string;
-  tableSchema: TableSchema | null;
-  columnSchema: ColumnSchema;
-}) => React.ReactElement;
+}) as <TData, TValue>(
+  props: React.ComponentProps<typeof DropdownMenuTrigger> & {
+    column: Column<TData, TValue>;
+    title: string;
+    tableSchema: TableSchema | null;
+    columnSchema: ColumnSchema;
+  },
+) => React.ReactElement;

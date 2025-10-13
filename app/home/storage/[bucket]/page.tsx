@@ -7,10 +7,10 @@ async function StoragePage({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ bucket: string }>;
   searchParams: Promise<{ path?: string }>;
 }) {
-  const { id: bucketId } = await params;
+  const { bucket: bucketId } = await params;
   const { path = "" } = await searchParams;
 
   const supabase = await getSupabaseServerClient();

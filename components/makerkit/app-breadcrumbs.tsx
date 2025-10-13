@@ -4,6 +4,8 @@ import { Fragment } from "react";
 
 import { usePathname } from "next/navigation";
 
+import { formatTitle } from "@/lib/format";
+
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -14,8 +16,6 @@ import {
 } from "../ui/breadcrumb";
 import { If } from "./if";
 import { Trans } from "./trans";
-
-const unslugify = (slug: string) => slug.replace(/-/g, " ");
 
 export function AppBreadcrumbs(props: {
   values?: Record<string, string>;
@@ -47,8 +47,8 @@ export function AppBreadcrumbs(props: {
               values[path]
             ) : (
               <Trans
-                i18nKey={`common:routes.${unslugify(path)}`}
-                defaults={unslugify(path)}
+                i18nKey={`common:routes.${formatTitle(path)}`}
+                defaults={formatTitle(path)}
               />
             );
 

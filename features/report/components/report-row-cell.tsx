@@ -1,7 +1,7 @@
 import { memo, useCallback } from "react";
-import { CopyIcon } from "lucide-react";
 
 import { Row } from "@tanstack/react-table";
+import { CopyIcon } from "lucide-react";
 
 import {
   ContextMenu,
@@ -9,10 +9,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-  ColumnSchema,
-  ResourceDataSchema,
-} from "@/lib/database-meta.types";
+import { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
 
 export const ReportRowCell = memo(function ReportRowCell({
   row,
@@ -37,9 +34,7 @@ export const ReportRowCell = memo(function ReportRowCell({
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <div
-          className={"relative truncate select-none"}
-        >
+        <div className={"relative truncate select-none"}>
           {value?.toString()}
         </div>
       </ContextMenuTrigger>

@@ -11,8 +11,8 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 
-import { ResourceTableRowActions } from "./resource-table-row-actions";
 import { useResourceContext } from "./resource-context";
+import { ResourceTableRowActions } from "./resource-table-row-actions";
 
 export function getResourceTableColumns({
   columnsSchema,
@@ -88,7 +88,11 @@ export function getResourceTableColumns({
             id: "actions",
             cell: function Cell({ row }: { row: Row<ResourceDataSchema> }) {
               const { permissions } = useResourceContext();
-              if (!permissions.canSelect && !permissions.canUpdate && !permissions.canDelete) {
+              if (
+                !permissions.canSelect &&
+                !permissions.canUpdate &&
+                !permissions.canDelete
+              ) {
                 return null;
               }
               return (

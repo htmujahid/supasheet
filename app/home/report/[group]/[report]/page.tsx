@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { notFound } from "next/navigation";
+
 import type { SearchParams } from "nuqs/server";
 
 import { ReportTable } from "@/features/report/components/report-table";
@@ -11,7 +13,6 @@ import { reportSearchParamsCache } from "@/features/report/lib/validations";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { notFound } from "next/navigation";
 
 async function HomeResourcePage(props: {
   params: Promise<{

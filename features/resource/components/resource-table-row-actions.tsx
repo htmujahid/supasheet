@@ -1,6 +1,7 @@
+import { memo, useCallback, useMemo } from "react";
+
 import Link from "next/link";
 
-import { memo, useCallback, useMemo } from "react";
 import { Row } from "@tanstack/react-table";
 import { EditIcon, EllipsisIcon, TrashIcon, ViewIcon } from "lucide-react";
 
@@ -18,6 +19,7 @@ import {
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
+
 import { useResourceContext } from "./resource-context";
 
 export const ResourceTableRowActions = memo(function ResourceTableRowActions({
@@ -78,7 +80,9 @@ export const ResourceTableRowActions = memo(function ResourceTableRowActions({
         )}
         {permissions.canDelete && (
           <>
-            {(permissions.canSelect || permissions.canUpdate) && <DropdownMenuSeparator />}
+            {(permissions.canSelect || permissions.canUpdate) && (
+              <DropdownMenuSeparator />
+            )}
             <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
               <TrashIcon className="size-4" />
               Delete

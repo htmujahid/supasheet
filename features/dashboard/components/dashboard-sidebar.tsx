@@ -27,14 +27,14 @@ export function DashboardSidebar({
 
   const items =
     dashboards?.map((dashboard) => ({
-      name: dashboard.group_name,
       id: dashboard.group_name,
+      name: dashboard.group_name,
       icon: <LayoutDashboardIcon />,
     })) || [];
 
-  const params = useParams();
+  const params = useParams<{ resource: string }>();
 
-  const acitveItem = items.find((resource) => resource.id === params?.id);
+  const activeItem = items.find((resource) => resource.id === params?.resource);
 
   const [search, setSearch] = useState("");
   const [activeItems, setActiveItems] = useState(items);
@@ -86,7 +86,7 @@ export function DashboardSidebar({
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
                     asChild
-                    isActive={acitveItem?.id === item.id}
+                    isActive={activeItem?.id === item.id}
                   >
                     <Link href={"/home/dashboard/" + item.id} title={item.name}>
                       {item.icon}
