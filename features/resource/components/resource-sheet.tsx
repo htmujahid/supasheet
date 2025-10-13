@@ -182,6 +182,11 @@ export function ResourceSheet({
                 />
               ))}
             <SheetFooter className="bg-background sticky bottom-0 flex-row gap-2 px-0 pt-2 sm:space-x-0">
+              <SheetClose asChild>
+                <Button type="button" variant="outline" className="flex-1">
+                  Cancel
+                </Button>
+              </SheetClose>
               <Button disabled={isPending} className="flex-1">
                 {isPending && (
                   <Loader
@@ -191,11 +196,6 @@ export function ResourceSheet({
                 )}
                 {data ? "Update" : "Create"}
               </Button>
-              <SheetClose asChild>
-                <Button type="button" variant="outline" className="flex-1">
-                  Cancel
-                </Button>
-              </SheetClose>
             </SheetFooter>
           </form>
         </Form>

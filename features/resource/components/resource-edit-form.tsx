@@ -158,6 +158,14 @@ export function ResourceEditForm({
                 ))}
               <div className="flex gap-2">
                 <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => router.back()}
+                >
+                  Cancel
+                </Button>
+                <Button
                   type="submit"
                   disabled={isPending || !permissions.canUpdate}
                   className="flex-1"
@@ -169,14 +177,6 @@ export function ResourceEditForm({
                     />
                   )}
                   Save Changes
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => router.back()}
-                >
-                  Cancel
                 </Button>
               </div>
             </form>

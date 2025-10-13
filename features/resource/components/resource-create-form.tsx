@@ -126,6 +126,14 @@ export function ResourceCreateForm({
                 />
               ))}
             <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => router.back()}
+              >
+                Cancel
+              </Button>
               <Button type="submit" disabled={isPending} className="flex-1">
                 {isPending && (
                   <Loader
@@ -134,14 +142,6 @@ export function ResourceCreateForm({
                   />
                 )}
                 Create Resource
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1"
-                onClick={() => router.back()}
-              >
-                Cancel
               </Button>
             </div>
           </form>
