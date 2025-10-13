@@ -73,7 +73,7 @@ export function ResourceCreateForm({
         data: { ...input, ...jsonInput },
       });
 
-      if (!data?.length && !error) {
+      if ((!data?.length && !error) || error?.message.includes("violates")) {
         toast.error("You don't have permission to create this resource");
         return;
       }

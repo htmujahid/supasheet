@@ -82,7 +82,7 @@ export function ResourceSheet({
         data: { ...input, ...jsonInput },
       });
 
-      if (!data?.length && !error) {
+      if ((!data?.length && !error) || error?.message.includes("violates")) {
         toast.error("You don't have permission to create this resource");
         return;
       }
@@ -134,7 +134,7 @@ export function ResourceSheet({
         data: { ...input, ...jsonInput },
       });
 
-      if (!updatedData?.length && !error) {
+      if ((!updatedData?.length && !error) || error?.message.includes("violates")) {
         toast.error("You don't have permission to update this resource");
         return;
       }

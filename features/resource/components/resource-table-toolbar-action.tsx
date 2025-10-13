@@ -17,6 +17,7 @@ import { exportTableToCSV } from "@/lib/export";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { useResourceContext } from "./resource-context";
 import { ResourceSheet } from "./resource-sheet";
+import { formatTitle } from "@/lib/format";
 
 interface ResourceTableToolbarActionsProps {
   table: Table<ResourceDataSchema>;
@@ -49,7 +50,7 @@ export function ResourceTableToolbarActions({
       <If condition={tableSchema && permissions.canInsert}>
         <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
           <Plus />
-          Create {(tableSchema?.name as string) || "Resource"}
+          Create {formatTitle(tableSchema?.name as string) || "Resource"}
         </Button>
       </If>
       <Button

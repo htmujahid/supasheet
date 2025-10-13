@@ -96,7 +96,7 @@ export function ResourceEditForm({
         data: { ...input, ...jsonInput },
       });
 
-      if (!updatedData?.length && !error) {
+      if ((!updatedData?.length && !error) || error?.message.includes("violates")) {
         toast.error("You don't have permission to update this resource");
         return;
       }

@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 
 import { AllCells } from "./cells/all-cells";
 import { ArrayCell } from "./cells/array-cell";
+import { useResourceContext } from "./resource-context";
 
 export const ResourceRowCell = memo(function ResourceRowCell({
   row,
@@ -42,6 +43,7 @@ export const ResourceRowCell = memo(function ResourceRowCell({
     () => getColumnMetadata(columnSchema),
     [columnSchema],
   );
+  const { permissions } = useResourceContext();
 
   const relationship = useMemo(
     () =>
@@ -121,15 +123,19 @@ export const ResourceRowCell = memo(function ResourceRowCell({
           Copy Cell Content
         </ContextMenuItem>
         <If condition={tableSchema}>
-          <ContextMenuItem onClick={handleEdit}>
-            <EditIcon className="size-4" />
-            Edit Row
-          </ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem variant="destructive" onClick={handleDelete}>
-            <TrashIcon className="size-4" />
-            Delete Row
-          </ContextMenuItem>
+          <If condition={permissions.canUpdate}>
+            <ContextMenuItem onClick={handleEdit}>
+              <EditIcon className="size-4" />
+              Edit Row
+            </ContextMenuItem>
+          </If>
+          <If condition={permissions.canDelete}>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive" onClick={handleDelete}>
+              <TrashIcon className="size-4" />
+              Delete Row
+            </ContextMenuItem>
+          </If>
         </If>
       </ContextMenuContent>
     </ContextMenu>

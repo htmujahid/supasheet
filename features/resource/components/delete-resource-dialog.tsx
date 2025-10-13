@@ -89,7 +89,7 @@ export function DeleteResourceDialog({
         resourceIds,
       });
 
-      if (!data?.length && !error) {
+      if ((!data?.length && !error) || error?.message.includes("violates")) {
         toast.error("You don't have permission to delete this resource");
         return;
       }
