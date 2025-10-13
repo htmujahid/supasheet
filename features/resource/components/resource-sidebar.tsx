@@ -42,6 +42,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { SYSTEM_SCHEMAS } from "@/config/database.config";
+import { formatTitle } from "@/lib/format";
 
 export function ResourceSidebar({
   resourcesPromise,
@@ -73,10 +74,11 @@ export function ResourceSidebar({
 
   const submenuItems = [
     {
-      title: `Form View`,
-      url: `/home/resource/${activeResource?.schema}/${activeResource?.id}/create`,
+      name: 'form_view',
+      type: 'form',
+      url: `create`,
     },
-  ] as { title: string; url: string }[];
+  ] as { name: string; type: string; url: string }[];
 
   const tables = activeResources?.filter(
     (resource) =>
@@ -160,10 +162,9 @@ export function ResourceSidebar({
                   >
                     <Link
                       href={"/home/resource/" + item.schema + "/" + item.id}
-                      title={item.name}
                     >
                       <Table2 className="size-4 shrink-0" />
-                      <span>{item.name}</span>
+                      <span>{formatTitle(item.name)}</span>
                     </Link>
                   </SidebarMenuButton>
                   {submenuItems?.length ? (
@@ -177,11 +178,11 @@ export function ResourceSidebar({
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {submenuItems?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubItem key={subItem.name}>
                               <SidebarMenuSubButton asChild>
-                                <a href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </a>
+                                <Link href={`/home/resource/${item.schema}/${item.id}/${subItem.url}`} title={subItem.name}>
+                                  <span>{formatTitle(subItem.name)}</span>
+                                </Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}
@@ -203,10 +204,9 @@ export function ResourceSidebar({
                 <SidebarMenuButton asChild>
                   <Link
                     href={"/home/resource/" + item.schema + "/" + item.id}
-                    title={item.name}
                   >
                     <EyeIcon className="size-4 shrink-0" />
-                    <span>{item.name}</span>
+                    <span>{formatTitle(item.name)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

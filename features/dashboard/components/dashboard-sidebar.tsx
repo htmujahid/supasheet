@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { formatTitle } from "@/lib/format";
 
 export function DashboardSidebar({
   dashboardsPromise,
@@ -28,7 +29,7 @@ export function DashboardSidebar({
   const items =
     dashboards?.map((dashboard) => ({
       id: dashboard.group_name,
-      name: dashboard.group_name,
+      name: formatTitle(dashboard.group_name),
       icon: <LayoutDashboardIcon />,
     })) || [];
 

@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { formatTitle } from "@/lib/format";
 
 export function StorageSidebar({
   bucketsPromise,
@@ -78,9 +79,9 @@ export function StorageSidebar({
                   asChild
                   isActive={activeItem?.id === item.id}
                 >
-                  <Link href={"/home/storage/" + item.id} title={item.name}>
+                  <Link href={"/home/storage/" + item.id}>
                     {item.icon}
-                    <span>{item.name}</span>
+                    <span>{formatTitle(item.name)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

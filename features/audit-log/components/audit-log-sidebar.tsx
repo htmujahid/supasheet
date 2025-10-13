@@ -16,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { formatTitle } from "@/lib/format";
 
 export function AuditLogsSidebar({
   schemasPromise,
@@ -82,10 +83,9 @@ export function AuditLogsSidebar({
                   <SidebarMenuButton asChild>
                     <Link
                       href={`/home/audit-log?filters=[{"id":"schema_name","value":"${item.schema}","variant":"text","operator":"eq","filterId":"Bx4Aglmk"}]`}
-                      title={item.name}
                     >
                       {item.icon}
-                      <span>{item.name}</span>
+                      <span>{formatTitle(item.name)}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

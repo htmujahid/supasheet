@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { formatTitle } from "@/lib/format";
 
 export function ChartSidebar({
   chartsPromise,
@@ -28,7 +29,7 @@ export function ChartSidebar({
   const items =
     charts?.map((chart) => ({
       id: chart.group_name,
-      name: chart.group_name,
+      name: formatTitle(chart.group_name),
       icon: <ChartColumnStackedIcon />,
     })) ?? [];
 

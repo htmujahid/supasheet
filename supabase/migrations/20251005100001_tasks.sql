@@ -69,7 +69,7 @@ create policy tasks_delete on tasks
 
 
 -- create a view of tasks with account name
-create or replace view public.vw_tasks 
+create or replace view public.user_tasks 
 with(security_invoker = true) as
 select
     a.name as account_name,
@@ -78,8 +78,8 @@ from tasks t
 join supasheet.accounts a on t.account_id = a.id;
 
 -- grant select on view to authenticated
-revoke all on public.vw_tasks from authenticated, service_role;
-grant select on public.vw_tasks to authenticated;
+revoke all on public.user_tasks from authenticated, service_role;
+grant select on public.user_tasks to authenticated;
 
 
 ----------------------------------------------------------------
@@ -119,7 +119,7 @@ insert into supasheet.role_permissions (role, permission) values ('user', 'publi
 insert into supasheet.role_permissions (role, permission) values ('user', 'public.tasks:update');
 insert into supasheet.role_permissions (role, permission) values ('user', 'public.tasks:delete');
 
-insert into supasheet.role_permissions (role, permission) values ('user', 'public.vw_tasks:select');
+insert into supasheet.role_permissions (role, permission) values ('user', 'public.user_tasks:select');
 insert into supasheet.role_permissions (role, permission) values ('user', 'reports.task_report:select');
 insert into supasheet.role_permissions (role, permission) values ('user', 'dashboards.task_summary:select');
 

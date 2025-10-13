@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { formatTitle } from "@/lib/format";
 
 export function ReportSidebar({
   reportsPromise,
@@ -88,9 +89,9 @@ export function ReportSidebar({
                     asChild
                     isActive={activeItem?.id === item.id}
                   >
-                    <Link href={"/home/report/" + item.id} title={item.name}>
+                    <Link href={"/home/report/" + item.id}>
                       {item.icon}
-                      <span>{item.name}</span>
+                      <span>{formatTitle(item.name)}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

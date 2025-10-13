@@ -6,7 +6,7 @@ alter type supasheet.app_permission add value 'public.tasks:insert';
 alter type supasheet.app_permission add value 'public.tasks:update';
 alter type supasheet.app_permission add value 'public.tasks:delete';
 
-alter type supasheet.app_permission add value 'public.vw_tasks:select';
+alter type supasheet.app_permission add value 'public.user_tasks:select';
 alter type supasheet.app_permission add value 'reports.task_report:select';
 alter type supasheet.app_permission add value 'dashboards.task_summary:select';
 
