@@ -35,6 +35,7 @@ import {
 import { READONLY_COLUMNS } from "../lib/constants";
 import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: TableSchema | null;
@@ -50,6 +51,8 @@ export function ResourceSheet({
 }: ResourceSheetProps) {
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
   const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
+
+  const isMobile = useIsMobile();
 
   const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
     (key) => key.name,
@@ -152,8 +155,8 @@ export function ResourceSheet({
   }
 
   return (
-    <Sheet {...props}>
-      <SheetContent className="flex flex-col gap-6 sm:max-w-md">
+    <Sheet {...props} >
+      <SheetContent side={isMobile ? "bottom" : "right"} className="flex flex-col gap-6 w-full md:max-w-lg overflow-y-auto h-full">
         <SheetHeader className="text-left">
           <SheetTitle>
             {data ? "Update" : "Create"} {id}
