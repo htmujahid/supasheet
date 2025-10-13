@@ -1,9 +1,9 @@
 import { Column, ColumnDef, Row } from "@tanstack/react-table";
 
-import { ResourceColumnHeader } from "@/features/resource/components/resource-column-header";
-import { ResourceRowCell } from "@/features/resource/components/resource-row-cell";
 import { getColumnMeta } from "@/features/resource/lib/columns";
 import { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
+import { ReportColumnHeader } from "./report-column-header";
+import { ReportRowCell } from "./report-row-cell";
 
 export function getReportTableColumns({
   columnsSchema,
@@ -15,7 +15,7 @@ export function getReportTableColumns({
       id: c.name,
       accessorKey: c.name as string,
       header: ({ column }: { column: Column<ResourceDataSchema, unknown> }) => (
-        <ResourceColumnHeader
+        <ReportColumnHeader
           column={column}
           columnSchema={c}
           tableSchema={null}
@@ -23,11 +23,9 @@ export function getReportTableColumns({
         />
       ),
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
-        <ResourceRowCell
+        <ReportRowCell
           row={row}
           columnSchema={c}
-          tableSchema={null}
-          setRowAction={() => {}}
         />
       ),
       size: 170,

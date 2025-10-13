@@ -19,11 +19,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
-
-import { getDataTypeIcon } from "./icons";
 import { formatTitle } from "@/lib/format";
 
-export const ResourceColumnHeader = memo(function ResourceColumnHeader<TData, TValue>({
+export const ReportColumnHeader = memo(function ReportColumnHeader<TData, TValue>({
   column,
   title,
   className,
@@ -39,7 +37,6 @@ export const ResourceColumnHeader = memo(function ResourceColumnHeader<TData, TV
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
-        {getDataTypeIcon(columnSchema)}
         {formatTitle(title)}
       </div>
     );
@@ -48,7 +45,6 @@ export const ResourceColumnHeader = memo(function ResourceColumnHeader<TData, TV
   return (
     <div className="relative truncate">
       <div className="flex items-center gap-2">
-        {getDataTypeIcon(columnSchema)}
         {formatTitle(title)}
       </div>
       <DropdownMenu>
