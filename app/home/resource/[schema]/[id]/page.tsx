@@ -1,8 +1,10 @@
 import { ResourceTable } from "@/features/resource/components/resource-table";
+import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import {
   loadColumnsSchema,
   loadResourceData,
   loadTableSchema,
+  loadResourcePermissions,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
@@ -26,23 +28,30 @@ async function HomeResourcePage(props: {
   const searchParams = await props.searchParams;
   const search = resourceSearchParamsCache.parse(searchParams);
 
-  const [tableSchema, columnsSchema, data] = await Promise.all([
+  const [tableSchema, columnsSchema, data, permissions] = await Promise.all([
     loadTableSchema(schema, id),
     loadColumnsSchema(schema, id),
     loadResourceData(schema, id, search),
+    loadResourcePermissions(schema, id),
   ]);
 
   if (!columnsSchema) {
     notFound();
   }
 
+  if (!permissions.canSelect) {
+    notFound();
+  }
+
   return (
     <div className="px-4">
-      <ResourceTable
-        tableSchema={tableSchema}
-        columnsSchema={columnsSchema}
-        data={data}
-      />
+      <ResourceContextProvider permissions={permissions}>
+        <ResourceTable
+          tableSchema={tableSchema}
+          columnsSchema={columnsSchema}
+          data={data}
+        />
+      </ResourceContextProvider>
     </div>
   );
 }

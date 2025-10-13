@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 
 import { ResourceEditForm } from "@/features/resource/components/resource-edit-form";
+import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import {
   loadColumnsSchema,
   loadSingleResourceData,
   loadTableSchema,
+  loadResourcePermissions,
 } from "@/features/resource/lib/loaders";
 import {
   DatabaseSchemas,
@@ -28,11 +30,15 @@ async function EditPage({
     pk: string[];
   };
 
-  const tableSchema = await loadTableSchema(schema, id);
-  if (!tableSchema) return notFound();
+  const [tableSchema, columnsSchema, permissions] = await Promise.all([
+    loadTableSchema(schema, id),
+    loadColumnsSchema(schema, id),
+    loadResourcePermissions(schema, id),
+  ]);
 
-  const columnsSchema = await loadColumnsSchema(schema, id);
+  if (!tableSchema) return notFound();
   if (!columnsSchema?.length) return notFound();
+  if (!permissions.canUpdate) return notFound();
 
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
@@ -50,13 +56,15 @@ async function EditPage({
   if (!singleResourceData) return notFound();
 
   return (
-    <div className="mx-auto max-w-3xl p-4">
-      <ResourceEditForm
-        tableSchema={tableSchema}
-        columnsSchema={columnsSchema ?? []}
-        data={singleResourceData}
-      />
-    </div>
+    <ResourceContextProvider permissions={permissions}>
+      <div className="mx-auto max-w-3xl p-4">
+        <ResourceEditForm
+          tableSchema={tableSchema}
+          columnsSchema={columnsSchema ?? []}
+          data={singleResourceData}
+        />
+      </div>
+    </ResourceContextProvider>
   );
 }
 

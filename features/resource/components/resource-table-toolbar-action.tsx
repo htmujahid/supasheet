@@ -16,6 +16,7 @@ import { exportTableToCSV } from "@/lib/export";
 
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceSheet } from "./resource-sheet";
+import { useResourceContext } from "./resource-context";
 
 interface ResourceTableToolbarActionsProps {
   table: Table<ResourceDataSchema>;
@@ -28,11 +29,12 @@ export function ResourceTableToolbarActions({
   columnsSchema,
   tableSchema,
 }: ResourceTableToolbarActionsProps) {
+  const { permissions } = useResourceContext();
   const [open, setOpen] = useState(false);
 
   return (
     <div className="flex flex-1 items-center justify-end gap-2">
-      {table.getFilteredSelectedRowModel().rows.length > 0 && tableSchema ? (
+      {table.getFilteredSelectedRowModel().rows.length > 0 && tableSchema && permissions.canDelete ? (
         <DeleteResourceDialog
           tableSchema={tableSchema}
           resources={table
@@ -41,10 +43,10 @@ export function ResourceTableToolbarActions({
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
       ) : null}
-      <If condition={tableSchema}>
+      <If condition={tableSchema && permissions.canInsert}>
         <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
           <Plus />
-          New {(tableSchema?.name as string) || "Resource"}
+          Create {(tableSchema?.name as string) || "Resource"}
         </Button>
       </If>
       <Button

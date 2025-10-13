@@ -71,7 +71,12 @@ export function ResourceSidebar({
     resources.filter((resource) => resource.schema === activeSchema),
   );
 
-  const submenuItems = [] as { title: string; url: string }[];
+  const submenuItems = [
+    {
+      title: `Form View`,
+      url: `/home/resource/${activeResource?.schema}/${activeResource?.id}/create`,
+    }
+  ] as { title: string; url: string }[];
 
   const tables = activeResources?.filter(
     (resource) =>

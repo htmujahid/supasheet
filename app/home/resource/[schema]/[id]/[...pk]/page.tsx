@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { ResourceDetailView } from "@/features/resource/components/view/resource-detail-view";
 import { ResourceForiegnDataView } from "@/features/resource/components/view/resource-foriegn-data-view";
 import { ResourceMetadataView } from "@/features/resource/components/view/resource-metadata-view";
+import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import {
   loadColumnsSchema,
   loadSingleResourceData,
   loadTableSchema,
+  loadResourcePermissions,
 } from "@/features/resource/lib/loaders";
 import {
   DatabaseSchemas,
@@ -30,11 +32,15 @@ async function ViewPage({
     pk: string[];
   };
 
-  const tableSchema = await loadTableSchema(schema, id);
-  if (!tableSchema) return notFound();
+  const [tableSchema, columnsSchema, permissions] = await Promise.all([
+    loadTableSchema(schema, id),
+    loadColumnsSchema(schema, id),
+    loadResourcePermissions(schema, id),
+  ]);
 
-  const columnsSchema = await loadColumnsSchema(schema, id);
+  if (!tableSchema) return notFound();
   if (!columnsSchema?.length) return notFound();
+  if (!permissions.canSelect) return notFound();
 
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
@@ -55,28 +61,30 @@ async function ViewPage({
   const editUrl = `/home/resource/${schema}/${id}/edit/${pkValues}`;
 
   return (
-    <div className="mx-auto max-w-3xl p-4">
-      <div className="flex flex-col gap-4">
-        {/* Resource Details */}
-        <ResourceDetailView
-          editUrl={editUrl}
-          columnsSchema={columnsSchema ?? []}
-          singleResourceData={singleResourceData ?? {}}
-        />
+    <ResourceContextProvider permissions={permissions}>
+      <div className="mx-auto max-w-3xl p-4">
+        <div className="flex flex-col gap-4">
+          {/* Resource Details */}
+          <ResourceDetailView
+            editUrl={editUrl}
+            columnsSchema={columnsSchema ?? []}
+            singleResourceData={singleResourceData ?? {}}
+          />
 
-        {/* Metadata */}
-        <ResourceMetadataView
-          columnsSchema={columnsSchema ?? []}
-          singleResourceData={singleResourceData ?? {}}
-        />
+          {/* Metadata */}
+          <ResourceMetadataView
+            columnsSchema={columnsSchema ?? []}
+            singleResourceData={singleResourceData ?? {}}
+          />
 
-        {/* Foreign Key Data */}
-        <ResourceForiegnDataView
-          tableSchema={tableSchema}
-          singleResourceData={singleResourceData ?? {}}
-        />
+          {/* Foreign Key Data */}
+          <ResourceForiegnDataView
+            tableSchema={tableSchema}
+            singleResourceData={singleResourceData ?? {}}
+          />
+        </div>
       </div>
-    </div>
+    </ResourceContextProvider>
   );
 }
 

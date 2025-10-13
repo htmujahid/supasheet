@@ -1,8 +1,5 @@
 import { notFound } from "next/navigation";
 
-import { Dashboard1 } from "@/features/dashboard/components/dashboard-1";
-import { Dashboard2 } from "@/features/dashboard/components/dashboard-2";
-import { Dashboard3 } from "@/features/dashboard/components/dashboard-3";
 import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
 import { loadDashboardWidgets } from "@/features/dashboard/lib/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
@@ -29,16 +26,6 @@ async function DashboardPage({
     </div>
   );
 
-  if (id === "dashboard-1") {
-    return <Dashboard1 />;
-  }
-  if (id === "dashboard-2") {
-    return <Dashboard2 />;
-  }
-  if (id === "dashboard-3") {
-    return <Dashboard3 />;
-  }
-  return <Dashboard1 />;
 }
 
 export default withI18n(DashboardPage);

@@ -31,6 +31,7 @@ import { READONLY_COLUMNS } from "../lib/constants";
 import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceFormField } from "./fields/resource-form-field";
+import { useResourceContext } from "./resource-context";
 
 interface ResourceEditFormProps {
   tableSchema: TableSchema | null;
@@ -43,6 +44,7 @@ export function ResourceEditForm({
   columnsSchema,
   data,
 }: ResourceEditFormProps) {
+  const { permissions } = useResourceContext();
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
   const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
   const router = useRouter();
@@ -124,15 +126,17 @@ export function ResourceEditForm({
                 Update the resource and save changes
               </CardDescription>
             </div>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setIsDeleteDialogOpen(true)}
-              disabled={isPending}
-            >
-              <Trash2 className="mr-2 size-4" />
-              Delete
-            </Button>
+            {permissions.canDelete && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                disabled={isPending}
+              >
+                <Trash2 className="mr-2 size-4" />
+                Delete
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -153,7 +157,7 @@ export function ResourceEditForm({
                   />
                 ))}
               <div className="flex gap-2">
-                <Button type="submit" disabled={isPending} className="flex-1">
+                <Button type="submit" disabled={isPending || !permissions.canUpdate} className="flex-1">
                   {isPending && (
                     <Loader
                       className="mr-2 size-4 animate-spin"
@@ -175,14 +179,16 @@ export function ResourceEditForm({
           </Form>
         </CardContent>
       </Card>
-      <DeleteResourceDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        resources={[data]}
-        tableSchema={tableSchema}
-        showTrigger={false}
-        onSuccess={() => router.push(`/home/resource/${schema}/${id}`)}
-      />
+      {permissions.canDelete && (
+        <DeleteResourceDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          resources={[data]}
+          tableSchema={tableSchema}
+          showTrigger={false}
+          onSuccess={() => router.push(`/home/resource/${schema}/${id}`)}
+        />
+      )}
     </>
   );
 }

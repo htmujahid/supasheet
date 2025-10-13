@@ -2,6 +2,7 @@ import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { ResourceSearchParams } from "./validations";
+import { Database } from "@/lib/database.types";
 
 export async function loadColumnsSchema(schema: string, id: string) {
   const client = await getSupabaseServerClient();
@@ -228,4 +229,58 @@ export async function loadForeignKeyData(
     .eq(targetColumn, value as string | number);
 
   return response.data;
+}
+
+export async function loadResourcePermissions(
+  schema: DatabaseSchemas,
+  id: DatabaseTables<typeof schema>,
+) {
+  const client = await getSupabaseServerClient();
+
+  const response = await client
+    .schema("supasheet")
+    .from("role_permissions")
+    .select();
+
+  if (response.error) {
+    return {
+      canSelect: false,
+      canInsert: false,
+      canUpdate: false,
+      canDelete: false,
+    };
+  }
+
+  const permissions = response.data?.reduce((acc, perm) => {
+    if (
+      perm.permission === (schema + "." + id + ":select") as
+      Database["supasheet"]['Enums']['app_permission']
+    ) {
+      acc.canSelect = true;
+    } else if (
+      perm.permission === (schema + "." + id + ":insert") as
+      Database["supasheet"]['Enums']['app_permission']
+    ) {
+      acc.canInsert = true;
+    } else if (
+      perm.permission === (schema + "." + id + ":update") as
+      Database["supasheet"]['Enums']['app_permission']
+    ) {
+      acc.canUpdate = true;
+    } else if (
+      perm.permission === (schema + "." + id + ":delete") as
+      Database["supasheet"]['Enums']['app_permission']
+    ) {
+      acc.canDelete = true;
+    }
+
+    return acc;
+  }, {
+    canSelect: false,
+    canInsert: false,
+    canUpdate: false,
+    canDelete: false,
+  });
+
+  return permissions;
 }

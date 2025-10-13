@@ -37,7 +37,7 @@ export function CreateFolderDialog({
   const [folderName, setFolderName] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const handleCreate = () => {
+  function handleNewFolder() {
     if (!folderName.trim()) return;
 
     startTransition(async () => {
@@ -71,7 +71,7 @@ export function CreateFolderDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Folder</DialogTitle>
+          <DialogTitle>New Folder</DialogTitle>
           <DialogDescription>Enter a name for the new folder</DialogDescription>
         </DialogHeader>
 
@@ -88,7 +88,7 @@ export function CreateFolderDialog({
               placeholder="New folder"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  handleCreate();
+                  handleNewFolder();
                 }
               }}
             />
@@ -100,7 +100,7 @@ export function CreateFolderDialog({
             Cancel
           </Button>
           <Button
-            onClick={handleCreate}
+            onClick={handleNewFolder}
             disabled={!folderName.trim() || isPending}
           >
             {isPending ? "Creating..." : "Create"}

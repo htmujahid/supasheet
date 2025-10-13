@@ -231,7 +231,7 @@ export function SqlSidebar() {
             ) : (
               <SidebarMenuButton onClick={() => setIsEditing(true)}>
                 <PlusIcon />
-                <span>New Snippet</span>
+                <span>Create Snippet</span>
               </SidebarMenuButton>
             )}
             {activeItems.map((item) => (

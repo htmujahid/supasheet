@@ -18,6 +18,7 @@ import {
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
+import { useResourceContext } from "./resource-context";
 
 export const ResourceTableRowActions = memo(function ResourceTableRowActions({
   row,
@@ -30,6 +31,7 @@ export const ResourceTableRowActions = memo(function ResourceTableRowActions({
     rowAction: DataTableRowAction<ResourceDataSchema> | null,
   ) => void;
 }) {
+  const { permissions } = useResourceContext();
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
   // Memoize href calculations to avoid recreating on every render
@@ -58,23 +60,31 @@ export const ResourceTableRowActions = memo(function ResourceTableRowActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
-        <Link href={viewHref}>
-          <DropdownMenuItem>
-            <ViewIcon className="size-4" />
-            View Detail
-          </DropdownMenuItem>
-        </Link>
-        <Link href={editHref}>
-          <DropdownMenuItem>
-            <EditIcon className="size-4" />
-            Edit
-          </DropdownMenuItem>
-        </Link>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
-          <TrashIcon className="size-4" />
-          Delete
-        </DropdownMenuItem>
+        {permissions.canSelect && (
+          <Link href={viewHref}>
+            <DropdownMenuItem>
+              <ViewIcon className="size-4" />
+              View Detail
+            </DropdownMenuItem>
+          </Link>
+        )}
+        {permissions.canUpdate && (
+          <Link href={editHref}>
+            <DropdownMenuItem>
+              <EditIcon className="size-4" />
+              Edit
+            </DropdownMenuItem>
+          </Link>
+        )}
+        {permissions.canDelete && (
+          <>
+            {(permissions.canSelect || permissions.canUpdate) && <DropdownMenuSeparator />}
+            <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
+              <TrashIcon className="size-4" />
+              Delete
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

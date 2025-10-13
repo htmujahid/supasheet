@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import { PencilIcon } from "lucide-react";
@@ -17,6 +19,7 @@ import { ColumnSchema } from "@/lib/database-meta.types";
 import { getColumnMetadata } from "../../lib/columns";
 import { AllCells } from "../cells/all-cells";
 import { getDataTypeIcon } from "../icons";
+import { useResourceContext } from "../resource-context";
 
 export function ResourceDetailView({
   columnsSchema,
@@ -27,6 +30,8 @@ export function ResourceDetailView({
   singleResourceData: Record<string, unknown>;
   editUrl?: string;
 }) {
+  const { permissions } = useResourceContext();
+
   // Separate columns into different categories
   const detailColumns =
     columnsSchema?.filter((column) => {
@@ -43,7 +48,7 @@ export function ResourceDetailView({
               View resource details and properties
             </CardDescription>
           </div>
-          {editUrl && (
+          {editUrl && permissions.canUpdate && (
             <Button asChild size="sm">
               <Link href={editUrl}>
                 <PencilIcon className="mr-2 size-4" />
