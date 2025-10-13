@@ -61,6 +61,7 @@ export function ResourceFormField({
       key={columnSchema.id}
       control={form.control}
       disabled={columnMetadata.disabled}
+      rules={{required: columnMetadata.required}}
       name={columnSchema.name as FieldPath<ResourceDataSchema>}
       render={({ field }) => (
         <FormItem>

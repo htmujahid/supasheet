@@ -85,7 +85,7 @@ export function ResourceSheet({
         data: { ...input, ...jsonInput },
       });
 
-      if ((!data?.length && !error) || error?.message.includes("violates")) {
+      if ((!data?.length && !error) || error?.message.includes("row-level security policy")) {
         toast.error("You don't have permission to create this resource");
         return;
       }
@@ -137,7 +137,7 @@ export function ResourceSheet({
         data: { ...input, ...jsonInput },
       });
 
-      if ((!updatedData?.length && !error) || error?.message.includes("violates")) {
+      if ((!updatedData?.length && !error) || error?.message.includes("row-level security policy")) {
         toast.error("You don't have permission to update this resource");
         return;
       }
