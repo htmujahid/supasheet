@@ -17,7 +17,7 @@ export function PercentageField({ field, columnMetadata }: FieldProps) {
       <ButtonGroup className="w-full">
         <Slider
           {...field}
-          value={[field.value as number ?? 0]}
+          value={[field.value as number]}
           onValueChange={(v) => {
             field.onChange(v[0])
           }}
