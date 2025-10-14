@@ -7,7 +7,7 @@ create domain EMAIL as text;
 
 create domain TEL as text;
 
-create domain RATING as smallint;
+create domain RATING as real check (value >= 0 and value <= 5);
 
 create domain PERCENTAGE as real;
 

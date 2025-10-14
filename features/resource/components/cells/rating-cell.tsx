@@ -1,4 +1,4 @@
-import { StarIcon } from "lucide-react";
+import { Rating, RatingItem } from "@/components/ui/rating";
 
 export function RatingCell({ value }: { value: number | null }) {
   if (!value) {
@@ -7,12 +7,11 @@ export function RatingCell({ value }: { value: number | null }) {
 
   return (
     <div className="flex flex-nowrap items-center gap-1">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <StarIcon
-          key={i}
-          className={`h-4 w-4 shrink-0 ${i < value ? "fill-foreground text-foreground" : "text-muted-foreground"}`}
-        />
-      ))}
+      <Rating value={value} onValueChange={() => {}} step={0.5} readOnly>
+        {Array.from({ length: 5 }, (_, i) => (
+          <RatingItem key={i} />
+        ))}
+      </Rating>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { JsonField } from "./json-field";
 import { LongtextField } from "./longtext-field";
 import { MoneyField } from "./money-field";
 import { NumberField } from "./number-field";
+import { PercentageField } from "./percentage-field";
 import { RatingField } from "./rating-field";
 import { SelectField } from "./select-field";
 import { TextField } from "./text-field";
@@ -20,8 +21,9 @@ export function AllFields({ field, columnMetadata }: FieldProps) {
     case "money":
       return <MoneyField field={field} columnMetadata={columnMetadata} />;
     case "number":
-    case "percentage":
       return <NumberField field={field} columnMetadata={columnMetadata} />;
+    case "percentage":
+      return <PercentageField field={field} columnMetadata={columnMetadata} />;
     case "boolean":
       return <BooleanField field={field} columnMetadata={columnMetadata} />;
     case "select":
