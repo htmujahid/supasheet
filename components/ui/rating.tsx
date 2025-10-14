@@ -277,8 +277,9 @@ function RatingRoot(props: RatingRootProps) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface RatingRootImplProps
-  extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
+ extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
 
 function RatingRootImpl(props: RatingRootImplProps) {
   const {
@@ -390,6 +391,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
 
       setIsTabbingBackOut(false);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [rootProps.onBlur],
   );
 
@@ -425,6 +427,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
       }
       isClickFocusRef.current = false;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [rootProps.onFocus, isTabbingBackOut, currentValue, tabStopId],
   );
 
@@ -436,6 +439,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
 
       isClickFocusRef.current = true;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [rootProps.onMouseDown],
   );
 
@@ -651,6 +655,7 @@ function RatingItem(props: RatingItemProps) {
         store.setState("value", newValue);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isDisabled,
       isReadOnly,
@@ -691,6 +696,7 @@ function RatingItem(props: RatingItemProps) {
         store.setState("hoveredValue", hoverValue);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isDisabled,
       isReadOnly,
@@ -722,6 +728,7 @@ function RatingItem(props: RatingItemProps) {
         store.setState("hoveredValue", hoverValue);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isDisabled,
       isReadOnly,
@@ -742,6 +749,7 @@ function RatingItem(props: RatingItemProps) {
         store.setState("hoveredValue", null);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isDisabled, isReadOnly, store, itemProps.onMouseLeave],
   );
 
@@ -766,6 +774,7 @@ function RatingItem(props: RatingItemProps) {
 
       isMouseClickRef.current = false;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       focusContext,
       itemId,
@@ -830,6 +839,7 @@ function RatingItem(props: RatingItemProps) {
         queueMicrotask(() => focusFirst(candidateRefs));
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       focusContext,
       context.dir,
@@ -854,6 +864,7 @@ function RatingItem(props: RatingItemProps) {
         focusContext.onItemFocus(itemId);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [focusContext, itemId, isDisabled, itemProps.onMouseDown],
   );
 
