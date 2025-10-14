@@ -19,7 +19,7 @@ export function formatDate(
 
 export function formatTitle(title: string) {
   // capitalize the first letter of each word and replace underscores with spaces
-  return title.replace(/_/g, " ").replace(/\w\S*/g, (txt) => {
+  return title?.replace(/_/g, " ")?.replace(/\w\S*/g, (txt) => {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
 }
