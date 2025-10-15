@@ -50,7 +50,6 @@ import { FormatQuote } from "@/interfaces/rich-text-editor/plugins/toolbar/block
 import { CodeLanguageToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/code-language-toolbar-plugin"
 import { ElementFormatToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/element-format-toolbar-plugin"
 import { FontFormatToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/font-format-toolbar-plugin"
-import { HistoryToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/history-toolbar-plugin"
 import { HorizontalRuleToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/horizontal-rule-toolbar-plugin"
 import { ImageToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/image-toolbar-plugin"
 import { LinkToolbarPlugin } from "@/interfaces/rich-text-editor/plugins/toolbar/link-toolbar-plugin"
