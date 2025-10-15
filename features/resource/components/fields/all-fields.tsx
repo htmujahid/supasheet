@@ -8,6 +8,7 @@ import { MoneyField } from "./money-field";
 import { NumberField } from "./number-field";
 import { PercentageField } from "./percentage-field";
 import { RatingField } from "./rating-field";
+import { RichTextField } from "./rich-text-field";
 import { SelectField } from "./select-field";
 import { TextField } from "./text-field";
 import { TimeField } from "./time-field";
@@ -42,6 +43,8 @@ export function AllFields({ field, columnMetadata }: FieldProps) {
       return <RatingField field={field} columnMetadata={columnMetadata} />;
     case "duration":
       return <DurationField field={field} columnMetadata={columnMetadata} />;
+    case "rich_text":
+      return <RichTextField field={field} columnMetadata={columnMetadata} />;
     case "color":
     case "email":
     case "tel":

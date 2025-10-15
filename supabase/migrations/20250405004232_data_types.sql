@@ -18,3 +18,5 @@ create domain DURATION as bigint;
 create domain COLOR as varchar(16);
 
 create domain AVATAR as text;
+
+create domain RICH_TEXT as text;

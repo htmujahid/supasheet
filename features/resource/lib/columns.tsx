@@ -1,4 +1,5 @@
 import {
+  BaselineIcon,
   BinaryIcon,
   CalendarClockIcon,
   CalendarDaysIcon,
@@ -150,6 +151,13 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
         ...baseOptions,
         type: "uuid",
         icon: <HashIcon className="text-muted-foreground size-4 shrink-0" />,
+      };
+    
+    case "rich_text":
+      return {
+        ...baseOptions,
+        type: "rich_text",
+        icon: <BaselineIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "character":

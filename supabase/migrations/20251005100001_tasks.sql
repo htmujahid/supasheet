@@ -1,7 +1,7 @@
 create table tasks (
     id uuid primary key default extensions.uuid_generate_v4(),
     title varchar(500) not null,
-    description text,
+    description RICH_TEXT,
     status task_status default 'pending',
     priority task_priority default 'medium',
     cover file,
