@@ -9,6 +9,7 @@ import { EnumCell } from "./enum-cell";
 import { FileCell } from "./file-cell";
 import { PercentageCell } from "./percentage-cell";
 import { RatingCell } from "./rating-cell";
+import { AvatarCell } from "./avatar-cell";
 
 export const AllCells = memo(function AllCells({
   columnMetadata,
@@ -28,6 +29,8 @@ export const AllCells = memo(function AllCells({
       return <DurationCell value={value as string} />;
     case "file":
       return <FileCell value={value as string[]} />;
+    case "avatar":
+      return <AvatarCell value={value as string | null} />;
     case "rating":
       return <RatingCell value={value as number | null} />;
     case "select":

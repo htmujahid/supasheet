@@ -26,6 +26,7 @@ export type ColumnMetadata = {
     | "time"
     | "money"
     | "file"
+    | "avatar"
     | "email"
     | "tel"
     | "url"

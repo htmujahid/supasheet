@@ -23,6 +23,8 @@ import { ArrayField } from "./array-field";
 import { FileField } from "./file-field";
 import { ForeignKeyField } from "./foreign-key-field";
 import { ColumnMetadata } from "./types";
+import { AvatarField } from "./avatar-field";
+import { formatTitle } from "@/lib/format";
 
 export function ResourceFormField({
   columnSchema,
@@ -61,12 +63,13 @@ export function ResourceFormField({
       key={columnSchema.id}
       control={form.control}
       disabled={columnMetadata.disabled}
-      rules={{required: columnMetadata.required}}
+      rules={{ required: columnMetadata.required }}
       name={columnSchema.name as FieldPath<ResourceDataSchema>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {columnSchema.name as string} {getDataTypeIcon(columnSchema)}{" "}
+            {getDataTypeIcon(columnSchema)}{" "}
+            {formatTitle(columnSchema.name ?? "")}{" "}
             {columnMetadata.required && (
               <span className="text-destructive">*</span>
             )}
@@ -75,6 +78,14 @@ export function ResourceFormField({
             <div>
               {columnSchema.format === "file" ? (
                 <FileField
+                  form={form}
+                  columnMetadata={columnMetadata}
+                  field={field}
+                  control={form.control}
+                  columnSchema={columnSchema}
+                />
+              ) : columnSchema.format === "avatar" ? (
+                <AvatarField
                   form={form}
                   columnMetadata={columnMetadata}
                   field={field}

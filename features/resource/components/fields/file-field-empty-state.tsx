@@ -1,4 +1,4 @@
-import { ImageIcon, UploadIcon } from "lucide-react";
+import { FileUpIcon, UploadIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +19,7 @@ export function FileFieldEmptyState({
         className="bg-background mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border"
         aria-hidden="true"
       >
-        <ImageIcon className="size-4 opacity-60" />
+        <FileUpIcon className="size-4 opacity-60" />
       </div>
       <p className="mb-1.5 text-sm font-medium">Drop your files here</p>
       <p className="text-muted-foreground text-xs">

@@ -14,6 +14,7 @@ import {
   StarIcon,
   TimerIcon,
   ToggleLeftIcon,
+  UserIcon,
 } from "lucide-react";
 
 import { ColumnSchema } from "@/lib/database-meta.types";
@@ -73,6 +74,14 @@ export function getColumnMetadata(columnSchema: ColumnSchema): ColumnMetadata {
       isArray: false, // special case for file upload
       type: "file",
       icon: <PaperclipIcon className="text-muted-foreground size-4 shrink-0" />,
+    };
+  }
+
+  if (format === "avatar") {
+    return {
+      ...baseOptions,
+      type: "avatar",
+      icon: <UserIcon className="text-muted-foreground size-4 shrink-0" />,
     };
   }
 

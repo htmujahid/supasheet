@@ -1,5 +1,6 @@
 -- Create user_details table
 create table if not exists public.user_details (
+  avatar AVATAR,
   id bigint primary key generated always as identity,
   name text not null,
   email EMAIL not null unique,

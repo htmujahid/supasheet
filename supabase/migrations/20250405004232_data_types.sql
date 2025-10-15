@@ -16,3 +16,5 @@ create domain URL as text;
 create domain DURATION as bigint;
 
 create domain COLOR as varchar(16);
+
+create domain AVATAR as text;
