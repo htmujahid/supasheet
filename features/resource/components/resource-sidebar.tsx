@@ -142,7 +142,7 @@ export function ResourceSidebar() {
                               <SidebarMenuSubButton asChild>
                                 <Link href={`/home/resource/${item.schema}/${item.id}/${subItem.type}/${subItem.view}`} title={subItem.view}>
                                   <SubItemsIcon type={subItem.type} />
-                                  <span>{formatTitle(subItem.view)}</span>
+                                  <span>{subItem.name}</span>
                                 </Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>

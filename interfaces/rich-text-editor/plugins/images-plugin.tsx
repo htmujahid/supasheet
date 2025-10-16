@@ -7,7 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { JSX, useEffect, useRef, useState } from "react"
+import { JSX, useCallback, useEffect, useState } from "react"
 import * as React from "react"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $wrapNodeInElement, mergeRegister } from "@lexical/utils"
@@ -37,18 +37,16 @@ import {
   ImagePayload,
 } from "@/interfaces/rich-text-editor/nodes/image-node"
 import { CAN_USE_DOM } from "@/interfaces/rich-text-editor/shared/can-use-dom"
+import { AlertCircleIcon, ImageUpIcon, XIcon } from "lucide-react"
+import { useFileUpload } from "@/hooks/use-file-upload"
+import { useSupabase } from "@/lib/supabase/hooks/use-supabase"
+import { uploadFileToStorage } from "@/features/resource/components/fields/file-field-storage"
 import { Button } from "@/components/ui/button"
 import { DialogFooter } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 
 export type InsertImagePayload = Readonly<ImagePayload>
+
+export const IMAGE_MAX_WIDTH = 350
 
 const getDOMSelection = (targetWindow: Window | null): Selection | null =>
   CAN_USE_DOM ? (targetWindow || window).getSelection() : null
@@ -56,105 +54,163 @@ const getDOMSelection = (targetWindow: Window | null): Selection | null =>
 export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
   createCommand("INSERT_IMAGE_COMMAND")
 
-export function InsertImageUriDialogBody({
+export function InsertImageUploadDialogBody({
   onClick,
+  onClose,
 }: {
   onClick: (payload: InsertImagePayload) => void
+  onClose: () => void
 }) {
-  const [src, setSrc] = useState("")
-  const [altText, setAltText] = useState("")
+  const client = useSupabase()
+  const maxSizeMB = 5
+  const maxSize = maxSizeMB * 1024 * 1024 // 5MB default
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
 
-  const isDisabled = src === ""
+  const [
+    { files, isDragging, errors },
+    {
+      handleDragEnter,
+      handleDragLeave,
+      handleDragOver,
+      handleDrop,
+      openFileDialog,
+      removeFile,
+      getInputProps,
+    },
+  ] = useFileUpload({
+    accept: "image/*",
+    maxSize,
+  })
+
+  const previewUrl = files[0]?.preview || null
+  const hasFile = files.length > 0
+
+  const handleSubmit = useCallback(async () => {
+    const fileWithPreview = files[0]
+    if (!fileWithPreview || !(fileWithPreview.file instanceof File)) return
+
+    setIsUploading(true)
+    setUploadProgress(0)
+
+    try {
+      const url = await uploadFileToStorage(
+        client,
+        fileWithPreview.file,
+        "public/tasks/description",
+        (progress) => {
+          setUploadProgress(progress)
+        }
+      )
+
+      // Use file name as alt text by default
+      const altText = fileWithPreview.file.name.split(".")[0]
+
+      onClick({ altText, src: url })
+    } catch (error) {
+      console.error("Failed to upload image:", error)
+    } finally {
+      setIsUploading(false)
+      setUploadProgress(0)
+    }
+  }, [files, client, onClick])
 
   return (
-    <div className="grid gap-4 py-4">
-      <div className="grid gap-2">
-        <Label htmlFor="image-url">Image URL</Label>
-        <Input
-          id="image-url"
-          placeholder="i.e. https://source.unsplash.com/random"
-          onChange={(e) => setSrc(e.target.value)}
-          value={src}
-          data-test-id="image-modal-url-input"
-        />
+    <div className="flex flex-col gap-4">
+      <div className="relative">
+        {/* Drop area */}
+        <div
+          role="button"
+          onClick={isUploading ? undefined : openFileDialog}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          data-dragging={isDragging || undefined}
+          className="relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-input p-4 transition-colors hover:bg-accent/50 has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50"
+        >
+          <input
+            {...getInputProps()}
+            disabled={isUploading}
+            className="sr-only"
+            aria-label="Upload image"
+          />
+          {previewUrl ? (
+            <div className="absolute inset-0">
+              <img
+                src={previewUrl}
+                alt={files[0]?.file?.name || "Uploaded image"}
+                className="size-full object-cover"
+              />
+              {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <div className="text-white text-sm">
+                    Uploading... {uploadProgress}%
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
+              <div
+                className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border bg-background"
+                aria-hidden="true"
+              >
+                <ImageUpIcon className="size-4 opacity-60" />
+              </div>
+              <p className="mb-1.5 text-sm font-medium">
+                Drop your image here or click to browse
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Max size: {maxSizeMB}MB
+              </p>
+            </div>
+          )}
+        </div>
+        {previewUrl && !isUploading && (
+          <div className="absolute top-4 right-4">
+            <button
+              type="button"
+              className="z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              onClick={(e) => {
+                e.stopPropagation()
+                removeFile(files[0]?.id)
+              }}
+              aria-label="Remove image"
+            >
+              <XIcon className="size-4" aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </div>
-      <div className="grid gap-2">
-        <Label htmlFor="alt-text">Alt Text</Label>
-        <Input
-          id="alt-text"
-          placeholder="Random unsplash image"
-          onChange={(e) => setAltText(e.target.value)}
-          value={altText}
-          data-test-id="image-modal-alt-text-input"
-        />
-      </div>
+
+      {errors.length > 0 && (
+        <div
+          className="flex items-center gap-1 text-xs text-destructive"
+          role="alert"
+        >
+          <AlertCircleIcon className="size-3 shrink-0" />
+          <span>{errors[0]}</span>
+        </div>
+      )}
+
       <DialogFooter>
         <Button
-          type="submit"
-          disabled={isDisabled}
-          onClick={() => onClick({ altText, src })}
-          data-test-id="image-modal-confirm-btn"
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          disabled={isUploading}
         >
-          Confirm
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          disabled={!hasFile || isUploading}
+          onClick={handleSubmit}
+        >
+          {isUploading ? "Uploading..." : "Insert Image"}
         </Button>
       </DialogFooter>
-    </div>
-  )
-}
-
-export function InsertImageUploadedDialogBody({
-  onClick,
-}: {
-  onClick: (payload: InsertImagePayload) => void
-}) {
-  const [src, setSrc] = useState("")
-  const [altText, setAltText] = useState("")
-
-  const isDisabled = src === ""
-
-  const loadImage = (files: FileList | null) => {
-    const reader = new FileReader()
-    reader.onload = function () {
-      if (typeof reader.result === "string") {
-        setSrc(reader.result)
-      }
-      return ""
-    }
-    if (files !== null) {
-      reader.readAsDataURL(files[0])
-    }
-  }
-
-  return (
-    <div className="grid gap-4 py-4">
-      <div className="grid gap-2">
-        <Label htmlFor="image-upload">Image Upload</Label>
-        <Input
-          id="image-upload"
-          type="file"
-          onChange={(e) => loadImage(e.target.files)}
-          accept="image/*"
-          data-test-id="image-modal-file-upload"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="alt-text">Alt Text</Label>
-        <Input
-          id="alt-text"
-          placeholder="Descriptive alternative text"
-          onChange={(e) => setAltText(e.target.value)}
-          value={altText}
-          data-test-id="image-modal-alt-text-input"
-        />
-      </div>
-      <Button
-        type="submit"
-        disabled={isDisabled}
-        onClick={() => onClick({ altText, src })}
-        data-test-id="image-modal-file-upload-btn"
-      >
-        Confirm
-      </Button>
     </div>
   )
 }
@@ -166,42 +222,12 @@ export function InsertImageDialog({
   activeEditor: LexicalEditor
   onClose: () => void
 }): JSX.Element {
-  const hasModifier = useRef(false)
-
-  useEffect(() => {
-    hasModifier.current = false
-    const handler = (e: KeyboardEvent) => {
-      hasModifier.current = e.altKey
-    }
-    document.addEventListener("keydown", handler)
-    return () => {
-      document.removeEventListener("keydown", handler)
-    }
-  }, [activeEditor])
-
   const onClick = (payload: InsertImagePayload) => {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload)
     onClose()
   }
 
-  return (
-    <Tabs defaultValue="url">
-      <TabsList className="w-full">
-        <TabsTrigger value="url" className="w-full">
-          URL
-        </TabsTrigger>
-        <TabsTrigger value="file" className="w-full">
-          File
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="url">
-        <InsertImageUriDialogBody onClick={onClick} />
-      </TabsContent>
-      <TabsContent value="file">
-        <InsertImageUploadedDialogBody onClick={onClick} />
-      </TabsContent>
-    </Tabs>
-  )
+  return <InsertImageUploadDialogBody onClick={onClick} onClose={onClose} />
 }
 
 export function ImagesPlugin({

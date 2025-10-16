@@ -33,7 +33,7 @@ create table tasks (
     updated_at timestamptz default current_timestamp
 );
 
-comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"view": "task_calendar_view", "type": "calendar"}, {"view": "task_kanban_view", "type": "kanban"}, {"view": "task_list_view", "type": "list"}, {"view": "task_gantt_view", "type": "gantt"}]}';
+comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"name": "Calendar View", "view": "task_calendar_view", "type": "calendar"}, {"name": "Kanban View", "view": "task_kanban_view", "type": "kanban"}, {"name": "List View", "view": "task_list_view", "type": "list"}, {"name": "Gantt View", "view": "task_gantt_view", "type": "gantt"}]}';
 
 comment on column tasks.cover is '{"accept":"image/*"}';
 comment on column tasks.attachments is '{"accept":"*"}';

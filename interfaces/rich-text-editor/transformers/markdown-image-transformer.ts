@@ -5,6 +5,7 @@ import {
   $isImageNode,
   ImageNode,
 } from "@/interfaces/rich-text-editor/nodes/image-node"
+import { IMAGE_MAX_WIDTH } from "@/interfaces/rich-text-editor/plugins/images-plugin"
 
 export const IMAGE: TextMatchTransformer = {
   dependencies: [ImageNode],
@@ -21,7 +22,7 @@ export const IMAGE: TextMatchTransformer = {
     const [, altText, src] = match
     const imageNode = $createImageNode({
       altText,
-      maxWidth: 800,
+      maxWidth: IMAGE_MAX_WIDTH,
       src,
     })
     textNode.replace(imageNode)

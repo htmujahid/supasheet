@@ -61,8 +61,10 @@ import { TABLE } from "@/interfaces/rich-text-editor/transformers/markdown-table
 
 export function Plugins({
   placeholder = "Start typing...",
+  disabled,
 }: {
   placeholder?: string
+  disabled?: boolean
 }) {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null)
@@ -76,7 +78,7 @@ export function Plugins({
 
   return (
     <div className="relative ">
-      <ToolbarPlugin>
+      {!disabled && <ToolbarPlugin>
         {({ blockType }) => (
           <div className="vertical-align-middle sticky top-0 z-10 w-full flex flex-wrap items-center gap-2 border-b p-1">
             <BlockFormatDropDown>
@@ -103,7 +105,7 @@ export function Plugins({
             )}
           </div>
         )}
-      </ToolbarPlugin>
+      </ToolbarPlugin>}
       <div className="relative">
         <RichTextPlugin
           contentEditable={
@@ -111,7 +113,7 @@ export function Plugins({
               <div className="" ref={onRef}>
                 <ContentEditable
                   placeholder={placeholder}
-                  className="ContentEditable__root relative block h-48 overflow-auto px-8 py-4 focus:outline-none"
+                  className="ContentEditable__root relative block h-48 overflow-auto w-full px-8 py-4 focus:outline-none"
                 />
               </div>
             </div>

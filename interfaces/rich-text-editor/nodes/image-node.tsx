@@ -13,6 +13,7 @@ import type {
   Spread,
 } from "lexical"
 import { $applyNodeReplacement, createEditor, DecoratorNode } from "lexical"
+import { IMAGE_MAX_WIDTH } from "@/interfaces/rich-text-editor/plugins/images-plugin"
 
 const ImageComponent = React.lazy(() => import("../editor-ui/image-component"))
 
@@ -215,10 +216,10 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
           height={this.__height}
           maxWidth={this.__maxWidth}
           nodeKey={this.getKey()}
-          showCaption={this.__showCaption}
+          showCaption={false}
           caption={this.__caption}
           captionsEnabled={this.__captionsEnabled}
-          resizable={true}
+          resizable={false}
         />
       </Suspense>
     )
@@ -228,7 +229,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
 export function $createImageNode({
   altText,
   height,
-  maxWidth = 500,
+  maxWidth = IMAGE_MAX_WIDTH,
   captionsEnabled,
   src,
   width,

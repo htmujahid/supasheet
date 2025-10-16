@@ -77,7 +77,7 @@ const FILTERS_KEY = "filters";
 const JOIN_OPERATOR_KEY = "joinOperator";
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
-const OPEN_MENU_SHORTCUT = "f";
+// const OPEN_MENU_SHORTCUT = "f";
 const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
 interface DataTableFilterListProps<TData>
@@ -184,38 +184,38 @@ export function DataTableFilterList<TData>({
     void setJoinOperator("and");
   }, [setFilters, setJoinOperator]);
 
-  React.useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement
-      ) {
-        return;
-      }
+  // React.useEffect(() => {
+  //   function onKeyDown(event: KeyboardEvent) {
+  //     if (
+  //       event.target instanceof HTMLInputElement ||
+  //       event.target instanceof HTMLTextAreaElement
+  //     ) {
+  //       return;
+  //     }
 
-      if (
-        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.shiftKey
-      ) {
-        event.preventDefault();
-        setOpen(true);
-      }
+  //     if (
+  //       event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+  //       !event.ctrlKey &&
+  //       !event.metaKey &&
+  //       !event.shiftKey
+  //     ) {
+  //       event.preventDefault();
+  //       setOpen(true);
+  //     }
 
-      if (
-        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
-        event.shiftKey &&
-        filters.length > 0
-      ) {
-        event.preventDefault();
-        onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
-      }
-    }
+  //     if (
+  //       event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+  //       event.shiftKey &&
+  //       filters.length > 0
+  //     ) {
+  //       event.preventDefault();
+  //       onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
+  //     }
+  //   }
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [filters, onFilterRemove]);
+  //   window.addEventListener("keydown", onKeyDown);
+  //   return () => window.removeEventListener("keydown", onKeyDown);
+  // }, [filters, onFilterRemove]);
 
   const onTriggerKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {

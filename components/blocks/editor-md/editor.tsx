@@ -35,14 +35,24 @@ export function Editor({
           theme: editorTheme,
           editable: !disabled,
           namespace: name ?? "EditorMD",
-          editorState: () => $convertFromMarkdownString(value, TRANSFORMERS),
+          editorState: () => $convertFromMarkdownString(value, [
+            TABLE,
+            HR,
+            IMAGE,
+            CHECK_LIST,
+            ...ELEMENT_TRANSFORMERS,
+            ...MULTILINE_ELEMENT_TRANSFORMERS,
+            ...TEXT_FORMAT_TRANSFORMERS,
+            ...TEXT_MATCH_TRANSFORMERS,
+            ...TRANSFORMERS,
+          ]),
           onError: (error: Error) => {
             console.error(error)
           },
         }}
       >
         <TooltipProvider>
-          <Plugins placeholder={placeholder} />
+          <Plugins disabled={disabled} placeholder={placeholder} />
 
           <OnChangePlugin
             ignoreSelectionChange={true}
