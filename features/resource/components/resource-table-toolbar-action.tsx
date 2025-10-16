@@ -13,11 +13,11 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 import { exportTableToCSV } from "@/lib/export";
+import { formatTitle } from "@/lib/format";
 
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { useResourceContext } from "./resource-context";
 import { ResourceSheet } from "./resource-sheet";
-import { formatTitle } from "@/lib/format";
 
 interface ResourceTableToolbarActionsProps {
   table: Table<ResourceDataSchema>;

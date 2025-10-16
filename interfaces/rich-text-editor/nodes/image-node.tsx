@@ -1,5 +1,6 @@
-import * as React from "react"
-import { JSX, Suspense } from "react"
+import * as React from "react";
+import { JSX, Suspense } from "react";
+
 import type {
   DOMConversionMap,
   DOMConversionOutput,
@@ -11,22 +12,23 @@ import type {
   SerializedEditor,
   SerializedLexicalNode,
   Spread,
-} from "lexical"
-import { $applyNodeReplacement, createEditor, DecoratorNode } from "lexical"
-import { IMAGE_MAX_WIDTH } from "@/interfaces/rich-text-editor/plugins/images-plugin"
+} from "lexical";
+import { $applyNodeReplacement, DecoratorNode, createEditor } from "lexical";
 
-const ImageComponent = React.lazy(() => import("../editor-ui/image-component"))
+import { IMAGE_MAX_WIDTH } from "@/interfaces/rich-text-editor/plugins/images-plugin";
+
+const ImageComponent = React.lazy(() => import("../editor-ui/image-component"));
 
 export interface ImagePayload {
-  altText: string
-  caption?: LexicalEditor
-  height?: number
-  key?: NodeKey
-  maxWidth?: number
-  showCaption?: boolean
-  src: string
-  width?: number
-  captionsEnabled?: boolean
+  altText: string;
+  caption?: LexicalEditor;
+  height?: number;
+  key?: NodeKey;
+  maxWidth?: number;
+  showCaption?: boolean;
+  src: string;
+  width?: number;
+  captionsEnabled?: boolean;
 }
 
 function isGoogleDocCheckboxImg(img: HTMLImageElement): boolean {
@@ -35,45 +37,45 @@ function isGoogleDocCheckboxImg(img: HTMLImageElement): boolean {
     img.parentElement.tagName === "LI" &&
     img.previousSibling === null &&
     img.getAttribute("aria-roledescription") === "checkbox"
-  )
+  );
 }
 
 function $convertImageElement(domNode: Node): null | DOMConversionOutput {
-  const img = domNode as HTMLImageElement
+  const img = domNode as HTMLImageElement;
   if (img.src.startsWith("file:///") || isGoogleDocCheckboxImg(img)) {
-    return null
+    return null;
   }
-  const { alt: altText, src, width, height } = img
-  const node = $createImageNode({ altText, height, src, width })
-  return { node }
+  const { alt: altText, src, width, height } = img;
+  const node = $createImageNode({ altText, height, src, width });
+  return { node };
 }
 
 export type SerializedImageNode = Spread<
   {
-    altText: string
-    caption: SerializedEditor
-    height?: number
-    maxWidth: number
-    showCaption: boolean
-    src: string
-    width?: number
+    altText: string;
+    caption: SerializedEditor;
+    height?: number;
+    maxWidth: number;
+    showCaption: boolean;
+    src: string;
+    width?: number;
   },
   SerializedLexicalNode
->
+>;
 
 export class ImageNode extends DecoratorNode<JSX.Element> {
-  __src: string
-  __altText: string
-  __width: "inherit" | number
-  __height: "inherit" | number
-  __maxWidth: number
-  __showCaption: boolean
-  __caption: LexicalEditor
+  __src: string;
+  __altText: string;
+  __width: "inherit" | number;
+  __height: "inherit" | number;
+  __maxWidth: number;
+  __showCaption: boolean;
+  __caption: LexicalEditor;
   // Captions cannot yet be used within editor cells
-  __captionsEnabled: boolean
+  __captionsEnabled: boolean;
 
   static getType(): string {
-    return "image"
+    return "image";
   }
 
   static clone(node: ImageNode): ImageNode {
@@ -86,13 +88,13 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
       node.__showCaption,
       node.__caption,
       node.__captionsEnabled,
-      node.__key
-    )
+      node.__key,
+    );
   }
 
   static importJSON(serializedNode: SerializedImageNode): ImageNode {
     const { altText, height, width, maxWidth, caption, src, showCaption } =
-      serializedNode
+      serializedNode;
     const node = $createImageNode({
       altText,
       height,
@@ -100,22 +102,22 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
       showCaption,
       src,
       width,
-    })
-    const nestedEditor = node.__caption
-    const editorState = nestedEditor.parseEditorState(caption.editorState)
+    });
+    const nestedEditor = node.__caption;
+    const editorState = nestedEditor.parseEditorState(caption.editorState);
     if (!editorState.isEmpty()) {
-      nestedEditor.setEditorState(editorState)
+      nestedEditor.setEditorState(editorState);
     }
-    return node
+    return node;
   }
 
   exportDOM(): DOMExportOutput {
-    const element = document.createElement("img")
-    element.setAttribute("src", this.__src)
-    element.setAttribute("alt", this.__altText)
-    element.setAttribute("width", this.__width.toString())
-    element.setAttribute("height", this.__height.toString())
-    return { element }
+    const element = document.createElement("img");
+    element.setAttribute("src", this.__src);
+    element.setAttribute("alt", this.__altText);
+    element.setAttribute("width", this.__width.toString());
+    element.setAttribute("height", this.__height.toString());
+    return { element };
   }
 
   static importDOM(): DOMConversionMap | null {
@@ -125,7 +127,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
         conversion: $convertImageElement,
         priority: 0,
       }),
-    }
+    };
   }
 
   constructor(
@@ -137,21 +139,21 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     showCaption?: boolean,
     caption?: LexicalEditor,
     captionsEnabled?: boolean,
-    key?: NodeKey
+    key?: NodeKey,
   ) {
-    super(key)
-    this.__src = src
-    this.__altText = altText
-    this.__maxWidth = maxWidth
-    this.__width = width || "inherit"
-    this.__height = height || "inherit"
-    this.__showCaption = showCaption || false
+    super(key);
+    this.__src = src;
+    this.__altText = altText;
+    this.__maxWidth = maxWidth;
+    this.__width = width || "inherit";
+    this.__height = height || "inherit";
+    this.__showCaption = showCaption || false;
     this.__caption =
       caption ||
       createEditor({
         nodes: [],
-      })
-    this.__captionsEnabled = captionsEnabled || captionsEnabled === undefined
+      });
+    this.__captionsEnabled = captionsEnabled || captionsEnabled === undefined;
   }
 
   exportJSON(): SerializedImageNode {
@@ -165,45 +167,45 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
       type: "image",
       version: 1,
       width: this.__width === "inherit" ? 0 : this.__width,
-    }
+    };
   }
 
   setWidthAndHeight(
     width: "inherit" | number,
-    height: "inherit" | number
+    height: "inherit" | number,
   ): void {
-    const writable = this.getWritable()
-    writable.__width = width
-    writable.__height = height
+    const writable = this.getWritable();
+    writable.__width = width;
+    writable.__height = height;
   }
 
   setShowCaption(showCaption: boolean): void {
-    const writable = this.getWritable()
-    writable.__showCaption = showCaption
+    const writable = this.getWritable();
+    writable.__showCaption = showCaption;
   }
 
   // View
 
   createDOM(config: EditorConfig): HTMLElement {
-    const span = document.createElement("span")
-    const theme = config.theme
-    const className = theme.image
+    const span = document.createElement("span");
+    const theme = config.theme;
+    const className = theme.image;
     if (className !== undefined) {
-      span.className = className
+      span.className = className;
     }
-    return span
+    return span;
   }
 
   updateDOM(): false {
-    return false
+    return false;
   }
 
   getSrc(): string {
-    return this.__src
+    return this.__src;
   }
 
   getAltText(): string {
-    return this.__altText
+    return this.__altText;
   }
 
   decorate(): JSX.Element {
@@ -222,7 +224,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
           resizable={false}
         />
       </Suspense>
-    )
+    );
   }
 }
 
@@ -247,13 +249,13 @@ export function $createImageNode({
       showCaption,
       caption,
       captionsEnabled,
-      key
-    )
-  )
+      key,
+    ),
+  );
 }
 
 export function $isImageNode(
-  node: LexicalNode | null | undefined
+  node: LexicalNode | null | undefined,
 ): node is ImageNode {
-  return node instanceof ImageNode
+  return node instanceof ImageNode;
 }

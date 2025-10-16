@@ -19,6 +19,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   ColumnSchema,
   DatabaseSchemas,
@@ -35,7 +36,6 @@ import {
 import { READONLY_COLUMNS } from "../lib/constants";
 import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: TableSchema | null;
@@ -85,7 +85,10 @@ export function ResourceSheet({
         data: { ...input, ...jsonInput },
       });
 
-      if ((!data?.length && !error) || error?.message.includes("row-level security policy")) {
+      if (
+        (!data?.length && !error) ||
+        error?.message.includes("row-level security policy")
+      ) {
         toast.error("You don't have permission to create this resource");
         return;
       }
@@ -137,7 +140,10 @@ export function ResourceSheet({
         data: { ...input, ...jsonInput },
       });
 
-      if ((!updatedData?.length && !error) || error?.message.includes("row-level security policy")) {
+      if (
+        (!updatedData?.length && !error) ||
+        error?.message.includes("row-level security policy")
+      ) {
         toast.error("You don't have permission to update this resource");
         return;
       }
@@ -155,8 +161,11 @@ export function ResourceSheet({
   }
 
   return (
-    <Sheet {...props} >
-      <SheetContent side={isMobile ? "bottom" : "right"} className="flex flex-col gap-6 w-full md:max-w-lg overflow-y-auto h-full">
+    <Sheet {...props}>
+      <SheetContent
+        side={isMobile ? "bottom" : "right"}
+        className="flex h-full w-full flex-col gap-6 overflow-y-auto md:max-w-lg"
+      >
         <SheetHeader className="text-left">
           <SheetTitle>
             {data ? "Update" : "Create"} {id}

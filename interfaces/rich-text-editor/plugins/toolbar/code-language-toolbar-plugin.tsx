@@ -1,99 +1,100 @@
-"use client"
+"use client";
 
-import { useCallback, useState } from "react"
+import { useCallback, useState } from "react";
+
 import {
   $isCodeNode,
   CODE_LANGUAGE_FRIENDLY_NAME_MAP,
   CODE_LANGUAGE_MAP,
   getLanguageFriendlyName,
-} from "@lexical/code"
-import { $isListNode } from "@lexical/list"
-import { $findMatchingParent } from "@lexical/utils"
+} from "@lexical/code";
+import { $isListNode } from "@lexical/list";
+import { $findMatchingParent } from "@lexical/utils";
 import {
   $getNodeByKey,
   $isRangeSelection,
   $isRootOrShadowRoot,
   BaseSelection,
-} from "lexical"
+} from "lexical";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { useUpdateToolbarHandler } from "@/interfaces/rich-text-editor/editor-hooks/use-update-toolbar"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { useUpdateToolbarHandler } from "@/interfaces/rich-text-editor/editor-hooks/use-update-toolbar";
 
 function getCodeLanguageOptions(): [string, string][] {
-  const options: [string, string][] = []
+  const options: [string, string][] = [];
 
   for (const [lang, friendlyName] of Object.entries(
-    CODE_LANGUAGE_FRIENDLY_NAME_MAP
+    CODE_LANGUAGE_FRIENDLY_NAME_MAP,
   )) {
-    options.push([lang, friendlyName])
+    options.push([lang, friendlyName]);
   }
 
-  return options
+  return options;
 }
 
-const CODE_LANGUAGE_OPTIONS = getCodeLanguageOptions()
+const CODE_LANGUAGE_OPTIONS = getCodeLanguageOptions();
 
 export function CodeLanguageToolbarPlugin() {
-  const { activeEditor } = useToolbarContext()
-  const [codeLanguage, setCodeLanguage] = useState<string>("")
+  const { activeEditor } = useToolbarContext();
+  const [codeLanguage, setCodeLanguage] = useState<string>("");
   const [selectedElementKey, setSelectedElementKey] = useState<string | null>(
-    null
-  )
+    null,
+  );
 
   const $updateToolbar = (selection: BaseSelection) => {
     if ($isRangeSelection(selection)) {
-      const anchorNode = selection.anchor.getNode()
+      const anchorNode = selection.anchor.getNode();
       let element =
         anchorNode.getKey() === "root"
           ? anchorNode
           : $findMatchingParent(anchorNode, (e) => {
-              const parent = e.getParent()
-              return parent !== null && $isRootOrShadowRoot(parent)
-            })
+              const parent = e.getParent();
+              return parent !== null && $isRootOrShadowRoot(parent);
+            });
 
       if (element === null) {
-        element = anchorNode.getTopLevelElementOrThrow()
+        element = anchorNode.getTopLevelElementOrThrow();
       }
 
-      const elementKey = element.getKey()
-      const elementDOM = activeEditor.getElementByKey(elementKey)
+      const elementKey = element.getKey();
+      const elementDOM = activeEditor.getElementByKey(elementKey);
 
       if (elementDOM !== null) {
-        setSelectedElementKey(elementKey)
+        setSelectedElementKey(elementKey);
 
         if (!$isListNode(element) && $isCodeNode(element)) {
           const language =
-            element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP
+            element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP;
           setCodeLanguage(
-            language ? CODE_LANGUAGE_MAP[language] || language : ""
-          )
-          return
+            language ? CODE_LANGUAGE_MAP[language] || language : "",
+          );
+          return;
         }
       }
     }
-  }
+  };
 
-  useUpdateToolbarHandler($updateToolbar)
+  useUpdateToolbarHandler($updateToolbar);
 
   const onCodeLanguageSelect = useCallback(
     (value: string) => {
       activeEditor.update(() => {
         if (selectedElementKey !== null) {
-          const node = $getNodeByKey(selectedElementKey)
+          const node = $getNodeByKey(selectedElementKey);
           if ($isCodeNode(node)) {
-            node.setLanguage(value)
+            node.setLanguage(value);
           }
         }
-      })
+      });
     },
-    [activeEditor, selectedElementKey]
-  )
+    [activeEditor, selectedElementKey],
+  );
 
   return (
     <Select>
@@ -108,7 +109,7 @@ export function CodeLanguageToolbarPlugin() {
             key={value}
             value={value}
             onPointerUp={() => {
-              onCodeLanguageSelect(value)
+              onCodeLanguageSelect(value);
             }}
           >
             {label}
@@ -116,5 +117,5 @@ export function CodeLanguageToolbarPlugin() {
         ))}
       </SelectContent>
     </Select>
-  )
+  );
 }

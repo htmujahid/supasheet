@@ -52,10 +52,14 @@ export type ViewsForSchema<TSchema extends SchemaKey> =
 export type TableMetadata = {
   display?: "block" | "none";
   icon?: string;
-  items?: { name: string; view: string; type: "calendar" | "kanban" | "list" | "gantt" }[];
-}
+  items?: {
+    name: string;
+    view: string;
+    type: "calendar" | "kanban" | "list" | "gantt";
+  }[];
+};
 
 export type ViewMetadata = {
   display?: "block" | "none";
   icon?: string;
-}
+};

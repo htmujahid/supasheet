@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { TableIcon } from "lucide-react"
+import { TableIcon } from "lucide-react";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { InsertTableDialog } from "@/interfaces/rich-text-editor/plugins/table-plugin"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { InsertTableDialog } from "@/interfaces/rich-text-editor/plugins/table-plugin";
 
 export function TableToolbarPlugin() {
-  const { activeEditor, showModal } = useToolbarContext()
+  const { activeEditor, showModal } = useToolbarContext();
 
   return (
     <Button
@@ -23,5 +23,5 @@ export function TableToolbarPlugin() {
     >
       <TableIcon className="size-4" />
     </Button>
-  )
+  );
 }

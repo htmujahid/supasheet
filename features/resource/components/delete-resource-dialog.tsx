@@ -89,7 +89,10 @@ export function DeleteResourceDialog({
         resourceIds,
       });
 
-      if ((!data?.length && !error) || error?.message.includes("row-level security policy")) {
+      if (
+        (!data?.length && !error) ||
+        error?.message.includes("row-level security policy")
+      ) {
         toast.error("You don't have permission to delete this resource");
         return;
       }

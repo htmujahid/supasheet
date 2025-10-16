@@ -8,7 +8,11 @@ import { FolderPlus, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
 import { CreateFolderDialog } from "./create-folder-dialog";
@@ -53,7 +57,7 @@ export function StorageToolbar({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 overflow-x-auto h-10">
+    <div className="flex h-10 items-center justify-between gap-4 overflow-x-auto">
       <div className="flex flex-1 items-center gap-2">
         <Button
           variant="outline"
@@ -93,8 +97,7 @@ export function StorageToolbar({
         </Button>
       </div>
 
-
-      <InputGroup className="w-64 ">
+      <InputGroup className="w-64">
         <InputGroupInput
           placeholder="Search Files..."
           value={searchQuery}

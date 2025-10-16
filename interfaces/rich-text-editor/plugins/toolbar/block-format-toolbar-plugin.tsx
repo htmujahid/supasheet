@@ -1,75 +1,75 @@
-"use client"
+"use client";
 
-import { $isListNode, ListNode } from "@lexical/list"
-import { $isHeadingNode } from "@lexical/rich-text"
-import { $findMatchingParent, $getNearestNodeOfType } from "@lexical/utils"
-import { $isRangeSelection, $isRootOrShadowRoot, BaseSelection } from "lexical"
+import { $isListNode, ListNode } from "@lexical/list";
+import { $isHeadingNode } from "@lexical/rich-text";
+import { $findMatchingParent, $getNearestNodeOfType } from "@lexical/utils";
+import { $isRangeSelection, $isRootOrShadowRoot, BaseSelection } from "lexical";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { useUpdateToolbarHandler } from "@/interfaces/rich-text-editor/editor-hooks/use-update-toolbar"
-import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectTrigger,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { useUpdateToolbarHandler } from "@/interfaces/rich-text-editor/editor-hooks/use-update-toolbar";
+import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data";
 
 export function BlockFormatDropDown({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const { activeEditor, blockType, setBlockType } = useToolbarContext()
+  const { activeEditor, blockType, setBlockType } = useToolbarContext();
 
   function $updateToolbar(selection: BaseSelection) {
     if ($isRangeSelection(selection)) {
-      const anchorNode = selection.anchor.getNode()
+      const anchorNode = selection.anchor.getNode();
       let element =
         anchorNode.getKey() === "root"
           ? anchorNode
           : $findMatchingParent(anchorNode, (e) => {
-              const parent = e.getParent()
-              return parent !== null && $isRootOrShadowRoot(parent)
-            })
+              const parent = e.getParent();
+              return parent !== null && $isRootOrShadowRoot(parent);
+            });
 
       if (element === null) {
-        element = anchorNode.getTopLevelElementOrThrow()
+        element = anchorNode.getTopLevelElementOrThrow();
       }
 
-      const elementKey = element.getKey()
-      const elementDOM = activeEditor.getElementByKey(elementKey)
+      const elementKey = element.getKey();
+      const elementDOM = activeEditor.getElementByKey(elementKey);
 
       if (elementDOM !== null) {
         // setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType<ListNode>(
             anchorNode,
-            ListNode
-          )
+            ListNode,
+          );
           const type = parentList
             ? parentList.getListType()
-            : element.getListType()
-          setBlockType(type)
+            : element.getListType();
+          setBlockType(type);
         } else {
           const type = $isHeadingNode(element)
             ? element.getTag()
-            : element.getType()
+            : element.getType();
           if (type in blockTypeToBlockName) {
-            setBlockType(type as keyof typeof blockTypeToBlockName)
+            setBlockType(type as keyof typeof blockTypeToBlockName);
           }
         }
       }
     }
   }
 
-  useUpdateToolbarHandler($updateToolbar)
+  useUpdateToolbarHandler($updateToolbar);
 
   return (
     <Select
       value={blockType}
       onValueChange={(value) => {
-        setBlockType(value as keyof typeof blockTypeToBlockName)
+        setBlockType(value as keyof typeof blockTypeToBlockName);
       }}
     >
       <SelectTrigger className="!h-8 w-min gap-1">
@@ -80,5 +80,5 @@ export function BlockFormatDropDown({
         <SelectGroup>{children}</SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

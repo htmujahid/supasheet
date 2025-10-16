@@ -1,7 +1,7 @@
-import { INSERT_UNORDERED_LIST_COMMAND } from "@lexical/list"
-import { ListIcon } from "lucide-react"
+import { INSERT_UNORDERED_LIST_COMMAND } from "@lexical/list";
+import { ListIcon } from "lucide-react";
 
-import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option"
+import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option";
 
 export function BulletedListPickerPlugin() {
   return new ComponentPickerOption("Bulleted List", {
@@ -9,5 +9,5 @@ export function BulletedListPickerPlugin() {
     keywords: ["bulleted list", "unordered list", "ul"],
     onSelect: (_, editor) =>
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined),
-  })
+  });
 }

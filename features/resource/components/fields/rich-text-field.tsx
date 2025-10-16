@@ -1,8 +1,8 @@
+import { Editor } from "@/components/blocks/editor-md/editor";
 import { ButtonGroup } from "@/components/ui/button-group";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
-import { Editor } from "@/components/blocks/editor-md/editor";
 
 export function RichTextField({ field, columnMetadata }: FieldProps) {
   const placeholder =

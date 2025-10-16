@@ -1,37 +1,37 @@
-import { $createCodeNode } from "@lexical/code"
-import { $setBlocksType } from "@lexical/selection"
-import { $getSelection, $isRangeSelection } from "lexical"
+import { $createCodeNode } from "@lexical/code";
+import { $setBlocksType } from "@lexical/selection";
+import { $getSelection, $isRangeSelection } from "lexical";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data"
-import { SelectItem } from "@/components/ui/select"
+import { SelectItem } from "@/components/ui/select";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data";
 
-const BLOCK_FORMAT_VALUE = "code"
+const BLOCK_FORMAT_VALUE = "code";
 
 export function FormatCodeBlock() {
-  const { activeEditor, blockType } = useToolbarContext()
+  const { activeEditor, blockType } = useToolbarContext();
 
   const formatCode = () => {
     if (blockType !== "code") {
       activeEditor.update(() => {
-        let selection = $getSelection()
+        let selection = $getSelection();
 
         if (selection !== null) {
           if (selection.isCollapsed()) {
-            $setBlocksType(selection, () => $createCodeNode())
+            $setBlocksType(selection, () => $createCodeNode());
           } else {
-            const textContent = selection.getTextContent()
-            const codeNode = $createCodeNode()
-            selection.insertNodes([codeNode])
-            selection = $getSelection()
+            const textContent = selection.getTextContent();
+            const codeNode = $createCodeNode();
+            selection.insertNodes([codeNode]);
+            selection = $getSelection();
             if ($isRangeSelection(selection)) {
-              selection.insertRawText(textContent)
+              selection.insertRawText(textContent);
             }
           }
         }
-      })
+      });
     }
-  }
+  };
 
   return (
     <SelectItem value="code" onPointerDown={formatCode}>
@@ -40,5 +40,5 @@ export function FormatCodeBlock() {
         {blockTypeToBlockName[BLOCK_FORMAT_VALUE].label}
       </div>
     </SelectItem>
-  )
+  );
 }

@@ -1,10 +1,15 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
-import { DatabaseSchemas, DatabaseTables, TableMetadata, ViewMetadata } from "@/lib/database-meta.types";
+import { SYSTEM_SCHEMAS } from "@/config/database.config";
+import {
+  DatabaseSchemas,
+  DatabaseTables,
+  TableMetadata,
+  ViewMetadata,
+} from "@/lib/database-meta.types";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
 import { ResourceSearchParams } from "./validations";
-import { SYSTEM_SCHEMAS } from "@/config/database.config";
 
 export function useColumnsSchema(schema: string, id: string) {
   return useQuery({
@@ -115,9 +120,11 @@ export function useSchemas() {
       const schemaResponse = await client
         .schema("supasheet")
         .rpc("get_schemas");
-      return schemaResponse.data?.filter(
-        (schema) => !SYSTEM_SCHEMAS.includes(schema.schema)
-      ) ?? [];
+      return (
+        schemaResponse.data?.filter(
+          (schema) => !SYSTEM_SCHEMAS.includes(schema.schema),
+        ) ?? []
+      );
     },
   });
 }
@@ -137,7 +144,9 @@ export function useTableResources(schema: string) {
           id: resource.name as string,
           schema: resource.schema as string,
           type: "table",
-          meta: (resource.comment ? JSON.parse(resource.comment) : {}) as TableMetadata,
+          meta: (resource.comment
+            ? JSON.parse(resource.comment)
+            : {}) as TableMetadata,
         })) ?? [];
       return tableResources;
     },
@@ -152,7 +161,7 @@ export function useViewResources(schema: string) {
     queryFn: async () => {
       const viewSchema = await client
         .schema("supasheet")
-        .rpc("get_views" , { schema_name: schema });
+        .rpc("get_views", { schema_name: schema });
 
       const viewResources =
         viewSchema.data?.map((resource) => ({
@@ -160,7 +169,9 @@ export function useViewResources(schema: string) {
           id: resource.name as string,
           schema: resource.schema as string,
           type: "view",
-          meta: (resource.comment ? JSON.parse(resource.comment) : {}) as ViewMetadata,
+          meta: (resource.comment
+            ? JSON.parse(resource.comment)
+            : {}) as ViewMetadata,
         })) ?? [];
 
       const materializedViewSchema = await client
@@ -173,7 +184,9 @@ export function useViewResources(schema: string) {
           id: resource.name as string,
           schema: resource.schema as string,
           type: "view",
-          meta: (resource.comment ? JSON.parse(resource.comment) : {}) as ViewMetadata,
+          meta: (resource.comment
+            ? JSON.parse(resource.comment)
+            : {}) as ViewMetadata,
         })) ?? [];
 
       return [...viewResources, ...materializedViewResources];

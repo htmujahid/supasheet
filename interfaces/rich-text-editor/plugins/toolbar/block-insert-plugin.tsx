@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { PlusIcon } from "lucide-react"
+import { PlusIcon } from "lucide-react";
 
-import { useEditorModal } from "@/interfaces/rich-text-editor/editor-hooks/use-modal"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectTrigger,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useEditorModal } from "@/interfaces/rich-text-editor/editor-hooks/use-modal";
 
 export function BlockInsertPlugin({ children }: { children: React.ReactNode }) {
-  const [modal] = useEditorModal()
+  const [modal] = useEditorModal();
 
   return (
     <>
@@ -26,5 +26,5 @@ export function BlockInsertPlugin({ children }: { children: React.ReactNode }) {
         </SelectContent>
       </Select>
     </>
-  )
+  );
 }

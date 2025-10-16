@@ -4,17 +4,17 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import {
+  CalendarDaysIcon,
+  ChartGanttIcon,
   ChevronDown,
   ChevronRight,
-  ChartGanttIcon,
+  EyeIcon,
+  ListIcon,
   type LucideIcon,
   ProportionsIcon,
-  ListIcon,
-  CalendarDaysIcon,
-  EyeIcon,
-  SquareKanbanIcon
+  SquareKanbanIcon,
 } from "lucide-react";
-import * as LucideIcons from 'lucide-react';
+import * as LucideIcons from "lucide-react";
 
 import {
   Collapsible,
@@ -46,19 +46,19 @@ import {
 } from "@/components/ui/sidebar";
 import { SYSTEM_SCHEMAS } from "@/config/database.config";
 import { formatTitle } from "@/lib/format";
+
 import { useSchemas, useTableResources, useViewResources } from "../lib/data";
 
 export function ResourceSidebar() {
-  const params = useParams<{ schema: string, id: string }>();
+  const params = useParams<{ schema: string; id: string }>();
 
   const { data: schemas } = useSchemas();
-  const activeSchema = params?.schema ?? schemas?.[0]?.schema as string;
+  const activeSchema = params?.schema ?? (schemas?.[0]?.schema as string);
   const { data: tables } = useTableResources(activeSchema);
   const { data: views } = useViewResources(activeSchema);
 
-  const uniqueSchemas = schemas?.filter(
-    (schema) => !SYSTEM_SCHEMAS.includes(schema.schema),
-  ) ?? [];
+  const uniqueSchemas =
+    schemas?.filter((schema) => !SYSTEM_SCHEMAS.includes(schema.schema)) ?? [];
 
   return (
     <Sidebar
@@ -74,7 +74,9 @@ export function ResourceSidebar() {
                   <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
                     <ProportionsIcon className="size-4" />
                   </div>
-                  <span className="truncate font-medium">{formatTitle(activeSchema)}</span>
+                  <span className="truncate font-medium">
+                    {formatTitle(activeSchema)}
+                  </span>
                   <ChevronDown className="opacity-50" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -88,10 +90,7 @@ export function ResourceSidebar() {
                   Module
                 </DropdownMenuLabel>
                 {uniqueSchemas.map((group, index) => (
-                  <DropdownMenuItem
-                    key={group.schema}
-                    className="gap-2 p-2"
-                  >
+                  <DropdownMenuItem key={group.schema} className="gap-2 p-2">
                     <div className="flex size-6 items-center justify-center rounded-xs border">
                       <ProportionsIcon className="size-4 shrink-0" />
                     </div>
@@ -116,14 +115,16 @@ export function ResourceSidebar() {
                 defaultOpen={params?.id === item.id}
               >
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={params?.id === item.id}
-                  >
+                  <SidebarMenuButton asChild isActive={params?.id === item.id}>
                     <Link
                       href={"/home/resource/" + item.schema + "/" + item.id}
                     >
-                      <LucideIconComponent iconName={item.meta.icon as keyof typeof LucideIcons || 'Table2'} />
+                      <LucideIconComponent
+                        iconName={
+                          (item.meta.icon as keyof typeof LucideIcons) ||
+                          "Table2"
+                        }
+                      />
                       <span>{formatTitle(item.name)}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -140,7 +141,10 @@ export function ResourceSidebar() {
                           {item?.meta?.items?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.view}>
                               <SidebarMenuSubButton asChild>
-                                <Link href={`/home/resource/${item.schema}/${item.id}/${subItem.type}/${subItem.view}`} title={subItem.view}>
+                                <Link
+                                  href={`/home/resource/${item.schema}/${item.id}/${subItem.type}/${subItem.view}`}
+                                  title={subItem.view}
+                                >
                                   <SubItemsIcon type={subItem.type} />
                                   <span>{subItem.name}</span>
                                 </Link>
@@ -163,10 +167,12 @@ export function ResourceSidebar() {
             {views?.map((item) => (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton asChild>
-                  <Link
-                    href={"/home/resource/" + item.schema + "/" + item.id}
-                  >
-                    <LucideIconComponent iconName={item.meta.icon as keyof typeof LucideIcons || 'Eye'} />
+                  <Link href={"/home/resource/" + item.schema + "/" + item.id}>
+                    <LucideIconComponent
+                      iconName={
+                        (item.meta.icon as keyof typeof LucideIcons) || "Eye"
+                      }
+                    />
                     <span>{formatTitle(item.name)}</span>
                   </Link>
                 </SidebarMenuButton>
@@ -179,7 +185,11 @@ export function ResourceSidebar() {
   );
 }
 
-function LucideIconComponent({ iconName } : { iconName: keyof typeof LucideIcons }) {
+function LucideIconComponent({
+  iconName,
+}: {
+  iconName: keyof typeof LucideIcons;
+}) {
   const Icon = LucideIcons[iconName] as LucideIcon;
 
   return <Icon className="size-4 shrink-0" />;

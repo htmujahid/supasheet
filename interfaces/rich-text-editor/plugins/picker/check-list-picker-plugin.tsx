@@ -1,7 +1,7 @@
-import { INSERT_CHECK_LIST_COMMAND } from "@lexical/list"
-import { ListTodoIcon } from "lucide-react"
+import { INSERT_CHECK_LIST_COMMAND } from "@lexical/list";
+import { ListTodoIcon } from "lucide-react";
 
-import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option"
+import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option";
 
 export function CheckListPickerPlugin() {
   return new ComponentPickerOption("Check List", {
@@ -9,5 +9,5 @@ export function CheckListPickerPlugin() {
     keywords: ["check list", "todo list"],
     onSelect: (_, editor) =>
       editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined),
-  })
+  });
 }

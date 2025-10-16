@@ -1,8 +1,8 @@
-import { INSERT_TABLE_COMMAND } from "@lexical/table"
-import { TableIcon } from "lucide-react"
+import { INSERT_TABLE_COMMAND } from "@lexical/table";
+import { TableIcon } from "lucide-react";
 
-import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option"
-import { InsertTableDialog } from "@/interfaces/rich-text-editor/plugins/table-plugin"
+import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option";
+import { InsertTableDialog } from "@/interfaces/rich-text-editor/plugins/table-plugin";
 
 export function TablePickerPlugin() {
   return new ComponentPickerOption("Table", {
@@ -12,27 +12,27 @@ export function TablePickerPlugin() {
       showModal("Insert Table", (onClose) => (
         <InsertTableDialog activeEditor={editor} onClose={onClose} />
       )),
-  })
+  });
 }
 
 export function DynamicTablePickerPlugin({
   queryString,
 }: {
-  queryString: string
+  queryString: string;
 }) {
-  const options: Array<ComponentPickerOption> = []
+  const options: Array<ComponentPickerOption> = [];
 
   if (queryString == null) {
-    return options
+    return options;
   }
 
-  const tableMatch = queryString.match(/^([1-9]\d?)(?:x([1-9]\d?)?)?$/)
+  const tableMatch = queryString.match(/^([1-9]\d?)(?:x([1-9]\d?)?)?$/);
 
   if (tableMatch !== null) {
-    const rows = tableMatch[1]
+    const rows = tableMatch[1];
     const colOptions = tableMatch[2]
       ? [tableMatch[2]]
-      : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(String)
+      : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(String);
 
     options.push(
       ...colOptions.map(
@@ -42,10 +42,10 @@ export function DynamicTablePickerPlugin({
             keywords: ["table"],
             onSelect: (_, editor) =>
               editor.dispatchCommand(INSERT_TABLE_COMMAND, { columns, rows }),
-          })
-      )
-    )
+          }),
+      ),
+    );
   }
 
-  return options
+  return options;
 }

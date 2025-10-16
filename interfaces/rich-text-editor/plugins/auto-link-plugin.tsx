@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -7,28 +7,29 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import * as React from "react"
-import { JSX } from "react"
+import * as React from "react";
+import { JSX } from "react";
+
 import {
-  createLinkMatcherWithRegExp,
   AutoLinkPlugin as LexicalAutoLinkPlugin,
-} from "@lexical/react/LexicalAutoLinkPlugin"
+  createLinkMatcherWithRegExp,
+} from "@lexical/react/LexicalAutoLinkPlugin";
 
 const URL_REGEX =
-  /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)(?<![-.+():%])/
+  /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)(?<![-.+():%])/;
 
 const EMAIL_REGEX =
-  /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/
+  /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
 
 const MATCHERS = [
   createLinkMatcherWithRegExp(URL_REGEX, (text) => {
-    return text.startsWith("http") ? text : `https://${text}`
+    return text.startsWith("http") ? text : `https://${text}`;
   }),
   createLinkMatcherWithRegExp(EMAIL_REGEX, (text) => {
-    return `mailto:${text}`
+    return `mailto:${text}`;
   }),
-]
+];
 
 export function AutoLinkPlugin(): JSX.Element {
-  return <LexicalAutoLinkPlugin matchers={MATCHERS} />
+  return <LexicalAutoLinkPlugin matchers={MATCHERS} />;
 }

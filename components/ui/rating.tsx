@@ -1,11 +1,13 @@
 "use client";
 
+import * as React from "react";
+
 import { Slot } from "@radix-ui/react-slot";
 import { Star } from "lucide-react";
-import * as React from "react";
+
+import { VisuallyHiddenInput } from "@/components/visually-hidden-input";
 import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
-import { VisuallyHiddenInput } from "@/components/visually-hidden-input";
 
 const ROOT_NAME = "Rating";
 const ITEM_NAME = "RatingItem";
@@ -279,7 +281,7 @@ function RatingRoot(props: RatingRootProps) {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface RatingRootImplProps
- extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
+  extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
 
 function RatingRootImpl(props: RatingRootImplProps) {
   const {
@@ -513,7 +515,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
           {...rootProps}
           ref={composedRef}
           className={cn(
-            "flex gap-1 text-primary outline-none",
+            "text-primary flex gap-1 outline-none",
             orientation === "horizontal"
               ? "flex-row items-center"
               : "flex-col items-start",
@@ -900,8 +902,8 @@ function RatingItem(props: RatingItemProps) {
         }),
       }}
       className={cn(
-        "inline-flex items-center justify-center rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-        "[&_svg:not([class*='size-'])]:size-full [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-colors [&_svg]:duration-200 data-[state=empty]:[&_svg]:fill-transparent data-[state=full]:[&_svg]:fill-current data-[state=partial]:[&_svg]:fill-[var(--partial-fill)]",
+        "focus-visible:ring-ring inline-flex items-center justify-center rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-colors [&_svg]:duration-200 data-[state=empty]:[&_svg]:fill-transparent data-[state=full]:[&_svg]:fill-current data-[state=partial]:[&_svg]:fill-[var(--partial-fill)] [&_svg:not([class*='size-'])]:size-full",
         context.size === "sm"
           ? "size-4"
           : context.size === "lg"

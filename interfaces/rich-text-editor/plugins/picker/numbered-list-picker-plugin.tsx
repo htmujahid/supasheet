@@ -1,7 +1,7 @@
-import { INSERT_ORDERED_LIST_COMMAND } from "@lexical/list"
-import { ListOrderedIcon } from "lucide-react"
+import { INSERT_ORDERED_LIST_COMMAND } from "@lexical/list";
+import { ListOrderedIcon } from "lucide-react";
 
-import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option"
+import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option";
 
 export function NumberedListPickerPlugin() {
   return new ComponentPickerOption("Numbered List", {
@@ -9,5 +9,5 @@ export function NumberedListPickerPlugin() {
     keywords: ["numbered list", "ordered list", "ol"],
     onSelect: (_, editor) =>
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined),
-  })
+  });
 }

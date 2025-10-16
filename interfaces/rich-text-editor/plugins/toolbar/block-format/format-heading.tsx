@@ -1,22 +1,22 @@
-import { $createHeadingNode, HeadingTagType } from "@lexical/rich-text"
-import { $setBlocksType } from "@lexical/selection"
-import { $getSelection } from "lexical"
+import { $createHeadingNode, HeadingTagType } from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
+import { $getSelection } from "lexical";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data"
-import { SelectItem } from "@/components/ui/select"
+import { SelectItem } from "@/components/ui/select";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data";
 
 export function FormatHeading({ levels = [] }: { levels: HeadingTagType[] }) {
-  const { activeEditor, blockType } = useToolbarContext()
+  const { activeEditor, blockType } = useToolbarContext();
 
   const formatHeading = (headingSize: HeadingTagType) => {
     if (blockType !== headingSize) {
       activeEditor.update(() => {
-        const selection = $getSelection()
-        $setBlocksType(selection, () => $createHeadingNode(headingSize))
-      })
+        const selection = $getSelection();
+        $setBlocksType(selection, () => $createHeadingNode(headingSize));
+      });
     }
-  }
+  };
 
   return levels.map((level) => (
     <SelectItem
@@ -29,5 +29,5 @@ export function FormatHeading({ levels = [] }: { levels: HeadingTagType[] }) {
         {blockTypeToBlockName[level].label}
       </div>
     </SelectItem>
-  ))
+  ));
 }

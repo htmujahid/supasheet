@@ -15,16 +15,16 @@ import {
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../../lib/columns";
 import { getDataTypeIcon } from "../icons";
 import { AllFields } from "./all-fields";
 import { ArrayField } from "./array-field";
+import { AvatarField } from "./avatar-field";
 import { FileField } from "./file-field";
 import { ForeignKeyField } from "./foreign-key-field";
 import { ColumnMetadata } from "./types";
-import { AvatarField } from "./avatar-field";
-import { formatTitle } from "@/lib/format";
 
 export function ResourceFormField({
   columnSchema,

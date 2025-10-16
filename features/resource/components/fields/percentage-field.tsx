@@ -19,16 +19,18 @@ export function PercentageField({ field, columnMetadata }: FieldProps) {
           {...field}
           value={[field.value as number]}
           onValueChange={(v) => {
-            field.onChange(v[0])
+            field.onChange(v[0]);
           }}
           min={0}
           max={100}
           step={1}
           disabled={columnMetadata.disabled}
         />
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-muted-foreground">{field.value?.toString()}%</span>
-      </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground text-sm">
+            {field.value?.toString()}%
+          </span>
+        </div>
       </ButtonGroup>
       <FieldOptionDropdown
         columnMetadata={columnMetadata}

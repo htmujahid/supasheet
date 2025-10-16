@@ -1,5 +1,5 @@
-import { Rating, RatingItem } from "@/components/ui/rating";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Rating, RatingItem } from "@/components/ui/rating";
 
 import { FieldOptionDropdown } from "./field-option-dropdown";
 import type { FieldProps } from "./types";
@@ -15,7 +15,12 @@ export function RatingField({ field, columnMetadata }: FieldProps) {
   return (
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
-        <Rating {...field} onValueChange={field.onChange} value={field.value as number} step={0.5}>
+        <Rating
+          {...field}
+          onValueChange={field.onChange}
+          value={field.value as number}
+          step={0.5}
+        >
           {Array.from({ length: 5 }).map((_, index) => (
             <RatingItem key={index} />
           ))}

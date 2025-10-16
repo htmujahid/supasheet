@@ -1,77 +1,81 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useState } from "react"
-import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link"
+import { useCallback, useEffect, useState } from "react";
+
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import {
   $isRangeSelection,
   BaseSelection,
   COMMAND_PRIORITY_NORMAL,
   KEY_MODIFIER_COMMAND,
-} from "lexical"
-import { LinkIcon } from "lucide-react"
+} from "lexical";
+import { LinkIcon } from "lucide-react";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { useUpdateToolbarHandler } from "@/interfaces/rich-text-editor/editor-hooks/use-update-toolbar"
-import { getSelectedNode } from "@/interfaces/rich-text-editor/utils/get-selected-node"
-import { sanitizeUrl } from "@/interfaces/rich-text-editor/utils/url"
-import { Toggle } from "@/components/ui/toggle"
+import { Toggle } from "@/components/ui/toggle";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { useUpdateToolbarHandler } from "@/interfaces/rich-text-editor/editor-hooks/use-update-toolbar";
+import { getSelectedNode } from "@/interfaces/rich-text-editor/utils/get-selected-node";
+import { sanitizeUrl } from "@/interfaces/rich-text-editor/utils/url";
 
 export function LinkToolbarPlugin({
   setIsLinkEditMode,
 }: {
-  setIsLinkEditMode: (isEditMode: boolean) => void
+  setIsLinkEditMode: (isEditMode: boolean) => void;
 }) {
-  const { activeEditor } = useToolbarContext()
-  const [isLink, setIsLink] = useState(false)
+  const { activeEditor } = useToolbarContext();
+  const [isLink, setIsLink] = useState(false);
 
   const $updateToolbar = (selection: BaseSelection) => {
     if ($isRangeSelection(selection)) {
-      const node = getSelectedNode(selection)
-      const parent = node.getParent()
+      const node = getSelectedNode(selection);
+      const parent = node.getParent();
       if ($isLinkNode(parent) || $isLinkNode(node)) {
-        setIsLink(true)
+        setIsLink(true);
       } else {
-        setIsLink(false)
+        setIsLink(false);
       }
     }
-  }
+  };
 
-  useUpdateToolbarHandler($updateToolbar)
+  useUpdateToolbarHandler($updateToolbar);
 
   useEffect(() => {
     return activeEditor.registerCommand(
       KEY_MODIFIER_COMMAND,
       (payload) => {
-        const event: KeyboardEvent = payload
-        const { code, ctrlKey, metaKey } = event
+        const event: KeyboardEvent = payload;
+        const { code, ctrlKey, metaKey } = event;
 
         if (code === "KeyK" && (ctrlKey || metaKey)) {
-          event.preventDefault()
-          let url: string | null
+          event.preventDefault();
+          let url: string | null;
           if (!isLink) {
-            setIsLinkEditMode(true)
-            url = sanitizeUrl("https://")
+            setIsLinkEditMode(true);
+            url = sanitizeUrl("https://");
           } else {
-            setIsLinkEditMode(false)
-            url = null
+            setIsLinkEditMode(false);
+            url = null;
           }
-          return activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, url)
+          return activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
         }
-        return false
+        return false;
       },
-      COMMAND_PRIORITY_NORMAL
-    )
-  }, [activeEditor, isLink, setIsLinkEditMode])
+      COMMAND_PRIORITY_NORMAL,
+    );
+  }, [activeEditor, isLink, setIsLinkEditMode]);
 
   const insertLink = useCallback(() => {
     if (!isLink) {
-      setIsLinkEditMode(true)
-      activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl("https://"))
+      setIsLinkEditMode(true);
+      activeEditor.dispatchCommand(
+        TOGGLE_LINK_COMMAND,
+        sanitizeUrl("https://"),
+      );
     } else {
-      setIsLinkEditMode(false)
-      activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
+      setIsLinkEditMode(false);
+      activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }
-  }, [activeEditor, isLink, setIsLinkEditMode])
+  }, [activeEditor, isLink, setIsLinkEditMode]);
 
   return (
     <Toggle
@@ -83,5 +87,5 @@ export function LinkToolbarPlugin({
     >
       <LinkIcon className="h-4 w-4" />
     </Toggle>
-  )
+  );
 }

@@ -1,19 +1,19 @@
-import { CodeHighlightNode, CodeNode } from "@lexical/code"
-import { AutoLinkNode, LinkNode } from "@lexical/link"
-import { ListItemNode, ListNode } from "@lexical/list"
-import { OverflowNode } from "@lexical/overflow"
-import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode"
-import { HeadingNode, QuoteNode } from "@lexical/rich-text"
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table"
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { OverflowNode } from "@lexical/overflow";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import {
   Klass,
   LexicalNode,
   LexicalNodeReplacement,
   ParagraphNode,
   TextNode,
-} from "lexical"
+} from "lexical";
 
-import { ImageNode } from "@/interfaces/rich-text-editor/nodes/image-node"
+import { ImageNode } from "@/interfaces/rich-text-editor/nodes/image-node";
 
 export const nodes: ReadonlyArray<Klass<LexicalNode> | LexicalNodeReplacement> =
   [
@@ -33,4 +33,4 @@ export const nodes: ReadonlyArray<Klass<LexicalNode> | LexicalNodeReplacement> =
     TableNode,
     TableRowNode,
     TableCellNode,
-  ]
+  ];

@@ -1,7 +1,7 @@
-import { ImageIcon } from "lucide-react"
+import { ImageIcon } from "lucide-react";
 
-import { InsertImageDialog } from "@/interfaces/rich-text-editor/plugins/images-plugin"
-import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option"
+import { InsertImageDialog } from "@/interfaces/rich-text-editor/plugins/images-plugin";
+import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option";
 
 export function ImagePickerPlugin() {
   return new ComponentPickerOption("Image", {
@@ -11,5 +11,5 @@ export function ImagePickerPlugin() {
       showModal("Insert Image", (onClose) => (
         <InsertImageDialog activeEditor={editor} onClose={onClose} />
       )),
-  })
+  });
 }

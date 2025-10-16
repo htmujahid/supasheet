@@ -1,32 +1,36 @@
-import { INSERT_CHECK_LIST_COMMAND } from "@lexical/list"
-import { $setBlocksType } from "@lexical/selection"
-import { $createParagraphNode, $getSelection, $isRangeSelection } from "lexical"
+import { INSERT_CHECK_LIST_COMMAND } from "@lexical/list";
+import { $setBlocksType } from "@lexical/selection";
+import {
+  $createParagraphNode,
+  $getSelection,
+  $isRangeSelection,
+} from "lexical";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data"
-import { SelectItem } from "@/components/ui/select"
+import { SelectItem } from "@/components/ui/select";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
+import { blockTypeToBlockName } from "@/interfaces/rich-text-editor/plugins/toolbar/block-format/block-format-data";
 
-const BLOCK_FORMAT_VALUE = "check"
+const BLOCK_FORMAT_VALUE = "check";
 
 export function FormatCheckList() {
-  const { activeEditor, blockType } = useToolbarContext()
+  const { activeEditor, blockType } = useToolbarContext();
 
   const formatParagraph = () => {
     activeEditor.update(() => {
-      const selection = $getSelection()
+      const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        $setBlocksType(selection, () => $createParagraphNode())
+        $setBlocksType(selection, () => $createParagraphNode());
       }
-    })
-  }
+    });
+  };
 
   const formatCheckList = () => {
     if (blockType !== "number") {
-      activeEditor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined)
+      activeEditor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);
     } else {
-      formatParagraph()
+      formatParagraph();
     }
-  }
+  };
 
   return (
     <SelectItem value={BLOCK_FORMAT_VALUE} onPointerDown={formatCheckList}>
@@ -35,5 +39,5 @@ export function FormatCheckList() {
         {blockTypeToBlockName[BLOCK_FORMAT_VALUE].label}
       </div>
     </SelectItem>
-  )
+  );
 }

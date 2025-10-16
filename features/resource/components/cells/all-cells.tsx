@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { ColumnMetadata } from "../fields/types";
 import { ArrayCell } from "./array-cell";
+import { AvatarCell } from "./avatar-cell";
 import { BooleanCell } from "./boolean-cell";
 import { ColorCell } from "./color-cell";
 import { DurationCell } from "./duration-cell";
@@ -9,7 +10,6 @@ import { EnumCell } from "./enum-cell";
 import { FileCell } from "./file-cell";
 import { PercentageCell } from "./percentage-cell";
 import { RatingCell } from "./rating-cell";
-import { AvatarCell } from "./avatar-cell";
 
 export const AllCells = memo(function AllCells({
   columnMetadata,

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { PencilIcon } from "lucide-react";
 
+import { Editor } from "@/components/blocks/editor-md/editor";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,7 +21,6 @@ import { getColumnMetadata } from "../../lib/columns";
 import { AllCells } from "../cells/all-cells";
 import { getDataTypeIcon } from "../icons";
 import { useResourceContext } from "../resource-context";
-import { Editor } from "@/components/blocks/editor-md/editor";
 
 export function ResourceDetailView({
   columnsSchema,
@@ -77,13 +77,15 @@ export function ResourceDetailView({
                     {column.name as string} {icon}
                   </Label>
                   <div className="text-muted-foreground text-sm">
-                    {
-                      columnMetadata.type === "rich_text" ? (
-                        <Editor name={columnMetadata.label} value={value as string} disabled />
-                      ) : (
-                        <AllCells columnMetadata={columnMetadata} value={value} />
-                      )
-                    }
+                    {columnMetadata.type === "rich_text" ? (
+                      <Editor
+                        name={columnMetadata.label}
+                        value={value as string}
+                        disabled
+                      />
+                    ) : (
+                      <AllCells columnMetadata={columnMetadata} value={value} />
+                    )}
                   </div>
                 </div>
               </div>

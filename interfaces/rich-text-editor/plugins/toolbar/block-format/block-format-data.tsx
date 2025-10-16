@@ -8,7 +8,7 @@ import {
   ListTodoIcon,
   QuoteIcon,
   TextIcon,
-} from "lucide-react"
+} from "lucide-react";
 
 export const blockTypeToBlockName: Record<
   string,
@@ -50,4 +50,4 @@ export const blockTypeToBlockName: Record<
     label: "Quote",
     icon: <QuoteIcon className="size-4" />,
   },
-}
+};

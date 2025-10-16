@@ -1,12 +1,12 @@
+import type {
+  DatabaseSchemas,
+  DatabaseTables,
+  TableMetadata,
+  ViewMetadata,
+} from "@/lib/database-meta.types";
+import type { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import type { Database } from "@/lib/database.types";
-import type { 
-  DatabaseSchemas, 
-  DatabaseTables, 
-  TableMetadata, 
-  ViewMetadata 
-} from "@/lib/database-meta.types";
 import type { ResourceSearchParams } from "./validations";
 
 export async function loadColumnsSchema(schema: string, id: string) {

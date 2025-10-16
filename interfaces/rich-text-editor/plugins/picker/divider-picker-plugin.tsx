@@ -1,7 +1,7 @@
-import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode"
-import { MinusIcon } from "lucide-react"
+import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
+import { MinusIcon } from "lucide-react";
 
-import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option"
+import { ComponentPickerOption } from "@/interfaces/rich-text-editor/plugins/picker/component-picker-option";
 
 export function DividerPickerPlugin() {
   return new ComponentPickerOption("Divider", {
@@ -9,5 +9,5 @@ export function DividerPickerPlugin() {
     keywords: ["horizontal rule", "divider", "hr"],
     onSelect: (_, editor) =>
       editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined),
-  })
+  });
 }

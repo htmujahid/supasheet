@@ -167,7 +167,7 @@ export function AvatarField({
         {/* Drop area */}
         <button
           type="button"
-          className="relative flex size-16 items-center justify-center overflow-hidden rounded-full border border-dashed border-input transition-colors outline-none hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[img]:border-none data-[dragging=true]:bg-accent/50"
+          className="border-input hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-ring/50 data-[dragging=true]:bg-accent/50 relative flex size-16 items-center justify-center overflow-hidden rounded-full border border-dashed transition-colors outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 has-[img]:border-none"
           onClick={openFileDialog}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
@@ -216,7 +216,7 @@ export function AvatarField({
               if (file) removeFile(file.id);
             }}
             size="icon"
-            className="absolute -top-1 -right-1 size-6 rounded-full border-2 border-background shadow-none focus-visible:border-background"
+            className="border-background focus-visible:border-background absolute -top-1 -right-1 size-6 rounded-full border-2 shadow-none"
             aria-label="Remove avatar"
           >
             <XIcon className="size-3.5" />

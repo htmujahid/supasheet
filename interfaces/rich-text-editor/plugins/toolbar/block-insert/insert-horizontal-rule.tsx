@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode"
-import { ScissorsIcon } from "lucide-react"
+import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
+import { ScissorsIcon } from "lucide-react";
 
-import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context"
-import { SelectItem } from "@/components/ui/select"
+import { SelectItem } from "@/components/ui/select";
+import { useToolbarContext } from "@/interfaces/rich-text-editor/context/toolbar-context";
 
 export function InsertHorizontalRule() {
-  const { activeEditor } = useToolbarContext()
+  const { activeEditor } = useToolbarContext();
 
   return (
     <SelectItem
@@ -22,5 +22,5 @@ export function InsertHorizontalRule() {
         <span>Horizontal Rule</span>
       </div>
     </SelectItem>
-  )
+  );
 }
