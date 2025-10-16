@@ -111,11 +111,11 @@ export function ResourceSheet({
       return;
     }
 
-    Object.entries(input).forEach(([key, value]) => {
-      if (value === "") {
-        delete input[key];
-      }
-    });
+    // Object.entries(input).forEach(([key, value]) => {
+    //   if (value === "") {
+    //     delete input[key];
+    //   }
+    // });
 
     startTransition(async () => {
       if (!data) return;
@@ -164,7 +164,7 @@ export function ResourceSheet({
     <Sheet {...props}>
       <SheetContent
         side={isMobile ? "bottom" : "right"}
-        className="flex h-full w-full flex-col gap-6 overflow-y-auto md:max-w-lg"
+        className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg"
       >
         <SheetHeader className="text-left">
           <SheetTitle>
