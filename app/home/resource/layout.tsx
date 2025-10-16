@@ -6,20 +6,17 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ResourceSidebar } from "@/features/resource/components/resource-sidebar";
 import { ResourceSidebarSkeleton } from "@/features/resource/components/resource-sidebar-skeleton";
-import { loadResources } from "@/features/resource/lib/loaders";
 
-export default function HomeResourceLayout({
+export default async function HomeResourceLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const resourcesPromise = loadResources();
-
   return (
     <>
       <PrimarySidebar>
         <Suspense fallback={<ResourceSidebarSkeleton />}>
-          <ResourceSidebar resourcesPromise={resourcesPromise} />
+          <ResourceSidebar />
         </Suspense>
       </PrimarySidebar>
       <SidebarInset>

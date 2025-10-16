@@ -1,8 +1,13 @@
-import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
-import { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import { ResourceSearchParams } from "./validations";
+import type { Database } from "@/lib/database.types";
+import type { 
+  DatabaseSchemas, 
+  DatabaseTables, 
+  TableMetadata, 
+  ViewMetadata 
+} from "@/lib/database-meta.types";
+import type { ResourceSearchParams } from "./validations";
 
 export async function loadColumnsSchema(schema: string, id: string) {
   const client = await getSupabaseServerClient();
@@ -178,41 +183,6 @@ export async function loadSingleResourceData(
   const response = await query.maybeSingle();
 
   return response.data;
-}
-
-export async function loadResources() {
-  const client = await getSupabaseServerClient();
-
-  const tableSchema = await client.schema("supasheet").rpc("get_tables");
-  const tableResources =
-    tableSchema.data?.map((resource) => ({
-      name: resource.name as string,
-      id: resource.name as string,
-      schema: resource.schema as string,
-      type: "table",
-    })) ?? [];
-
-  const viewSchema = await client.schema("supasheet").rpc("get_views");
-  const viewResources =
-    viewSchema.data?.map((resource) => ({
-      name: resource.name as string,
-      id: resource.name as string,
-      schema: resource.schema as string,
-      type: "view",
-    })) ?? [];
-
-  const materializedViewSchema = await client
-    .schema("supasheet")
-    .rpc("get_materialized_views");
-  const materializedViewResources =
-    materializedViewSchema.data?.map((resource) => ({
-      name: resource.name as string,
-      id: resource.name as string,
-      schema: resource.schema as string,
-      type: "materialized_view",
-    })) ?? [];
-
-  return [...tableResources, ...viewResources, ...materializedViewResources];
 }
 
 export async function loadForeignKeyData(

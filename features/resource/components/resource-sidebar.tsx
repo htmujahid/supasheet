@@ -1,17 +1,20 @@
 "use client";
 
-import { use, useState } from "react";
-
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import {
   ChevronDown,
   ChevronRight,
-  EyeIcon,
+  ChartGanttIcon,
+  type LucideIcon,
   ProportionsIcon,
-  Table2,
+  ListIcon,
+  CalendarDaysIcon,
+  EyeIcon,
+  SquareKanbanIcon
 } from "lucide-react";
+import * as LucideIcons from 'lucide-react';
 
 import {
   Collapsible,
@@ -43,52 +46,19 @@ import {
 } from "@/components/ui/sidebar";
 import { SYSTEM_SCHEMAS } from "@/config/database.config";
 import { formatTitle } from "@/lib/format";
+import { useSchemas, useTableResources, useViewResources } from "../lib/data";
 
-export function ResourceSidebar({
-  resourcesPromise,
-}: {
-  resourcesPromise: Promise<
-    {
-      name: string;
-      id: string;
-      schema: string;
-      type: string;
-    }[]
-  >;
-}) {
-  const resources = use(resourcesPromise);
-  const params = useParams();
+export function ResourceSidebar() {
+  const params = useParams<{ schema: string, id: string }>();
 
-  const activeResource = resources.find(
-    (resource) => resource.id === params?.id,
-  );
+  const { data: schemas } = useSchemas();
+  const activeSchema = params?.schema ?? schemas?.[0]?.schema as string;
+  const { data: tables } = useTableResources(activeSchema);
+  const { data: views } = useViewResources(activeSchema);
 
-  const uniqueSchemas = Array.from(
-    new Set(resources.map((resource) => resource.schema)),
-  ).filter((schema) => !SYSTEM_SCHEMAS.includes(schema));
-
-  const [activeSchema, setActiveSchema] = useState(uniqueSchemas[0] || "");
-  const [activeResources, setActiveResources] = useState(
-    resources.filter((resource) => resource.schema === activeSchema),
-  );
-
-  const submenuItems = [
-    {
-      name: 'form_view',
-      type: 'form',
-      url: `create`,
-    },
-  ] as { name: string; type: string; url: string }[];
-
-  const tables = activeResources?.filter(
-    (resource) =>
-      resource.type === "table" && !SYSTEM_SCHEMAS.includes(resource.schema),
-  );
-
-  const views = activeResources?.filter(
-    (resource) =>
-      resource.type === "view" && !SYSTEM_SCHEMAS.includes(resource.schema),
-  );
+  const uniqueSchemas = schemas?.filter(
+    (schema) => !SYSTEM_SCHEMAS.includes(schema.schema),
+  ) ?? [];
 
   return (
     <Sidebar
@@ -104,7 +74,7 @@ export function ResourceSidebar({
                   <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
                     <ProportionsIcon className="size-4" />
                   </div>
-                  <span className="truncate font-medium">{activeSchema}</span>
+                  <span className="truncate font-medium">{formatTitle(activeSchema)}</span>
                   <ChevronDown className="opacity-50" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -119,23 +89,13 @@ export function ResourceSidebar({
                 </DropdownMenuLabel>
                 {uniqueSchemas.map((group, index) => (
                   <DropdownMenuItem
-                    key={group}
-                    onClick={() => {
-                      setActiveSchema(group);
-                      setActiveResources(
-                        resources.filter(
-                          (resource) =>
-                            resource.schema === group &&
-                            !SYSTEM_SCHEMAS.includes(resource.schema),
-                        ),
-                      );
-                    }}
+                    key={group.schema}
                     className="gap-2 p-2"
                   >
                     <div className="flex size-6 items-center justify-center rounded-xs border">
                       <ProportionsIcon className="size-4 shrink-0" />
                     </div>
-                    {group}
+                    {formatTitle(group.schema)}
                     <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                   </DropdownMenuItem>
                 ))}
@@ -149,25 +109,25 @@ export function ResourceSidebar({
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>Tables</SidebarGroupLabel>
           <SidebarMenu className="overflow-y-auto">
-            {tables.map((item) => (
+            {tables?.map((item) => (
               <Collapsible
                 key={item.id}
                 asChild
-                defaultOpen={activeResource?.id === item.id}
+                defaultOpen={params?.id === item.id}
               >
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
                     asChild
-                    isActive={activeResource?.id === item.id}
+                    isActive={params?.id === item.id}
                   >
                     <Link
                       href={"/home/resource/" + item.schema + "/" + item.id}
                     >
-                      <Table2 className="size-4 shrink-0" />
+                      <LucideIconComponent iconName={item.meta.icon as keyof typeof LucideIcons || 'Table2'} />
                       <span>{formatTitle(item.name)}</span>
                     </Link>
                   </SidebarMenuButton>
-                  {submenuItems?.length ? (
+                  {item?.meta?.items?.length ? (
                     <>
                       <CollapsibleTrigger asChild>
                         <SidebarMenuAction className="data-[state=open]:rotate-90">
@@ -177,11 +137,12 @@ export function ResourceSidebar({
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <SidebarMenuSub>
-                          {submenuItems?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.name}>
+                          {item?.meta?.items?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.view}>
                               <SidebarMenuSubButton asChild>
-                                <Link href={`/home/resource/${item.schema}/${item.id}/${subItem.url}`} title={subItem.name}>
-                                  <span>{formatTitle(subItem.name)}</span>
+                                <Link href={`/home/resource/${item.schema}/${item.id}/${subItem.type}/${subItem.view}`} title={subItem.view}>
+                                  <SubItemsIcon type={subItem.type} />
+                                  <span>{formatTitle(subItem.view)}</span>
                                 </Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
@@ -199,13 +160,13 @@ export function ResourceSidebar({
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>Views</SidebarGroupLabel>
           <SidebarMenu>
-            {views.map((item) => (
+            {views?.map((item) => (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton asChild>
                   <Link
                     href={"/home/resource/" + item.schema + "/" + item.id}
                   >
-                    <EyeIcon className="size-4 shrink-0" />
+                    <LucideIconComponent iconName={item.meta.icon as keyof typeof LucideIcons || 'Eye'} />
                     <span>{formatTitle(item.name)}</span>
                   </Link>
                 </SidebarMenuButton>
@@ -216,4 +177,24 @@ export function ResourceSidebar({
       </SidebarContent>
     </Sidebar>
   );
+}
+
+function LucideIconComponent({ iconName } : { iconName: keyof typeof LucideIcons }) {
+  const Icon = LucideIcons[iconName] as LucideIcon;
+
+  return <Icon className="size-4 shrink-0" />;
+}
+
+function SubItemsIcon({ type }: { type: string }) {
+  switch (type) {
+    case "list":
+      return <ListIcon className="size-4 shrink-0" />;
+    case "kanban":
+      return <SquareKanbanIcon className="size-4 shrink-0" />;
+    case "calendar":
+      return <CalendarDaysIcon className="size-4 shrink-0" />;
+    case "gantt":
+      return <ChartGanttIcon className="size-4 shrink-0" />;
+  }
+  return <EyeIcon className="size-4 shrink-0" />;
 }

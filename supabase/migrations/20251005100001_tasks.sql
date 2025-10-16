@@ -33,6 +33,8 @@ create table tasks (
     updated_at timestamptz default current_timestamp
 );
 
+comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"view": "task_calendar_view", "type": "calendar"}, {"view": "task_kanban_view", "type": "kanban"}, {"view": "task_list_view", "type": "list"}, {"view": "task_gantt_view", "type": "gantt"}]}';
+
 comment on column tasks.cover is '{"accept":"image/*"}';
 comment on column tasks.attachments is '{"accept":"*"}';
 
@@ -76,6 +78,8 @@ select
     t.*
 from tasks t
 join supasheet.accounts a on t.account_id = a.id;
+
+comment on view public.user_tasks is '{"icon": "UserCheck"}';
 
 -- grant select on view to authenticated
 revoke all on public.user_tasks from authenticated, service_role;

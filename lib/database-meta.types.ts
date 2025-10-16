@@ -48,3 +48,14 @@ export type ViewsForSchema<TSchema extends SchemaKey> =
       ? keyof TViews & string
       : never
     : never;
+
+export type TableMetadata = {
+  display?: "block" | "none";
+  icon?: string;
+  items?: { view: string; type: "calendar" | "kanban" | "list" | "gantt" }[];
+}
+
+export type ViewMetadata = {
+  display?: "block" | "none";
+  icon?: string;
+}

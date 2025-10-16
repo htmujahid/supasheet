@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
-import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables, TableMetadata, ViewMetadata } from "@/lib/database-meta.types";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
 import { ResourceSearchParams } from "./validations";
+import { SYSTEM_SCHEMAS } from "@/config/database.config";
 
 export function useColumnsSchema(schema: string, id: string) {
   return useQuery({
@@ -102,5 +103,80 @@ export function useResourceData(
       };
     },
     enabled: !!id,
+  });
+}
+
+export function useSchemas() {
+  const client = getSupabaseBrowserClient();
+
+  return useSuspenseQuery({
+    queryKey: ["database-schemas"],
+    queryFn: async () => {
+      const schemaResponse = await client
+        .schema("supasheet")
+        .rpc("get_schemas");
+      return schemaResponse.data?.filter(
+        (schema) => !SYSTEM_SCHEMAS.includes(schema.schema)
+      ) ?? [];
+    },
+  });
+}
+
+export function useTableResources(schema: string) {
+  const client = getSupabaseBrowserClient();
+
+  return useSuspenseQuery({
+    queryKey: ["table-resources", schema],
+    queryFn: async () => {
+      const tableSchema = await client
+        .schema("supasheet")
+        .rpc("get_tables", { schema_name: schema });
+      const tableResources =
+        tableSchema.data?.map((resource) => ({
+          name: resource.name as string,
+          id: resource.name as string,
+          schema: resource.schema as string,
+          type: "table",
+          meta: (resource.comment ? JSON.parse(resource.comment) : {}) as TableMetadata,
+        })) ?? [];
+      return tableResources;
+    },
+  });
+}
+
+export function useViewResources(schema: string) {
+  const client = getSupabaseBrowserClient();
+
+  return useSuspenseQuery({
+    queryKey: ["view-resources", schema],
+    queryFn: async () => {
+      const viewSchema = await client
+        .schema("supasheet")
+        .rpc("get_views" , { schema_name: schema });
+
+      const viewResources =
+        viewSchema.data?.map((resource) => ({
+          name: resource.name as string,
+          id: resource.name as string,
+          schema: resource.schema as string,
+          type: "view",
+          meta: (resource.comment ? JSON.parse(resource.comment) : {}) as ViewMetadata,
+        })) ?? [];
+
+      const materializedViewSchema = await client
+        .schema("supasheet")
+        .rpc("get_materialized_views", { schema_name: schema });
+
+      const materializedViewResources =
+        materializedViewSchema.data?.map((resource) => ({
+          name: resource.name as string,
+          id: resource.name as string,
+          schema: resource.schema as string,
+          type: "view",
+          meta: (resource.comment ? JSON.parse(resource.comment) : {}) as ViewMetadata,
+        })) ?? [];
+
+      return [...viewResources, ...materializedViewResources];
+    },
   });
 }
