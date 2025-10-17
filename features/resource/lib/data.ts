@@ -147,7 +147,7 @@ export function useTableResources(schema: string) {
           meta: (resource.comment
             ? JSON.parse(resource.comment)
             : {}) as TableMetadata,
-        })) ?? [];
+        }))?.filter((resource) => resource.meta.display !== "none") ?? [];
       return tableResources;
     },
   });
@@ -172,7 +172,7 @@ export function useViewResources(schema: string) {
           meta: (resource.comment
             ? JSON.parse(resource.comment)
             : {}) as ViewMetadata,
-        })) ?? [];
+        }))?.filter((resource) => resource.meta.display !== "none") ?? [];
 
       const materializedViewSchema = await client
         .schema("supasheet")
@@ -187,7 +187,7 @@ export function useViewResources(schema: string) {
           meta: (resource.comment
             ? JSON.parse(resource.comment)
             : {}) as ViewMetadata,
-        })) ?? [];
+        }))?.filter((resource) => resource.meta.display !== "none") ?? [];
 
       return [...viewResources, ...materializedViewResources];
     },
