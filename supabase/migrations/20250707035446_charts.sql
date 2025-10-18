@@ -58,22 +58,28 @@ revoke all on function supasheet.get_chart_groups() from authenticated, service_
 grant execute on function supasheet.get_chart_groups() to authenticated;
 
 -- Function to get charts
-create or replace function supasheet.get_charts(p_group text default null)
-returns setof supasheet.charts
+create or replace function supasheet.get_charts(p_schema text default null)
+returns table(
+  id bigint,
+  schema text,
+  name text,
+  is_updatable boolean,
+  comment text
+)
 language plpgsql
 security definer
 as $$
 begin
   return query
     select
-      c.*
-    from supasheet.charts c
+      v.*
+    from supasheet.views v
     inner join supasheet.role_permissions rp
-        ON rp.permission::text = 'charts.' || c.view_name || ':select'
+        ON rp.permission::text = v.schema || '.' || v.name || ':select'
     inner join supasheet.user_roles ur
         ON ur.role = rp.role
-    where ur.account_id = auth.uid() and is_active = true
-      and (p_group is null or c."group" = p_group);
+    where ur.account_id = auth.uid()
+      and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'chart');
 end;
 $$;
 

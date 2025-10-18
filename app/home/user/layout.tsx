@@ -5,7 +5,6 @@ import {
   UserPlusIcon,
 } from "lucide-react";
 
-import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
@@ -45,9 +44,7 @@ export default async function HomeUsersLayout({
 }) {
   return (
     <>
-      <PrimarySidebar>
-        <UserSidebar items={items} />
-      </PrimarySidebar>
+      <UserSidebar items={items} />
       <SidebarInset>
         <div className="w-full flex-1">
           <header className="flex h-12 shrink-0 items-center gap-2 px-4">

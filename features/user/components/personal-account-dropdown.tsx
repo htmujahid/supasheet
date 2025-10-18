@@ -6,28 +6,41 @@ import Link from "next/link";
 
 import type { User } from "@supabase/supabase-js";
 
-import { ChevronsUpDown, Home, LogOut, UserPenIcon } from "lucide-react";
+import {
+  ChevronsUpDown,
+  Home,
+  LogOut,
+  UserIcon,
+} from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import { SubMenuModeToggle } from "@/components/makerkit/mode-toggle";
-import { ProfileAvatar } from "@/components/makerkit/profile-avatar";
 import { Trans } from "@/components/makerkit/trans";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 import { usePersonalAccountData } from "../hooks/use-personal-account-data";
 
 export function PersonalAccountDropdown({
-  className,
   user,
   signOutRequested,
-  showProfileName = true,
   paths,
   features,
   account,
@@ -50,10 +63,6 @@ export function PersonalAccountDropdown({
   features: {
     enableThemeToggle: boolean;
   };
-
-  showProfileName?: boolean;
-
-  className?: string;
 }) {
   const personalAccountData = usePersonalAccountData(user?.id, account);
 
@@ -67,107 +76,107 @@ export function PersonalAccountDropdown({
   const displayName =
     personalAccountData?.data?.name ?? account?.name ?? user?.email ?? "";
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        aria-label="Open your profile menu"
-        data-test={"account-dropdown-trigger"}
-        className={cn(
-          "animate-in fade-in flex cursor-pointer items-center duration-500 group-data-[minimized=true]:px-0",
-          className ?? "",
-          {
-            ["active:bg-secondary/50 items-center gap-x-4 rounded-md" +
-            " hover:bg-secondary p-2 transition-colors"]: showProfileName,
-          },
-        )}
-      >
-        <ProfileAvatar
-          className={"rounded-md"}
-          fallbackClassName={"rounded-md border"}
-          displayName={displayName ?? user?.email ?? ""}
-          pictureUrl={personalAccountData?.data?.picture_url}
-        />
-
-        <If condition={showProfileName}>
-          <div
-            className={
-              "fade-in animate-in flex w-full flex-col truncate text-left group-data-[minimized=true]:hidden"
-            }
-          >
-            <span
-              data-test={"account-dropdown-display-name"}
-              className={"truncate text-sm"}
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              data-test="account-dropdown-trigger"
             >
-              {displayName}
-            </span>
-
-            <span
-              data-test={"account-dropdown-email"}
-              className={"text-muted-foreground truncate text-xs"}
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage
+                  src={personalAccountData?.data?.picture_url ?? ""}
+                  alt={displayName}
+                />
+                <AvatarFallback className="rounded-lg">
+                  {getInitials(displayName)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span
+                  className="truncate font-medium"
+                  data-test="account-dropdown-display-name"
+                >
+                  {displayName}
+                </span>
+                <span
+                  className="truncate text-xs"
+                  data-test="account-dropdown-email"
+                >
+                  {signedInAsLabel}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            side={"bottom"}
+            align="end"
+            sideOffset={4}
+          >
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage
+                    src={personalAccountData?.data?.picture_url ?? ""}
+                    alt={displayName}
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {getInitials(displayName)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{displayName}</span>
+                  <span className="truncate text-xs">{signedInAsLabel}</span>
+                </div>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link href={paths.home}>
+                  <Home />
+                  <Trans i18nKey="common:routes.home" />
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link href={paths.account}>
+                  <UserIcon />
+                  <Trans i18nKey="common:routes.account" />
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <If condition={features.enableThemeToggle}>
+              <DropdownMenuSeparator />
+              <SubMenuModeToggle />
+            </If>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              data-test="account-dropdown-sign-out"
+              onClick={signOutRequested}
             >
-              {signedInAsLabel}
-            </span>
-          </div>
-
-          <ChevronsUpDown
-            className={
-              "text-muted-foreground mr-1 h-8 group-data-[minimized=true]:hidden"
-            }
-          />
-        </If>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent className={"!min-w-[15rem]"}>
-        <DropdownMenuItem className={"!h-10 rounded-none"}>
-          <div
-            className={"flex flex-col justify-start truncate text-left text-xs"}
-          >
-            <div className={"text-muted-foreground"}>
-              <Trans i18nKey={"common:signedInAs"} />
-            </div>
-
-            <div>
-              <span className={"block truncate"}>{signedInAsLabel}</span>
-            </div>
-          </div>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem asChild>
-          <Link
-            className={"s-full flex cursor-pointer items-center"}
-            href={paths.home}
-          >
-            <Home className={"h-5"} />
-
-            <span>
-              <Trans i18nKey={"common:routes.home"} />
-            </span>
-          </Link>
-        </DropdownMenuItem>
-
-        <If condition={features.enableThemeToggle}>
-          <SubMenuModeToggle />
-        </If>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem
-          data-test={"account-dropdown-sign-out"}
-          role={"button"}
-          className={"cursor-pointer"}
-          onClick={signOutRequested}
-        >
-          <span className={"flex w-full items-center space-x-2"}>
-            <LogOut className={"h-5"} />
-
-            <span>
-              <Trans i18nKey={"auth:signOut"} />
-            </span>
-          </span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+              <LogOut />
+              <Trans i18nKey="auth:signOut" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }

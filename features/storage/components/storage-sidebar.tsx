@@ -44,8 +44,7 @@ export function StorageSidebar({
 
   return (
     <Sidebar
-      collapsible="none"
-      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+      className="border-r"
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
         <SidebarMenuButton className="w-fit px-1.5">

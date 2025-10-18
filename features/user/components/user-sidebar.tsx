@@ -30,7 +30,7 @@ export function UserSidebar({
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="none" className="hidden flex-1 md:flex">
+    <Sidebar className="border-r">
       <SidebarHeader className="border-b">
         <SidebarMenuButton className="w-fit px-1.5">
           <SidebarMenuButton className="w-fit px-1.5">

@@ -61,7 +61,7 @@ export function DeleteResourceDialog({
   const supabase = useSupabase();
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
 
-  const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
+  const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
 
   const [isDeletePending, startDeleteTransition] = React.useTransition();
   const isDesktop = useMediaQuery("(min-width: 640px)");
@@ -85,7 +85,7 @@ export function DeleteResourceDialog({
     startDeleteTransition(async () => {
       const { data, error } = await deleteResourceDataAction({
         schema,
-        resourceName: id,
+        resourceName: resource,
         resourceIds,
       });
 
@@ -122,7 +122,7 @@ export function DeleteResourceDialog({
       if (fileNames.length > 0) {
         await supabase.storage
           .from("uploads")
-          .remove(fileNames.map((name) => `${schema}/${id}/${name}`));
+          .remove(fileNames.map((name) => `${schema}/${resource}/${name}`));
       }
 
       props.onOpenChange?.(false);

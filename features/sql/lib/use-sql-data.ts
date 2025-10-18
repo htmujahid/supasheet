@@ -23,7 +23,7 @@ export function useSqlData() {
         const token = await client.auth.getSession();
 
         const data = await restSupabaseFetcher(
-          "supasheet",
+          "public",
           http.method,
           http.fullPath,
           token.data.session?.access_token || "",

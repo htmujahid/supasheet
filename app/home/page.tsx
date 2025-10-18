@@ -11,7 +11,6 @@ import {
   WarehouseIcon,
 } from "lucide-react";
 
-import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { Button } from "@/components/ui/button";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { withI18n } from "@/lib/i18n/with-i18n";
@@ -70,7 +69,6 @@ const quickLinks = [
 function Home() {
   return (
     <>
-      <PrimarySidebar />
       <SidebarInset>
         <div className="h-screen overflow-auto">
           <div className="flex min-h-screen w-full items-center justify-center p-6">

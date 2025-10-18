@@ -1,22 +1,16 @@
-import { Database } from "@/lib/database.types";
+import { DatabaseSchemas, DatabaseViews } from "@/lib/database-meta.types";
 
-export type ChartsSchema = Database["supasheet"]["Tables"]["charts"]["Row"];
+export type ChartsSchema = {
+  schema: DatabaseSchemas;
+  view_name: DatabaseViews<DatabaseSchemas>;
+} & ChartMeta;
 
-export type ChartType = "area" | "bar" | "line" | "pie" | "radar";
+export type ChartType = 'area' | 'pie' | 'line' | 'radar' | 'bar';
 
-export interface ChartData {
-  labels: string[];
-  datasets: {
-    label: string;
-    data: number[];
-    backgroundColor?: string | string[];
-    borderColor?: string;
-    borderWidth?: number;
-  }[];
-}
-
-export interface ChartConfig {
-  type: ChartType;
-  data: ChartData;
-  options?: any;
-}
+export type ChartMeta = {
+  name: string;
+  description?: string;
+  caption?: string;
+  type: "chart";
+  chart_type: ChartType;
+};

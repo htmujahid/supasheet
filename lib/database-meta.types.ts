@@ -7,6 +7,9 @@ export type DatabaseSchemas = keyof Database;
 export type DatabaseTables<schema extends DatabaseSchemas> =
   keyof Database[schema]["Tables"];
 
+export type DatabaseViews<schema extends DatabaseSchemas> = 
+  keyof Database[schema]["Views"];
+
 export type ColumnSchema = Database["supasheet"]["Tables"]["columns"]["Row"];
 export type TableSchema = Database["supasheet"]["Tables"]["tables"]["Row"];
 

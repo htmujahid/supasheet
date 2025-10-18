@@ -9,14 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DatabaseTables } from "@/lib/database-meta.types";
 
 import { loadWidget } from "../../lib/loaders";
 import { DashboardWidgetsSchema } from "../../lib/types";
 
 export async function Card3({ widget }: { widget: DashboardWidgetsSchema }) {
   const data = (
-    await loadWidget(widget.view_name as DatabaseTables<"dashboards">)
+    await loadWidget(widget.schema, widget.view_name)
   )?.[0];
 
   if (!data) {

@@ -50,7 +50,7 @@ import { formatTitle } from "@/lib/format";
 import { useSchemas, useTableResources, useViewResources } from "../lib/data";
 
 export function ResourceSidebar() {
-  const params = useParams<{ schema: string; id: string }>();
+  const params = useParams<{ schema: string; resource: string }>();
 
   const { data: schemas } = useSchemas();
   const activeSchema = params?.schema ?? (schemas?.[0]?.schema as string);
@@ -112,10 +112,10 @@ export function ResourceSidebar() {
               <Collapsible
                 key={item.id}
                 asChild
-                defaultOpen={params?.id === item.id}
+                defaultOpen={params?.resource === item.id}
               >
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild isActive={params?.id === item.id}>
+                  <SidebarMenuButton asChild isActive={params?.resource === item.id}>
                     <Link
                       href={"/home/resource/" + item.schema + "/" + item.id}
                     >

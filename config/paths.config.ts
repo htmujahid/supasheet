@@ -28,7 +28,7 @@ const pathsConfig = PathsSchema.parse({
   },
   app: {
     home: "/home",
-    account: "/home/account",
+    account: "/home/user",
     resources: "/home/resource",
     chart: "/home/chart",
   },
