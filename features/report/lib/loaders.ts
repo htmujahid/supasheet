@@ -1,4 +1,4 @@
-import { DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { ReportSearchParams } from "./validations";
@@ -50,7 +50,8 @@ export async function loadColumnsSchema(id: string) {
 }
 
 export async function loadReportData(
-  resource: DatabaseTables<"reports">,
+  schema: DatabaseSchemas,
+  resource: DatabaseTables<typeof schema>,
   input: ReportSearchParams,
 ) {
   const client = await getSupabaseServerClient();
@@ -58,7 +59,7 @@ export async function loadReportData(
   const { page, perPage, sort, filters, joinOperator } = input;
 
   const query = client
-    .schema("reports")
+    .schema(schema)
     .from(resource)
     .select("*", { count: "exact" })
     .range((page - 1) * perPage, page * perPage - 1);

@@ -63,7 +63,7 @@ export function DefaultSidebar({ ...props }: React.ComponentProps<typeof Sidebar
   const { data: schemas } = useSchemas();
   const activeSchema = params?.schema ?? (schemas?.[0]?.schema as string);
 
-  const { data: resources } = useResources(activeSchema);
+  const { data: resources, isLoading } = useResources(activeSchema);
 
   return (
     <Sidebar className="border-r-0" {...props}>

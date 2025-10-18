@@ -11,23 +11,24 @@ import {
 } from "@/features/report/lib/loaders";
 import { reportSearchParamsCache } from "@/features/report/lib/validations";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
-import { DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 async function HomeResourcePage(props: {
   params: Promise<{
-    report: DatabaseTables<"reports">;
+    schema: DatabaseSchemas;
+    report: DatabaseTables<DatabaseSchemas>;
   }>;
   searchParams: Promise<SearchParams>;
 }) {
-  const { report } = await props.params;
+  const { schema, report } = await props.params;
 
   const searchParams = await props.searchParams;
   const search = reportSearchParamsCache.parse(searchParams);
 
   const [columnsSchema, data] = await Promise.all([
     loadColumnsSchema(report),
-    loadReportData(report, search),
+    loadReportData(schema, report, search),
   ]);
 
   if (!columnsSchema || !data) {

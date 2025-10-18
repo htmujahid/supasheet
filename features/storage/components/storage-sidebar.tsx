@@ -5,11 +5,12 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { FolderIcon, FolderLockIcon } from "lucide-react";
+import { ArrowLeftIcon, FolderIcon, FolderLockIcon } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarInput,
@@ -18,6 +19,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { formatTitle } from "@/lib/format";
+import { NavSecondary } from "@/components/layouts/nav-secondary";
 
 export function StorageSidebar({
   bucketsPromise,
@@ -88,6 +90,9 @@ export function StorageSidebar({
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavSecondary items={[{title: "Back to Main", url: "/home", icon: ArrowLeftIcon}]} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

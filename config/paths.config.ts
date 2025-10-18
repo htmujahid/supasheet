@@ -11,7 +11,7 @@ const PathsSchema = z.object({
   }),
   app: z.object({
     home: z.string().min(1),
-    account: z.string().min(1),
+    user: z.string().min(1),
     resources: z.string().min(1),
     chart: z.string().min(1),
   }),
@@ -28,7 +28,7 @@ const pathsConfig = PathsSchema.parse({
   },
   app: {
     home: "/home",
-    account: "/home/user",
+    user: "/home/user",
     resources: "/home/resource",
     chart: "/home/chart",
   },

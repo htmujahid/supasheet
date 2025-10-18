@@ -4,11 +4,12 @@ import { use, useState } from "react";
 
 import Link from "next/link";
 
-import { DatabaseIcon, ScrollTextIcon } from "lucide-react";
+import { ArrowLeftIcon, DatabaseIcon, ScrollTextIcon } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarInput,
@@ -17,6 +18,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { formatTitle } from "@/lib/format";
+import { NavSecondary } from "@/components/layouts/nav-secondary";
 
 export function AuditLogsSidebar({
   schemasPromise,
@@ -93,6 +95,9 @@ export function AuditLogsSidebar({
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavSecondary items={[{title: "Back to Main", url: "/home", icon: ArrowLeftIcon}]} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

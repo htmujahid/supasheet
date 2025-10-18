@@ -57,7 +57,7 @@ export function PersonalAccountDropdown({
 
   paths: {
     home: string;
-    account: string;
+    user: string;
   };
 
   features: {
@@ -156,9 +156,9 @@ export function PersonalAccountDropdown({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={paths.account}>
+                <Link href={paths.user}>
                   <UserIcon />
-                  <Trans i18nKey="common:routes.account" />
+                  <Trans i18nKey="common:routes.user" />
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
