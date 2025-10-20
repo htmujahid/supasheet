@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse, URLPattern } from "next/server";
 
@@ -10,7 +11,6 @@ import {
   checkSupabaseKeys,
   createMiddlewareClient,
 } from "@/lib/supabase/clients/middleware-client";
-import { notFound } from "next/navigation";
 
 const CSRF_SECRET_COOKIE = "csrfSecret";
 const NEXT_ACTION_HEADER = "next-action";
@@ -165,7 +165,10 @@ function getPatterns() {
         }
 
         if (req.nextUrl.pathname === pathsConfig.app.home) {
-          const { data, error } = await supabase.schema("supasheet").rpc("get_schemas").select();
+          const { data, error } = await supabase
+            .schema("supasheet")
+            .rpc("get_schemas")
+            .select();
 
           if (!data || error) {
             return notFound();

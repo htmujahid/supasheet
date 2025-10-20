@@ -171,7 +171,8 @@ export function ResourceSheet({
             {data ? "Update" : "Create"} {resource}
           </SheetTitle>
           <SheetDescription>
-            {data ? "Update the" : "Create a new"} {resource} and save the changes
+            {data ? "Update the" : "Create a new"} {resource} and save the
+            changes
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>

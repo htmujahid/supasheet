@@ -95,10 +95,10 @@ export function ResourceCreateForm({
         const pkValues = primaryKeys
           .map((pkName) => createdResource[pkName])
           .join("/");
-        router.push(`/home/resource/${schema}/${resource}/${pkValues}`);
+        router.push(`/home/${schema}/resource/${resource}/${pkValues}`);
       } else {
         // If no primary keys or data, navigate to the list page
-        router.push(`/home/resource/${schema}/${resource}`);
+        router.push(`/home/${schema}/resource/${resource}`);
       }
     });
   }

@@ -39,14 +39,14 @@ export function ResourceForiegnDataView({
               relationship.source_column_name as keyof typeof singleResourceData
             ];
           const isValue = !!value;
-          let link = `/home/resource/${relationship.target_table_schema}/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"${relationship.id}"}]`;
+          let link = `/home/${relationship.target_table_schema}/resource/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"${relationship.id}"}]`;
 
           if (!value) {
             value =
               singleResourceData?.[
                 relationship.target_column_name as keyof typeof singleResourceData
               ];
-            link = `/home/resource/${relationship.source_schema}/${relationship.source_table_name}?filters=[{"id":"${relationship.source_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"${relationship.id}"}]`;
+            link = `/home/${relationship.source_schema}/resource/${relationship.source_table_name}?filters=[{"id":"${relationship.source_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"${relationship.id}"}]`;
           }
           return (
             <div key={relationship.id}>

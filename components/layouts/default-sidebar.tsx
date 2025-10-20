@@ -1,28 +1,32 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
+
+import { useParams } from "next/navigation";
+
 import {
   Calendar,
   ChartBarIcon,
   FileChartColumnIcon,
   HomeIcon,
   Settings2,
-} from "lucide-react"
-import { useParams } from "next/navigation"
+} from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { useSchemas, useResources } from "@/features/resource/lib/data"
+} from "@/components/ui/sidebar";
+import { SYSTEM_SCHEMAS } from "@/config/database.config";
+import { useSchemas } from "@/features/resource/lib/data";
 
-import { NavMain } from "./nav-main"
-import { NavSecondary } from "./nav-secondary"
-import { NavResources } from "./nav-resources"
-import { DefaultSidebarSwitcher } from "./default-sidebar-switcher"
-import { NavResourceEditor } from "./nav-resource-editor"
+import { DefaultSidebarSwitcher } from "./default-sidebar-switcher";
+import { NavMain } from "./nav-main";
+import { NavResourceEditor } from "./nav-resource-editor";
+import { NavResources } from "./nav-resources";
+import { NavSecondary } from "./nav-secondary";
 
 // This is sample data.
 const data = {
@@ -55,15 +59,19 @@ const data = {
       icon: Calendar,
     },
   ],
-}
+};
 
-export function DefaultSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function DefaultSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const params = useParams<{ schema: string; resource: string }>();
 
   const { data: schemas } = useSchemas();
-  const activeSchema = params?.schema ?? (schemas?.[0]?.schema as string);
+  let activeSchema = params?.schema;
 
-  const { data: resources, isLoading } = useResources(activeSchema);
+  if (!activeSchema || SYSTEM_SCHEMAS.includes(activeSchema)) {
+    activeSchema = schemas?.[0]?.schema as string;
+  }
 
   return (
     <Sidebar className="border-r-0" {...props}>
@@ -75,7 +83,7 @@ export function DefaultSidebar({ ...props }: React.ComponentProps<typeof Sidebar
         <NavMain activeSchema={activeSchema} items={data.navMain} />
       </SidebarHeader>
       <SidebarContent>
-        <NavResources resources={resources} />
+        <NavResources activeSchema={activeSchema} />
         <NavResourceEditor activeSchema={activeSchema} />
       </SidebarContent>
       <SidebarFooter>
@@ -83,5 +91,5 @@ export function DefaultSidebar({ ...props }: React.ComponentProps<typeof Sidebar
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

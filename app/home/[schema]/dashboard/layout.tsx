@@ -21,5 +21,5 @@ export default function DashboardLayout({
       </header>
       <div className="">{children}</div>
     </div>
-  )
+  );
 }

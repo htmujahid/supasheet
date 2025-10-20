@@ -1,17 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useState } from "react";
+
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
 import {
   ArrowUpRight,
+  Code2Icon,
   EditIcon,
-  FileCode2Icon,
   MoreHorizontal,
   PlusIcon,
   TrashIcon,
-} from "lucide-react"
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -19,8 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -29,17 +30,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { useLocalStorage } from "@/hooks/use-local-storage"
+} from "@/components/ui/sidebar";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface EditorItemProps {
-  item: { name: string; id: string; emoji?: string }
-  isActive: boolean
-  onUpdateItems: (updatedItems: { name: string; id: string; emoji?: string }[]) => void
-  items: { name: string; id: string; emoji?: string }[]
-  activeItem: { name: string; id: string; emoji?: string } | undefined
-  activeSchema?: string
-  isMobile: boolean
+  item: { name: string; id: string };
+  isActive: boolean;
+  onUpdateItems: (updatedItems: { name: string; id: string }[]) => void;
+  items: { name: string; id: string }[];
+  activeItem: { name: string; id: string } | undefined;
+  activeSchema?: string;
+  isMobile: boolean;
 }
 
 function EditorItem({
@@ -51,56 +52,56 @@ function EditorItem({
   activeSchema,
   isMobile,
 }: EditorItemProps) {
-  const router = useRouter()
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingName, setEditingName] = useState(item.name)
+  const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingName, setEditingName] = useState(item.name);
 
   const handleRename = () => {
-    setIsEditing(true)
-    setEditingName(item.name)
-  }
+    setIsEditing(true);
+    setEditingName(item.name);
+  };
 
   const handleSaveRename = () => {
-    if (!editingName.trim()) return
+    if (!editingName.trim()) return;
 
     const updatedItems = items.map((i) =>
       i.id === item.id ? { ...i, name: editingName.trim() } : i,
-    )
+    );
 
-    onUpdateItems(updatedItems)
-    setIsEditing(false)
-  }
+    onUpdateItems(updatedItems);
+    setIsEditing(false);
+  };
 
   const handleCancelRename = () => {
-    setIsEditing(false)
-    setEditingName(item.name)
-  }
+    setIsEditing(false);
+    setEditingName(item.name);
+  };
 
   const handleRenameKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSaveRename()
+      handleSaveRename();
     } else if (e.key === "Escape") {
-      handleCancelRename()
+      handleCancelRename();
     }
-  }
+  };
 
   const handleRemove = () => {
-    const updatedItems = items.filter((i) => i.id !== item.id)
-    onUpdateItems(updatedItems)
+    const updatedItems = items.filter((i) => i.id !== item.id);
+    onUpdateItems(updatedItems);
 
     // If the removed item was active, navigate to the first available item or home
     if (activeItem?.id === item.id) {
       if (updatedItems.length > 0) {
-        router.push(`/home/${activeSchema}/sql-editor/${updatedItems[0].id}`)
+        router.push(`/home/${activeSchema}/sql-editor/${updatedItems[0].id}`);
       } else {
-        router.push(`/home/${activeSchema}`)
+        router.push(`/home/${activeSchema}`);
       }
     }
-  }
+  };
 
   const handleOpenInNewTab = () => {
-    window.open(`/home/${activeSchema}/sql-editor/${item.id}`, "_blank")
-  }
+    window.open(`/home/${activeSchema}/sql-editor/${item.id}`, "_blank");
+  };
 
   if (isEditing) {
     return (
@@ -115,14 +116,17 @@ function EditorItem({
           className="h-8 text-sm"
         />
       </div>
-    )
+    );
   }
 
   return (
     <>
       <SidebarMenuButton asChild isActive={isActive}>
-        <Link href={`/home/${activeSchema}/sql-editor/${item.id}`} title={item.name}>
-          {item.emoji ? <span>{item.emoji}</span> : <FileCode2Icon />}
+        <Link
+          href={`/home/${activeSchema}/sql-editor/${item.id}`}
+          title={item.name}
+        >
+          <Code2Icon />
           <span>{item.name}</span>
         </Link>
       </SidebarMenuButton>
@@ -155,59 +159,56 @@ function EditorItem({
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  )
+  );
 }
 
-export function NavResourceEditor({
-  activeSchema,
-}: {
-  activeSchema?: string
-}) {
-  const params = useParams<{ snippet: string }>()
-  const router = useRouter()
-  const { isMobile } = useSidebar()
+export function NavResourceEditor({ activeSchema }: { activeSchema?: string }) {
+  const params = useParams<{ snippet: string }>();
+  const router = useRouter();
+  const { isMobile } = useSidebar();
   const [items = [], setItems] = useLocalStorage<
     {
-      name: string
-      id: string
-      emoji?: string
+      name: string;
+      id: string;
     }[]
-  >(`sql-editor-items-${activeSchema}`, [])
-  const [isEditing, setIsEditing] = useState(false)
-  const [newEditorName, setNewEditorName] = useState("")
+  >(`sql-editor-items-${activeSchema}`, []);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newEditorName, setNewEditorName] = useState("");
 
-  const activeItem = items?.find((item) => item.id === params?.snippet)
+  const activeItem = items?.find((item) => item.id === params?.snippet);
 
-  const handleUpdateItems = (updatedItems: { name: string; id: string; emoji?: string }[]) => {
-    setItems(updatedItems)
-  }
+  const handleUpdateItems = (updatedItems: { name: string; id: string }[]) => {
+    setItems(updatedItems);
+  };
 
   const handleCreateEditor = () => {
-    if (!newEditorName.trim()) return
+    if (!newEditorName.trim()) {
+      setIsEditing(false);
+      return;
+    }
 
     const newEditor = {
       name: newEditorName.trim(),
       id: `${Date.now()}`,
-      emoji: "📝",
-    }
+    };
 
-    const updatedItems = [...items, newEditor]
-    handleUpdateItems(updatedItems)
-    setNewEditorName("")
-    setIsEditing(false)
+    const updatedItems = [...items, newEditor];
+    handleUpdateItems(updatedItems);
+    setNewEditorName("");
+    setIsEditing(false);
 
     // Navigate to the new editor
-    router.push(`/home/${activeSchema}/sql-editor/${newEditor.id}`)
-  }
+    router.push(`/home/${activeSchema}/sql-editor/${newEditor.id}`);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleCreateEditor()
+      handleCreateEditor();
     } else if (e.key === "Escape") {
-      setIsEditing(false)
-      setNewEditorName("")
+      setIsEditing(false);
+      setNewEditorName("");
     }
-  }
+  };
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -251,5 +252,5 @@ export function NavResourceEditor({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

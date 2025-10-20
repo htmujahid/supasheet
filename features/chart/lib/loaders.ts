@@ -38,7 +38,10 @@ export async function loadCharts(schema?: string) {
   });
 }
 
-export async function loadChart(schema: DatabaseSchemas, viewName: DatabaseViews<typeof schema>) {
+export async function loadChart(
+  schema: DatabaseSchemas,
+  viewName: DatabaseViews<typeof schema>,
+) {
   const supabase = await getSupabaseServerClient();
 
   // Execute the view to get chart data

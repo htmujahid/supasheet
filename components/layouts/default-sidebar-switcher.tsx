@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronDown, ProportionsIcon } from "lucide-react"
+import * as React from "react";
+
+import { ChevronDown, ProportionsIcon } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -10,37 +11,45 @@ import {
   DropdownMenuLabel,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { formatTitle } from "@/lib/format"
+} from "@/components/ui/sidebar";
+import { formatTitle } from "@/lib/format";
+
+import { Skeleton } from "../ui/skeleton";
 
 export function DefaultSidebarSwitcher({
   schemas,
   activeSchema,
 }: {
   schemas: {
-    schema: string
-  }[]
-  activeSchema: string
+    schema: string;
+  }[];
+  activeSchema?: string;
 }) {
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="w-fit px-1.5">
-              <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
-                <ProportionsIcon className="size-4" />
-              </div>
-              <span className="truncate font-medium">
-                {formatTitle(activeSchema)}
-              </span>
-              <ChevronDown className="opacity-50" />
+              {activeSchema ? (
+                <>
+                  <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+                    <ProportionsIcon className="size-4" />
+                  </div>
+
+                  <span className="truncate font-medium">
+                    {formatTitle(activeSchema)}
+                  </span>
+                  <ChevronDown className="opacity-50" />
+                </>
+              ) : (
+                <Skeleton className="h-6 w-48" />
+              )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -65,5 +74,5 @@ export function DefaultSidebarSwitcher({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

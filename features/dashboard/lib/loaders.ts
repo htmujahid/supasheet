@@ -1,5 +1,6 @@
 import { DatabaseSchemas, DatabaseViews } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
+
 import { DashboardWidgetMeta, DashboardWidgetsSchema } from "./types";
 
 export async function loadDashboards() {
@@ -26,7 +27,9 @@ export async function loadDashboardWidgets(schema: string) {
   }
 
   return data.map((widget) => {
-    const meta = (widget.comment ? JSON.parse(widget.comment) : {}) as DashboardWidgetMeta;
+    const meta = (
+      widget.comment ? JSON.parse(widget.comment) : {}
+    ) as DashboardWidgetMeta;
 
     return {
       view_name: widget.name,
@@ -36,7 +39,10 @@ export async function loadDashboardWidgets(schema: string) {
   });
 }
 
-export async function loadWidget(schema: DatabaseSchemas, viewName: DatabaseViews<typeof schema>) {
+export async function loadWidget(
+  schema: DatabaseSchemas,
+  viewName: DatabaseViews<typeof schema>,
+) {
   const client = await getSupabaseServerClient();
 
   const widget = await client.schema(schema).from(viewName).select("*");

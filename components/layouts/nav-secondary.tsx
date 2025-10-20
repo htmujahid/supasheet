@@ -1,5 +1,8 @@
-import React from "react"
-import { type LucideIcon } from "lucide-react"
+import React from "react";
+
+import { usePathname } from "next/navigation";
+
+import { type LucideIcon } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -8,17 +11,16 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { PersonalAccountDropdown } from "@/features/user/components/personal-account-dropdown"
-import { useSignOut } from "@/lib/supabase/hooks/use-sign-out"
-import { usePathname } from "next/navigation"
-import { useUser } from "@/lib/supabase/hooks/use-user"
-import featuresFlagConfig from "@/config/feature-flags.config"
-import pathsConfig from "@/config/paths.config"
+} from "@/components/ui/sidebar";
+import featuresFlagConfig from "@/config/feature-flags.config";
+import pathsConfig from "@/config/paths.config";
+import { PersonalAccountDropdown } from "@/features/user/components/personal-account-dropdown";
+import { useSignOut } from "@/lib/supabase/hooks/use-sign-out";
+import { useUser } from "@/lib/supabase/hooks/use-user";
 
 const paths = {
   home: pathsConfig.app.home,
-  user: pathsConfig.app.user,
+  account: pathsConfig.app.account,
 };
 
 const features = {
@@ -30,11 +32,11 @@ export function NavSecondary({
   ...props
 }: {
   items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    badge?: React.ReactNode
-  }[]
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    badge?: React.ReactNode;
+  }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
   const { data: userData } = useUser();
@@ -53,7 +55,9 @@ export function NavSecondary({
                     <span>{item.title}</span>
                   </a>
                 </SidebarMenuButton>
-                {item.badge && <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>}
+                {item.badge && (
+                  <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                )}
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
@@ -67,5 +71,5 @@ export function NavSecondary({
         signOutRequested={() => signOut.mutateAsync()}
       />
     </>
-  )
+  );
 }

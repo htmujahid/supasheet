@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useParams } from "next/navigation"
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 import {
   CalendarDaysIcon,
@@ -10,17 +10,16 @@ import {
   EyeIcon,
   ListIcon,
   type LucideIcon,
-  MoreHorizontal,
   PlusIcon,
   SquareKanbanIcon,
-} from "lucide-react"
-import * as LucideIcons from "lucide-react"
+} from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -32,53 +31,64 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { Resource } from "@/features/resource/lib/types"
-import { formatTitle } from "@/lib/format"
+} from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useResources } from "@/features/resource/lib/data";
+import { formatTitle } from "@/lib/format";
 
 function LucideIconComponent({
   iconName,
 }: {
-  iconName: keyof typeof LucideIcons
+  iconName: keyof typeof LucideIcons;
 }) {
-  const Icon = LucideIcons[iconName] as LucideIcon
+  const Icon = LucideIcons[iconName] as LucideIcon;
 
-  return <Icon className="size-4 shrink-0" />
+  return <Icon className="size-4 shrink-0" />;
 }
 
 function SubItemsIcon({ type }: { type: string }) {
   switch (type) {
     case "list":
-      return <ListIcon className="size-4 shrink-0" />
+      return <ListIcon className="size-4 shrink-0" />;
     case "kanban":
-      return <SquareKanbanIcon className="size-4 shrink-0" />
+      return <SquareKanbanIcon className="size-4 shrink-0" />;
     case "calendar":
-      return <CalendarDaysIcon className="size-4 shrink-0" />
+      return <CalendarDaysIcon className="size-4 shrink-0" />;
     case "gantt":
-      return <ChartGanttIcon className="size-4 shrink-0" />
+      return <ChartGanttIcon className="size-4 shrink-0" />;
   }
-  return <EyeIcon className="size-4 shrink-0" />
+  return <EyeIcon className="size-4 shrink-0" />;
 }
 
-export function NavResources({
-  resources,
-}: {
-  resources?: Resource[]
-}) {
-  const params = useParams<{ schema: string; resource: string }>()
+export function NavResources({ activeSchema }: { activeSchema: string }) {
+  const params = useParams<{ resource?: string }>();
+  const { data: resources, isLoading } = useResources(activeSchema);
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Resources</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
+          {isLoading &&
+            new Array(3).fill(null).map((_, index) => (
+              <SidebarMenuItem key={index}>
+                <SidebarMenuButton>
+                  <Skeleton className="size-5 shrink-0 rounded-md" />
+
+                  <Skeleton className="h-5 w-full" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
           {resources?.map((item) => (
             <Collapsible
               key={item.id}
               defaultOpen={params?.resource === item.id}
             >
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={params?.resource === item.id}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={params?.resource === item.id}
+                >
                   <Link href={`/home/${item.schema}/resource/${item.id}`}>
                     <LucideIconComponent
                       iconName={
@@ -124,14 +134,8 @@ export function NavResources({
               </SidebarMenuItem>
             </Collapsible>
           ))}
-          <SidebarMenuItem>
-            <SidebarMenuButton className="text-sidebar-foreground/70">
-              <MoreHorizontal />
-              <span>More</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }

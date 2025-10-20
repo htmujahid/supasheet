@@ -20,7 +20,11 @@ import {
 import { loadReports } from "@/features/report/lib/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function ReportsPage({ params }: { params: Promise<{ schema: string }> }) {
+async function ReportsPage({
+  params,
+}: {
+  params: Promise<{ schema: string }>;
+}) {
   const { schema } = await params;
   const reports = await loadReports(schema);
 
@@ -43,11 +47,11 @@ async function ReportsPage({ params }: { params: Promise<{ schema: string }> }) 
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 max-w-6xl mx-auto">
+    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 p-4 md:grid-cols-2">
       {reports.map((report) => (
         <Link
           key={report.view_name}
-          href={`/home/report/${schema}/${report.view_name}`}
+          href={`/home/${schema}/report/${report.view_name}`}
         >
           <Card>
             <CardHeader>

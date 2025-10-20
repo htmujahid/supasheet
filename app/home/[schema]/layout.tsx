@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { DefaultSidebar } from "@/components/layouts/default-sidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
 
@@ -8,10 +10,10 @@ export default function SchemaLayout({
 }) {
   return (
     <>
-      <DefaultSidebar />
-      <SidebarInset>
-        {children}
-      </SidebarInset>
+      <Suspense fallback={<div>Loading...</div>}>
+        <DefaultSidebar />
+      </Suspense>
+      <SidebarInset>{children}</SidebarInset>
     </>
   );
 }

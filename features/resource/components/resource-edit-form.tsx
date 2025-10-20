@@ -114,7 +114,7 @@ export function ResourceEditForm({
 
       // Navigate back to view page
       const pkValues = primaryKeys.map((pk) => data[pk.name]).join("/");
-      router.push(`/home/resource/${schema}/${resource}/${pkValues}`);
+      router.push(`/home/${schema}/resource/${resource}/${pkValues}`);
     });
   }
 
@@ -194,7 +194,7 @@ export function ResourceEditForm({
           tableSchema={tableSchema}
           columnSchema={columnsSchema}
           showTrigger={false}
-          onSuccess={() => router.push(`/home/resource/${schema}/${resource}`)}
+          onSuccess={() => router.push(`/home/${schema}/resource/${resource}`)}
         />
       )}
     </>

@@ -5,7 +5,7 @@ export type ChartsSchema = {
   view_name: DatabaseViews<DatabaseSchemas>;
 } & ChartMeta;
 
-export type ChartType = 'area' | 'pie' | 'line' | 'radar' | 'bar';
+export type ChartType = "area" | "pie" | "line" | "radar" | "bar";
 
 export type ChartMeta = {
   name: string;

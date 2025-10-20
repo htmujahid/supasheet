@@ -7,9 +7,9 @@ export async function Table2Wrapper({
 }: {
   widget: DashboardWidgetsSchema;
 }) {
-  const data = (
-    await loadWidget(widget.schema, widget.view_name)
-  ) as any[] | null;
+  const data = (await loadWidget(widget.schema, widget.view_name)) as
+    | any[]
+    | null;
 
   return <Table2Widget widget={widget} data={data} />;
 }

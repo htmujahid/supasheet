@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { ArrowLeftIcon, UserIcon } from "lucide-react";
 
+import { NavSecondary } from "@/components/layouts/nav-secondary";
 import {
   Sidebar,
   SidebarContent,
@@ -17,7 +18,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { NavSecondary } from "@/components/layouts/nav-secondary";
 
 export function UserSidebar({
   items,
@@ -80,7 +80,9 @@ export function UserSidebar({
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>*/}
-        <NavSecondary items={[{title: "Back to Main", url: "/home", icon: ArrowLeftIcon}]} />
+        <NavSecondary
+          items={[{ title: "Back to Main", url: "/home", icon: ArrowLeftIcon }]}
+        />
       </SidebarFooter>
     </Sidebar>
   );

@@ -57,7 +57,7 @@
   "back": "Back",
   "routes": {
     "home": "Home",
-    "user": "User",
+    "account": "Account",
     "members": "Members",
     "billing": "Billing",
     "dashboard": "Dashboard",

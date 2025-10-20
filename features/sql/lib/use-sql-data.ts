@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { useParams } from "next/navigation";
+
 import { processSql, renderHttp } from "@supabase/sql-to-rest";
 import { toast } from "sonner";
 
@@ -10,6 +12,7 @@ import { useSqlContext } from "../components/sql-context";
 
 export function useSqlData() {
   const client = useSupabase();
+  const { schema } = useParams<{ schema: string }>();
   const { setIsLoading, setData } = useSqlContext();
 
   const fetchData = useCallback(
@@ -23,7 +26,7 @@ export function useSqlData() {
         const token = await client.auth.getSession();
 
         const data = await restSupabaseFetcher(
-          "public",
+          schema,
           http.method,
           http.fullPath,
           token.data.session?.access_token || "",

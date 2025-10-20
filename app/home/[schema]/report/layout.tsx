@@ -21,5 +21,5 @@ export default function ReportLayout({
       </header>
       <div className="">{children}</div>
     </div>
-  )
+  );
 }

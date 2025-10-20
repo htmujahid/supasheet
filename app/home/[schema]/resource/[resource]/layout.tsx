@@ -21,5 +21,5 @@ export default function ChartLayout({
       </header>
       <div className="">{children}</div>
     </div>
-  )
+  );
 }

@@ -115,10 +115,11 @@ export function ResourceSidebar() {
                 defaultOpen={params?.resource === item.id}
               >
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild isActive={params?.resource === item.id}>
-                    <Link
-                      href={"/home/resource/" + item.schema + "/" + item.id}
-                    >
+                  <SidebarMenuButton
+                    asChild
+                    isActive={params?.resource === item.id}
+                  >
+                    <Link href={"/home/" + item.schema + "/resource" + item.id}>
                       <LucideIconComponent
                         iconName={
                           (item.meta.icon as keyof typeof LucideIcons) ||
@@ -142,7 +143,7 @@ export function ResourceSidebar() {
                             <SidebarMenuSubItem key={subItem.view}>
                               <SidebarMenuSubButton asChild>
                                 <Link
-                                  href={`/home/resource/${item.schema}/${item.id}/${subItem.type}/${subItem.view}`}
+                                  href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.view}`}
                                   title={subItem.view}
                                 >
                                   <SubItemsIcon type={subItem.type} />
@@ -167,7 +168,7 @@ export function ResourceSidebar() {
             {views?.map((item) => (
               <SidebarMenuItem key={item.name}>
                 <SidebarMenuButton asChild>
-                  <Link href={"/home/resource/" + item.schema + "/" + item.id}>
+                  <Link href={"/home/" + item.schema + "/resource/" + item.id}>
                     <LucideIconComponent
                       iconName={
                         (item.meta.icon as keyof typeof LucideIcons) || "Eye"

@@ -68,8 +68,8 @@ const routes = [
     label: "common:routes.settings",
     children: [
       {
-        label: "common:routes.user",
-        path: pathsConfig.app.user,
+        label: "common:routes.account",
+        path: pathsConfig.app.account,
         Icon: <User className={iconClasses} />,
       },
     ],

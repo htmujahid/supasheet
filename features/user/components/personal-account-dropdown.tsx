@@ -6,21 +6,12 @@ import Link from "next/link";
 
 import type { User } from "@supabase/supabase-js";
 
-import {
-  ChevronsUpDown,
-  Home,
-  LogOut,
-  UserIcon,
-} from "lucide-react";
+import { ChevronsUpDown, Home, LogOut, UserIcon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import { SubMenuModeToggle } from "@/components/makerkit/mode-toggle";
 import { Trans } from "@/components/makerkit/trans";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +26,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { usePersonalAccountData } from "../hooks/use-personal-account-data";
 
@@ -57,7 +49,7 @@ export function PersonalAccountDropdown({
 
   paths: {
     home: string;
-    user: string;
+    account: string;
   };
 
   features: {
@@ -105,18 +97,26 @@ export function PersonalAccountDropdown({
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span
-                  className="truncate font-medium"
-                  data-test="account-dropdown-display-name"
-                >
-                  {displayName}
-                </span>
-                <span
-                  className="truncate text-xs"
-                  data-test="account-dropdown-email"
-                >
-                  {signedInAsLabel}
-                </span>
+                {displayName ? (
+                  <span
+                    className="truncate font-medium"
+                    data-test="account-dropdown-display-name"
+                  >
+                    {displayName}
+                  </span>
+                ) : (
+                  <Skeleton className="h-4 w-24" />
+                )}
+                {signedInAsLabel ? (
+                  <span
+                    className="truncate text-xs"
+                    data-test="account-dropdown-email"
+                  >
+                    {signedInAsLabel}
+                  </span>
+                ) : (
+                  <Skeleton className="mt-1 h-3 w-32" />
+                )}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -156,9 +156,9 @@ export function PersonalAccountDropdown({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={paths.user}>
+                <Link href={paths.account}>
                   <UserIcon />
-                  <Trans i18nKey="common:routes.user" />
+                  <Trans i18nKey="common:routes.account" />
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>

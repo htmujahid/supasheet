@@ -1,8 +1,8 @@
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import { ReportSearchParams } from "./validations";
 import { ReportMeta, ReportsSchema } from "./types";
+import { ReportSearchParams } from "./validations";
 
 export async function loadReportGroups() {
   const client = await getSupabaseServerClient();
@@ -29,7 +29,9 @@ export async function loadReports(schema: string) {
     return null;
   }
   return data.map((widget) => {
-    const meta = (widget.comment ? JSON.parse(widget.comment) : {}) as ReportMeta;
+    const meta = (
+      widget.comment ? JSON.parse(widget.comment) : {}
+    ) as ReportMeta;
 
     return {
       view_name: widget.name,

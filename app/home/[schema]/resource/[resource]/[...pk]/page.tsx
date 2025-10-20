@@ -58,7 +58,7 @@ async function ViewPage({
   if (!singleResourceData) return notFound();
 
   const pkValues = pk.join("/");
-  const editUrl = `/home/resource/${schema}/${resource}/edit/${pkValues}`;
+  const editUrl = `/home/${schema}/resource/${resource}/edit/${pkValues}`;
 
   return (
     <ResourceContextProvider permissions={permissions}>

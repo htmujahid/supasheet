@@ -11,9 +11,7 @@ import { loadWidget } from "../../lib/loaders";
 import { DashboardWidgetsSchema } from "../../lib/types";
 
 export async function Card4({ widget }: { widget: DashboardWidgetsSchema }) {
-  const data = (
-    await loadWidget(widget.schema, widget.view_name)
-  )?.[0];
+  const data = (await loadWidget(widget.schema, widget.view_name))?.[0];
 
   if (!data) {
     return null;
