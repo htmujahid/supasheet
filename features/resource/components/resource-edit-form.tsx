@@ -46,7 +46,7 @@ export function ResourceEditForm({
 }: ResourceEditFormProps) {
   const { permissions } = useResourceContext();
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
-  const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
+  const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
   const router = useRouter();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -91,7 +91,7 @@ export function ResourceEditForm({
 
       const { data: updatedData, error } = await updateResourceDataAction({
         schema,
-        resourceName: id,
+        resourceName: resource,
         resourceIds,
         data: { ...input, ...jsonInput },
       });
@@ -114,7 +114,7 @@ export function ResourceEditForm({
 
       // Navigate back to view page
       const pkValues = primaryKeys.map((pk) => data[pk.name]).join("/");
-      router.push(`/home/resource/${schema}/${id}/${pkValues}`);
+      router.push(`/home/${schema}/resource/${resource}/${pkValues}`);
     });
   }
 
@@ -124,7 +124,7 @@ export function ResourceEditForm({
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="space-y-1.5">
-              <CardTitle>Edit {id}</CardTitle>
+              <CardTitle>Edit {resource}</CardTitle>
               <CardDescription>
                 Update the resource and save changes
               </CardDescription>
@@ -194,7 +194,7 @@ export function ResourceEditForm({
           tableSchema={tableSchema}
           columnSchema={columnsSchema}
           showTrigger={false}
-          onSuccess={() => router.push(`/home/resource/${schema}/${id}`)}
+          onSuccess={() => router.push(`/home/${schema}/resource/${resource}`)}
         />
       )}
     </>

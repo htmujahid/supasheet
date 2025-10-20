@@ -5,9 +5,7 @@ import { ChartsSchema } from "../lib/types";
 import { LineChartWidget } from "./line-chart";
 
 export async function LineChartWrapper({ chart }: { chart: ChartsSchema }) {
-  const data = (await loadChart(
-    chart.view_name as DatabaseTables<"charts">,
-  )) as any[] | null;
+  const data = (await loadChart(chart.schema, chart.view_name)) as any[] | null;
 
   return <LineChartWidget chart={chart} data={data} />;
 }

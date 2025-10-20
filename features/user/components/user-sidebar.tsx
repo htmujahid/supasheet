@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { UserCogIcon, UserIcon } from "lucide-react";
+import { ArrowLeftIcon, UserIcon } from "lucide-react";
 
+import { NavSecondary } from "@/components/layouts/nav-secondary";
 import {
   Sidebar,
   SidebarContent,
@@ -30,15 +31,13 @@ export function UserSidebar({
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-      <SidebarHeader className="border-b">
+    <Sidebar className="border-r">
+      <SidebarHeader>
         <SidebarMenuButton className="w-fit px-1.5">
-          <SidebarMenuButton className="w-fit px-1.5">
-            <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
-              <UserIcon className="size-4" />
-            </div>
-            <span className="truncate font-medium">User</span>
-          </SidebarMenuButton>
+          <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
+            <UserIcon className="size-4" />
+          </div>
+          <span className="truncate font-medium">User</span>
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
@@ -65,7 +64,7 @@ export function UserSidebar({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarContent>
+        {/*<SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -80,7 +79,10 @@ export function UserSidebar({
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-        </SidebarContent>
+        </SidebarContent>*/}
+        <NavSecondary
+          items={[{ title: "Back to Main", url: "/home", icon: ArrowLeftIcon }]}
+        />
       </SidebarFooter>
     </Sidebar>
   );

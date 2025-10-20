@@ -1,0 +1,30 @@
+import { notFound } from "next/navigation";
+
+import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
+import { loadDashboardWidgets } from "@/features/dashboard/lib/loaders";
+import { withI18n } from "@/lib/i18n/with-i18n";
+
+async function DashboardPage({
+  params,
+}: {
+  params: Promise<{
+    schema: string;
+  }>;
+}) {
+  const { schema } = await params;
+  const widgets = await loadDashboardWidgets(schema);
+
+  if (widgets && widgets.length === 0) {
+    notFound();
+  }
+
+  return (
+    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-2.5 p-4 md:grid-cols-2 lg:grid-cols-4">
+      {widgets?.map((widget) => (
+        <DashboardWidgets key={widget.view_name} widget={widget} />
+      ))}
+    </div>
+  );
+}
+
+export default withI18n(DashboardPage);

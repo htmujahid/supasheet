@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { FileQuestionIcon } from "lucide-react";
 
-import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -28,7 +27,6 @@ export const generateMetadata = async () => {
 async function NotFoundPage() {
   return (
     <>
-      <PrimarySidebar />
       <SidebarInset>
         <div className={"flex h-screen flex-1 flex-col"}>
           <div

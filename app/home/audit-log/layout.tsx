@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 
-import { PrimarySidebar } from "@/components/layouts/primary-sidebar";
 import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
@@ -17,11 +16,9 @@ export default function HomeAuditLogsLayout({
 
   return (
     <>
-      <PrimarySidebar>
-        <Suspense fallback={<AuditLogsSidebarSkeleton />}>
-          <AuditLogsSidebar schemasPromise={schemasPromise} />
-        </Suspense>
-      </PrimarySidebar>
+      <Suspense fallback={<AuditLogsSidebarSkeleton />}>
+        <AuditLogsSidebar schemasPromise={schemasPromise} />
+      </Suspense>
       <SidebarInset>
         <div className="w-full flex-1">
           <header className="flex h-12 shrink-0 items-center justify-between gap-2 px-4">

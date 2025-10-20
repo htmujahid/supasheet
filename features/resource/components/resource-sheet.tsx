@@ -50,7 +50,7 @@ export function ResourceSheet({
   ...props
 }: ResourceSheetProps) {
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
-  const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
+  const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
 
   const isMobile = useIsMobile();
 
@@ -81,7 +81,7 @@ export function ResourceSheet({
 
       const { data, error } = await createResourceDataAction({
         schema,
-        resourceName: id,
+        resourceName: resource,
         data: { ...input, ...jsonInput },
       });
 
@@ -135,7 +135,7 @@ export function ResourceSheet({
 
       const { data: updatedData, error } = await updateResourceDataAction({
         schema,
-        resourceName: id,
+        resourceName: resource,
         resourceIds,
         data: { ...input, ...jsonInput },
       });
@@ -168,10 +168,11 @@ export function ResourceSheet({
       >
         <SheetHeader className="text-left">
           <SheetTitle>
-            {data ? "Update" : "Create"} {id}
+            {data ? "Update" : "Create"} {resource}
           </SheetTitle>
           <SheetDescription>
-            {data ? "Update the" : "Create a new"} {id} and save the changes
+            {data ? "Update the" : "Create a new"} {resource} and save the
+            changes
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>

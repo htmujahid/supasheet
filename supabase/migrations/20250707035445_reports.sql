@@ -56,22 +56,28 @@ revoke all on function supasheet.get_report_groups() from authenticated, service
 grant execute on function supasheet.get_report_groups() to authenticated;
 
 
-create or replace function supasheet.get_reports(p_group text default null)
-returns setof supasheet.reports
+create or replace function supasheet.get_reports(p_schema text default null)
+returns table(
+  id bigint,
+  schema text,
+  name text,
+  is_updatable boolean,
+  comment text
+)
 language plpgsql
 security definer
 as $$
 begin
   return query
     select
-      r.*
-    from supasheet.reports r
-    inner join supasheet.role_permissions rp 
-        ON rp.permission::text = 'reports.' || r.view_name || ':select'
-    inner join supasheet.user_roles ur  
+      v.*
+    from supasheet.views v
+    inner join supasheet.role_permissions rp
+        ON rp.permission::text = v.schema || '.' || v.name || ':select'
+    inner join supasheet.user_roles ur
         ON ur.role = rp.role
-    where ur.account_id = auth.uid() and is_active = true
-      and (p_group is null or r."group" = p_group);
+    where ur.account_id = auth.uid()
+      and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'report');
 end;
 $$;
 

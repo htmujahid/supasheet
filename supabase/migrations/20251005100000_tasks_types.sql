@@ -7,20 +7,20 @@ alter type supasheet.app_permission add value 'public.tasks:update';
 alter type supasheet.app_permission add value 'public.tasks:delete';
 
 alter type supasheet.app_permission add value 'public.user_tasks:select';
-alter type supasheet.app_permission add value 'reports.task_report:select';
-alter type supasheet.app_permission add value 'dashboards.task_summary:select';
+alter type supasheet.app_permission add value 'public.task_report:select';
 
-alter type supasheet.app_permission add value 'dashboards.task_completion_rate:select';
-alter type supasheet.app_permission add value 'dashboards.tasks_by_status:select';
-alter type supasheet.app_permission add value 'dashboards.task_urgent_count:select';
+alter type supasheet.app_permission add value 'public.task_summary:select';
+alter type supasheet.app_permission add value 'public.task_completion_rate:select';
+alter type supasheet.app_permission add value 'public.tasks_by_status:select';
+alter type supasheet.app_permission add value 'public.task_urgent_count:select';
 
-alter type supasheet.app_permission add value if not exists 'dashboards.task_list_simple:select';
-alter type supasheet.app_permission add value if not exists 'dashboards.active_tasks_simple:select';
-alter type supasheet.app_permission add value if not exists 'dashboards.task_list_detailed:select';
-alter type supasheet.app_permission add value if not exists 'dashboards.task_analytics_detailed:select';
+alter type supasheet.app_permission add value if not exists 'public.task_list_simple:select';
+alter type supasheet.app_permission add value if not exists 'public.active_tasks_simple:select';
+alter type supasheet.app_permission add value if not exists 'public.task_list_detailed:select';
+alter type supasheet.app_permission add value if not exists 'public.task_analytics_detailed:select';
 
-alter type supasheet.app_permission add value 'charts.task_trend_area:select';
-alter type supasheet.app_permission add value 'charts.task_priority_bar:select';
-alter type supasheet.app_permission add value 'charts.task_completion_line:select';
-alter type supasheet.app_permission add value 'charts.task_status_pie:select';
-alter type supasheet.app_permission add value 'charts.task_metrics_radar:select';
+alter type supasheet.app_permission add value 'public.task_trend_area:select';
+alter type supasheet.app_permission add value 'public.task_priority_bar:select';
+alter type supasheet.app_permission add value 'public.task_completion_line:select';
+alter type supasheet.app_permission add value 'public.task_status_pie:select';
+alter type supasheet.app_permission add value 'public.task_metrics_radar:select';

@@ -12,47 +12,7 @@ export type Database = {
       [_ in never]: never;
     };
     Views: {
-      task_completion_line: {
-        Row: {
-          completed: number | null;
-          created: number | null;
-          date: string | null;
-        };
-        Relationships: [];
-      };
-      task_metrics_radar: {
-        Row: {
-          completed: number | null;
-          metric: Database["public"]["Enums"]["task_priority"] | null;
-          overdue: number | null;
-          total: number | null;
-        };
-        Relationships: [];
-      };
-      task_priority_bar: {
-        Row: {
-          completed: number | null;
-          label: Database["public"]["Enums"]["task_priority"] | null;
-          total: number | null;
-        };
-        Relationships: [];
-      };
-      task_status_pie: {
-        Row: {
-          label: Database["public"]["Enums"]["task_status"] | null;
-          value: number | null;
-        };
-        Relationships: [];
-      };
-      task_trend_area: {
-        Row: {
-          active: number | null;
-          completed: number | null;
-          date: string | null;
-          pending: number | null;
-        };
-        Relationships: [];
-      };
+      [_ in never]: never;
     };
     Functions: {
       [_ in never]: never;
@@ -69,74 +29,7 @@ export type Database = {
       [_ in never]: never;
     };
     Views: {
-      active_tasks_simple: {
-        Row: {
-          due: string | null;
-          priority: Database["public"]["Enums"]["task_priority"] | null;
-          title: string | null;
-        };
-        Relationships: [];
-      };
-      task_analytics_detailed: {
-        Row: {
-          created: string | null;
-          priority: Database["public"]["Enums"]["task_priority"] | null;
-          status: Database["public"]["Enums"]["task_status"] | null;
-          tags: string | null;
-          task: string | null;
-        };
-        Relationships: [];
-      };
-      task_completion_rate: {
-        Row: {
-          primary: number | null;
-          primary_label: string | null;
-          secondary: number | null;
-          secondary_label: string | null;
-        };
-        Relationships: [];
-      };
-      task_list_detailed: {
-        Row: {
-          created: string | null;
-          due: string | null;
-          priority: Database["public"]["Enums"]["task_priority"] | null;
-          status: Database["public"]["Enums"]["task_status"] | null;
-          title: string | null;
-        };
-        Relationships: [];
-      };
-      task_list_simple: {
-        Row: {
-          priority: Database["public"]["Enums"]["task_priority"] | null;
-          status: Database["public"]["Enums"]["task_status"] | null;
-          title: string | null;
-        };
-        Relationships: [];
-      };
-      task_summary: {
-        Row: {
-          icon: string | null;
-          label: string | null;
-          value: number | null;
-        };
-        Relationships: [];
-      };
-      task_urgent_count: {
-        Row: {
-          current: number | null;
-          segments: Json | null;
-          total: number | null;
-        };
-        Relationships: [];
-      };
-      tasks_by_status: {
-        Row: {
-          percent: number | null;
-          value: number | null;
-        };
-        Relationships: [];
-      };
+      [_ in never]: never;
     };
     Functions: {
       [_ in never]: never;
@@ -158,10 +51,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
-          query?: string;
-          operationName?: string;
-          variables?: Json;
           extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
         };
         Returns: Json;
       };
@@ -178,12 +71,18 @@ export type Database = {
       tasks: {
         Row: {
           account_id: string | null;
+          attachments: string[] | null;
+          color: string | null;
           completed_at: string | null;
+          completion: number | null;
+          cover: string[] | null;
           created_at: string | null;
           description: string | null;
           due_date: string | null;
+          duration: number | null;
           id: string;
           is_important: boolean | null;
+          notes: string | null;
           priority: Database["public"]["Enums"]["task_priority"] | null;
           status: Database["public"]["Enums"]["task_status"] | null;
           tags: string[] | null;
@@ -192,12 +91,18 @@ export type Database = {
         };
         Insert: {
           account_id?: string | null;
+          attachments?: string[] | null;
+          color?: string | null;
           completed_at?: string | null;
+          completion?: number | null;
+          cover?: string[] | null;
           created_at?: string | null;
           description?: string | null;
           due_date?: string | null;
+          duration?: number | null;
           id?: string;
           is_important?: boolean | null;
+          notes?: string | null;
           priority?: Database["public"]["Enums"]["task_priority"] | null;
           status?: Database["public"]["Enums"]["task_status"] | null;
           tags?: string[] | null;
@@ -206,12 +111,18 @@ export type Database = {
         };
         Update: {
           account_id?: string | null;
+          attachments?: string[] | null;
+          color?: string | null;
           completed_at?: string | null;
+          completion?: number | null;
+          cover?: string[] | null;
           created_at?: string | null;
           description?: string | null;
           due_date?: string | null;
+          duration?: number | null;
           id?: string;
           is_important?: boolean | null;
+          notes?: string | null;
           priority?: Database["public"]["Enums"]["task_priority"] | null;
           status?: Database["public"]["Enums"]["task_status"] | null;
           tags?: string[] | null;
@@ -220,18 +131,231 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_details: {
+        Row: {
+          avatar: string | null;
+          created_at: string;
+          created_by: string | null;
+          department: Database["public"]["Enums"]["user_department"] | null;
+          email: string;
+          id: number;
+          join_date: string | null;
+          last_active: string | null;
+          name: string;
+          notes: string | null;
+          phone: string | null;
+          projects: number | null;
+          rating: number | null;
+          role: Database["public"]["Enums"]["user_role"];
+          salary: unknown | null;
+          skills: Database["public"]["Enums"]["user_skill"][] | null;
+          status: Database["public"]["Enums"]["user_status"];
+          updated_at: string;
+          verified: boolean;
+          website: string | null;
+        };
+        Insert: {
+          avatar?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          department?: Database["public"]["Enums"]["user_department"] | null;
+          email: string;
+          id?: never;
+          join_date?: string | null;
+          last_active?: string | null;
+          name: string;
+          notes?: string | null;
+          phone?: string | null;
+          projects?: number | null;
+          rating?: number | null;
+          role?: Database["public"]["Enums"]["user_role"];
+          salary?: unknown | null;
+          skills?: Database["public"]["Enums"]["user_skill"][] | null;
+          status?: Database["public"]["Enums"]["user_status"];
+          updated_at?: string;
+          verified?: boolean;
+          website?: string | null;
+        };
+        Update: {
+          avatar?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          department?: Database["public"]["Enums"]["user_department"] | null;
+          email?: string;
+          id?: never;
+          join_date?: string | null;
+          last_active?: string | null;
+          name?: string;
+          notes?: string | null;
+          phone?: string | null;
+          projects?: number | null;
+          rating?: number | null;
+          role?: Database["public"]["Enums"]["user_role"];
+          salary?: unknown | null;
+          skills?: Database["public"]["Enums"]["user_skill"][] | null;
+          status?: Database["public"]["Enums"]["user_status"];
+          updated_at?: string;
+          verified?: boolean;
+          website?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
-      vw_tasks: {
+      active_tasks_simple: {
+        Row: {
+          due: string | null;
+          priority: Database["public"]["Enums"]["task_priority"] | null;
+          title: string | null;
+        };
+        Relationships: [];
+      };
+      task_analytics_detailed: {
+        Row: {
+          attachments: string[] | null;
+          completion: number | null;
+          created: string | null;
+          priority: Database["public"]["Enums"]["task_priority"] | null;
+          status: Database["public"]["Enums"]["task_status"] | null;
+          tags: string | null;
+          task: string | null;
+        };
+        Relationships: [];
+      };
+      task_completion_line: {
+        Row: {
+          completed: number | null;
+          created: number | null;
+          date: string | null;
+        };
+        Relationships: [];
+      };
+      task_completion_rate: {
+        Row: {
+          primary: number | null;
+          primary_label: string | null;
+          secondary: number | null;
+          secondary_label: string | null;
+        };
+        Relationships: [];
+      };
+      task_list_detailed: {
+        Row: {
+          completion: number | null;
+          created: string | null;
+          due: string | null;
+          duration: number | null;
+          priority: Database["public"]["Enums"]["task_priority"] | null;
+          status: Database["public"]["Enums"]["task_status"] | null;
+          title: string | null;
+        };
+        Relationships: [];
+      };
+      task_list_simple: {
+        Row: {
+          completion: number | null;
+          priority: Database["public"]["Enums"]["task_priority"] | null;
+          status: Database["public"]["Enums"]["task_status"] | null;
+          title: string | null;
+        };
+        Relationships: [];
+      };
+      task_metrics_radar: {
+        Row: {
+          completed: number | null;
+          metric: Database["public"]["Enums"]["task_priority"] | null;
+          overdue: number | null;
+          total: number | null;
+        };
+        Relationships: [];
+      };
+      task_priority_bar: {
+        Row: {
+          completed: number | null;
+          label: Database["public"]["Enums"]["task_priority"] | null;
+          total: number | null;
+        };
+        Relationships: [];
+      };
+      task_report: {
         Row: {
           account_id: string | null;
           account_name: string | null;
+          attachments: string[] | null;
+          color: string | null;
           completed_at: string | null;
+          completion: number | null;
+          cover: string[] | null;
           created_at: string | null;
           description: string | null;
           due_date: string | null;
+          duration: number | null;
           id: string | null;
           is_important: boolean | null;
+          notes: string | null;
+          priority: Database["public"]["Enums"]["task_priority"] | null;
+          status: Database["public"]["Enums"]["task_status"] | null;
+          tags: string[] | null;
+          title: string | null;
+          updated_at: string | null;
+        };
+        Relationships: [];
+      };
+      task_status_pie: {
+        Row: {
+          label: Database["public"]["Enums"]["task_status"] | null;
+          value: number | null;
+        };
+        Relationships: [];
+      };
+      task_summary: {
+        Row: {
+          icon: string | null;
+          label: string | null;
+          value: number | null;
+        };
+        Relationships: [];
+      };
+      task_trend_area: {
+        Row: {
+          active: number | null;
+          completed: number | null;
+          date: string | null;
+          pending: number | null;
+        };
+        Relationships: [];
+      };
+      task_urgent_count: {
+        Row: {
+          current: number | null;
+          segments: Json | null;
+          total: number | null;
+        };
+        Relationships: [];
+      };
+      tasks_by_status: {
+        Row: {
+          percent: number | null;
+          value: number | null;
+        };
+        Relationships: [];
+      };
+      user_tasks: {
+        Row: {
+          account_id: string | null;
+          account_name: string | null;
+          attachments: string[] | null;
+          color: string | null;
+          completed_at: string | null;
+          completion: number | null;
+          cover: string[] | null;
+          created_at: string | null;
+          description: string | null;
+          due_date: string | null;
+          duration: number | null;
+          id: string | null;
+          is_important: boolean | null;
+          notes: string | null;
           priority: Database["public"]["Enums"]["task_priority"] | null;
           status: Database["public"]["Enums"]["task_status"] | null;
           tags: string[] | null;
@@ -247,6 +371,30 @@ export type Database = {
     Enums: {
       task_priority: "low" | "medium" | "high" | "urgent";
       task_status: "pending" | "in_progress" | "completed" | "archived";
+      user_department:
+        | "engineering"
+        | "marketing"
+        | "sales"
+        | "design"
+        | "operations"
+        | "hr"
+        | "finance"
+        | "product";
+      user_role: "admin" | "user" | "moderator";
+      user_skill:
+        | "security"
+        | "swift"
+        | "kotlin"
+        | "devops"
+        | "javascript"
+        | "rust"
+        | "php"
+        | "sql"
+        | "nosql"
+        | "cloud"
+        | "java"
+        | "go";
+      user_status: "active" | "inactive" | "pending";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -257,24 +405,7 @@ export type Database = {
       [_ in never]: never;
     };
     Views: {
-      task_report: {
-        Row: {
-          account_id: string | null;
-          account_name: string | null;
-          completed_at: string | null;
-          created_at: string | null;
-          description: string | null;
-          due_date: string | null;
-          id: string | null;
-          is_important: boolean | null;
-          priority: Database["public"]["Enums"]["task_priority"] | null;
-          status: Database["public"]["Enums"]["task_status"] | null;
-          tags: string[] | null;
-          title: string | null;
-          updated_at: string | null;
-        };
-        Relationships: [];
-      };
+      [_ in never]: never;
     };
     Functions: {
       [_ in never]: never;
@@ -701,99 +832,99 @@ export type Database = {
     Functions: {
       create_audit_log: {
         Args: {
-          p_table_name: string;
           p_metadata?: Json;
-          p_record_id?: string;
           p_new_data?: Json;
           p_old_data?: Json;
           p_operation: string;
+          p_record_id?: string;
           p_schema_name: string;
+          p_table_name: string;
         };
         Returns: string;
       };
       generate_columns: {
         Args: {
-          schema_filter?: string;
-          table_id_filter?: string;
-          table_identifier_filter?: string;
           column_name_filter?: string;
           ids_filter?: string;
           limit_count?: number;
           offset_count?: number;
+          schema_filter?: string;
+          table_id_filter?: string;
+          table_identifier_filter?: string;
         };
         Returns: {
-          schema: string;
-          table_id: number;
-          table: string;
-          id: string;
-          ordinal_position: string;
-          name: string;
-          default_value: string;
-          data_type: string;
           actual_type: string;
+          check: string;
+          comment: string;
+          data_type: string;
+          default_value: string;
+          enums: Json;
           format: string;
-          is_identity: boolean;
+          id: string;
           identity_generation: string;
           is_generated: boolean;
+          is_identity: boolean;
           is_nullable: boolean;
-          is_updatable: boolean;
           is_unique: boolean;
-          check: string;
-          enums: Json;
-          comment: string;
+          is_updatable: boolean;
+          name: string;
+          ordinal_position: string;
+          schema: string;
+          table: string;
+          table_id: number;
         }[];
       };
       generate_materialized_views: {
         Args: {
-          schema_filter?: string;
           ids_filter?: string;
-          materialized_view_identifier_filter?: string;
           limit_count?: number;
+          materialized_view_identifier_filter?: string;
           offset_count?: number;
+          schema_filter?: string;
         };
         Returns: {
-          schema: string;
-          is_populated: boolean;
           comment: string;
           id: number;
+          is_populated: boolean;
           name: string;
+          schema: string;
         }[];
       };
       generate_tables: {
         Args: {
-          table_identifier_filter?: string;
-          schema_filter?: string;
           ids_filter?: string;
           limit_count?: number;
           offset_count?: number;
+          schema_filter?: string;
+          table_identifier_filter?: string;
         };
         Returns: {
-          id: number;
-          schema: string;
-          name: string;
-          rls_enabled: boolean;
-          rls_forced: boolean;
-          replica_identity: string;
           bytes: number;
-          size: string;
-          live_rows_estimate: number;
-          dead_rows_estimate: number;
           comment: string;
+          dead_rows_estimate: number;
+          id: number;
+          live_rows_estimate: number;
+          name: string;
           primary_keys: Json;
           relationships: Json;
+          replica_identity: string;
+          rls_enabled: boolean;
+          rls_forced: boolean;
+          schema: string;
+          size: string;
         }[];
       };
       generate_views: {
         Args: {
+          ids_filter?: string;
           limit_count?: number;
           offset_count?: number;
           schema_filter?: string;
-          ids_filter?: string;
           view_identifier_filter?: string;
         };
         Returns: {
-          id: number;
           comment: string;
+          id: number;
           is_updatable: boolean;
           name: string;
           schema: string;
@@ -807,16 +938,13 @@ export type Database = {
         }[];
       };
       get_charts: {
-        Args: { p_group?: string };
+        Args: { p_schema?: string };
         Returns: {
-          caption: string | null;
-          chart_type: string;
-          description: string | null;
-          group: string | null;
-          id: string;
-          is_active: boolean;
+          comment: string;
+          id: number;
+          is_updatable: boolean;
           name: string;
-          view_name: string | null;
+          schema: string;
         }[];
       };
       get_columns: {
@@ -846,12 +974,12 @@ export type Database = {
       get_dashboards: {
         Args: Record<PropertyKey, never>;
         Returns: {
-          widgets_count: number;
           group_name: string;
+          widgets_count: number;
         }[];
       };
       get_materialized_views: {
-        Args: { view_name?: string; schema_name?: string };
+        Args: { schema_name?: string; view_name?: string };
         Returns: {
           comment: string | null;
           id: number;
@@ -868,15 +996,13 @@ export type Database = {
         }[];
       };
       get_reports: {
-        Args: { p_group?: string };
+        Args: { p_schema?: string };
         Returns: {
-          description: string | null;
-          filter_field: string | null;
-          group: string | null;
-          id: string;
-          is_active: boolean;
+          comment: string;
+          id: number;
+          is_updatable: boolean;
           name: string;
-          view_name: string | null;
+          schema: string;
         }[];
       };
       get_schemas: {
@@ -890,7 +1016,7 @@ export type Database = {
         Returns: string;
       };
       get_tables: {
-        Args: { table_name?: string; schema_name?: string };
+        Args: { schema_name?: string; table_name?: string };
         Returns: {
           bytes: number | null;
           comment: string | null;
@@ -908,7 +1034,7 @@ export type Database = {
         }[];
       };
       get_views: {
-        Args: { view_name?: string; schema_name?: string };
+        Args: { schema_name?: string; view_name?: string };
         Returns: {
           comment: string | null;
           id: number;
@@ -918,17 +1044,13 @@ export type Database = {
         }[];
       };
       get_widgets: {
-        Args: { p_group?: string };
+        Args: { p_schema?: string };
         Returns: {
-          caption: string | null;
-          description: string | null;
-          filter_field: string | null;
-          group: string | null;
-          id: string;
-          is_active: boolean;
+          comment: string;
+          id: number;
+          is_updatable: boolean;
           name: string;
-          view_name: string | null;
-          widget_type: string;
+          schema: string;
         }[];
       };
       has_permission: {
@@ -952,21 +1074,25 @@ export type Database = {
         | "public.tasks:insert"
         | "public.tasks:update"
         | "public.tasks:delete"
-        | "public.vw_tasks:select"
-        | "reports.task_report:select"
-        | "dashboards.task_summary:select"
-        | "dashboards.task_completion_rate:select"
-        | "dashboards.tasks_by_status:select"
-        | "dashboards.task_urgent_count:select"
-        | "dashboards.task_list_simple:select"
-        | "dashboards.active_tasks_simple:select"
-        | "dashboards.task_list_detailed:select"
-        | "dashboards.task_analytics_detailed:select"
-        | "charts.task_trend_area:select"
-        | "charts.task_priority_bar:select"
-        | "charts.task_completion_line:select"
-        | "charts.task_status_pie:select"
-        | "charts.task_metrics_radar:select";
+        | "public.user_tasks:select"
+        | "public.task_report:select"
+        | "public.task_summary:select"
+        | "public.task_completion_rate:select"
+        | "public.tasks_by_status:select"
+        | "public.task_urgent_count:select"
+        | "public.task_list_simple:select"
+        | "public.active_tasks_simple:select"
+        | "public.task_list_detailed:select"
+        | "public.task_analytics_detailed:select"
+        | "public.task_trend_area:select"
+        | "public.task_priority_bar:select"
+        | "public.task_completion_line:select"
+        | "public.task_status_pie:select"
+        | "public.task_metrics_radar:select"
+        | "public.user_details:select"
+        | "public.user_details:insert"
+        | "public.user_details:update"
+        | "public.user_details:delete";
       app_role: "x-admin" | "user";
     };
     CompositeTypes: {
@@ -975,21 +1101,28 @@ export type Database = {
   };
 };
 
-type DefaultSchema = Database[Extract<keyof Database, "public">];
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<
+  keyof Database,
+  "public"
+>];
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database;
+    schema: keyof DatabaseWithoutInternals;
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R;
     }
     ? R
@@ -1007,14 +1140,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database;
+    schema: keyof DatabaseWithoutInternals;
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
     }
     ? I
@@ -1030,14 +1165,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database;
+    schema: keyof DatabaseWithoutInternals;
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
     }
     ? U
@@ -1053,14 +1190,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database;
+    schema: keyof DatabaseWithoutInternals;
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never;
@@ -1068,14 +1207,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database;
+    schema: keyof DatabaseWithoutInternals;
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never;
@@ -1094,6 +1235,32 @@ export const Constants = {
     Enums: {
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: ["pending", "in_progress", "completed", "archived"],
+      user_department: [
+        "engineering",
+        "marketing",
+        "sales",
+        "design",
+        "operations",
+        "hr",
+        "finance",
+        "product",
+      ],
+      user_role: ["admin", "user", "moderator"],
+      user_skill: [
+        "security",
+        "swift",
+        "kotlin",
+        "devops",
+        "javascript",
+        "rust",
+        "php",
+        "sql",
+        "nosql",
+        "cloud",
+        "java",
+        "go",
+      ],
+      user_status: ["active", "inactive", "pending"],
     },
   },
   reports: {
@@ -1110,21 +1277,25 @@ export const Constants = {
         "public.tasks:insert",
         "public.tasks:update",
         "public.tasks:delete",
-        "public.vw_tasks:select",
-        "reports.task_report:select",
-        "dashboards.task_summary:select",
-        "dashboards.task_completion_rate:select",
-        "dashboards.tasks_by_status:select",
-        "dashboards.task_urgent_count:select",
-        "dashboards.task_list_simple:select",
-        "dashboards.active_tasks_simple:select",
-        "dashboards.task_list_detailed:select",
-        "dashboards.task_analytics_detailed:select",
-        "charts.task_trend_area:select",
-        "charts.task_priority_bar:select",
-        "charts.task_completion_line:select",
-        "charts.task_status_pie:select",
-        "charts.task_metrics_radar:select",
+        "public.user_tasks:select",
+        "public.task_report:select",
+        "public.task_summary:select",
+        "public.task_completion_rate:select",
+        "public.tasks_by_status:select",
+        "public.task_urgent_count:select",
+        "public.task_list_simple:select",
+        "public.active_tasks_simple:select",
+        "public.task_list_detailed:select",
+        "public.task_analytics_detailed:select",
+        "public.task_trend_area:select",
+        "public.task_priority_bar:select",
+        "public.task_completion_line:select",
+        "public.task_status_pie:select",
+        "public.task_metrics_radar:select",
+        "public.user_details:select",
+        "public.user_details:insert",
+        "public.user_details:update",
+        "public.user_details:delete",
       ],
       app_role: ["x-admin", "user"],
     },

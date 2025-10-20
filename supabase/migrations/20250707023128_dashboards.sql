@@ -58,22 +58,28 @@ revoke all on function supasheet.get_dashboards() from authenticated, service_ro
 grant execute on function supasheet.get_dashboards() to authenticated;
 
 
-create or replace function supasheet.get_widgets(p_group text default null)
-returns setof supasheet.dashboards
+create or replace function supasheet.get_widgets(p_schema text default null)
+returns table(
+  id bigint,
+  schema text,
+  name text,
+  is_updatable boolean,
+  comment text
+)
 language plpgsql
 security definer
 as $$
 begin
   return query
     select
-      d.*
-    from supasheet.dashboards d
+      v.*
+    from supasheet.views v
     inner join supasheet.role_permissions rp
-        ON rp.permission::text = 'dashboards.' || d.view_name || ':select'
+        ON rp.permission::text = v.schema || '.' || v.name || ':select'
     inner join supasheet.user_roles ur
         ON ur.role = rp.role
-    where ur.account_id = auth.uid() and is_active = true
-      and (p_group is null or d."group" = p_group);
+    where ur.account_id = auth.uid()
+      and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'dashboard_widget');
 end;
 $$;
 

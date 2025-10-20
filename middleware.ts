@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse, URLPattern } from "next/server";
 
@@ -160,6 +161,23 @@ function getPatterns() {
         if (requiresMultiFactorAuthentication) {
           return NextResponse.redirect(
             new URL(pathsConfig.auth.verifyMfa, origin).href,
+          );
+        }
+
+        if (req.nextUrl.pathname === pathsConfig.app.home) {
+          const { data, error } = await supabase
+            .schema("supasheet")
+            .rpc("get_schemas")
+            .select();
+
+          if (!data || error) {
+            return notFound();
+          }
+
+          const defaultSchema = data?.[0].schema as string;
+
+          return NextResponse.redirect(
+            new URL(`/home/${defaultSchema}/dashboard`, origin).href,
           );
         }
       },

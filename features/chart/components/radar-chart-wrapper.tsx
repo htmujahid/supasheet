@@ -5,9 +5,7 @@ import { ChartsSchema } from "../lib/types";
 import { RadarChartWidget } from "./radar-chart";
 
 export async function RadarChartWrapper({ chart }: { chart: ChartsSchema }) {
-  const data = (await loadChart(
-    chart.view_name as DatabaseTables<"charts">,
-  )) as any[] | null;
+  const data = (await loadChart(chart.schema, chart.view_name)) as any[] | null;
 
   return <RadarChartWidget chart={chart} data={data} />;
 }

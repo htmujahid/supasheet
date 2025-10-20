@@ -5,15 +5,5 @@ export async function DefaultLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "350px",
-        } as React.CSSProperties
-      }
-    >
-      {children}
-    </SidebarProvider>
-  );
+  return <SidebarProvider>{children}</SidebarProvider>;
 }

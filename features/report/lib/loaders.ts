@@ -1,6 +1,7 @@
-import { DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
+import { ReportMeta, ReportsSchema } from "./types";
 import { ReportSearchParams } from "./validations";
 
 export async function loadReportGroups() {
@@ -17,18 +18,27 @@ export async function loadReportGroups() {
   return reportGroups.data;
 }
 
-export async function loadReports(group: string) {
+export async function loadReports(schema: string) {
   const client = await getSupabaseServerClient();
 
-  const reports = await client
+  const { data, error } = await client
     .schema("supasheet")
-    .rpc("get_reports", { p_group: group });
+    .rpc("get_reports", { p_schema: schema });
 
-  if (reports.error) {
+  if (error) {
     return null;
   }
+  return data.map((widget) => {
+    const meta = (
+      widget.comment ? JSON.parse(widget.comment) : {}
+    ) as ReportMeta;
 
-  return reports.data;
+    return {
+      view_name: widget.name,
+      schema: widget.schema,
+      ...meta,
+    } as ReportsSchema;
+  });
 }
 
 export async function loadColumnsSchema(id: string) {
@@ -42,7 +52,8 @@ export async function loadColumnsSchema(id: string) {
 }
 
 export async function loadReportData(
-  id: DatabaseTables<"reports">,
+  schema: DatabaseSchemas,
+  resource: DatabaseTables<typeof schema>,
   input: ReportSearchParams,
 ) {
   const client = await getSupabaseServerClient();
@@ -50,8 +61,8 @@ export async function loadReportData(
   const { page, perPage, sort, filters, joinOperator } = input;
 
   const query = client
-    .schema("reports")
-    .from(id)
+    .schema(schema)
+    .from(resource)
     .select("*", { count: "exact" })
     .range((page - 1) * perPage, page * perPage - 1);
 

@@ -1,7 +1,7 @@
-import { DatabaseTables, ViewsForSchema } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseViews } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import type { ChartsSchema } from "./types";
+import type { ChartMeta, ChartsSchema } from "./types";
 
 export async function loadChartGroups() {
   const client = await getSupabaseServerClient();
@@ -15,11 +15,11 @@ export async function loadChartGroups() {
   return chartGroups.data;
 }
 
-export async function loadCharts(group?: string) {
+export async function loadCharts(schema?: string) {
   const supabase = await getSupabaseServerClient();
 
   const { data, error } = await supabase.schema("supasheet").rpc("get_charts", {
-    p_group: group,
+    p_schema: schema,
   });
 
   if (error) {
@@ -27,15 +27,26 @@ export async function loadCharts(group?: string) {
     return [];
   }
 
-  return (data as ChartsSchema[]) || [];
+  return data.map((chart) => {
+    const meta = (chart.comment ? JSON.parse(chart.comment) : {}) as ChartMeta;
+
+    return {
+      view_name: chart.name,
+      schema: chart.schema,
+      ...meta,
+    } as ChartsSchema;
+  });
 }
 
-export async function loadChart(viewName: DatabaseTables<"charts">) {
+export async function loadChart(
+  schema: DatabaseSchemas,
+  viewName: DatabaseViews<typeof schema>,
+) {
   const supabase = await getSupabaseServerClient();
 
   // Execute the view to get chart data
   const { data, error } = await supabase
-    .schema("charts")
+    .schema(schema)
     .from(viewName)
     .select("*");
 

@@ -41,7 +41,7 @@ export function ResourceCreateForm({
   columnsSchema,
 }: ResourceCreateFormProps) {
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
-  const { id } = useParams<{ id: DatabaseTables<typeof schema> }>();
+  const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
   const router = useRouter();
 
   const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
@@ -69,7 +69,7 @@ export function ResourceCreateForm({
 
       const { data, error } = await createResourceDataAction({
         schema,
-        resourceName: id,
+        resourceName: resource,
         data: { ...input, ...jsonInput },
       });
 
@@ -95,10 +95,10 @@ export function ResourceCreateForm({
         const pkValues = primaryKeys
           .map((pkName) => createdResource[pkName])
           .join("/");
-        router.push(`/home/resource/${schema}/${id}/${pkValues}`);
+        router.push(`/home/${schema}/resource/${resource}/${pkValues}`);
       } else {
         // If no primary keys or data, navigate to the list page
-        router.push(`/home/resource/${schema}/${id}`);
+        router.push(`/home/${schema}/resource/${resource}`);
       }
     });
   }
@@ -106,7 +106,7 @@ export function ResourceCreateForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create {id}</CardTitle>
+        <CardTitle>Create {resource}</CardTitle>
         <CardDescription>
           Create a new resource and save changes
         </CardDescription>

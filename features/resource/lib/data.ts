@@ -114,7 +114,7 @@ export function useResourceData(
 export function useSchemas() {
   const client = getSupabaseBrowserClient();
 
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ["database-schemas"],
     queryFn: async () => {
       const schemaResponse = await client
@@ -129,25 +129,54 @@ export function useSchemas() {
   });
 }
 
+export function useResources(schema: string) {
+  const client = getSupabaseBrowserClient();
+
+  return useQuery({
+    queryKey: ["table-resources", schema],
+    queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const tableSchema = await client
+        .schema("supasheet")
+        .rpc("get_tables", { schema_name: schema });
+      const tableResources =
+        tableSchema.data
+          ?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            schema: resource.schema as string,
+            type: "table" as const,
+            meta: (resource.comment
+              ? JSON.parse(resource.comment)
+              : {}) as TableMetadata,
+          }))
+          ?.filter((resource) => resource.meta.display !== "none") ?? [];
+      return tableResources;
+    },
+  });
+}
+
 export function useTableResources(schema: string) {
   const client = getSupabaseBrowserClient();
 
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ["table-resources", schema],
     queryFn: async () => {
       const tableSchema = await client
         .schema("supasheet")
         .rpc("get_tables", { schema_name: schema });
       const tableResources =
-        tableSchema.data?.map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          schema: resource.schema as string,
-          type: "table",
-          meta: (resource.comment
-            ? JSON.parse(resource.comment)
-            : {}) as TableMetadata,
-        }))?.filter((resource) => resource.meta.display !== "none") ?? [];
+        tableSchema.data
+          ?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            schema: resource.schema as string,
+            type: "table" as const,
+            meta: (resource.comment
+              ? JSON.parse(resource.comment)
+              : {}) as TableMetadata,
+          }))
+          ?.filter((resource) => resource.meta.display !== "none") ?? [];
       return tableResources;
     },
   });
@@ -156,7 +185,7 @@ export function useTableResources(schema: string) {
 export function useViewResources(schema: string) {
   const client = getSupabaseBrowserClient();
 
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ["view-resources", schema],
     queryFn: async () => {
       const viewSchema = await client
@@ -164,30 +193,34 @@ export function useViewResources(schema: string) {
         .rpc("get_views", { schema_name: schema });
 
       const viewResources =
-        viewSchema.data?.map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          schema: resource.schema as string,
-          type: "view",
-          meta: (resource.comment
-            ? JSON.parse(resource.comment)
-            : {}) as ViewMetadata,
-        }))?.filter((resource) => resource.meta.display !== "none") ?? [];
+        viewSchema.data
+          ?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            schema: resource.schema as string,
+            type: "view" as const,
+            meta: (resource.comment
+              ? JSON.parse(resource.comment)
+              : {}) as ViewMetadata,
+          }))
+          ?.filter((resource) => resource.meta.display !== "none") ?? [];
 
       const materializedViewSchema = await client
         .schema("supasheet")
         .rpc("get_materialized_views", { schema_name: schema });
 
       const materializedViewResources =
-        materializedViewSchema.data?.map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          schema: resource.schema as string,
-          type: "view",
-          meta: (resource.comment
-            ? JSON.parse(resource.comment)
-            : {}) as ViewMetadata,
-        }))?.filter((resource) => resource.meta.display !== "none") ?? [];
+        materializedViewSchema.data
+          ?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            schema: resource.schema as string,
+            type: "view" as const,
+            meta: (resource.comment
+              ? JSON.parse(resource.comment)
+              : {}) as ViewMetadata,
+          }))
+          ?.filter((resource) => resource.meta.display !== "none") ?? [];
 
       return [...viewResources, ...materializedViewResources];
     },

@@ -92,7 +92,7 @@ grant select on public.user_tasks to authenticated;
 
 
 -- create a view of tasks with account name
-create or replace view reports.task_report
+create or replace view public.task_report
 with(security_invoker = true) as
 select
     a.name as account_name,
@@ -101,11 +101,12 @@ from tasks t
 join supasheet.accounts a on t.account_id = a.id;
 
 -- grant select on view to authenticated
-revoke all on reports.task_report from authenticated, service_role;
-grant select on reports.task_report to authenticated;
+revoke all on public.task_report from authenticated, service_role;
+grant select on public.task_report to authenticated;
 
+comment on view public.task_report is '{"type": "report", "name": "Task Summary", "description": "Summary of active tasks"}';
 
-create or replace view dashboards.task_summary
+create or replace view public.task_summary
 with(security_invoker = true) as
 select
     count(*) as value,
@@ -114,8 +115,8 @@ select
 from tasks t
 where t.status != 'completed';
 
-revoke all on dashboards.task_summary from authenticated, service_role;
-grant select on dashboards.task_summary to authenticated;
+revoke all on public.task_summary from authenticated, service_role;
+grant select on public.task_summary to authenticated;
 
 
 insert into supasheet.role_permissions (role, permission) values ('user', 'public.tasks:select');
@@ -124,14 +125,11 @@ insert into supasheet.role_permissions (role, permission) values ('user', 'publi
 insert into supasheet.role_permissions (role, permission) values ('user', 'public.tasks:delete');
 
 insert into supasheet.role_permissions (role, permission) values ('user', 'public.user_tasks:select');
-insert into supasheet.role_permissions (role, permission) values ('user', 'reports.task_report:select');
-insert into supasheet.role_permissions (role, permission) values ('user', 'dashboards.task_summary:select');
+insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_report:select');
+insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_summary:select');
 
 insert into supasheet.reports (name, description, "group", view_name, filter_field, is_active) values
 ('Task Report', 'Report of all tasks with account names', 'tasks', 'task_report', 'created_at', true);
-
-insert into supasheet.dashboards (name, description, "group", widget_type, view_name, is_active) values
-('Task Summary', 'Summary of active tasks', 'tasks', 'card_1', 'task_summary', true);
 
 
 ----------------------------------------------------------------
@@ -139,7 +137,7 @@ insert into supasheet.dashboards (name, description, "group", widget_type, view_
 ----------------------------------------------------------------
 
 -- View for task completion rate (Card2 - split layout)
-create or replace view dashboards.task_completion_rate as
+create or replace view public.task_completion_rate as
 select
     count(*) filter (where status = 'completed') as primary,
     count(*) filter (where status != 'completed') as secondary,
@@ -147,11 +145,11 @@ select
     'Active' as secondary_label
 from tasks t;
 
-revoke all on dashboards.task_completion_rate from authenticated, service_role;
-grant select on dashboards.task_completion_rate to authenticated;
+revoke all on public.task_completion_rate from authenticated, service_role;
+grant select on public.task_completion_rate to authenticated;
 
 -- View for completed tasks stats (Card3 - value and percent layout)
-create or replace view dashboards.tasks_by_status as
+create or replace view public.tasks_by_status as
 select
     count(*) filter (where status = 'completed') as value,
     case
@@ -161,11 +159,11 @@ select
     end as percent
 from tasks t;
 
-revoke all on dashboards.tasks_by_status from authenticated, service_role;
-grant select on dashboards.tasks_by_status to authenticated;
+revoke all on public.tasks_by_status from authenticated, service_role;
+grant select on public.tasks_by_status to authenticated;
 
 -- View for task progress with breakdown (Card4 - progress layout)
-create or replace view dashboards.task_urgent_count as
+create or replace view public.task_urgent_count as
 select
     count(*) filter (where status != 'completed' and priority in ('high', 'urgent')) as current,
     count(*) filter (where status != 'completed') as total,
@@ -177,17 +175,23 @@ select
 from tasks;
 
 
-revoke all on dashboards.task_urgent_count from authenticated, service_role;
-grant select on dashboards.task_urgent_count to authenticated;
+revoke all on public.task_urgent_count from authenticated, service_role;
+grant select on public.task_urgent_count to authenticated;
+
+comment on view public.task_summary is '{"type": "dashboard_widget", "name": "Task Summary", "description": "Summary of active tasks", "widget_type": "card_1"}';
+comment on view public.task_completion_rate is '{"type": "dashboard_widget", "name": "Task Completion Rate", "description": "Completed vs Active tasks", "widget_type": "card_2"}';
+comment on view public.tasks_by_status is '{"type": "dashboard_widget", "name": "Tasks by Status", "description": "Completed tasks stats", "widget_type": "card_3"}';
+comment on view public.task_urgent_count is '{"type": "dashboard_widget", "name": "Task Urgent Count", "description": "High priority tasks", "widget_type": "card_4"}';
 
 -- Grant permissions to user role
 insert into supasheet.role_permissions (role, permission) values
-    ('user', 'dashboards.task_completion_rate:select'),
-    ('user', 'dashboards.tasks_by_status:select'),
-    ('user', 'dashboards.task_urgent_count:select');
+    ('user', 'public.task_completion_rate:select'),
+    ('user', 'public.tasks_by_status:select'),
+    ('user', 'public.task_urgent_count:select');
 
 -- Insert dashboard widget entries
 insert into supasheet.dashboards (name, description, caption, "group", widget_type, view_name, is_active) values
+    ('Task Summary', 'Summary of active tasks', '', 'tasks', 'card_1', 'task_summary', true),
     ('Task Overview', 'Completed vs Active tasks', '', 'tasks', 'card_2', 'task_completion_rate', true),
     ('Status Breakdown', 'Tasks by current status', 'Completed Tasks', 'tasks', 'card_3', 'tasks_by_status', true),
     ('Priority Alert', 'High priority items', '', 'tasks', 'card_4', 'task_urgent_count', true);
@@ -195,7 +199,7 @@ insert into supasheet.dashboards (name, description, caption, "group", widget_ty
 
 
 -- Create table_1 view (2-3 columns, simpler data)
-create or replace view dashboards.task_list_simple as
+create or replace view public.task_list_simple as
 select
     title,
     status,
@@ -205,11 +209,11 @@ from tasks
 order by created_at desc
 limit 10;
 
-revoke all on dashboards.task_list_simple from authenticated, service_role;
-grant select on dashboards.task_list_simple to authenticated;
+revoke all on public.task_list_simple from authenticated, service_role;
+grant select on public.task_list_simple to authenticated;
 
 -- Create another table_1 view
-create or replace view dashboards.active_tasks_simple as
+create or replace view public.active_tasks_simple as
 select
     title,
     priority,
@@ -226,11 +230,11 @@ order by
     due_date
 limit 10;
 
-revoke all on dashboards.active_tasks_simple from authenticated, service_role;
-grant select on dashboards.active_tasks_simple to authenticated;
+revoke all on public.active_tasks_simple from authenticated, service_role;
+grant select on public.active_tasks_simple to authenticated;
 
 -- Create table_2 view (4-5 columns, detailed data)
-create or replace view dashboards.task_list_detailed as
+create or replace view public.task_list_detailed as
 select
     title,
     status,
@@ -247,11 +251,11 @@ from tasks
 order by created_at desc
 limit 10;
 
-revoke all on dashboards.task_list_detailed from authenticated, service_role;
-grant select on dashboards.task_list_detailed to authenticated;
+revoke all on public.task_list_detailed from authenticated, service_role;
+grant select on public.task_list_detailed to authenticated;
 
 -- Create another table_2 view
-create or replace view dashboards.task_analytics_detailed as
+create or replace view public.task_analytics_detailed as
 select
     substring(title, 1, 30) || case when length(title) > 30 then '...' else '' end as task,
     status,
@@ -275,15 +279,20 @@ order by
     created_at desc
 limit 10;
 
-revoke all on dashboards.task_analytics_detailed from authenticated, service_role;
-grant select on dashboards.task_analytics_detailed to authenticated;
+revoke all on public.task_analytics_detailed from authenticated, service_role;
+grant select on public.task_analytics_detailed to authenticated;
+
+comment on view public.task_list_simple is '{"type": "dashboard_widget", "name": "Recent Tasks", "description": "Latest tasks in the system", "widget_type": "table_1"}';
+comment on view public.active_tasks_simple is '{"type": "dashboard_widget", "name": "Priority Queue", "description": "Active tasks by priority", "widget_type": "table_1"}';
+comment on view public.task_list_detailed is '{"type": "dashboard_widget", "name": "Task Overview", "description": "Detailed task listing", "widget_type": "table_2"}';
+comment on view public.task_analytics_detailed is '{"type": "dashboard_widget", "name": "Task Analytics", "description": "Task breakdown with tags", "widget_type": "table_2"}';
 
 -- Grant permissions to user role
 insert into supasheet.role_permissions (role, permission) values
-    ('user', 'dashboards.task_list_simple:select'),
-    ('user', 'dashboards.active_tasks_simple:select'),
-    ('user', 'dashboards.task_list_detailed:select'),
-    ('user', 'dashboards.task_analytics_detailed:select');
+    ('user', 'public.task_list_simple:select'),
+    ('user', 'public.active_tasks_simple:select'),
+    ('user', 'public.task_list_detailed:select'),
+    ('user', 'public.task_analytics_detailed:select');
 
 -- Insert dashboard widget entries for new tables
 insert into supasheet.dashboards (name, description, caption, "group", widget_type, view_name, is_active) values
@@ -298,7 +307,7 @@ insert into supasheet.dashboards (name, description, caption, "group", widget_ty
 ----------------------------------------------------------------
 
 -- Area chart view - Task creation trend over time
-create or replace view charts.task_trend_area as
+create or replace view public.task_trend_area as
 select
     to_char(date_trunc('day', created_at), 'Mon DD') as date,
     count(*) filter (where status = 'completed') as completed,
@@ -309,11 +318,11 @@ where created_at >= current_date - interval '7 days'
 group by date_trunc('day', created_at)
 order by date_trunc('day', created_at);
 
-revoke all on charts.task_trend_area from authenticated, service_role;
-grant select on charts.task_trend_area to authenticated;
+revoke all on public.task_trend_area from authenticated, service_role;
+grant select on public.task_trend_area to authenticated;
 
 -- Bar chart view - Tasks by priority
-create or replace view charts.task_priority_bar as
+create or replace view public.task_priority_bar as
 select
     priority as label,
     count(*) as total,
@@ -328,11 +337,11 @@ order by
         when 'low' then 4
     end;
 
-revoke all on charts.task_priority_bar from authenticated, service_role;
-grant select on charts.task_priority_bar to authenticated;
+revoke all on public.task_priority_bar from authenticated, service_role;
+grant select on public.task_priority_bar to authenticated;
 
 -- Line chart view - Daily task completion rate
-create or replace view charts.task_completion_line as
+create or replace view public.task_completion_line as
 select
     to_char(date_trunc('day', created_at), 'Mon DD') as date,
     count(*) as created,
@@ -342,22 +351,22 @@ where created_at >= current_date - interval '14 days'
 group by date_trunc('day', created_at)
 order by date_trunc('day', created_at);
 
-revoke all on charts.task_completion_line from authenticated, service_role;
-grant select on charts.task_completion_line to authenticated;
+revoke all on public.task_completion_line from authenticated, service_role;
+grant select on public.task_completion_line to authenticated;
 
 -- Pie chart view - Task status distribution
-create or replace view charts.task_status_pie as
+create or replace view public.task_status_pie as
 select
     status as label,
     count(*) as value
 from tasks
 group by status;
 
-revoke all on charts.task_status_pie from authenticated, service_role;
-grant select on charts.task_status_pie to authenticated;
+revoke all on public.task_status_pie from authenticated, service_role;
+grant select on public.task_status_pie to authenticated;
 
 -- Radar chart view - Task metrics by priority
-create or replace view charts.task_metrics_radar as
+create or replace view public.task_metrics_radar as
 select
     priority as metric,
     count(*) as total,
@@ -366,16 +375,22 @@ select
 from tasks
 group by priority;
 
-revoke all on charts.task_metrics_radar from authenticated, service_role;
-grant select on charts.task_metrics_radar to authenticated;
+revoke all on public.task_metrics_radar from authenticated, service_role;
+grant select on public.task_metrics_radar to authenticated;
+
+comment on view public.task_trend_area is '{"type": "chart", "name": "Task Trend Area", "description": "Task creation trend over last 7 days", "chart_type": "area"}';
+comment on view public.task_priority_bar is '{"type": "chart", "name": "Task Priority Bar", "description": "Tasks grouped by priority level", "chart_type": "bar"}';
+comment on view public.task_completion_line is '{"type": "chart", "name": "Task Completion Line", "description": "Daily task completion over 2 weeks", "chart_type": "line"}';
+comment on view public.task_status_pie is '{"type": "chart", "name": "Task Status Pie", "description": "Current task status breakdown", "chart_type": "pie"}';
+comment on view public.task_metrics_radar is '{"type": "chart", "name": "Task Metrics Radar", "description": "Task metrics across priorities", "chart_type": "radar"}';
 
 -- Grant permissions to user role
 insert into supasheet.role_permissions (role, permission) values
-    ('user', 'charts.task_trend_area:select'),
-    ('user', 'charts.task_priority_bar:select'),
-    ('user', 'charts.task_completion_line:select'),
-    ('user', 'charts.task_status_pie:select'),
-    ('user', 'charts.task_metrics_radar:select');
+    ('user', 'public.task_trend_area:select'),
+    ('user', 'public.task_priority_bar:select'),
+    ('user', 'public.task_completion_line:select'),
+    ('user', 'public.task_status_pie:select'),
+    ('user', 'public.task_metrics_radar:select');
 
 -- Insert dashboard widget entries for charts
 insert into supasheet.charts (name, description, caption, "group", chart_type, view_name, is_active) values
