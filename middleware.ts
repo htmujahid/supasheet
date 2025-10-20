@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse, URLPattern } from "next/server";
 
