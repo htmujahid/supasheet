@@ -171,7 +171,7 @@ function getPatterns() {
             .select();
 
           if (!data || error) {
-            return notFound();
+            throw new Error("Failed to fetch user schemas");  
           }
 
           const defaultSchema = data?.[0].schema as string;
