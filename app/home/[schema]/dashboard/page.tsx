@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
 import { loadDashboardWidgets } from "@/features/dashboard/lib/loaders";
 import { withI18n } from "@/lib/i18n/with-i18n";
@@ -19,10 +20,13 @@ async function DashboardPage({
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-2.5 p-4 md:grid-cols-2 lg:grid-cols-4">
-      {widgets?.map((widget) => (
-        <DashboardWidgets key={widget.view_name} widget={widget} />
-      ))}
+    <div className="w-full flex-1">
+      <DefaultHeader breadcrumbs={[{ title: "Dashboard" }]} />
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-2.5 p-4 md:grid-cols-2 lg:grid-cols-4">
+        {widgets?.map((widget) => (
+          <DashboardWidgets key={widget.view_name} widget={widget} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { DashboardWidgetsSchema } from "../../lib/types";
+import { DashboardWidgetsSchema } from "../lib/types";
 
 export function Table1Widget({
   widget,

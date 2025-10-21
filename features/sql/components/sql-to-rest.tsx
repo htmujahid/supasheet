@@ -6,10 +6,8 @@ import { useParams } from "next/navigation";
 import { Monaco } from "@monaco-editor/react";
 import { Loader2, PlayIcon } from "lucide-react";
 
-import { AppBreadcrumbs } from "@/components/makerkit/app-breadcrumbs";
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 import { IStandaloneCodeEditor } from "../lib/types";
 import { useSqlData } from "../lib/use-sql-data";
@@ -33,15 +31,9 @@ export default function SqlToRest() {
 
   return (
     <>
-      <header className="flex h-12 shrink-0 items-center justify-between gap-2 px-4">
-        <div className="flex flex-1 items-center gap-2">
-          <SidebarTrigger />
-          <Separator
-            orientation="vertical"
-            className="mr-2 data-[orientation=vertical]:!h-4"
-          />
-          <AppBreadcrumbs />
-        </div>
+      <DefaultHeader
+        breadcrumbs={[{ title: "SQL Editor" }, { title: snippet }]}
+      >
         <div className="flex gap-2">
           <Button
             variant="default"
@@ -62,7 +54,7 @@ export default function SqlToRest() {
             )}
           </Button>
         </div>
-      </header>
+      </DefaultHeader>
       <div className="px-4">
         <div className="h-[calc(20vh)] w-full overflow-hidden rounded-md border">
           <MonacoEditor

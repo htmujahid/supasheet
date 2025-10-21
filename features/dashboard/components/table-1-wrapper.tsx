@@ -1,5 +1,5 @@
-import { loadWidget } from "../../lib/loaders";
-import { DashboardWidgetsSchema } from "../../lib/types";
+import { loadWidget } from "../lib/loaders";
+import { DashboardWidgetsSchema } from "../lib/types";
 import { Table1Widget } from "./table-1";
 
 export async function Table1Wrapper({

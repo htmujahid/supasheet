@@ -39,7 +39,7 @@ export const ResourceTableRowActions = memo(function ResourceTableRowActions({
   // Memoize href calculations to avoid recreating on every render
   const viewHref = useMemo(
     () =>
-      `/home/${tableSchema.schema}/resource/${tableSchema.name}/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`,
+      `/home/${tableSchema.schema}/resource/${tableSchema.name}/view/${primaryKeys.map((key) => row.original?.[key.name as keyof ResourceDataSchema]?.toString() ?? "").join("/")}`,
     [tableSchema.schema, tableSchema.name, primaryKeys, row.original],
   );
 

@@ -3,18 +3,6 @@ import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { DashboardWidgetMeta, DashboardWidgetsSchema } from "./types";
 
-export async function loadDashboards() {
-  const client = await getSupabaseServerClient();
-
-  const dashboards = await client.schema("supasheet").rpc("get_dashboards");
-
-  if (dashboards.error) {
-    return null;
-  }
-
-  return dashboards.data;
-}
-
 export async function loadDashboardWidgets(schema: string) {
   const client = await getSupabaseServerClient();
 

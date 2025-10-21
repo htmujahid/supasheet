@@ -4,20 +4,6 @@ import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { ReportMeta, ReportsSchema } from "./types";
 import { ReportSearchParams } from "./validations";
 
-export async function loadReportGroups() {
-  const client = await getSupabaseServerClient();
-
-  const reportGroups = await client
-    .schema("supasheet")
-    .rpc("get_report_groups");
-
-  if (reportGroups.error) {
-    return null;
-  }
-
-  return reportGroups.data;
-}
-
 export async function loadReports(schema: string) {
   const client = await getSupabaseServerClient();
 

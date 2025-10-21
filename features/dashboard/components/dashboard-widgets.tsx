@@ -1,10 +1,10 @@
 import { DashboardWidgetsSchema } from "../lib/types";
-import { Card1 } from "./widgets/card-1";
-import { Card2 } from "./widgets/card-2";
-import { Card3 } from "./widgets/card-3";
-import { Card4 } from "./widgets/card-4";
-import { Table1Wrapper } from "./widgets/table-1-wrapper";
-import { Table2Wrapper } from "./widgets/table-2-wrapper";
+import { Card1 } from "./card-1";
+import { Card2 } from "./card-2";
+import { Card3 } from "./card-3";
+import { Card4 } from "./card-4";
+import { Table1Wrapper } from "./table-1-wrapper";
+import { Table2Wrapper } from "./table-2-wrapper";
 
 export function DashboardWidgets({
   widget,
