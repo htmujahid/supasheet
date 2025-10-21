@@ -5,11 +5,11 @@ import * as React from "react";
 import { useParams } from "next/navigation";
 
 import {
-  Calendar,
   ChartBarIcon,
   FileChartColumnIcon,
+  FolderIcon,
   HomeIcon,
-  Settings2,
+  ScrollTextIcon,
 } from "lucide-react";
 
 import {
@@ -51,12 +51,12 @@ const data = {
     {
       title: "Storage",
       url: "/home/storage",
-      icon: Settings2,
+      icon: FolderIcon,
     },
     {
       title: "Audit Logs",
       url: "/home/audit-log",
-      icon: Calendar,
+      icon: ScrollTextIcon,
     },
   ],
 };
