@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import { ChevronDown, ProportionsIcon } from "lucide-react";
 
 import {
@@ -9,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -20,6 +17,7 @@ import {
 import { formatTitle } from "@/lib/format";
 
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
 
 export function DefaultSidebarSwitcher({
   schemas,
@@ -61,14 +59,15 @@ export function DefaultSidebarSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Module
             </DropdownMenuLabel>
-            {schemas.map((schema, index) => (
-              <DropdownMenuItem key={schema.schema} className="gap-2 p-2">
-                <div className="flex size-6 items-center justify-center rounded-xs border">
-                  <ProportionsIcon className="size-4 shrink-0" />
-                </div>
-                {formatTitle(schema.schema)}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
+            {schemas.map((schema) => (
+              <Link key={schema.schema} href={`/home/${schema.schema}`}>
+                <DropdownMenuItem className="gap-2 p-2">
+                  <div className="flex size-6 items-center justify-center rounded-xs border">
+                    <ProportionsIcon className="size-4 shrink-0" />
+                  </div>
+                  {formatTitle(schema.schema)}
+                </DropdownMenuItem>
+              </Link>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
