@@ -64,7 +64,7 @@ export function Table1Widget({
             <CardTitle>{widget.name}</CardTitle>
             <CardDescription>{widget.description}</CardDescription>
           </div>
-          <div className="relative w-full sm:max-w-xs">
+          <div className="relative w-full sm:max-w-64">
             <Search className="text-muted-foreground absolute top-2.5 left-2 h-4 w-4" />
             <Input
               placeholder="Search..."
