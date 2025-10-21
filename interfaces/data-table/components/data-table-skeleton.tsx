@@ -37,10 +37,10 @@ export function DataTableSkeleton({
 
   return (
     <div
-      className={cn("flex w-full flex-col gap-0 overflow-auto p-4", className)}
+      className={cn("flex w-full flex-col gap-0 overflow-auto px-4", className)}
       {...props}
     >
-      <div className="flex w-full items-center justify-between gap-2 overflow-auto pb-2">
+      <div className="flex w-full items-center justify-between gap-2 overflow-auto py-2">
         <div className="flex flex-1 items-center gap-2">
           {filterCount > 0
             ? Array.from({ length: filterCount }).map((_, i) => (

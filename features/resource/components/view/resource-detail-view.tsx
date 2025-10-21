@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { METADATA_COLUMNS } from "@/config/database.config";
 import { ColumnSchema } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../../lib/columns";
 import { AllCells } from "../cells/all-cells";
@@ -36,7 +38,7 @@ export function ResourceDetailView({
   // Separate columns into different categories
   const detailColumns =
     columnsSchema?.filter((column) => {
-      return !["created_at", "updated_at"].includes(column.name as string);
+      return !METADATA_COLUMNS.includes(column.name as string);
     }) ?? [];
 
   return (
@@ -74,7 +76,7 @@ export function ResourceDetailView({
               <div className="flex items-start gap-4 py-3">
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    {column.name as string} {icon}
+                    {icon} {formatTitle(column.name as string)}
                   </Label>
                   <div className="text-muted-foreground text-sm">
                     {columnMetadata.type === "rich_text" ? (

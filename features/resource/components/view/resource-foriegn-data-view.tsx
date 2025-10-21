@@ -53,10 +53,10 @@ export function ResourceForiegnDataView({
               <div className="flex items-start gap-4 py-3">
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+                    <LinkIcon className="text-muted-foreground size-4 shrink-0" />{" "}
                     {isValue
                       ? relationship.target_table_name
-                      : relationship.source_table_name}{" "}
-                    <LinkIcon className="text-muted-foreground size-4 shrink-0" />
+                      : relationship.source_table_name}
                   </Label>
                   <Link
                     href={link}

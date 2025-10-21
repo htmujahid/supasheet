@@ -7,40 +7,6 @@ export type Json =
   | Json[];
 
 export type Database = {
-  charts: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-  dashboards: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
   graphql_public: {
     Tables: {
       [_ in never]: never;
@@ -400,23 +366,6 @@ export type Database = {
       [_ in never]: never;
     };
   };
-  reports: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
   supasheet: {
     Tables: {
       accounts: {
@@ -520,39 +469,6 @@ export type Database = {
           },
         ];
       };
-      charts: {
-        Row: {
-          caption: string | null;
-          chart_type: string;
-          description: string | null;
-          group: string | null;
-          id: string;
-          is_active: boolean;
-          name: string;
-          view_name: string | null;
-        };
-        Insert: {
-          caption?: string | null;
-          chart_type: string;
-          description?: string | null;
-          group?: string | null;
-          id?: string;
-          is_active?: boolean;
-          name: string;
-          view_name?: string | null;
-        };
-        Update: {
-          caption?: string | null;
-          chart_type?: string;
-          description?: string | null;
-          group?: string | null;
-          id?: string;
-          is_active?: boolean;
-          name?: string;
-          view_name?: string | null;
-        };
-        Relationships: [];
-      };
       columns: {
         Row: {
           actual_type: string | null;
@@ -619,42 +535,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      dashboards: {
-        Row: {
-          caption: string | null;
-          description: string | null;
-          filter_field: string | null;
-          group: string | null;
-          id: string;
-          is_active: boolean;
-          name: string;
-          view_name: string | null;
-          widget_type: string;
-        };
-        Insert: {
-          caption?: string | null;
-          description?: string | null;
-          filter_field?: string | null;
-          group?: string | null;
-          id?: string;
-          is_active?: boolean;
-          name: string;
-          view_name?: string | null;
-          widget_type: string;
-        };
-        Update: {
-          caption?: string | null;
-          description?: string | null;
-          filter_field?: string | null;
-          group?: string | null;
-          id?: string;
-          is_active?: boolean;
-          name?: string;
-          view_name?: string | null;
-          widget_type?: string;
-        };
-        Relationships: [];
-      };
       materialized_views: {
         Row: {
           comment: string | null;
@@ -676,36 +556,6 @@ export type Database = {
           is_populated?: boolean | null;
           name?: string | null;
           schema?: string | null;
-        };
-        Relationships: [];
-      };
-      reports: {
-        Row: {
-          description: string | null;
-          filter_field: string | null;
-          group: string | null;
-          id: string;
-          is_active: boolean;
-          name: string;
-          view_name: string | null;
-        };
-        Insert: {
-          description?: string | null;
-          filter_field?: string | null;
-          group?: string | null;
-          id?: string;
-          is_active?: boolean;
-          name: string;
-          view_name?: string | null;
-        };
-        Update: {
-          description?: string | null;
-          filter_field?: string | null;
-          group?: string | null;
-          id?: string;
-          is_active?: boolean;
-          name?: string;
-          view_name?: string | null;
         };
         Relationships: [];
       };
@@ -930,13 +780,6 @@ export type Database = {
           schema: string;
         }[];
       };
-      get_chart_groups: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          charts_count: number;
-          group_name: string;
-        }[];
-      };
       get_charts: {
         Args: { p_schema?: string };
         Returns: {
@@ -971,13 +814,6 @@ export type Database = {
           table_id: number | null;
         }[];
       };
-      get_dashboards: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          group_name: string;
-          widgets_count: number;
-        }[];
-      };
       get_materialized_views: {
         Args: { schema_name?: string; view_name?: string };
         Returns: {
@@ -986,13 +822,6 @@ export type Database = {
           is_populated: boolean | null;
           name: string | null;
           schema: string | null;
-        }[];
-      };
-      get_report_groups: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          group_name: string;
-          report_count: number;
         }[];
       };
       get_reports: {
@@ -1222,12 +1051,6 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
-  charts: {
-    Enums: {},
-  },
-  dashboards: {
-    Enums: {},
-  },
   graphql_public: {
     Enums: {},
   },
@@ -1262,9 +1085,6 @@ export const Constants = {
       ],
       user_status: ["active", "inactive", "pending"],
     },
-  },
-  reports: {
-    Enums: {},
   },
   supasheet: {
     Enums: {

@@ -3,18 +3,6 @@ import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import type { ChartMeta, ChartsSchema } from "./types";
 
-export async function loadChartGroups() {
-  const client = await getSupabaseServerClient();
-
-  const chartGroups = await client.schema("supasheet").rpc("get_chart_groups");
-
-  if (chartGroups.error) {
-    return null;
-  }
-
-  return chartGroups.data;
-}
-
 export async function loadCharts(schema?: string) {
   const supabase = await getSupabaseServerClient();
 

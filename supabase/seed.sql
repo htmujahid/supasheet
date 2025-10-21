@@ -99,7 +99,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'in_progress',
     'high',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
-    '2025-10-05 17:00:00+00',
+    current_date + interval '5 days',
     NULL,
     ARRAY['work', 'proposal', 'marketing'],
     true,
@@ -107,8 +107,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     8,
     '#3b82f6',
     'Waiting for feedback from stakeholders before finalizing',
-    '2025-09-20 09:00:00+00',
-    '2025-09-25 14:30:00+00'
+    current_timestamp - interval '6 days',
+    current_timestamp - interval '1 day'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -117,7 +117,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'pending',
     'medium',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
-    '2025-09-28 18:00:00+00',
+    current_date + interval '2 days',
     NULL,
     ARRAY['personal', 'shopping'],
     false,
@@ -125,8 +125,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     1,
     '#10b981',
     'Don''t forget organic milk and whole grain bread',
-    '2025-09-27 08:15:00+00',
-    '2025-09-27 08:15:00+00'
+    current_timestamp - interval '1 day',
+    current_timestamp - interval '1 day'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -135,16 +135,16 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'completed',
     'low',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
-    '2025-09-30 15:00:00+00',
-    '2025-09-26 10:45:00+00',
+    current_date - interval '3 days',
+    current_timestamp - interval '3 days',
     ARRAY['health', 'personal'],
     false,
     100,
     2,
     '#22c55e',
     'Appointment went well, next visit scheduled for 6 months',
-    '2025-09-15 12:00:00+00',
-    '2025-09-26 10:45:00+00'
+    current_timestamp - interval '10 days',
+    current_timestamp - interval '3 days'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -153,7 +153,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'pending',
     'urgent',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
-    '2025-09-29 16:00:00+00',
+    current_date + interval '1 day',
     NULL,
     ARRAY['work', 'management', 'review'],
     true,
@@ -161,8 +161,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     12,
     '#ef4444',
     'Need to review 5 team members before deadline',
-    '2025-09-26 11:00:00+00',
-    '2025-09-26 11:00:00+00'
+    current_timestamp - interval '2 days',
+    current_timestamp - interval '2 days'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -171,7 +171,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'in_progress',
     'medium',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
-    '2025-10-01 12:00:00+00',
+    current_date + interval '7 days',
     NULL,
     ARRAY['personal', 'travel', 'vacation'],
     false,
@@ -179,8 +179,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     5,
     '#8b5cf6',
     'Found three good options, need to compare prices',
-    '2025-09-24 19:30:00+00',
-    '2025-09-26 20:15:00+00'
+    current_timestamp - interval '4 days',
+    current_timestamp - interval '1 day'
 ),
 
 -- User 2 tasks (b73eb03e-fb7a-424d-84ff-18e2791ce0b4)
@@ -191,7 +191,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'in_progress',
     'medium',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-10-15 23:59:00+00',
+    current_date + interval '10 days',
     NULL,
     ARRAY['learning', 'programming', 'books'],
     false,
@@ -199,8 +199,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     20,
     '#06b6d4',
     'On chapter 14 of 17, taking detailed notes',
-    '2025-09-10 20:00:00+00',
-    '2025-09-25 21:30:00+00'
+    current_timestamp - interval '12 days',
+    current_timestamp - interval '1 day'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -209,7 +209,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'pending',
     'high',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-10-02 17:00:00+00',
+    current_date + interval '3 days',
     NULL,
     ARRAY['career', 'job-search'],
     true,
@@ -217,8 +217,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     3,
     '#f59e0b',
     'Need to add AWS certification and latest React project',
-    '2025-09-26 16:45:00+00',
-    '2025-09-26 16:45:00+00'
+    current_timestamp - interval '2 days',
+    current_timestamp - interval '2 days'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -227,16 +227,16 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'completed',
     'medium',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-09-27 19:00:00+00',
-    '2025-09-27 19:30:00+00',
+    current_date - interval '1 day',
+    current_timestamp - interval '1 day',
     ARRAY['family', 'personal'],
     false,
     100,
     1,
     '#10b981',
     'Had a great conversation, mom is doing well',
-    '2025-09-27 09:00:00+00',
-    '2025-09-27 19:30:00+00'
+    current_timestamp - interval '3 days',
+    current_timestamp - interval '1 day'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -245,7 +245,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'in_progress',
     'urgent',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-09-28 09:00:00+00',
+    current_date + interval '2 days',
     NULL,
     ARRAY['work', 'database', 'bug-fix'],
     true,
@@ -253,8 +253,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     6,
     '#dc2626',
     'Added indexes, testing query performance improvements',
-    '2025-09-27 14:20:00+00',
-    '2025-09-27 14:20:00+00'
+    current_timestamp - interval '1 day',
+    current_timestamp - interval '1 day'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -263,7 +263,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'pending',
     'low',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-11-01 23:59:00+00',
+    current_date + interval '14 days',
     NULL,
     ARRAY['learning', 'devops', 'docker'],
     false,
@@ -271,8 +271,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     15,
     '#6366f1',
     'Enrolled in Udemy course, 8 hours of content',
-    '2025-09-20 22:15:00+00',
-    '2025-09-20 22:15:00+00'
+    current_timestamp - interval '5 days',
+    current_timestamp - interval '5 days'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -281,16 +281,16 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'completed',
     'low',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-09-25 12:00:00+00',
-    NULL,
+    current_date - interval '2 days',
+    current_timestamp - interval '2 days',
     ARRAY['personal', 'organization'],
     false,
     100,
     4,
     '#14b8a6',
     'All photos sorted and backed up to cloud storage',
-    '2025-09-18 15:30:00+00',
-    '2025-09-25 16:00:00+00'
+    current_timestamp - interval '8 days',
+    current_timestamp - interval '2 days'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -299,7 +299,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'in_progress',
     'high',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-10-08 10:00:00+00',
+    current_date + interval '6 days',
     NULL,
     ARRAY['work', 'presentation', 'tech-talk'],
     true,
@@ -307,8 +307,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     10,
     '#f97316',
     'Created outline and 15 of 30 slides',
-    '2025-09-22 13:45:00+00',
-    '2025-09-27 11:20:00+00'
+    current_timestamp - interval '7 days',
+    current_timestamp - interval '1 day'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -317,7 +317,7 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     'pending',
     'medium',
     'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
-    '2025-10-12 23:59:00+00',
+    current_date + interval '12 days',
     NULL,
     ARRAY['personal', 'insurance', 'finance'],
     false,
@@ -325,8 +325,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     2,
     '#84cc16',
     'Got quotes from 3 companies, need to make decision',
-    '2025-09-26 08:30:00+00',
-    '2025-09-26 08:30:00+00'
+    current_timestamp - interval '3 days',
+    current_timestamp - interval '3 days'
 );
 
 -- Add some tasks with no due dates
@@ -346,8 +346,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     NULL,
     '#a855f7',
     'Looking at Vanguard and Fidelity index funds',
-    '2025-09-25 10:00:00+00',
-    '2025-09-25 10:00:00+00'
+    current_timestamp - interval '4 days',
+    current_timestamp - interval '4 days'
 ),
 (
     extensions.uuid_generate_v4(),
@@ -364,8 +364,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     NULL,
     '#64748b',
     'Will do this on a weekend when weather is nice',
-    '2025-09-23 14:15:00+00',
-    '2025-09-23 14:15:00+00'
+    current_timestamp - interval '6 days',
+    current_timestamp - interval '6 days'
 );
 
 

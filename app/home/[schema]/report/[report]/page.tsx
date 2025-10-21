@@ -1,17 +1,16 @@
-import { Suspense } from "react";
-
 import { notFound } from "next/navigation";
 
 import type { SearchParams } from "nuqs/server";
 
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { ReportTable } from "@/features/report/components/report-table";
 import {
   loadColumnsSchema,
   loadReportData,
 } from "@/features/report/lib/loaders";
 import { reportSearchParamsCache } from "@/features/report/lib/validations";
-import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
 async function HomeResourcePage(props: {
@@ -36,33 +35,16 @@ async function HomeResourcePage(props: {
   }
 
   return (
-    <div className="px-4">
-      <Suspense
-        fallback={
-          <DataTableSkeleton
-            columnCount={7}
-            rowCount={100}
-            filterCount={2}
-            cellWidths={[
-              "64px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-              "170px",
-            ]}
-            shrinkZero
-          />
-        }
-      >
+    <div className="w-full flex-1">
+      <DefaultHeader
+        breadcrumbs={[
+          { title: "Report", url: "." },
+          { title: formatTitle(report) },
+        ]}
+      />
+      <div className="px-4">
         <ReportTable columnsSchema={columnsSchema} data={data} />
-      </Suspense>
+      </div>
     </div>
   );
 }
