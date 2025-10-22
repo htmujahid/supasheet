@@ -30,7 +30,7 @@ async function HomeResourcePage(props: {
     loadReportData(schema, report, search),
   ]);
 
-  if (!columnsSchema || !data) {
+  if (!columnsSchema?.length || !data.total) {
     notFound();
   }
 
