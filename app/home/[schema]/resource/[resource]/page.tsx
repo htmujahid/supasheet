@@ -38,13 +38,14 @@ async function HomeResourcePage(props: {
     loadResourcePermissions(schema, resource),
   ]);
 
-  if (!columnsSchema) {
+  if (!columnsSchema?.length) {
     notFound();
   }
 
   if (!permissions.canSelect) {
     notFound();
   }
+
 
   return (
     <div className="w-full flex-1">
