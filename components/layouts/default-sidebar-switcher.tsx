@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { ChevronDown, ProportionsIcon } from "lucide-react";
 
 import {
@@ -17,7 +19,6 @@ import {
 import { formatTitle } from "@/lib/format";
 
 import { Skeleton } from "../ui/skeleton";
-import Link from "next/link";
 
 export function DefaultSidebarSwitcher({
   schemas,

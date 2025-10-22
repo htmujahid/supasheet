@@ -211,15 +211,12 @@ export async function loadResourcePermissions(
     .schema("supasheet")
     .from("role_permissions")
     .select()
-    .in(
-      "permission",
-      [
-        `${schema}.${id}:select`,
-        `${schema}.${id}:insert`,
-        `${schema}.${id}:update`,
-        `${schema}.${id}:delete`,
-      ] as Database["supasheet"]["Enums"]["app_permission"][],
-    );
+    .in("permission", [
+      `${schema}.${id}:select`,
+      `${schema}.${id}:insert`,
+      `${schema}.${id}:update`,
+      `${schema}.${id}:delete`,
+    ] as Database["supasheet"]["Enums"]["app_permission"][]);
 
   if (response.error) {
     return {
@@ -228,7 +225,7 @@ export async function loadResourcePermissions(
       canUpdate: false,
       canDelete: false,
     };
-  };
+  }
 
   const permissions = {
     canSelect: false,
@@ -262,11 +259,14 @@ export async function loadSelectPermissions(
     .schema("supasheet")
     .from("role_permissions")
     .select()
-    .eq("permission", `${schema}.${id}:select` as Database["supasheet"]["Enums"]["app_permission"]);
+    .eq(
+      "permission",
+      `${schema}.${id}:select` as Database["supasheet"]["Enums"]["app_permission"],
+    );
 
   if (response.error) {
     return false;
-  };
+  }
 
   return response.data?.length > 0;
 }

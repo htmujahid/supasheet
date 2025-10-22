@@ -25,7 +25,7 @@ async function HomeResourcePage(props: {
     perPage: string;
   }>;
 }) {
-  const { resource, schema } = (await props.params);
+  const { resource, schema } = await props.params;
 
   const searchParams = await props.searchParams;
   const search = resourceSearchParamsCache.parse(searchParams);
@@ -36,14 +36,17 @@ async function HomeResourcePage(props: {
     loadResourcePermissions(schema, resource),
   ]);
 
-  const proxy = JSON.parse(tableSchema?.comment ?? "{}").proxy as { schema: never; view: never };
+  const proxy = JSON.parse(tableSchema?.comment ?? "{}").proxy as {
+    schema: never;
+    view: never;
+  };
 
   const [proxyColumnsSchema, data, proxyPermissions] = await Promise.all([
-    proxy ? loadColumnsSchema(proxy.schema, proxy.view): columnsSchema,
+    proxy ? loadColumnsSchema(proxy.schema, proxy.view) : columnsSchema,
     loadResourceData(proxy.schema ?? schema, proxy.view ?? resource, search),
     loadSelectPermissions(proxy.schema ?? schema, proxy.view ?? resource),
   ]);
-  
+
   if (!permissions.canSelect && !proxyPermissions) {
     notFound();
   }
