@@ -42,9 +42,9 @@ async function HomeResourcePage(props: {
   };
 
   const [proxyColumnsSchema, data, proxyPermissions] = await Promise.all([
-    proxy ? loadColumnsSchema(proxy.schema, proxy.view) : columnsSchema,
-    loadResourceData(proxy.schema ?? schema, proxy.view ?? resource, search),
-    loadSelectPermissions(proxy.schema ?? schema, proxy.view ?? resource),
+    proxy ? loadColumnsSchema(proxy?.schema, proxy?.view) : columnsSchema,
+    loadResourceData(proxy?.schema ?? schema, proxy?.view ?? resource, search),
+    loadSelectPermissions(proxy?.schema ?? schema, proxy?.view ?? resource),
   ]);
 
   if (!permissions.canSelect && !proxyPermissions) {
