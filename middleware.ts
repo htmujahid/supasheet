@@ -166,8 +166,7 @@ function getPatterns() {
         if (req.nextUrl.pathname === pathsConfig.app.home) {
           const { data, error } = await supabase
             .schema("supasheet")
-            .rpc("get_schemas")
-            .select();
+            .rpc("get_schemas");
 
           if (!data || error) {
             throw new Error("Failed to fetch user schemas");
