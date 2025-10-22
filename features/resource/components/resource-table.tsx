@@ -24,10 +24,12 @@ import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
 export function ResourceTable({
   tableSchema,
   columnsSchema,
+  proxyColumnsSchema,
   data,
 }: {
   tableSchema: Awaited<ReturnType<typeof loadTableSchema>> | null;
   columnsSchema: Awaited<ReturnType<typeof loadColumnsSchema>> | null;
+  proxyColumnsSchema: Awaited<ReturnType<typeof loadColumnsSchema>> | null;
   data: Awaited<ReturnType<typeof loadResourceData>> | null;
 }) {
   const [rowAction, setRowAction] =
@@ -43,11 +45,11 @@ export function ResourceTable({
   const columns = useMemo(
     () =>
       getResourceTableColumns({
-        columnsSchema: columnsSchema ?? [],
+        columnsSchema: proxyColumnsSchema ?? [],
         tableSchema,
         setRowAction: handleSetRowAction,
       }),
-    [columnsSchema, tableSchema, handleSetRowAction],
+    [proxyColumnsSchema, tableSchema, handleSetRowAction],
   );
 
   const getRowId = useCallback(
@@ -84,7 +86,7 @@ export function ResourceTable({
           <DataTableSortList table={table} />
           <ResourceTableToolbarActions
             table={table}
-            columnsSchema={columnsSchema ?? []}
+            columnsSchema={proxyColumnsSchema ?? []}
             tableSchema={tableSchema ?? null}
           />
         </DataTableAdvancedToolbar>

@@ -210,7 +210,19 @@ export async function loadResourcePermissions(
   const response = await client
     .schema("supasheet")
     .from("role_permissions")
-    .select();
+    .select()
+    .in(
+      "permission",
+      [
+        `${schema}.${id}:select`,
+        `${schema}.${id}:insert`,
+        `${schema}.${id}:update`,
+        `${schema}.${id}:delete`,
+      ] as Database["supasheet"]["Enums"]["app_permission"][],
+    );
+
+  console.log("Permissions response:", response);
+
 
   if (response.error) {
     return {
@@ -219,53 +231,45 @@ export async function loadResourcePermissions(
       canUpdate: false,
       canDelete: false,
     };
-  }
+  };
 
-  const permissions = response.data?.reduce(
-    (acc, perm) => {
-      if (
-        perm.permission ===
-        ((schema +
-          "." +
-          id +
-          ":select") as Database["supasheet"]["Enums"]["app_permission"])
-      ) {
-        acc.canSelect = true;
-      } else if (
-        perm.permission ===
-        ((schema +
-          "." +
-          id +
-          ":insert") as Database["supasheet"]["Enums"]["app_permission"])
-      ) {
-        acc.canInsert = true;
-      } else if (
-        perm.permission ===
-        ((schema +
-          "." +
-          id +
-          ":update") as Database["supasheet"]["Enums"]["app_permission"])
-      ) {
-        acc.canUpdate = true;
-      } else if (
-        perm.permission ===
-        ((schema +
-          "." +
-          id +
-          ":delete") as Database["supasheet"]["Enums"]["app_permission"])
-      ) {
-        acc.canDelete = true;
-      }
+  const permissions = {
+    canSelect: false,
+    canInsert: false,
+    canUpdate: false,
+    canDelete: false,
+  };
 
-      return acc;
-    },
-    {
-      canSelect: false,
-      canInsert: false,
-      canUpdate: false,
-      canDelete: false,
-    },
-  );
+  response.data?.forEach((perm) => {
+    if (perm.permission === `${schema}.${id}:select`) {
+      permissions.canSelect = true;
+    } else if (perm.permission === `${schema}.${id}:insert`) {
+      permissions.canInsert = true;
+    } else if (perm.permission === `${schema}.${id}:update`) {
+      permissions.canUpdate = true;
+    } else if (perm.permission === `${schema}.${id}:delete`) {
+      permissions.canDelete = true;
+    }
+  });
 
   return permissions;
+}
+
+export async function loadSelectPermissions(
+  schema: DatabaseSchemas,
+  id: DatabaseTables<typeof schema>,
+) {
+  const client = await getSupabaseServerClient();
+
+  const response = await client
+    .schema("supasheet")
+    .from("role_permissions")
+    .select()
+    .eq("permission", `${schema}.${id}:select` as Database["supasheet"]["Enums"]["app_permission"]);
+
+  if (response.error) {
+    return false;
+  };
+
+  return response.data?.length > 0;
 }
