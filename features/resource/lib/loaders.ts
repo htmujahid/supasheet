@@ -221,9 +221,6 @@ export async function loadResourcePermissions(
       ] as Database["supasheet"]["Enums"]["app_permission"][],
     );
 
-  console.log("Permissions response:", response);
-
-
   if (response.error) {
     return {
       canSelect: false,
