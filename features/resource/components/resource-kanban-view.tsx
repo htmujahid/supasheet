@@ -46,9 +46,9 @@ export function ResourceKanbanView({
       }}
       getItemValue={buildId}
     >
-      <KanbanBoard className="grid h-[calc(100vh-80px)] auto-rows-fr sm:grid-cols-3">
+      <KanbanBoard className="h-[calc(100vh-80px)] overflow-x-auto">
         {Object.entries(columns).map(([columnValue, tasks]) => (
-          <KanbanColumn key={columnValue} value={columnValue}>
+          <KanbanColumn key={columnValue} value={columnValue} className="min-w-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">{columnValue}</span>
