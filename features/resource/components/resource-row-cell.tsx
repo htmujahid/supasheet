@@ -3,7 +3,7 @@ import { memo, useCallback, useMemo } from "react";
 import Link from "next/link";
 
 import { Row } from "@tanstack/react-table";
-import { ArrowUpRightIcon, CopyIcon, EditIcon, TrashIcon } from "lucide-react";
+import { ArrowUpRightIcon, CopyIcon, EditIcon, EyeIcon, TrashIcon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import {
@@ -66,6 +66,13 @@ export const ResourceRowCell = memo(function ResourceRowCell({
     navigator.clipboard.writeText(value?.toString() ?? "");
   }, [value]);
 
+  const handleView = useCallback(() => {
+    setRowAction({
+      variant: "view",
+      row: row,
+    });
+  }, [setRowAction, row]);
+
   const handleEdit = useCallback(() => {
     setRowAction({
       variant: "update",
@@ -123,6 +130,11 @@ export const ResourceRowCell = memo(function ResourceRowCell({
           Copy Cell Content
         </ContextMenuItem>
         <If condition={tableSchema}>
+          <ContextMenuSeparator />
+          <ContextMenuItem onClick={handleView}>
+            <EyeIcon className="size-4" />
+            View Details
+          </ContextMenuItem>
           <If condition={permissions.canUpdate}>
             <ContextMenuItem onClick={handleEdit}>
               <EditIcon className="size-4" />

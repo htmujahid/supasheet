@@ -17,6 +17,7 @@ import {
   loadTableSchema,
 } from "../lib/loaders";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
+import { ResourceDetailSheet } from "./resource-detail-sheet";
 import { ResourceSheet } from "./resource-sheet";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
@@ -105,6 +106,15 @@ export function ResourceTable({
       <If condition={rowAction?.variant === "update" && tableSchema}>
         <ResourceSheet
           open={rowAction?.variant === "update"}
+          onOpenChange={() => setRowAction(null)}
+          tableSchema={tableSchema ?? null}
+          columnsSchema={columnsSchema ?? []}
+          data={rowAction?.row.original ?? null}
+        />
+      </If>
+      <If condition={rowAction?.variant === "view" && tableSchema}>
+        <ResourceDetailSheet
+          open={rowAction?.variant === "view"}
           onOpenChange={() => setRowAction(null)}
           tableSchema={tableSchema ?? null}
           columnsSchema={columnsSchema ?? []}

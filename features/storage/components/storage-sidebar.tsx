@@ -13,6 +13,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
@@ -35,9 +36,9 @@ export function StorageSidebar({
   const activeItem = buckets?.find((bukcet) => bukcet.id === params?.bucket);
 
   return (
-    <Sidebar className="border-r">
+    <Sidebar className="border-r" collapsible="icon">
       <SidebarHeader className="">
-        <SidebarMenuButton className="w-fit px-1.5">
+        <SidebarMenuButton className="w-fit px-2">
           <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
             <FolderIcon className="size-4" />
           </div>
@@ -45,23 +46,25 @@ export function StorageSidebar({
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroup>
           <SidebarGroupLabel>Buckets</SidebarGroupLabel>
-          <SidebarMenu className="overflow-y-auto">
-            {buckets?.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={activeItem?.id === item.id}
-                >
-                  <Link href={"/home/storage/" + item.id}>
-                    {item.public ? <FolderIcon /> : <FolderLockIcon />}
-                    <span>{formatTitle(item.name)}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+          <SidebarGroupContent>
+            <SidebarMenu className="overflow-y-auto">
+              {buckets?.map((item) => (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={activeItem?.id === item.id}
+                  >
+                    <Link href={"/home/storage/" + item.id}>
+                      {item.public ? <FolderIcon /> : <FolderLockIcon />}
+                      <span>{formatTitle(item.name)}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

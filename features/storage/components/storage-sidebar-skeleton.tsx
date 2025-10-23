@@ -18,7 +18,7 @@ export function StorageSidebarSkeleton() {
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
     >
       <SidebarHeader className="gap-2.5 border-b p-2.5">
-        <SidebarMenuButton className="w-fit px-1.5">
+        <SidebarMenuButton className="w-fit px-2">
           <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
             <FolderIcon className="size-4" />
           </div>

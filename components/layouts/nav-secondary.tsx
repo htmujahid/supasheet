@@ -6,7 +6,6 @@ import { type LucideIcon } from "lucide-react";
 
 import {
   SidebarGroup,
-  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuBadge,
   SidebarMenuButton,
@@ -29,7 +28,6 @@ const features = {
 
 export function NavSecondary({
   items,
-  ...props
 }: {
   items: {
     title: string;
@@ -44,25 +42,21 @@ export function NavSecondary({
 
   return (
     <>
-      <SidebarGroup {...props}>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {items.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild isActive={pathname === item.url}>
-                  <a href={item.url}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </a>
-                </SidebarMenuButton>
-                {item.badge && (
-                  <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                )}
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      <SidebarMenu>
+        {items.map((item) => (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton asChild isActive={pathname === item.url}>
+              <a href={item.url}>
+                <item.icon />
+                <span>{item.title}</span>
+              </a>
+            </SidebarMenuButton>
+            {item.badge && (
+              <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+            )}
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
       <PersonalAccountDropdown
         paths={paths}
         features={features}

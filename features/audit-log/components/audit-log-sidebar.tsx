@@ -12,6 +12,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarInput,
   SidebarMenu,
@@ -28,9 +30,9 @@ export function AuditLogsSidebar({
   const schemas = use(schemasPromise);
 
   return (
-    <Sidebar className="border-r">
+    <Sidebar className="border-r" collapsible="icon">
       <SidebarHeader className="">
-        <SidebarMenuButton className="w-fit px-1.5">
+        <SidebarMenuButton className="w-fit px-2">
           <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">
             <ScrollTextIcon className="size-4" />
           </div>
@@ -38,29 +40,32 @@ export function AuditLogsSidebar({
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarMenu className="overflow-y-auto">
-            {schemas.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-2 text-center">
-                <div className="text-muted-foreground text-sm">
-                  No Schema Found
+        <SidebarGroup>
+          <SidebarGroupLabel>Schemas</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="overflow-y-auto">
+              {schemas.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-2 text-center">
+                  <div className="text-muted-foreground text-sm">
+                    No Schema Found
+                  </div>
                 </div>
-              </div>
-            ) : (
-              schemas.map((item) => (
-                <SidebarMenuItem key={item.schema}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={`/home/audit-log?filters=[{"id":"schema_name","value":"${item.schema}","variant":"text","operator":"eq","filterId":"Bx4Aglmk"}]`}
-                    >
-                      <DatabaseIcon />
-                      <span>{formatTitle(item.schema)}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))
-            )}
-          </SidebarMenu>
+              ) : (
+                schemas.map((item) => (
+                  <SidebarMenuItem key={item.schema}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={`/home/audit-log?filters=[{"id":"schema_name","value":"${item.schema}","variant":"text","operator":"eq","filterId":"Bx4Aglmk"}]`}
+                      >
+                        <DatabaseIcon />
+                        <span>{formatTitle(item.schema)}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

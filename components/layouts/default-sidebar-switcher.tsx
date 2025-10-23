@@ -34,7 +34,7 @@ export function DefaultSidebarSwitcher({
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="w-fit px-1.5">
+            <SidebarMenuButton className="w-fit px-2">
               {activeSchema ? (
                 <>
                   <div className="bg-primary text-primary-foreground flex aspect-square size-5 items-center justify-center rounded">

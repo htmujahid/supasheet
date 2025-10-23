@@ -74,7 +74,7 @@ export function DefaultSidebar({
   }
 
   return (
-    <Sidebar className="border-r-0" {...props}>
+    <Sidebar className="border-r-0" collapsible="icon" {...props}>
       <SidebarHeader>
         <DefaultSidebarSwitcher
           schemas={schemas ?? []}
