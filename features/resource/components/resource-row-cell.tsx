@@ -3,7 +3,13 @@ import { memo, useCallback, useMemo } from "react";
 import Link from "next/link";
 
 import { Row } from "@tanstack/react-table";
-import { ArrowUpRightIcon, CopyIcon, EditIcon, EyeIcon, TrashIcon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  CopyIcon,
+  EditIcon,
+  EyeIcon,
+  TrashIcon,
+} from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import {

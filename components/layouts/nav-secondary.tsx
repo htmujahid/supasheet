@@ -51,9 +51,7 @@ export function NavSecondary({
                 <span>{item.title}</span>
               </a>
             </SidebarMenuButton>
-            {item.badge && (
-              <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-            )}
+            {item.badge && <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>}
           </SidebarMenuItem>
         ))}
       </SidebarMenu>

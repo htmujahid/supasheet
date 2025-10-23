@@ -393,3 +393,27 @@ create trigger audit_tasks_delete
     on public.tasks
     for each row
 execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Task Kanban View 
+----------------------------------------------------------------
+
+create or replace view public.task_kanban_view
+with (security_invoker = true) as
+select
+    status,
+    json_agg(json_build_object(
+        'pk', json_build_object('id', id),
+        'title', title,
+        'badge', priority,
+        'description', description,
+        'date', to_char(due_date, 'YYYY-MM-DD')
+    ) order by created_at) as data
+from tasks
+group by status;
+
+revoke all on public.task_kanban_view from authenticated, service_role, anon;
+grant select on public.task_kanban_view to authenticated;
+
+insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_kanban_view:select');

@@ -1,12 +1,12 @@
 import type {
   DatabaseSchemas,
   DatabaseTables,
-  TableMetadata,
-  ViewMetadata,
+  DatabaseViews,
 } from "@/lib/database-meta.types";
 import type { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
+import { KanbanViewData, KanbanViewReducedData } from "./types";
 import type { ResourceSearchParams } from "./validations";
 
 export async function loadColumnsSchema(schema: string, id: string) {
@@ -269,4 +269,27 @@ export async function loadSelectPermissions(
   }
 
   return response.data?.length > 0;
+}
+
+export async function loadKanbanViewData(
+  schema: DatabaseSchemas,
+  view: DatabaseViews<typeof schema>,
+  group: string,
+) {
+  const client = await getSupabaseServerClient();
+
+  const response = await client.schema(schema).from(view).select("*");
+
+  if (response.error) {
+    return {};
+  }
+
+  const data = response.data as ({ data: KanbanViewData[] } & {
+    [k: string]: string;
+  })[];
+
+  return data.reduce((acc, item) => {
+    acc[item?.[group]] = item.data;
+    return acc;
+  }, {} as KanbanViewReducedData);
 }

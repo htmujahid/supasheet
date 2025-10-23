@@ -1,49 +1,51 @@
 "use client";
 
+import * as React from "react";
+
+import * as ReactDOM from "react-dom";
+
 import {
   type Announcements,
   type CollisionDetection,
-  closestCenter,
-  closestCorners,
   DndContext,
   type DndContextProps,
   type DragCancelEvent,
   type DragEndEvent,
-  type DraggableAttributes,
-  type DraggableSyntheticListeners,
   type DragOverEvent,
   DragOverlay,
   type DragStartEvent,
+  type DraggableAttributes,
+  type DraggableSyntheticListeners,
   type DropAnimation,
   type DroppableContainer,
-  defaultDropAnimationSideEffects,
-  getFirstCollision,
   KeyboardCode,
   type KeyboardCoordinateGetter,
   KeyboardSensor,
   MeasuringStrategy,
   MouseSensor,
-  pointerWithin,
-  rectIntersection,
   TouchSensor,
   type UniqueIdentifier,
+  closestCenter,
+  closestCorners,
+  defaultDropAnimationSideEffects,
+  getFirstCollision,
+  pointerWithin,
+  rectIntersection,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
   type AnimateLayoutChanges,
+  SortableContext,
+  type SortableContextProps,
   arrayMove,
   defaultAnimateLayoutChanges,
   horizontalListSortingStrategy,
-  SortableContext,
-  type SortableContextProps,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Slot } from "@radix-ui/react-slot";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
@@ -196,6 +198,7 @@ type KanbanRootProps<T> = Omit<DndContextProps, "collisionDetection"> &
     onMove?: (
       event: DragEndEvent & { activeIndex: number; overIndex: number },
     ) => void;
+    onUpdate?: (item: T, from: UniqueIdentifier, to: UniqueIdentifier) => void;
     strategy?: SortableContextProps["strategy"];
     orientation?: "horizontal" | "vertical";
     flatCursor?: boolean;
@@ -209,6 +212,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     strategy = verticalListSortingStrategy,
     orientation = "horizontal",
     onMove,
+    onUpdate,
     getItemValue: getItemValueProp,
     accessibility,
     flatCursor = false,
@@ -368,6 +372,9 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
           ),
           [overColumn]: [...overItems, activeItem],
         };
+
+        // console.log("Moved to different column", { activeItem, from: activeColumn, to: overColumn });
+        onUpdate?.(activeItem, activeColumn, overColumn);
 
         onValueChange?.(updatedItems);
         hasMovedRef.current = true;
@@ -976,7 +983,7 @@ function KanbanItem(props: KanbanItemProps) {
         ref={composedRef}
         style={composedStyle}
         className={cn(
-          "focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-hidden",
           {
             "touch-none select-none": asHandle,
             "cursor-default": context.flatCursor,

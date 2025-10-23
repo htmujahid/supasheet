@@ -61,8 +61,7 @@ export function ResourceDetailSheet({
         </SheetHeader>
         <div className="flex-1 space-y-0 overflow-y-auto px-4">
           {detailColumns.map((column, index) => {
-            const value =
-              data?.[column.name as keyof typeof data];
+            const value = data?.[column.name as keyof typeof data];
 
             const icon = getDataTypeIcon(column);
             const columnMetadata = getColumnMetadata(column);
@@ -82,7 +81,10 @@ export function ResourceDetailSheet({
                           disabled
                         />
                       ) : (
-                        <AllCells columnMetadata={columnMetadata} value={value} />
+                        <AllCells
+                          columnMetadata={columnMetadata}
+                          value={value}
+                        />
                       )}
                     </div>
                   </div>
