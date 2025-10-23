@@ -25,4 +25,5 @@ alter type supasheet.app_permission add value 'public.task_completion_line:selec
 alter type supasheet.app_permission add value 'public.task_status_pie:select';
 alter type supasheet.app_permission add value 'public.task_metrics_radar:select';
 
-alter type supasheet.app_permission add value 'public.task_kanban_view:select';
+alter type supasheet.app_permission add value 'public.task_board_view:select';
+alter type supasheet.app_permission add value 'public.task_list_view:select';

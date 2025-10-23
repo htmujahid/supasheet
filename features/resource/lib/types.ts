@@ -18,7 +18,7 @@ export type ViewResource = {
 
 export type Resource = TableResource | ViewResource;
 
-export type KanbanViewData = {
+export type BoardViewData = {
   pk: Record<string, unknown>;
   title: string;
   description: string;
@@ -26,4 +26,14 @@ export type KanbanViewData = {
   badge: string;
 };
 
-export type KanbanViewReducedData = Record<string, KanbanViewData[]>;
+export type BoardViewReducedData = Record<string, BoardViewData[]>;
+
+export type ListViewData = {
+  pk: Record<string, unknown>;
+  title: string;
+  description: string;
+  date: string;
+  badge: string;
+};
+
+export type ListViewReducedData = Record<string, ListViewData[]>;

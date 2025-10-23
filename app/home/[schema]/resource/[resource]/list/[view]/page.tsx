@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
-import { ResourceKanbanView } from "@/features/resource/components/resource-kanban-view";
 import {
   loadColumnsSchema,
-  loadKanbanViewData,
+  loadResourceListViewData,
 } from "@/features/resource/lib/loaders";
 import {
   DatabaseSchemas,
@@ -12,6 +11,7 @@ import {
   DatabaseViews,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
+import { ResourceListView } from "@/features/resource/components/resource-list-view";
 
 export default async function Page({
   params,
@@ -32,7 +32,7 @@ export default async function Page({
     notFound();
   }
 
-  const kanbanViewData = await loadKanbanViewData(schema, view, groupBy);
+  const listViewData = await loadResourceListViewData(schema, view, groupBy);
 
   return (
     <div className="w-full flex-1">
@@ -43,8 +43,8 @@ export default async function Page({
         ]}
       />
       <div className="p-4">
-        <ResourceKanbanView
-          data={kanbanViewData}
+        <ResourceListView
+          data={listViewData}
           schema={schema}
           resource={resource}
           groupBy={groupBy}

@@ -13,22 +13,22 @@ import {
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 
 import { updateResourceDataAction } from "../lib/actions";
-import { KanbanViewData, KanbanViewReducedData } from "../lib/types";
+import { BoardViewData, BoardViewReducedData } from "../lib/types";
 
-export function ResourceKanbanView({
+export function ResourceListView({
   data,
   schema,
   resource,
   groupBy,
 }: {
-  data: KanbanViewReducedData;
+  data: BoardViewReducedData;
   schema: DatabaseSchemas;
   resource: DatabaseTables<typeof schema>;
   groupBy: string;
 }) {
-  const [columns, setColumns] = useState<KanbanViewReducedData>(data);
+  const [columns, setColumns] = useState<BoardViewReducedData>(data);
 
-  const buildId = useCallback((item: KanbanViewData) => {
+  const buildId = useCallback((item: BoardViewData) => {
     return Object.values(item).join("/");
   }, []);
 
@@ -44,9 +44,10 @@ export function ResourceKanbanView({
           data: { [groupBy]: to },
         });
       }}
+      orientation="vertical"
       getItemValue={buildId}
     >
-      <KanbanBoard className="h-[calc(100vh-80px)] overflow-x-auto">
+      <KanbanBoard className="">
         {Object.entries(columns).map(([columnValue, tasks]) => (
           <KanbanColumn key={columnValue} value={columnValue} className="min-w-xs">
             <div className="flex items-center justify-between">
@@ -77,20 +78,6 @@ export function ResourceKanbanView({
                         <Badge className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize">
                           {task.badge}
                         </Badge>
-                      </div>
-                      <div className="text-muted-foreground flex items-center justify-between text-xs">
-                        {task.description && (
-                          <div className="flex items-center gap-1">
-                            <span className="line-clamp-1">
-                              {task.description}
-                            </span>
-                          </div>
-                        )}
-                        {task.date && (
-                          <time className="text-[10px] tabular-nums">
-                            {task.date}
-                          </time>
-                        )}
                       </div>
                     </div>
                   </div>

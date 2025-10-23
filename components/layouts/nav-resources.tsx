@@ -50,7 +50,7 @@ function SubItemsIcon({ type }: { type: string }) {
   switch (type) {
     case "list":
       return <ListIcon className="size-4 shrink-0" />;
-    case "kanban":
+    case "board":
       return <SquareKanbanIcon className="size-4 shrink-0" />;
     case "calendar":
       return <CalendarDaysIcon className="size-4 shrink-0" />;
