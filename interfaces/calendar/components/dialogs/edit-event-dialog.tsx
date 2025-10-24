@@ -16,7 +16,6 @@ import { Dialog, DialogHeader, DialogClose, DialogContent, DialogTrigger, Dialog
 import { eventSchema } from "@/interfaces/calendar/lib/schemas";
 
 import type { Event } from "@/interfaces/calendar/lib/types";
-import type { TimeValue } from "react-aria-components";
 import type { TEventFormData } from "@/interfaces/calendar/lib/schemas";
 
 interface IProps {
