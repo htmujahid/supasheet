@@ -271,7 +271,7 @@ export async function loadSelectPermissions(
   return response.data?.length > 0;
 }
 
-export async function loadResourceBoardViewData(
+export async function loadResourceKanbanViewData(
   schema: DatabaseSchemas,
   view: DatabaseViews<typeof schema>,
   group: string,

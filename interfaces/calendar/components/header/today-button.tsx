@@ -1,5 +1,4 @@
-import { formatDate } from "date-fns";
-
+import { Button } from "@/components/ui/button";
 import { useCalendar } from "@/interfaces/calendar/components/calendar-context";
 
 export function TodayButton() {
@@ -9,14 +8,11 @@ export function TodayButton() {
   const handleClick = () => setSelectedDate(today);
 
   return (
-    <button
-      className="flex size-14 flex-col items-start overflow-hidden rounded-lg border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+    <Button
       onClick={handleClick}
+      size={"icon-lg"}
     >
-      <p className="flex h-6 w-full items-center justify-center bg-primary text-center text-xs font-semibold text-primary-foreground">
-        {formatDate(today, "MMM").toUpperCase()}
-      </p>
-      <p className="flex w-full items-center justify-center text-lg font-bold">{today.getDate()}</p>
-    </button>
+      {today.getDate()}
+    </Button>
   );
 }

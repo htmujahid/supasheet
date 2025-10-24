@@ -58,7 +58,7 @@ export type TableMetadata = {
   items?: {
     name: string;
     view: string;
-    type: "calendar" | "board" | "list" | "gantt";
+    type: "calendar" | "kanban" | "gantt";
   }[];
 };
 

@@ -60,7 +60,7 @@ export function CalendarAgendaView({ singleDayEvents, multiDayEvents }: IProps) 
   const hasAnyEvents = singleDayEvents.length > 0 || multiDayEvents.length > 0;
 
   return (
-    <div className="h-[calc(100vh-172px)]">
+    <div className="h-[calc(100vh-162px)]">
       <ScrollArea className="h-full" type="always">
         <div className="space-y-6 p-4">
           {eventsByDay.map(dayGroup => (

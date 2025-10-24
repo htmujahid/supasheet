@@ -43,11 +43,12 @@ const exampleFeatures = [
 ];
 
 export function ResourceGanttView({
-  features
+  features,
+  layout,
 }: {
   features: GanttViewData[];
+  layout: "daily" | "monthly" | "quarterly";
 }) {
-
   const handleViewFeature = (id: string) =>
     console.log(`Feature selected: ${id}`);
 
@@ -70,7 +71,7 @@ export function ResourceGanttView({
     <GanttProvider
       className="border"
       onAddItem={handleAddFeature}
-      range="monthly"
+      range={layout}
       zoom={100}
     >
       <GanttTimeline className="h-[calc(100vh-85px)] overflow-y-auto">

@@ -41,7 +41,7 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }: IProps) {
 
   return (
     <div className="flex">
-      <div className="flex flex-1 flex-col  h-[calc(100vh-175px)]">
+      <div className="flex flex-1 flex-col  h-[calc(100vh-162px)]">
         <div>
           <DayViewMultiDayEventsRow selectedDate={selectedDate} multiDayEvents={multiDayEvents} />
 

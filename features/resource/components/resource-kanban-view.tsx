@@ -15,16 +15,18 @@ import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { updateResourceDataAction } from "../lib/actions";
 import { ListViewData, ListViewReducedData } from "../lib/types";
 
-export function ResourceBoardView({
+export function ResourceKanbanView({
   data,
   schema,
   resource,
   groupBy,
+  layout,
 }: {
   data: ListViewReducedData;
   schema: DatabaseSchemas;
   resource: DatabaseTables<typeof schema>;
   groupBy: string;
+  layout: "list" | "board";
 }) {
   const [columns, setColumns] = useState<ListViewReducedData>(data);
 
@@ -44,6 +46,7 @@ export function ResourceBoardView({
           data: { [groupBy]: to },
         });
       }}
+      orientation={layout === "list" ? "vertical" : "horizontal"}
       getItemValue={buildId}
     >
       <KanbanBoard className="h-[calc(100vh-80px)] overflow-x-auto">

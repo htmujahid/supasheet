@@ -33,7 +33,7 @@ create table tasks (
     updated_at timestamptz default current_timestamp
 );
 
-comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"name": "Calendar View", "view": "task_calendar_view", "type": "calendar"}, {"name": "Board View", "view": "task_board_view", "type": "board"}, {"name": "List View", "view": "task_list_view", "type": "list"}, {"name": "Gantt View", "view": "task_gantt_view", "type": "gantt"}], "proxy": {"schema":"public","view":"user_tasks"}}';
+comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"name": "Calendar View", "view": "task_calendar_view", "type": "calendar"}, {"name": "Kanban View", "view": "task_kanban_view", "type": "kanban"}, {"name": "Gantt View", "view": "task_gantt_view", "type": "gantt"}], "proxy": {"schema":"public","view":"user_tasks"}}';
 
 comment on column tasks.cover is '{"accept":"image/*"}';
 comment on column tasks.attachments is '{"accept":"*"}';
@@ -396,10 +396,10 @@ execute function supasheet.audit_trigger_function();
 
 
 ----------------------------------------------------------------
--- Task Board View 
+-- Task Kanban View 
 ----------------------------------------------------------------
 
-create or replace view public.task_board_view
+create or replace view public.task_kanban_view
 with (security_invoker = true) as
 select
     status,
@@ -413,32 +413,10 @@ select
 from tasks
 group by status;
 
-revoke all on public.task_board_view from authenticated, service_role, anon;
-grant select on public.task_board_view to authenticated;
+revoke all on public.task_kanban_view from authenticated, service_role, anon;
+grant select on public.task_kanban_view to authenticated;
 
-insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_board_view:select');
-
-
-----------------------------------------------------------------
--- Task List View 
-----------------------------------------------------------------
-
-create or replace view public.task_list_view
-with (security_invoker = true) as
-select
-    status,
-    json_agg(json_build_object(
-        'pk', json_build_object('id', id),
-        'title', title,
-        'badge', priority
-    ) order by created_at) as data
-from tasks
-group by status;
-
-revoke all on public.task_list_view from authenticated, service_role, anon;
-grant select on public.task_list_view to authenticated;
-
-insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_list_view:select');
+insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_kanban_view:select');
 
 
 ----------------------------------------------------------------

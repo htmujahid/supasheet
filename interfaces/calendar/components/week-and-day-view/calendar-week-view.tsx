@@ -34,7 +34,7 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
         <p>Please switch to daily or monthly view.</p>
       </div>
 
-      <div className="hidden flex-col sm:flex h-[calc(100vh-175px)]">
+      <div className="hidden flex-col sm:flex h-[calc(100vh-162px)]">
         <div>
           <WeekViewMultiDayEventsRow selectedDate={selectedDate} multiDayEvents={multiDayEvents} />
 

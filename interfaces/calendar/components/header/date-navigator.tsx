@@ -29,14 +29,14 @@ export function DateNavigator({ view, events }: IProps) {
   const handleNext = () => setSelectedDate(navigateDate(selectedDate, view, "next"));
 
   return (
-    <div className="space-y-0.5">
-      <div className="flex items-center gap-2">
-        <span className="text-lg font-semibold">
-          {month} {year}
-        </span>
-        <Badge variant="outline" className="px-1.5">
+    <div className="gap-2 flex justify-between flex-1">
+      <div className="flex flex-col">
+        <Badge variant="outline">
           {eventCount} events
         </Badge>
+        <span className="font-semibold">
+          {month} {year}
+        </span>
       </div>
 
       <div className="flex items-center gap-2">
