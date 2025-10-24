@@ -33,7 +33,7 @@ create table tasks (
     updated_at timestamptz default current_timestamp
 );
 
-comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"name": "Calendar View", "view": "task_calendar_view", "type": "calendar"}, {"name": "Kanban View", "view": "task_kanban_view", "type": "kanban"}, {"name": "Gantt View", "view": "task_gantt_view", "type": "gantt"}], "proxy": {"schema":"public","view":"user_tasks"}}';
+comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "proxy": {"schema":"public","view":"user_tasks"}}';
 
 comment on column tasks.cover is '{"accept":"image/*"}';
 comment on column tasks.attachments is '{"accept":"*"}';
@@ -133,7 +133,8 @@ insert into supasheet.role_permissions (role, permission) values ('user', 'publi
 ----------------------------------------------------------------
 
 -- View for task completion rate (Card2 - split layout)
-create or replace view public.task_completion_rate as
+create or replace view public.task_completion_rate 
+with (security_invoker = true) as
 select
     count(*) filter (where status = 'completed') as primary,
     count(*) filter (where status != 'completed') as secondary,
@@ -145,7 +146,8 @@ revoke all on public.task_completion_rate from authenticated, service_role;
 grant select on public.task_completion_rate to authenticated;
 
 -- View for completed tasks stats (Card3 - value and percent layout)
-create or replace view public.tasks_by_status as
+create or replace view public.tasks_by_status 
+with (security_invoker = true) as
 select
     count(*) filter (where status = 'completed') as value,
     case
@@ -159,7 +161,8 @@ revoke all on public.tasks_by_status from authenticated, service_role;
 grant select on public.tasks_by_status to authenticated;
 
 -- View for task progress with breakdown (Card4 - progress layout)
-create or replace view public.task_urgent_count as
+create or replace view public.task_urgent_count 
+with (security_invoker = true) as
 select
     count(*) filter (where status != 'completed' and priority in ('high', 'urgent')) as current,
     count(*) filter (where status != 'completed') as total,
@@ -187,7 +190,8 @@ insert into supasheet.role_permissions (role, permission) values
 
 
 -- Create table_1 view (2-3 columns, simpler data)
-create or replace view public.task_list_simple as
+create or replace view public.task_list_simple 
+with (security_invoker = true) as
 select
     title,
     status,
@@ -201,7 +205,8 @@ revoke all on public.task_list_simple from authenticated, service_role;
 grant select on public.task_list_simple to authenticated;
 
 -- Create another table_1 view
-create or replace view public.active_tasks_simple as
+create or replace view public.active_tasks_simple 
+with (security_invoker = true) as
 select
     title,
     priority,
@@ -222,7 +227,8 @@ revoke all on public.active_tasks_simple from authenticated, service_role;
 grant select on public.active_tasks_simple to authenticated;
 
 -- Create table_2 view (4-5 columns, detailed data)
-create or replace view public.task_list_detailed as
+create or replace view public.task_list_detailed 
+with (security_invoker = true) as
 select
     title,
     status,
@@ -243,7 +249,8 @@ revoke all on public.task_list_detailed from authenticated, service_role;
 grant select on public.task_list_detailed to authenticated;
 
 -- Create another table_2 view
-create or replace view public.task_analytics_detailed as
+create or replace view public.task_analytics_detailed 
+with (security_invoker = true) as
 select
     substring(title, 1, 30) || case when length(title) > 30 then '...' else '' end as task,
     status,
@@ -287,7 +294,8 @@ insert into supasheet.role_permissions (role, permission) values
 ----------------------------------------------------------------
 
 -- Area chart view - Task creation trend over time
-create or replace view public.task_trend_area as
+create or replace view public.task_trend_area 
+with (security_invoker = true) as
 select
     to_char(date_trunc('day', created_at), 'Mon DD') as date,
     count(*) filter (where status = 'completed') as completed,
@@ -302,7 +310,8 @@ revoke all on public.task_trend_area from authenticated, service_role;
 grant select on public.task_trend_area to authenticated;
 
 -- Bar chart view - Tasks by priority
-create or replace view public.task_priority_bar as
+create or replace view public.task_priority_bar 
+with (security_invoker = true) as
 select
     priority as label,
     count(*) as total,
@@ -321,7 +330,8 @@ revoke all on public.task_priority_bar from authenticated, service_role;
 grant select on public.task_priority_bar to authenticated;
 
 -- Line chart view - Daily task completion rate
-create or replace view public.task_completion_line as
+create or replace view public.task_completion_line 
+with (security_invoker = true) as
 select
     to_char(date_trunc('day', created_at), 'Mon DD') as date,
     count(*) as created,
@@ -335,7 +345,8 @@ revoke all on public.task_completion_line from authenticated, service_role;
 grant select on public.task_completion_line to authenticated;
 
 -- Pie chart view - Task status distribution
-create or replace view public.task_status_pie as
+create or replace view public.task_status_pie 
+with (security_invoker = true) as
 select
     status as label,
     count(*) as value
@@ -346,7 +357,8 @@ revoke all on public.task_status_pie from authenticated, service_role;
 grant select on public.task_status_pie to authenticated;
 
 -- Radar chart view - Task metrics by priority
-create or replace view public.task_metrics_radar as
+create or replace view public.task_metrics_radar 
+with (security_invoker = true) as
 select
     priority as metric,
     count(*) as total,
@@ -393,69 +405,3 @@ create trigger audit_tasks_delete
     on public.tasks
     for each row
 execute function supasheet.audit_trigger_function();
-
-
-----------------------------------------------------------------
--- Task Kanban View 
-----------------------------------------------------------------
-
-create or replace view public.task_kanban_view
-with (security_invoker = true) as
-select
-    status,
-    json_agg(json_build_object(
-        'pk', json_build_object('id', id),
-        'title', title,
-        'badge', priority,
-        'description', description,
-        'date', to_char(due_date, 'YYYY-MM-DD')
-    ) order by created_at) as data
-from tasks
-group by status;
-
-revoke all on public.task_kanban_view from authenticated, service_role, anon;
-grant select on public.task_kanban_view to authenticated;
-
-insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_kanban_view:select');
-
-
-----------------------------------------------------------------
--- Task Calendar View 
-----------------------------------------------------------------
-
-create or replace view public.task_calendar_view
-with (security_invoker = true) as
-select
-    json_build_object(
-        'id', id
-    ) as pk,
-    title,
-    created_at as start_date,
-    coalesce(due_date, created_at) as end_date,
-    description
-from tasks;
-
-revoke all on public.task_calendar_view from authenticated, service_role, anon;
-grant select on public.task_calendar_view to authenticated;
-
-insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_calendar_view:select');
-
-----------------------------------------------------------------
--- Task Gantt View 
-----------------------------------------------------------------
-
-create or replace view public.task_gantt_view
-with (security_invoker = true) as
-select
-    json_build_object(
-        'id', id
-    ) as pk,
-    title,
-    created_at as start_date,
-    coalesce(due_date, created_at + interval '1 day') as end_date
-from tasks;
-
-revoke all on public.task_gantt_view from authenticated, service_role, anon;
-grant select on public.task_gantt_view to authenticated;
-
-insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_gantt_view:select');
