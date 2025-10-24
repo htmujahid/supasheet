@@ -453,7 +453,6 @@ select
     ) as pk,
     title,
     created_at as start_date,
-    -- if due_date is null, set end_date as start_date
     coalesce(due_date, created_at) as end_date,
     description
 from tasks;
@@ -462,3 +461,23 @@ revoke all on public.task_calendar_view from authenticated, service_role, anon;
 grant select on public.task_calendar_view to authenticated;
 
 insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_calendar_view:select');
+
+----------------------------------------------------------------
+-- Task Gantt View 
+----------------------------------------------------------------
+
+create or replace view public.task_gantt_view
+with (security_invoker = true) as
+select
+    json_build_object(
+        'id', id
+    ) as pk,
+    title,
+    created_at as start_date,
+    coalesce(due_date, created_at + interval '1 day') as end_date
+from tasks;
+
+revoke all on public.task_gantt_view from authenticated, service_role, anon;
+grant select on public.task_gantt_view to authenticated;
+
+insert into supasheet.role_permissions (role, permission) values ('user', 'public.task_gantt_view:select');

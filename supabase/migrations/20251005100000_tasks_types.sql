@@ -28,3 +28,4 @@ alter type supasheet.app_permission add value 'public.task_metrics_radar:select'
 alter type supasheet.app_permission add value 'public.task_board_view:select';
 alter type supasheet.app_permission add value 'public.task_list_view:select';
 alter type supasheet.app_permission add value 'public.task_calendar_view:select';
+alter type supasheet.app_permission add value 'public.task_gantt_view:select';

@@ -20,7 +20,6 @@ export default async function Page({
   const { schema, resource, view } = await params;
   const { searchView = "day" } = await searchParams;
   const events = await loadResourceCalendarViewData(schema, view);
-  console.log("Events:", events);
 
   return (
     <div className="w-full flex-1">

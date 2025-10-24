@@ -45,3 +45,10 @@ export type CalendarViewData = {
   title: string;
   description: string;
 };
+
+export type GanttViewData = {
+  pk: Record<string, unknown>;
+  start_date: string;
+  end_date: string;
+  title: string;
+};
