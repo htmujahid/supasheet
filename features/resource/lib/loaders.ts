@@ -6,7 +6,7 @@ import type {
 import type { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import { BoardViewData, BoardViewReducedData, ListViewData, ListViewReducedData } from "./types";
+import { BoardViewData, BoardViewReducedData, CalendarViewData, ListViewData, ListViewReducedData } from "./types";
 import type { ResourceSearchParams } from "./validations";
 
 export async function loadColumnsSchema(schema: string, id: string) {
@@ -315,4 +315,19 @@ export async function loadResourceListViewData(
     acc[item?.[group]] = item.data;
     return acc;
   }, {} as ListViewReducedData);
+}
+
+export async function loadResourceCalendarViewData(
+  schema: DatabaseSchemas,
+  view: DatabaseViews<typeof schema>,
+) {
+  const client = await getSupabaseServerClient();
+
+  const response = await client.schema(schema).from(view).select("*");
+
+  if (response.error) {
+    return [];
+  }
+
+  return response.data as CalendarViewData[];
 }

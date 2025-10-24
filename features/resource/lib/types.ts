@@ -37,3 +37,11 @@ export type ListViewData = {
 };
 
 export type ListViewReducedData = Record<string, ListViewData[]>;
+
+export type CalendarViewData = {
+  pk: Record<string, unknown>;
+  start_date: string;
+  end_date: string;
+  title: string;
+  description: string;
+};
