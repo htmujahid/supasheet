@@ -4,6 +4,7 @@ import { SYSTEM_SCHEMAS } from "@/config/database.config";
 import {
   DatabaseSchemas,
   DatabaseTables,
+  ResourceDataSchema,
   TableMetadata,
   ViewMetadata,
 } from "@/lib/database-meta.types";
@@ -23,7 +24,27 @@ export function useColumnsSchema(schema: string, id: string) {
 
       return columnResponse.data;
     },
-    enabled: !!id,
+    enabled: !!schema && !!id,
+  });
+}
+
+export function useTableSchema(schema: string, id: string) {
+  const client = getSupabaseBrowserClient();
+
+  return useQuery({
+    queryKey: ["table-schema", schema, id],
+    queryFn: async () => {
+      const tableResponse = await client
+        .schema("supasheet")
+        .rpc("get_tables", { schema_name: schema, table_name: id });
+
+      if (tableResponse.error) {
+        return null;
+      }
+
+      return tableResponse.data?.[0] || null;
+    },
+    enabled: !!id && !!schema,
   });
 }
 
@@ -33,7 +54,7 @@ export function useResourceData(
   input: ResourceSearchParams,
 ) {
   return useQuery({
-    queryKey: ["resource-data", id, input],
+    queryKey: ["resource-data", schema, id, input],
     queryFn: async () => {
       const client = getSupabaseBrowserClient();
       const { page, perPage, sort, filters } = input;
@@ -108,6 +129,28 @@ export function useResourceData(
       };
     },
     enabled: !!id,
+  });
+}
+
+export function useSingleResourceData(
+  schema: DatabaseSchemas,
+  id: DatabaseTables<typeof schema>,
+  pk: Record<string, unknown>,
+) {
+  const client = getSupabaseBrowserClient();
+
+  return useQuery({
+    queryKey: ["single-resource-data", schema, id, pk],
+    queryFn: async () => {
+      const query = client.schema(schema).from(id).select("*");
+
+      Object.entries(pk).forEach(([key, value]) => {
+        query.eq(key, value as string);
+      });
+
+      return (await query).data?.[0] as unknown as ResourceDataSchema;
+    },
+    enabled: !!schema && !!id,
   });
 }
 
