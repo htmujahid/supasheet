@@ -29,27 +29,28 @@ export type BoardViewData = {
 
 export type BoardViewReducedData = Record<string, BoardViewData[]>;
 
-export type ListViewData = {
-  pk: Record<string, unknown>;
+export type KanbanViewData = {
   title: string;
   description: string;
   date: string;
   badge: string;
+  data: Record<string, unknown>;
 };
 
-export type ListViewReducedData = Record<UniqueIdentifier, ListViewData[]>;
+export type KanbanViewReducedData = Record<UniqueIdentifier, KanbanViewData[]>;
 
 export type CalendarViewData = {
-  pk: Record<string, unknown>;
   start_date: string;
   end_date: string;
   title: string;
   description: string;
+  data: Record<string, unknown>;
 };
 
-export type GanttViewData = {
-  pk: Record<string, unknown>;
-  start_date: string;
-  end_date: string;
+export type GalleryViewData = {
   title: string;
+  description: string;
+  cover: string;
+  badge: string;
+  data: Record<string, unknown>;
 };

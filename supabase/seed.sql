@@ -89,7 +89,7 @@ INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.get_materialize
 -- Todo Table Seeder
 -- Uses hardcoded user IDs: b73eb03e-fb7a-424d-84ff-18e2791ce0b1 and b73eb03e-fb7a-424d-84ff-18e2791ce0b4
 
-INSERT INTO tasks (id, title, description, status, priority, account_id, due_date, completed_at, tags, is_important, completion, duration, color, notes, created_at, updated_at) VALUES
+INSERT INTO tasks (id, title, description, status, priority, account_id, due_date, completed_at, tags, is_important, completion, duration, color, notes, created_at, updated_at, cover) VALUES
 
 -- User 1 tasks (b73eb03e-fb7a-424d-84ff-18e2791ce0b1)
 (
@@ -108,7 +108,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#3b82f6',
     'Waiting for feedback from stakeholders before finalizing',
     current_timestamp - interval '6 days',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/263/300/200.jpg?hmac=v6nAQqVXPFf8VKGlgJ_3Eu9Ou0XVxjdkp55M2I5tdzM']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -126,7 +127,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#10b981',
     'Don''t forget organic milk and whole grain bread',
     current_timestamp - interval '1 day',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/29/300/200.jpg?hmac=p3UmlzDfUhFXDjsILC6IgsRpo49USFNO24jHP2exNFE']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -144,7 +146,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#22c55e',
     'Appointment went well, next visit scheduled for 6 months',
     current_timestamp - interval '10 days',
-    current_timestamp - interval '3 days'
+    current_timestamp - interval '3 days',
+    ARRAY['https://fastly.picsum.photos/id/466/300/200.jpg?hmac=ynZ9L9zmxdc_vQ-UM_FDRX4tUF-5Ogg8apdMbX1_8sU']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -162,7 +165,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#ef4444',
     'Need to review 5 team members before deadline',
     current_timestamp - interval '2 days',
-    current_timestamp - interval '2 days'
+    current_timestamp - interval '2 days',
+    ARRAY['https://fastly.picsum.photos/id/114/300/200.jpg?hmac=3ZMrUmxdXDWR0yScPMMY75756Fl_rkR4UdrtPCnewQ8']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -180,7 +184,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#8b5cf6',
     'Found three good options, need to compare prices',
     current_timestamp - interval '4 days',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/99/300/200.jpg?hmac=U4YQmefe3Ng4IlKBytiAxUQdgd11VBNO59_0wZNOxPk']
 ),
 
 -- User 2 tasks (b73eb03e-fb7a-424d-84ff-18e2791ce0b4)
@@ -200,7 +205,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#06b6d4',
     'On chapter 14 of 17, taking detailed notes',
     current_timestamp - interval '12 days',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/431/300/200.jpg?hmac=t36jx_1pTMP348laF5bxobhFZk-XChMIoJAbYnEwrEs']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -218,7 +224,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#f59e0b',
     'Need to add AWS certification and latest React project',
     current_timestamp - interval '2 days',
-    current_timestamp - interval '2 days'
+    current_timestamp - interval '2 days',
+    ARRAY['https://fastly.picsum.photos/id/904/300/200.jpg?hmac=vRlZFpSxP4DD0mBeAeRjLn4WGGH6pOYU-ufFlG8LEsw']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -236,7 +243,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#10b981',
     'Had a great conversation, mom is doing well',
     current_timestamp - interval '3 days',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/88/300/200.jpg?hmac=OCNB3_BcP7xW8cR7fqfj4wnfkY1XXktShILFVyH3vtU']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -254,7 +262,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#dc2626',
     'Added indexes, testing query performance improvements',
     current_timestamp - interval '1 day',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/1027/300/200.jpg?hmac=bpuTGQJl9LsoTELrXiP0I1gc6BTycxz3kK0w-aVuyB8']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -272,7 +281,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#6366f1',
     'Enrolled in Udemy course, 8 hours of content',
     current_timestamp - interval '5 days',
-    current_timestamp - interval '5 days'
+    current_timestamp - interval '5 days',
+    ARRAY['https://fastly.picsum.photos/id/122/300/200.jpg?hmac=T6uhgiyd0AVUDANcmgFs98nQFUIT1X-L3DG6IAKbMo8']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -290,7 +300,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#14b8a6',
     'All photos sorted and backed up to cloud storage',
     current_timestamp - interval '8 days',
-    current_timestamp - interval '2 days'
+    current_timestamp - interval '2 days',
+    ARRAY['https://fastly.picsum.photos/id/81/300/200.jpg?hmac=RCRORiz7FRQIZpCWTcMoFDhm_9tQhTT12vHViqf3Cr8']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -308,7 +319,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#f97316',
     'Created outline and 15 of 30 slides',
     current_timestamp - interval '7 days',
-    current_timestamp - interval '1 day'
+    current_timestamp - interval '1 day',
+    ARRAY['https://fastly.picsum.photos/id/937/300/200.jpg?hmac=GJYxL7lzejHKjvxi5uA67PGLYLd8rg4FkdTfjl04fsw']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -326,11 +338,12 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#84cc16',
     'Got quotes from 3 companies, need to make decision',
     current_timestamp - interval '3 days',
-    current_timestamp - interval '3 days'
+    current_timestamp - interval '3 days',
+    ARRAY['https://fastly.picsum.photos/id/254/300/200.jpg?hmac=YLqZvuVO1lr25UD2JmRLloIjBky8c_j42Joe73smTMQ']
 );
 
 -- Add some tasks with no due dates
-INSERT INTO tasks (id, title, description, status, priority, account_id, due_date, completed_at, tags, is_important, completion, duration, color, notes, created_at, updated_at) VALUES
+INSERT INTO tasks (id, title, description, status, priority, account_id, due_date, completed_at, tags, is_important, completion, duration, color, notes, created_at, updated_at, cover) VALUES
 (
     extensions.uuid_generate_v4(),
     'Research investment options',
@@ -347,7 +360,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#a855f7',
     'Looking at Vanguard and Fidelity index funds',
     current_timestamp - interval '4 days',
-    current_timestamp - interval '4 days'
+    current_timestamp - interval '4 days',
+    ARRAY['https://fastly.picsum.photos/id/793/300/200.jpg?hmac=G82bV14cNKQ_SOHDtRvtygV8wO5imAERJq0Agc46HbE']
 ),
 (
     extensions.uuid_generate_v4(),
@@ -365,7 +379,8 @@ INSERT INTO tasks (id, title, description, status, priority, account_id, due_dat
     '#64748b',
     'Will do this on a weekend when weather is nice',
     current_timestamp - interval '6 days',
-    current_timestamp - interval '6 days'
+    current_timestamp - interval '6 days',
+    ARRAY['https://fastly.picsum.photos/id/416/300/200.jpg?hmac=q5DuFu-Th6K9C_RBCvNJvIbjU7kpMzVzzhhjFCcYNsQ']
 );
 
 

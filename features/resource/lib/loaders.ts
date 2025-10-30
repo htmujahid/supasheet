@@ -10,9 +10,9 @@ import {
   BoardViewData,
   BoardViewReducedData,
   CalendarViewData,
-  GanttViewData,
-  ListViewData,
-  ListViewReducedData,
+  GalleryViewData,
+  KanbanViewData,
+  KanbanViewReducedData,
 } from "./types";
 import type { ResourceSearchParams } from "./validations";
 

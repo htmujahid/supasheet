@@ -42,7 +42,7 @@ comment on table public.tasks is
         {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"created_at","badge":"priority"},
         {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"created_at","badge":"status"},
         {"id":"calendar","name":"Calendar View","type":"calendar"},
-        {"id":"gallery","name":"Gallery View","type":"gallery"}
+        {"id":"gallery","name":"Gallery View","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
     ]
 }';
 

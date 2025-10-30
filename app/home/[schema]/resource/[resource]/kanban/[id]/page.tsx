@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { ResourceKanbanView } from "@/features/resource/components/resource-kanban";
 import {
@@ -18,10 +15,9 @@ import {
   TableMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { AlignStartHorizontalIcon, AlignStartVerticalIcon } from "lucide-react";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
-import { ListViewReducedData } from "@/features/resource/lib/types";
+import { KanbanViewReducedData } from "@/features/resource/lib/types";
 
 export default async function Page(props: {
   params: Promise<{
@@ -41,6 +37,10 @@ export default async function Page(props: {
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
+
+  if (!tableSchema) {
+    notFound();
+  }
 
   const meta = (tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}) as TableMetadata;
 
@@ -79,21 +79,16 @@ export default async function Page(props: {
       acc[groupKey] = [];
     }
 
-    const pk = primaryKeys.reduce((pkAcc, pkField) => {
-      pkAcc[pkField.name] = item[pkField.name];
-      return pkAcc;
-    }, {} as Record<string, unknown>);
-
     acc[groupKey].push({
-      pk: pk,
       title: item[titleFieldName] as string,
       description: item[descriptionFieldName] as string,
       date: item[dateFieldName] as string,
       badge: item[badgeFieldName] as string,
+      data: item,
     });
 
     return acc;
-  }, {} as ListViewReducedData);
+  }, {} as KanbanViewReducedData);
 
   const permissions = await loadResourcePermissions(schema, resource);
 
@@ -104,34 +99,13 @@ export default async function Page(props: {
           { title: formatTitle(resource), url: ".." },
           { title: formatTitle(id) },
         ]}
-      >
-        <ButtonGroup>
-          <Button
-            size="icon-sm"
-            variant={layout === "board" ? "default" : "outline"}
-            asChild
-          >
-            <Link href={"?layout=board"}>
-              <AlignStartHorizontalIcon />
-            </Link>
-          </Button>
-          <Button
-            size="icon-sm"
-            variant={layout === "list" ? "default" : "outline"}
-            asChild
-          >
-            <Link href={"?layout=list"}>
-              <AlignStartVerticalIcon />
-            </Link>
-          </Button>
-        </ButtonGroup>
-      </DefaultHeader>
-      <div className="p-4">
+      />
+      <div className="px-4 py-2">
         <ResourceContextProvider permissions={permissions}>
           <ResourceKanbanView
             data={groupedData}
-            schema={schema}
-            resource={resource}
+            tableSchema={tableSchema}
+            columnsSchema={columnsSchema}
             groupBy={groupFieldName}
             layout={layout}
           />
