@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { NextResponse, URLPattern } from "next/server";
+import { NextResponse } from "next/server";
 
 import { CsrfError, createCsrfProtect } from "@edge-csrf/nextjs";
 
@@ -43,7 +43,7 @@ export async function proxy(request: NextRequest) {
   const csrfResponse = await withCsrfMiddleware(request, response);
 
   // handle patterns for specific routes
-  const handlePattern = matchUrlPattern(request.url);
+  const handlePattern = await matchUrlPattern(request.url);
 
   // if a pattern handler exists, call it
   if (handlePattern) {
@@ -107,10 +107,18 @@ function isServerAction(request: NextRequest) {
 /**
  * Define URL patterns and their corresponding handlers.
  */
-function getPatterns() {
+
+async function getPatterns() {
+  let URLPatternClass: any = (globalThis as any).URLPattern;
+
+  if (!URLPatternClass) {
+    const { URLPattern: polyfill } = await import('urlpattern-polyfill');
+    URLPatternClass = polyfill;
+  }
+
   return [
     {
-      pattern: new URLPattern({ pathname: "/auth/*?" }),
+      pattern: new URLPatternClass({ pathname: "/auth/*?" }),
       handler: async (req: NextRequest, res: NextResponse) => {
         const {
           data: { user },
@@ -134,7 +142,7 @@ function getPatterns() {
       },
     },
     {
-      pattern: new URLPattern({ pathname: "/home/*?" }),
+      pattern: new URLPatternClass({ pathname: "/home/*?" }),
       handler: async (req: NextRequest, res: NextResponse) => {
         const {
           data: { user },
@@ -187,8 +195,8 @@ function getPatterns() {
  * Match URL patterns to specific handlers.
  * @param url
  */
-function matchUrlPattern(url: string) {
-  const patterns = getPatterns();
+async function matchUrlPattern(url: string) {
+  const patterns = await getPatterns();
   const input = url.split("?")[0];
 
   for (const pattern of patterns) {
