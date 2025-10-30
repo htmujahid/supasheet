@@ -2,7 +2,7 @@
 create table if not exists public.user_details (
   avatar AVATAR,
   id bigint primary key generated always as identity,
-  name text not null,
+  name varchar(64) not null,
   email EMAIL not null unique,
   phone TEL,
   website URL,

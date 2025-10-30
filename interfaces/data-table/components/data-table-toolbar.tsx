@@ -80,9 +80,9 @@ function DataTableToolbarFilter<TData>({
     const columnMeta = column.columnDef.meta;
 
     const onFilterRender = React.useCallback(() => {
-      if (!columnMeta?.variant) return null;
+      if (!columnMeta?.filterVariant) return null;
 
-      switch (columnMeta.variant) {
+      switch (columnMeta.filterVariant) {
         case "text":
           return (
             <Input
@@ -126,7 +126,7 @@ function DataTableToolbarFilter<TData>({
             <DataTableDateFilter
               column={column}
               title={columnMeta.label ?? column.id}
-              multiple={columnMeta.variant === "dateRange"}
+              multiple={columnMeta.filterVariant === "dateRange"}
             />
           );
 
@@ -137,7 +137,7 @@ function DataTableToolbarFilter<TData>({
               column={column}
               title={columnMeta.label ?? column.id}
               options={columnMeta.options ?? []}
-              multiple={columnMeta.variant === "multiSelect"}
+              multiple={columnMeta.filterVariant === "multiSelect"}
             />
           );
 

@@ -4,23 +4,20 @@ import type { DataTableConfig } from "../config/data-table.config";
 import type { FilterItemSchema } from "../lib/parsers";
 
 declare module "@tanstack/react-table" {
-  // biome-ignore lint/correctness/noUnusedVariables: <explanation>
   interface ColumnMeta<TData extends RowData, TValue> {
     label?: string;
     placeholder?: string;
-    variant?: FilterVariant;
+    filterVariant?: FilterVariant;
     options?: Option[];
     range?: [number, number];
     unit?: string;
-    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
+    icon?: React.ReactElement | null;
   }
 }
 
 export interface Option {
   label: string;
   value: string;
-  count?: number;
-  icon?: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
 export type FilterOperator = DataTableConfig["operators"][number];

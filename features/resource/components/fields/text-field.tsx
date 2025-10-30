@@ -16,7 +16,7 @@ export function TextField({ field, columnMetadata }: FieldProps) {
     <ButtonGroup className="w-full">
       <ButtonGroup className="w-full">
         <Input
-          type={columnMetadata.type}
+          type={columnMetadata.variant}
           {...field}
           value={field.value as string}
           placeholder={placeholder}

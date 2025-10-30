@@ -76,7 +76,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Created At",
-      variant: "date",
+      filterVariant: "date",
     },
     enableColumnFilter: true,
   },
@@ -104,7 +104,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Operation",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
     filterFn: (row, id, value) => {
@@ -128,7 +128,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Schema",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
   },
@@ -149,7 +149,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Table",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
   },
@@ -186,7 +186,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "User",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
   },
@@ -215,7 +215,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Type",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
   },
@@ -239,7 +239,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Role",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
   },
@@ -273,7 +273,7 @@ export const auditLogTableColumns: ColumnDef<AuditLogWithAccount>[] = [
     },
     meta: {
       label: "Changed Fields",
-      variant: "text",
+      filterVariant: "text",
     },
     enableColumnFilter: true,
   },

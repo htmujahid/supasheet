@@ -77,6 +77,7 @@ async function ViewPage({
             {/* Resource Details */}
             <ResourceDetailView
               editUrl={editUrl}
+              tableSchema={tableSchema}
               columnsSchema={columnsSchema ?? []}
               singleResourceData={singleResourceData ?? {}}
             />
@@ -84,6 +85,7 @@ async function ViewPage({
             {/* Metadata */}
             <ResourceMetadataView
               columnsSchema={columnsSchema ?? []}
+              tableSchema={tableSchema}
               singleResourceData={singleResourceData ?? {}}
             />
 

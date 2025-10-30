@@ -33,10 +33,7 @@ import {
 } from "@/lib/database-meta.types";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-import {
-  useColumnsSchema,
-  useTableSchema,
-} from "../lib/data";
+import { useColumnsSchema, useTableSchema } from "../lib/data";
 
 interface LazyDeleteResourceDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
@@ -56,8 +53,10 @@ export function LazyDeleteResourceDialog({
   const supabase = useSupabase();
 
   // Fetch table schema
-  const { data: tableSchema, isLoading: isLoadingTableSchema } =
-    useTableSchema(schema, resource);
+  const { data: tableSchema, isLoading: isLoadingTableSchema } = useTableSchema(
+    schema,
+    resource,
+  );
 
   // Fetch columns schema
   const { data: columnsSchema, isLoading: isLoadingColumnsSchema } =

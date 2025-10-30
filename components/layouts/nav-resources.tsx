@@ -5,9 +5,9 @@ import { useParams } from "next/navigation";
 
 import {
   CalendarDaysIcon,
-  ChartGanttIcon,
   ChevronRight,
   EyeIcon,
+  Grid3X3Icon,
   type LucideIcon,
   PlusIcon,
   SquareKanbanIcon,
@@ -51,8 +51,8 @@ function SubItemsIcon({ type }: { type: string }) {
       return <SquareKanbanIcon className="size-4 shrink-0" />;
     case "calendar":
       return <CalendarDaysIcon className="size-4 shrink-0" />;
-    case "gantt":
-      return <ChartGanttIcon className="size-4 shrink-0" />;
+    case "sheet":
+      return <Grid3X3Icon className="size-4 shrink-0" />;
   }
   return <EyeIcon className="size-4 shrink-0" />;
 }
@@ -112,11 +112,11 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                     <CollapsibleContent>
                       <SidebarMenuSub>
                         {item.meta.items.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.view}>
+                          <SidebarMenuSubItem key={subItem.id}>
                             <SidebarMenuSubButton asChild>
                               <Link
-                                href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.view}`}
-                                title={subItem.view}
+                                href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}
+                                title={subItem.name}
                               >
                                 <SubItemsIcon type={subItem.type} />
                                 <span>{subItem.name}</span>

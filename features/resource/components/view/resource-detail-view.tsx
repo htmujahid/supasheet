@@ -16,19 +16,20 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { METADATA_COLUMNS } from "@/config/database.config";
-import { ColumnSchema } from "@/lib/database-meta.types";
+import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../../lib/columns";
 import { AllCells } from "../cells/all-cells";
-import { getDataTypeIcon } from "../icons";
 import { useResourceContext } from "../resource-context";
 
 export function ResourceDetailView({
+  tableSchema,
   columnsSchema,
   singleResourceData,
   editUrl,
 }: {
+  tableSchema: TableSchema;
   columnsSchema: ColumnSchema[];
   singleResourceData: Record<string, unknown>;
   editUrl?: string;
@@ -68,18 +69,17 @@ export function ResourceDetailView({
               column.name as keyof typeof singleResourceData
             ];
 
-          const icon = getDataTypeIcon(column);
-          const columnMetadata = getColumnMetadata(column);
+          const columnMetadata = getColumnMetadata(tableSchema, column);
 
           return (
             <div key={column.id}>
               <div className="flex items-start gap-4 py-3">
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    {icon} {formatTitle(column.name as string)}
+                    {columnMetadata.icon} {formatTitle(column.name as string)}
                   </Label>
                   <div className="text-muted-foreground text-sm">
-                    {columnMetadata.type === "rich_text" ? (
+                    {columnMetadata.variant === "rich_text" ? (
                       <Editor
                         name={columnMetadata.label}
                         value={value as string}

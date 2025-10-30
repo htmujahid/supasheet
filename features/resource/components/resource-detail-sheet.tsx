@@ -24,7 +24,6 @@ import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../lib/columns";
 import { AllCells } from "./cells/all-cells";
-import { getDataTypeIcon } from "./icons";
 
 interface ResourceDetailSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -63,18 +62,17 @@ export function ResourceDetailSheet({
           {detailColumns.map((column, index) => {
             const value = data?.[column.name as keyof typeof data];
 
-            const icon = getDataTypeIcon(column);
-            const columnMetadata = getColumnMetadata(column);
+            const columnMetadata = getColumnMetadata(tableSchema, column);
 
             return (
               <div key={column.id}>
                 <div className="flex items-start gap-4 py-3">
                   <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                      {icon} {formatTitle(column.name as string)}
+                      {columnMetadata.icon} {formatTitle(column.name as string)}
                     </Label>
                     <div className="text-muted-foreground text-sm">
-                      {columnMetadata.type === "rich_text" ? (
+                      {columnMetadata.variant === "rich_text" ? (
                         <Editor
                           name={columnMetadata.label}
                           value={value as string}

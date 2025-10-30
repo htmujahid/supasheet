@@ -17,7 +17,7 @@ export function RichTextField({ field, columnMetadata }: FieldProps) {
       <ButtonGroup className="w-full">
         <Editor
           name={columnMetadata.label}
-          value={field.value as string ?? ""}
+          value={(field.value as string) ?? ""}
           onChange={field.onChange}
           disabled={columnMetadata.disabled}
           placeholder={placeholder}

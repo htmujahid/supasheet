@@ -8,15 +8,17 @@ import type {
 
 import type {
   ColumnSchema,
+  PrimaryKey,
+  Relationship,
   ResourceDataSchema,
 } from "@/lib/database-meta.types";
 
 export type ColumnMetadata = {
   label: string;
-  type:
+  variant:
     | "uuid"
     | "text"
-    | "longtext"
+    | "long_text"
     | "number"
     | "date"
     | "datetime"
@@ -40,8 +42,14 @@ export type ColumnMetadata = {
   defaultValue: string | null;
   required: boolean;
   disabled: boolean;
-  dynamicDisabled?: boolean;
   isArray: boolean;
+  isMetadata: boolean;
+  isPrimaryKey: boolean;
+  relationship: Relationship | undefined;
+  comment: string | null;
+  primaryKeys: PrimaryKey[];
+  table: string;
+  schema: string;
   options?: {
     label: string;
     value: string;

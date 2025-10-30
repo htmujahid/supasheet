@@ -8,17 +8,18 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { METADATA_COLUMNS } from "@/config/database.config";
-import { ColumnSchema } from "@/lib/database-meta.types";
+import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../../lib/columns";
 import { AllCells } from "../cells/all-cells";
-import { getDataTypeIcon } from "../icons";
 
 export function ResourceMetadataView({
+  tableSchema,
   columnsSchema,
   singleResourceData,
 }: {
+  tableSchema: TableSchema;
   columnsSchema: ColumnSchema[];
   singleResourceData: Record<string, unknown>;
 }) {
@@ -44,15 +45,14 @@ export function ResourceMetadataView({
               column.name as keyof typeof singleResourceData
             ];
 
-          const icon = getDataTypeIcon(column);
-          const columnMetadata = getColumnMetadata(column);
+          const columnMetadata = getColumnMetadata(tableSchema, column);
 
           return (
             <div key={column.id}>
               <div className="flex items-start gap-4 py-3">
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    {icon} {formatTitle(column.name as string)}
+                    {columnMetadata.icon} {formatTitle(column.name as string)}
                   </Label>
                   <div className="text-muted-foreground text-sm">
                     <AllCells columnMetadata={columnMetadata} value={value} />

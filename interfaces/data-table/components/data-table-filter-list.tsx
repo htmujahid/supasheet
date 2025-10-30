@@ -138,9 +138,9 @@ export function DataTableFilterList<TData>({
       {
         id: column.id as Extract<keyof TData, string>,
         value: "",
-        variant: column.columnDef.meta?.variant ?? "text",
+        variant: column.columnDef.meta?.filterVariant ?? "text",
         operator: getDefaultFilterOperator(
-          column.columnDef.meta?.variant ?? "text",
+          column.columnDef.meta?.filterVariant ?? "text",
         ),
         filterId: generateId({ length: 8 }),
       },
@@ -473,9 +473,10 @@ function DataTableFilterItem<TData>({
                       onSelect={(value) => {
                         onFilterUpdate(filter.filterId, {
                           id: value as Extract<keyof TData, string>,
-                          variant: column.columnDef.meta?.variant ?? "text",
+                          variant:
+                            column.columnDef.meta?.filterVariant ?? "text",
                           operator: getDefaultFilterOperator(
-                            column.columnDef.meta?.variant ?? "text",
+                            column.columnDef.meta?.filterVariant ?? "text",
                           ),
                           value: "",
                         });
@@ -728,13 +729,7 @@ function onFilterInputRender<TData>({
               <FacetedGroup>
                 {columnMeta?.options?.map((option) => (
                   <FacetedItem key={option.value} value={option.value}>
-                    {option.icon && <option.icon />}
                     <span>{option.label}</span>
-                    {option.count && (
-                      <span className="ml-auto font-mono text-xs">
-                        {option.count}
-                      </span>
-                    )}
                   </FacetedItem>
                 ))}
               </FacetedGroup>

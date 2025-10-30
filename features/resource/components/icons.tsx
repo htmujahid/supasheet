@@ -1,8 +1,11 @@
-import { ColumnSchema } from "@/lib/database-meta.types";
+import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 
 import { getColumnMetadata } from "../lib/columns";
 
-export function getDataTypeIcon(columnSchema: ColumnSchema) {
-  const { icon } = getColumnMetadata(columnSchema);
+export function getDataTypeIcon(
+  tableSchema: TableSchema | null,
+  columnSchema: ColumnSchema,
+) {
+  const { icon } = getColumnMetadata(tableSchema, columnSchema);
   return icon;
 }

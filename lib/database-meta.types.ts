@@ -56,9 +56,9 @@ export type TableMetadata = {
   display?: "block" | "none";
   icon?: string;
   items?: {
+    id: string;
     name: string;
-    view: string;
-    type: "calendar" | "kanban" | "gantt";
+    type: "calendar" | "kanban" | "sheet";
   }[];
 };
 

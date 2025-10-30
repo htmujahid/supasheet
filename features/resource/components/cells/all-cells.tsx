@@ -18,7 +18,7 @@ export const AllCells = memo(function AllCells({
   columnMetadata: ColumnMetadata;
   value: unknown;
 }) {
-  switch (columnMetadata.type) {
+  switch (columnMetadata.variant) {
     case "boolean":
       return <BooleanCell value={value as string} />;
     case "color":

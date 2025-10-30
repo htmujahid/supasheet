@@ -44,12 +44,12 @@ export function ResourceFormField({
       data_type = "USER-DEFINED";
     }
 
-    columnMetadata = getColumnMetadata({
+    columnMetadata = getColumnMetadata(tableSchema, {
       ...columnSchema,
       data_type,
     });
   } else {
-    columnMetadata = getColumnMetadata(columnSchema);
+    columnMetadata = getColumnMetadata(tableSchema, columnSchema);
   }
 
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
@@ -68,8 +68,7 @@ export function ResourceFormField({
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {getDataTypeIcon(columnSchema)}{" "}
-            {formatTitle(columnSchema.name ?? "")}{" "}
+            {columnMetadata.icon} {formatTitle(columnSchema.name ?? "")}{" "}
             {columnMetadata.required && (
               <span className="text-destructive">*</span>
             )}

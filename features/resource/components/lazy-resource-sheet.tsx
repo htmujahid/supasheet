@@ -52,8 +52,10 @@ export function LazyResourceSheet({
   const [isFormReady, setIsFormReady] = useState(false);
 
   // Fetch table schema
-  const { data: tableSchema, isLoading: isLoadingTableSchema } =
-    useTableSchema(schema, resource);
+  const { data: tableSchema, isLoading: isLoadingTableSchema } = useTableSchema(
+    schema,
+    resource,
+  );
 
   // Fetch columns schema
   const { data: columnsSchema, isLoading: isLoadingColumnsSchema } =
@@ -158,9 +160,9 @@ export function LazyResourceSheet({
           </SheetDescription>
         </SheetHeader>
 
-        {isLoading || !isFormReady  ? (
+        {isLoading || !isFormReady ? (
           <div className="flex flex-1 items-center justify-center">
-            <Loader className="size-8 animate-spin text-muted-foreground" />
+            <Loader className="text-muted-foreground size-8 animate-spin" />
           </div>
         ) : (
           <Form {...form}>

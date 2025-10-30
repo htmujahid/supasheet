@@ -31,7 +31,6 @@ import {
   useTableSchema,
 } from "../lib/data";
 import { AllCells } from "./cells/all-cells";
-import { getDataTypeIcon } from "./icons";
 
 interface LazyResourceDetailSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -49,8 +48,10 @@ export function LazyResourceDetailSheet({
   const isMobile = useIsMobile();
 
   // Fetch table schema
-  const { data: tableSchema, isLoading: isLoadingTableSchema } =
-    useTableSchema(schema, resource);
+  const { data: tableSchema, isLoading: isLoadingTableSchema } = useTableSchema(
+    schema,
+    resource,
+  );
 
   // Fetch columns schema
   const { data: columnsSchema, isLoading: isLoadingColumnsSchema } =
@@ -87,25 +88,25 @@ export function LazyResourceDetailSheet({
 
         {isLoading || !data ? (
           <div className="flex flex-1 items-center justify-center">
-            <Loader className="size-8 animate-spin text-muted-foreground" />
+            <Loader className="text-muted-foreground size-8 animate-spin" />
           </div>
         ) : (
           <div className="flex-1 space-y-0 overflow-y-auto px-4">
             {detailColumns.map((column, index) => {
               const value = data?.[column.name as keyof ResourceDataSchema];
 
-              const icon = getDataTypeIcon(column);
-              const columnMetadata = getColumnMetadata(column);
+              const columnMetadata = getColumnMetadata(tableSchema!, column);
 
               return (
                 <div key={column.id}>
                   <div className="flex items-start gap-4 py-3">
                     <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                       <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                        {icon} {formatTitle(column.name as string)}
+                        {columnMetadata.icon}{" "}
+                        {formatTitle(column.name as string)}
                       </Label>
                       <div className="text-muted-foreground text-sm">
-                        {columnMetadata.type === "rich_text" ? (
+                        {columnMetadata.variant === "rich_text" ? (
                           <Editor
                             name={columnMetadata.label}
                             value={value as string}

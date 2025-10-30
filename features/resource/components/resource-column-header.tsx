@@ -43,7 +43,7 @@ export const ResourceColumnHeader = memo(function ResourceColumnHeader<
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
-        {getDataTypeIcon(columnSchema)}
+        {getDataTypeIcon(tableSchema, columnSchema)}
         {formatTitle(title)}
       </div>
     );
@@ -52,7 +52,7 @@ export const ResourceColumnHeader = memo(function ResourceColumnHeader<
   return (
     <div className="relative truncate">
       <div className="flex items-center gap-2">
-        {getDataTypeIcon(columnSchema)}
+        {getDataTypeIcon(tableSchema, columnSchema)}
         {formatTitle(title)}
       </div>
       <DropdownMenu>

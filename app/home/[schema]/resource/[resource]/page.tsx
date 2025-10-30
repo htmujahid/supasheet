@@ -7,7 +7,6 @@ import {
   loadColumnsSchema,
   loadResourceData,
   loadResourcePermissions,
-  loadSelectPermissions,
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
@@ -30,26 +29,12 @@ async function HomeResourcePage(props: {
   const searchParams = await props.searchParams;
   const search = resourceSearchParamsCache.parse(searchParams);
 
-  const [tableSchema, columnsSchema, permissions] = await Promise.all([
+  const [tableSchema, columnsSchema, data, permissions] = await Promise.all([
     loadTableSchema(schema, resource),
     loadColumnsSchema(schema, resource),
+    loadResourceData(schema, resource, search),
     loadResourcePermissions(schema, resource),
   ]);
-
-  const proxy = JSON.parse(tableSchema?.comment ?? "{}").proxy as {
-    schema: never;
-    view: never;
-  };
-
-  const [proxyColumnsSchema, data, proxyPermissions] = await Promise.all([
-    proxy ? loadColumnsSchema(proxy?.schema, proxy?.view) : columnsSchema,
-    loadResourceData(proxy?.schema ?? schema, proxy?.view ?? resource, search),
-    loadSelectPermissions(proxy?.schema ?? schema, proxy?.view ?? resource),
-  ]);
-
-  if (!permissions.canSelect && !proxyPermissions) {
-    notFound();
-  }
 
   if (!columnsSchema?.length) {
     notFound();
@@ -63,7 +48,6 @@ async function HomeResourcePage(props: {
           <ResourceTable
             tableSchema={tableSchema}
             columnsSchema={columnsSchema}
-            proxyColumnsSchema={proxyColumnsSchema}
             data={data}
           />
         </ResourceContextProvider>

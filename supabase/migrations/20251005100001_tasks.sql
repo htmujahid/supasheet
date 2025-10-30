@@ -33,7 +33,7 @@ create table tasks (
     updated_at timestamptz default current_timestamp
 );
 
-comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "proxy": {"schema":"public","view":"user_tasks"}}';
+comment on table public.tasks is '{"icon": "ListTodo", "display": "block", "items": [{"id":"sheet","name":"Sheet View","type":"sheet"},{"id":"status","name":"Tasks By Status","type":"kanban"},{"id":"priority","name":"Tasks By Priority","type":"kanban"},{"id":"calendar","name":"Calendar View","type":"calendar"}]}';
 
 comment on column tasks.cover is '{"accept":"image/*"}';
 comment on column tasks.attachments is '{"accept":"*"}';

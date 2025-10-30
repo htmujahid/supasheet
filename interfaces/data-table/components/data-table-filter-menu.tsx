@@ -125,19 +125,21 @@ export function DataTableFilterMenu<TData>({
 
   const onFilterAdd = React.useCallback(
     (column: Column<TData>, value: string) => {
-      if (!value.trim() && column.columnDef.meta?.variant !== "boolean") {
+      if (!value.trim() && column.columnDef.meta?.filterVariant !== "boolean") {
         return;
       }
 
       const filterValue =
-        column.columnDef.meta?.variant === "multiSelect" ? [value] : value;
+        column.columnDef.meta?.filterVariant === "multiSelect"
+          ? [value]
+          : value;
 
       const newFilter: ExtendedColumnFilter<TData> = {
         id: column.id as Extract<keyof TData, string>,
         value: filterValue,
-        variant: column.columnDef.meta?.variant ?? "text",
+        variant: column.columnDef.meta?.filterVariant ?? "text",
         operator: getDefaultFilterOperator(
-          column.columnDef.meta?.variant ?? "text",
+          column.columnDef.meta?.filterVariant ?? "text",
         ),
         filterId: generateId({ length: 8 }),
       };
@@ -317,9 +319,6 @@ export function DataTableFilterMenu<TData>({
                           });
                         }}
                       >
-                        {column.columnDef.meta?.icon && (
-                          <column.columnDef.meta.icon />
-                        )}
                         <span className="truncate">
                           {column.columnDef.meta?.label ?? column.id}
                         </span>
@@ -412,9 +411,6 @@ function DataTableFilterItem<TData>({
               size="sm"
               className="dark:bg-input/30 rounded-none rounded-l-md border border-r-0 font-normal"
             >
-              {columnMeta?.icon && (
-                <columnMeta.icon className="text-muted-foreground" />
-              )}
               {columnMeta?.label ?? column.id}
             </Button>
           </PopoverTrigger>
@@ -434,9 +430,10 @@ function DataTableFilterItem<TData>({
                       onSelect={() => {
                         onFilterUpdate(filter.filterId, {
                           id: column.id as Extract<keyof TData, string>,
-                          variant: column.columnDef.meta?.variant ?? "text",
+                          variant:
+                            column.columnDef.meta?.filterVariant ?? "text",
                           operator: getDefaultFilterOperator(
-                            column.columnDef.meta?.variant ?? "text",
+                            column.columnDef.meta?.filterVariant ?? "text",
                           ),
                           value: "",
                         });
@@ -444,9 +441,6 @@ function DataTableFilterItem<TData>({
                         setShowFieldSelector(false);
                       }}
                     >
-                      {column.columnDef.meta?.icon && (
-                        <column.columnDef.meta.icon />
-                      )}
                       <span className="truncate">
                         {column.columnDef.meta?.label ?? column.id}
                       </span>
@@ -529,9 +523,9 @@ function FilterValueSelector<TData>({
   value,
   onSelect,
 }: FilterValueSelectorProps<TData>) {
-  const variant = column.columnDef.meta?.variant ?? "text";
+  const filter = column.columnDef.meta?.filterVariant ?? "text";
 
-  switch (variant) {
+  switch (filter) {
     case "boolean":
       return (
         <CommandGroup>
@@ -554,13 +548,7 @@ function FilterValueSelector<TData>({
               value={option.value}
               onSelect={() => onSelect(option.value)}
             >
-              {option.icon && <option.icon />}
               <span className="truncate">{option.label}</span>
-              {option.count && (
-                <span className="ml-auto font-mono text-xs">
-                  {option.count}
-                </span>
-              )}
             </CommandItem>
           ))}
         </CommandGroup>
@@ -731,25 +719,11 @@ function onFilterInputRender<TData>({
                   "Select option..."
                 )
               ) : (
-                <>
-                  <div className="flex items-center -space-x-2 rtl:space-x-reverse">
-                    {selectedOptions.map((selectedOption) =>
-                      selectedOption.icon ? (
-                        <div
-                          key={selectedOption.value}
-                          className="bg-background rounded-full border p-0.5"
-                        >
-                          <selectedOption.icon className="size-3.5" />
-                        </div>
-                      ) : null,
-                    )}
-                  </div>
-                  <span className="truncate">
-                    {selectedOptions.length > 1
-                      ? `${selectedOptions.length} selected`
-                      : selectedOptions[0]?.label}
-                  </span>
-                </>
+                <span className="truncate">
+                  {selectedOptions.length > 1
+                    ? `${selectedOptions.length} selected`
+                    : selectedOptions[0]?.label}
+                </span>
               )}
             </Button>
           </PopoverTrigger>
@@ -777,7 +751,6 @@ function onFilterInputRender<TData>({
                         onFilterUpdate(filter.filterId, { value });
                       }}
                     >
-                      {option.icon && <option.icon />}
                       <span className="truncate">{option.label}</span>
                       {filter.variant === "multiSelect" && (
                         <Check

@@ -16,7 +16,7 @@ import { FieldProps } from "./types";
 import { UuidField } from "./uuid-field";
 
 export function AllFields({ field, columnMetadata }: FieldProps) {
-  switch (columnMetadata.type) {
+  switch (columnMetadata.variant) {
     case "uuid":
       return <UuidField field={field} columnMetadata={columnMetadata} />;
     case "money":
@@ -37,7 +37,7 @@ export function AllFields({ field, columnMetadata }: FieldProps) {
       return <DatetimeField field={field} columnMetadata={columnMetadata} />;
     case "json":
       return <JsonField field={field} columnMetadata={columnMetadata} />;
-    case "longtext":
+    case "long_text":
       return <LongtextField field={field} columnMetadata={columnMetadata} />;
     case "rating":
       return <RatingField field={field} columnMetadata={columnMetadata} />;

@@ -46,8 +46,8 @@ export const ResourceRowCell = memo(function ResourceRowCell({
 }) {
   // Memoize expensive calculations to avoid recalculating on every render
   const columnData = useMemo(
-    () => getColumnMetadata(columnSchema),
-    [columnSchema],
+    () => getColumnMetadata(tableSchema, columnSchema),
+    [tableSchema, columnSchema],
   );
   const { permissions } = useResourceContext();
 
@@ -115,7 +115,6 @@ export const ResourceRowCell = memo(function ResourceRowCell({
                 row.original?.[
                   columnSchema.name as keyof ResourceDataSchema
                 ]?.toString() ?? "",
-                columnData.type,
                 tableSchema ?? null,
               )}
               target="_blank"
@@ -163,7 +162,6 @@ export const ResourceRowCell = memo(function ResourceRowCell({
 function prepareForeignKeyLink(
   key: string,
   value: string,
-  variant: string,
   tableSchema: TableSchema | null,
 ) {
   if (!tableSchema) return "#";
@@ -174,5 +172,5 @@ function prepareForeignKeyLink(
 
   if (!relationship) return "#";
 
-  return `/home/${relationship.target_table_schema}/resource/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"${variant}","operator":"eq","filterId":"0QdV0twS"}]`;
+  return `/home/${relationship.target_table_schema}/resource/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${value}","variant":"text","operator":"eq","filterId":"0QdV0twS"}]`;
 }
