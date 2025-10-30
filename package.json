@@ -7,7 +7,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "next lint",
+    "lint": "eslint .",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "supabase": "supabase",
@@ -102,7 +102,6 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/js-cookie": "^3.0.6",
@@ -112,8 +111,8 @@
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.1",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "^16.0.1",
     "prettier": "^3.6.1",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "supabase": "^2.48.3",

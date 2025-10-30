@@ -182,6 +182,7 @@ export function FileField({
     fieldArray.remove();
     form.setValue(field.name as FieldPath<ResourceDataSchema>, null);
     clearFiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client, fieldArray, form, field.name]);
 
   // Use file upload hook

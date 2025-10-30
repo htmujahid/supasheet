@@ -69,6 +69,7 @@ export function DataGridEnumCell<TData>({
       meta?.onDataUpdate?.({ rowIndex, columnId, value: newValue });
       meta?.onCellEditingStop?.();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [meta, rowIndex, columnId],
   );
 

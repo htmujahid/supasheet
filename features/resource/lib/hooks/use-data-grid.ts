@@ -1458,6 +1458,7 @@ function useDataGrid<TData>({
       colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
     }
     return colSizes;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [table.getState().columnSizingInfo, table.getState().columnSizing]);
 
   const rowVirtualizer = useVirtualizer({

@@ -172,7 +172,7 @@ export function DataTableSortList<TData>({
     <Sortable
       value={sorting}
       onValueChange={onSortingChange}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       getItemValue={(item: { id: any }) => item.id}
     >
       <Popover open={open} onOpenChange={setOpen}>

@@ -103,6 +103,7 @@ function BrokenImage(): JSX.Element {
   return (
     <img
       src={""}
+      alt=""
       style={{
         height: 200,
         opacity: 0.2,

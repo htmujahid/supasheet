@@ -24,7 +24,6 @@ export function AuthLayout({
       </div>
       {isCoverImage && (
         <div className="bg-muted relative hidden lg:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/placeholder.svg"
             alt="Image"

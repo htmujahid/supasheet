@@ -5,13 +5,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
-  Archive,
-  File,
-  FileText,
+  ArchiveIcon,
+  FileIcon,
+  FileTextIcon,
   Folder,
-  Image,
-  Music,
-  Video,
+  ImageIcon,
+  MusicIcon,
+  VideoIcon,
 } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -62,17 +62,17 @@ export function StorageList({
 
     const type = file.type?.toLowerCase() || "";
     if (type.startsWith("image/"))
-      return <Image className="text-primary/80 h-4 w-4" />;
+      return <ImageIcon className="text-primary/80 h-4 w-4" />;
     if (type.startsWith("video/"))
-      return <Video className="text-primary/70 h-4 w-4" />;
+      return <VideoIcon className="text-primary/70 h-4 w-4" />;
     if (type.startsWith("audio/"))
-      return <Music className="text-primary/60 h-4 w-4" />;
+      return <MusicIcon className="text-primary/60 h-4 w-4" />;
     if (type.includes("zip") || type.includes("tar"))
-      return <Archive className="text-muted-foreground h-4 w-4" />;
+      return <ArchiveIcon className="text-muted-foreground h-4 w-4" />;
     if (type.includes("text") || type.includes("document"))
-      return <FileText className="text-muted-foreground/80 h-4 w-4" />;
+      return <FileTextIcon className="text-muted-foreground/80 h-4 w-4" />;
 
-    return <File className="text-muted-foreground/60 h-4 w-4" />;
+    return <FileIcon className="text-muted-foreground/60 h-4 w-4" />;
   };
 
   const formatFileSize = (bytes?: number) => {

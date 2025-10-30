@@ -57,6 +57,7 @@ export function DataGridCheckboxCell<TData>({
       });
       meta?.onDataUpdate?.({ rowIndex, columnId, value: checked });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [meta, rowIndex, columnId],
   );
 

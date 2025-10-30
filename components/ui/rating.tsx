@@ -279,7 +279,7 @@ function RatingRoot(props: RatingRootProps) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+ 
 interface RatingRootImplProps
   extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
 

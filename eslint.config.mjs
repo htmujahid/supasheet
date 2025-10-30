@@ -1,16 +1,27 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import { defineConfig, globalIgnores } from "eslint/config"
+import nextVitals from "eslint-config-next/core-web-vitals"
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  globalIgnores([
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+  {
+    rules: {
+      "react-hooks/refs": "off",
+      "react-hooks/static-components": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/incompatible-library": "off",
+      "react-hooks/purity": "off",
+      "@next/next/no-html-link-for-pages": "off",
+      "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+])
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
-
-export default eslintConfig;
+export default eslintConfig

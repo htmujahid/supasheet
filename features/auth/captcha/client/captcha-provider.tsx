@@ -12,7 +12,7 @@ export const Captcha = createContext<{
 }>({
   token: "",
   instance: null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   setToken: (_: string) => {
     // do nothing
     return "";

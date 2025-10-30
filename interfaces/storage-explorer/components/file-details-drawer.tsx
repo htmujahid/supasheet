@@ -3,16 +3,16 @@
 import { useState, useTransition } from "react";
 
 import {
-  Archive,
+  ArchiveIcon,
   Check,
   Copy,
   Download,
   ExternalLink,
-  File,
-  FileText,
-  Image,
-  Music,
-  Video,
+  FileIcon,
+  FileTextIcon,
+  ImageIcon,
+  MusicIcon,
+  VideoIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -54,17 +54,17 @@ export function FileDetailsDrawer({
     const iconClass = "h-12 w-12";
 
     if (type.startsWith("image/"))
-      return <Image className={`${iconClass} text-primary/80`} />;
+      return <ImageIcon className={`${iconClass} text-primary/80`} />;
     if (type.startsWith("video/"))
-      return <Video className={`${iconClass} text-primary/70`} />;
+      return <VideoIcon className={`${iconClass} text-primary/70`} />;
     if (type.startsWith("audio/"))
-      return <Music className={`${iconClass} text-primary/60`} />;
+      return <MusicIcon className={`${iconClass} text-primary/60`} />;
     if (type.includes("zip") || type.includes("tar"))
-      return <Archive className={`${iconClass} text-muted-foreground`} />;
+      return <ArchiveIcon className={`${iconClass} text-muted-foreground`} />;
     if (type.includes("text") || type.includes("document"))
-      return <FileText className={`${iconClass} text-muted-foreground/80`} />;
+      return <FileTextIcon className={`${iconClass} text-muted-foreground/80`} />;
 
-    return <File className={`${iconClass} text-muted-foreground/60`} />;
+    return <FileIcon className={`${iconClass} text-muted-foreground/60`} />;
   };
 
   const formatFileSize = (bytes?: number) => {

@@ -95,7 +95,7 @@ export function CopyFileDialog({
         <DialogHeader>
           <DialogTitle>Copy {file.isFolder ? "Folder" : "File"}</DialogTitle>
           <DialogDescription>
-            Create a copy of "{file.name}" with a new name and location.
+            Create a copy of &quot;{file.name}&quot; with a new name and location.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">

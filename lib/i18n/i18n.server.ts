@@ -144,7 +144,7 @@ export function parseAcceptLanguageHeader(
         return [isNaN(numQ) ? 0 : numQ, trimmedLocale];
       })
       .sort(([q1], [q2]) => q2 - q1) // Sort by quality value in descending order
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       .flatMap(([_, locale]) => {
         // Ignore wildcard '*' if 'ignoreWildcard' is true
         if (locale === "*" && ignoreWildcard) return [];

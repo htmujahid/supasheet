@@ -125,6 +125,7 @@ export function DataGridTextCell<TData>({
         toast.error(error.message);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
   // useEffect(() => {

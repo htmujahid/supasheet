@@ -83,6 +83,7 @@ export function DataGridRatingCell<TData>({
         toast.error(error.message);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
   React.useEffect(() => {

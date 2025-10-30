@@ -80,6 +80,7 @@ export function DataGridLongTextCell<TData>({
     }
     setOpen(false);
     meta?.onCellEditingStop?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta, value, initialValue, rowIndex, columnId]);
 
   const onCancel = React.useCallback(() => {

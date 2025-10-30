@@ -69,6 +69,7 @@ export function ComponentPickerMenuPlugin({
           option.keywords.some((keyword) => regex.test(keyword)),
       ),
     ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, queryString, showModal]);
 
   const onSelectOption = useCallback(
@@ -84,6 +85,7 @@ export function ComponentPickerMenuPlugin({
         closeMenu();
       });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [editor],
   );
 

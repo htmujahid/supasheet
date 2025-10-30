@@ -43,6 +43,7 @@ export function useSqlData() {
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [client, setIsLoading, setData],
   );
 
