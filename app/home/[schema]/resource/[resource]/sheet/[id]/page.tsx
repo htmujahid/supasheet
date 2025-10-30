@@ -10,7 +10,7 @@ import {
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
-import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseTables, TableMetadata } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
@@ -18,19 +18,29 @@ async function HomeResourcePage(props: {
   params: Promise<{
     schema: DatabaseSchemas;
     resource: DatabaseTables<DatabaseSchemas>;
+    id: string;
   }>;
   searchParams: Promise<{
     page: string;
     perPage: string;
   }>;
 }) {
-  const { resource, schema } = await props.params;
+  const { resource, schema, id } = await props.params;
 
-  const searchParams = await props.searchParams;
-  const search = resourceSearchParamsCache.parse(searchParams);
+  const { page = '1', perPage = "1000", ...rest } = await props.searchParams;
+  const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
-  const [tableSchema, columnsSchema, data, permissions] = await Promise.all([
-    loadTableSchema(schema, resource),
+  const tableSchema = await loadTableSchema(schema, resource);
+
+  const meta = (tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}) as TableMetadata;
+
+  const currentView = meta.items?.find((item) => item.id === id && item.type === "sheet");
+
+  if (!currentView) {
+    notFound();
+  }
+
+  const [columnsSchema, data, permissions] = await Promise.all([
     loadColumnsSchema(schema, resource),
     loadResourceData(schema, resource, search),
     loadResourcePermissions(schema, resource),

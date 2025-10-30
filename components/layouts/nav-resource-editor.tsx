@@ -212,7 +212,7 @@ export function NavResourceEditor({ activeSchema }: { activeSchema?: string }) {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Editors</SidebarGroupLabel>
+      <SidebarGroupLabel>SQL Editors</SidebarGroupLabel>
       <SidebarMenu>
         {isEditing ? (
           <div className="px-2 py-1">

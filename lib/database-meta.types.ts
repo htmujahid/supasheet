@@ -58,7 +58,9 @@ export type TableMetadata = {
   items?: {
     id: string;
     name: string;
-    type: "calendar" | "kanban" | "sheet";
+    query?: { [key: string]: unknown };
+    [key: string]: unknown;
+    type: "calendar" | "kanban" | "sheet" | "gallery";
   }[];
 };
 

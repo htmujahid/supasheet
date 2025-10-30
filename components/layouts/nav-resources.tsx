@@ -8,6 +8,7 @@ import {
   ChevronRight,
   EyeIcon,
   Grid3X3Icon,
+  ImageIcon,
   type LucideIcon,
   PlusIcon,
   SquareKanbanIcon,
@@ -53,6 +54,8 @@ function SubItemsIcon({ type }: { type: string }) {
       return <CalendarDaysIcon className="size-4 shrink-0" />;
     case "sheet":
       return <Grid3X3Icon className="size-4 shrink-0" />;
+    case "gallery":
+      return <ImageIcon className="size-4 shrink-0" />;
   }
   return <EyeIcon className="size-4 shrink-0" />;
 }

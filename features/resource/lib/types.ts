@@ -1,4 +1,5 @@
 import { TableMetadata, ViewMetadata } from "@/lib/database-meta.types";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 export type TableResource = {
   name: string;
@@ -36,7 +37,7 @@ export type ListViewData = {
   badge: string;
 };
 
-export type ListViewReducedData = Record<string, ListViewData[]>;
+export type ListViewReducedData = Record<UniqueIdentifier, ListViewData[]>;
 
 export type CalendarViewData = {
   pk: Record<string, unknown>;
