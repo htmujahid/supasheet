@@ -67,7 +67,11 @@ async function EditPage({
           { title: "View" },
         ]}
       />
-      <ResourceContextProvider permissions={permissions}>
+      <ResourceContextProvider
+        permissions={permissions}
+        tableSchema={tableSchema}
+        columnsSchema={columnsSchema}
+      >
         <div className="mx-auto max-w-3xl p-4">
           <ResourceEditForm
             tableSchema={tableSchema}

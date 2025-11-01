@@ -101,11 +101,14 @@ export default async function Page(props: {
         ]}
       />
       <div className="px-4 py-2">
-        <ResourceContextProvider permissions={permissions}>
+        <ResourceContextProvider
+          permissions={permissions}
+          tableSchema={tableSchema}
+          columnsSchema={columnsSchema}
+        >
           <ResourceKanbanView
             data={groupedData}
             tableSchema={tableSchema}
-            columnsSchema={columnsSchema}
             groupBy={groupFieldName}
             layout={layout}
           />

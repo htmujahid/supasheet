@@ -14,16 +14,18 @@ type ResourcePermissions = {
   canDelete: boolean;
 };
 
+type ResourceAction = {
+  variant: "update" | "view" | "delete";
+  data: Record<string, unknown>;
+} | {
+  variant: "create";
+  data?: Record<string, unknown>;
+}
+
 const ResourceContext = createContext<{
   permissions: ResourcePermissions
-  resourceAction: {
-    variant: "create" | "update" | "view" | "delete";
-    data: Record<string, unknown>;
-  } | null;
-  setResourceAction: React.Dispatch<React.SetStateAction<{
-    variant: "create" | "update" | "view" | "delete";
-    data: Record<string, unknown>;
-  } | null>>;
+  resourceAction: ResourceAction | null;
+  setResourceAction: React.Dispatch<React.SetStateAction<ResourceAction | null>>;
 }>({
   permissions: {
     canSelect: false,
@@ -47,10 +49,7 @@ export function ResourceContextProvider({
   columnsSchema: ColumnSchema[] | null;
 }) {
   const [resourceAction, setResourceAction] =
-    useState<{
-      variant: "create" | "update" | "view" | "delete";
-      data: Record<string, unknown>;
-    } | null>(null);
+    useState<ResourceAction| null>(null);
 
   return (
     <ResourceContext.Provider value={{ permissions, resourceAction, setResourceAction }}>

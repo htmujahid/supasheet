@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
-import { If } from "@/components/makerkit/if";
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/interfaces/data-table/components/data-table-filter-list";
@@ -16,11 +15,9 @@ import {
   loadResourceData,
   loadTableSchema,
 } from "../lib/loaders";
-import { DeleteResourceDialog } from "./delete-resource-dialog";
-import { ResourceDetailSheet } from "./resource-detail-sheet";
-import { ResourceSheet } from "./resource-sheet";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
+import { useResourceContext } from "./resource-context";
 
 export function ResourceTable({
   tableSchema,
@@ -31,24 +28,18 @@ export function ResourceTable({
   columnsSchema: Awaited<ReturnType<typeof loadColumnsSchema>> | null;
   data: Awaited<ReturnType<typeof loadResourceData>> | null;
 }) {
-  const [rowAction, setRowAction] =
-    useState<DataTableRowAction<ResourceDataSchema> | null>(null);
-
-  const handleSetRowAction = useCallback(
-    (action: DataTableRowAction<ResourceDataSchema> | null) => {
-      setRowAction(action);
-    },
-    [],
-  );
+  const { setResourceAction } = useResourceContext();
 
   const columns = useMemo(
     () =>
       getResourceTableColumns({
         columnsSchema: columnsSchema ?? [],
         tableSchema,
-        setRowAction: handleSetRowAction,
+        setRowAction: (
+          rowAction: DataTableRowAction<ResourceDataSchema> | null
+        ) => setResourceAction({ variant: rowAction?.variant!, data: rowAction?.row.original! }),
       }),
-    [columnsSchema, tableSchema, handleSetRowAction],
+    [columnsSchema, tableSchema],
   );
 
   const getRowId = useCallback(
@@ -90,35 +81,6 @@ export function ResourceTable({
           />
         </DataTableAdvancedToolbar>
       </DataTable>
-      <If condition={rowAction?.variant === "delete" && tableSchema}>
-        <DeleteResourceDialog
-          open={rowAction?.variant === "delete"}
-          onOpenChange={() => setRowAction(null)}
-          resources={rowAction?.row.original ? [rowAction?.row.original] : []}
-          tableSchema={tableSchema ?? null}
-          columnSchema={columnsSchema ?? []}
-          showTrigger={false}
-          onSuccess={() => rowAction?.row.toggleSelected(false)}
-        />
-      </If>
-      <If condition={rowAction?.variant === "update" && tableSchema}>
-        <ResourceSheet
-          open={rowAction?.variant === "update"}
-          onOpenChange={() => setRowAction(null)}
-          tableSchema={tableSchema ?? null}
-          columnsSchema={columnsSchema ?? []}
-          data={rowAction?.row.original ?? null}
-        />
-      </If>
-      <If condition={rowAction?.variant === "view" && tableSchema}>
-        <ResourceDetailSheet
-          open={rowAction?.variant === "view"}
-          onOpenChange={() => setRowAction(null)}
-          tableSchema={tableSchema ?? null}
-          columnsSchema={columnsSchema ?? []}
-          data={rowAction?.row.original ?? null}
-        />
-      </If>
     </div>
   );
 }

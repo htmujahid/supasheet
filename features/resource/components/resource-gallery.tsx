@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { Copy, Eye, Image as ImageIcon, Pencil, Trash } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -13,39 +11,24 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { ColumnSchema, ResourceDataSchema, TableSchema } from "@/lib/database-meta.types";
 
 import { GalleryViewData } from "../lib/types";
 import { If } from "@/components/makerkit/if";
-import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
-import { DeleteResourceDialog } from "./delete-resource-dialog";
-import { ResourceSheet } from "./resource-sheet";
-import { ResourceDetailSheet } from "./resource-detail-sheet";
-import { Row } from "@tanstack/react-table";
 import { useResourceContext } from "./resource-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export function ResourceGalleryView({
   data,
-  tableSchema,
-  columnsSchema,
 }: {
   data: GalleryViewData[];
-  tableSchema: TableSchema;
-  columnsSchema: ColumnSchema[];
 }) {
-  const [rowAction, setRowAction] =
-    useState<DataTableRowAction<ResourceDataSchema> | null>(null);
-
-  const { permissions } = useResourceContext();
+  const { permissions, setResourceAction } = useResourceContext();
 
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <Button
-          variant="outline"
-          >
+        <Button variant="outline">
           Filter
         </Button>
       </div>
@@ -53,7 +36,14 @@ export function ResourceGalleryView({
         {data.map((item, index) => (
           <ContextMenu key={index}>
             <ContextMenuTrigger asChild>
-              <Card>
+              <Card
+                onClick={() => {
+                  setResourceAction({
+                    variant: "view",
+                    data: item.data
+                  })
+                }}
+              >
                 <CardHeader>
                   <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-muted">
                     {item.cover && item.cover.length > 0 && item.cover[0] ? (
@@ -108,9 +98,9 @@ export function ResourceGalleryView({
               <ContextMenuSeparator />
               <ContextMenuItem
                 onClick={() =>
-                  setRowAction({
+                  setResourceAction({
                     variant: "view",
-                    row: { original: item.data } as Row<ResourceDataSchema>,
+                    data: item.data,
                   })
                 }
               >
@@ -120,9 +110,9 @@ export function ResourceGalleryView({
               <If condition={permissions?.canUpdate}>
                 <ContextMenuItem
                   onClick={() =>
-                    setRowAction({
+                    setResourceAction({
                       variant: "update",
-                      row: { original: item.data } as Row<ResourceDataSchema>,
+                      data: item.data,
                     })
                   }
                 >
@@ -135,9 +125,9 @@ export function ResourceGalleryView({
                 <ContextMenuItem
                   variant="destructive"
                   onClick={() =>
-                    setRowAction({
+                    setResourceAction({
                       variant: "delete",
-                      row: { original: item.data } as Row<ResourceDataSchema>,
+                      data: item.data,
                     })
                   }
                 >
@@ -158,36 +148,6 @@ export function ResourceGalleryView({
             There are no gallery items available at the moment.
           </p>
         </div>
-      </If>
-
-      <If condition={rowAction?.variant === "delete" && tableSchema}>
-        <DeleteResourceDialog
-          open={rowAction?.variant === "delete"}
-          onOpenChange={() => setRowAction(null)}
-          resources={rowAction?.row.original ? [rowAction?.row.original] : []}
-          tableSchema={tableSchema ?? null}
-          columnSchema={columnsSchema ?? []}
-          showTrigger={false}
-          onSuccess={() => rowAction?.row.toggleSelected(false)}
-        />
-      </If>
-      <If condition={rowAction?.variant === "update" && tableSchema}>
-        <ResourceSheet
-          open={rowAction?.variant === "update"}
-          onOpenChange={() => setRowAction(null)}
-          tableSchema={tableSchema ?? null}
-          columnsSchema={columnsSchema ?? []}
-          data={rowAction?.row.original ?? null}
-        />
-      </If>
-      <If condition={rowAction?.variant === "view" && tableSchema}>
-        <ResourceDetailSheet
-          open={rowAction?.variant === "view"}
-          onOpenChange={() => setRowAction(null)}
-          tableSchema={tableSchema ?? null}
-          columnsSchema={columnsSchema ?? []}
-          data={rowAction?.row.original ?? null}
-        />
       </If>
     </div>
   );

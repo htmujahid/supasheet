@@ -72,6 +72,7 @@ export function ResourceTableToolbarActions({
         data={null}
         open={open}
         onOpenChange={setOpen}
+        create={true}
       />
       {/**
        * Other actions can be added here.

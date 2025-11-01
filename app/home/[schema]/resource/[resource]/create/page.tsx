@@ -43,7 +43,11 @@ async function CreatePage({
           { title: "Create" },
         ]}
       />
-      <ResourceContextProvider permissions={permissions}>
+      <ResourceContextProvider
+        permissions={permissions}
+        tableSchema={tableSchema}
+        columnsSchema={columnsSchema}
+      >
         <div className="mx-auto max-w-3xl p-4">
           <ResourceCreateForm
             tableSchema={tableSchema}

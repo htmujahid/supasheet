@@ -71,7 +71,11 @@ async function ViewPage({
           { title: "View" },
         ]}
       />
-      <ResourceContextProvider permissions={permissions}>
+        <ResourceContextProvider
+          permissions={permissions}
+          tableSchema={tableSchema}
+          columnsSchema={columnsSchema}
+        >
         <div className="mx-auto max-w-3xl p-4">
           <div className="flex flex-col gap-4">
             {/* Resource Details */}

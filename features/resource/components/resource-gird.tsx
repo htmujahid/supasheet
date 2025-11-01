@@ -21,9 +21,8 @@ import { DataGridKeyboardShortcuts } from "./data-grid/data-grid-keyboard-shortc
 import { DataGridRowHeightMenu } from "./data-grid/data-grid-row-height-menu";
 import { DataGridSortMenu } from "./data-grid/data-grid-sort-menu";
 import { DataGridViewMenu } from "./data-grid/data-grid-view-menu";
-import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { getResourceGridColumns } from "./resource-grid-columns";
-import { ResourceSheet } from "./resource-sheet";
+import { useResourceContext } from "./resource-context";
 
 export function ResourceGrid({
   tableSchema,
@@ -34,10 +33,8 @@ export function ResourceGrid({
   columnsSchema: ColumnSchema[] | null;
   data: Awaited<ReturnType<typeof loadResourceData>> | null;
 }) {
+  const { setResourceAction } = useResourceContext();
   const windowSize = useWindowSize({ defaultHeight: 760 });
-  const [createResourceOpen, setCreateResourceOpen] = useState(false);
-  const [rowAction, setRowAction] =
-    useState<DataTableRowAction<ResourceDataSchema> | null>(null);
 
   const columns = React.useMemo(
     () =>
@@ -60,9 +57,9 @@ export function ResourceGrid({
   const onRowsDelete: NonNullable<
     UseDataGridProps<Record<string, unknown>>["onRowsDelete"]
   > = React.useCallback((rows) => {
-    setRowAction({
+    setResourceAction({
       variant: "delete",
-      row: { original: rows[0] } as Row<ResourceDataSchema>,
+      data: rows[0]
     });
   }, []);
 
@@ -92,30 +89,9 @@ export function ResourceGrid({
         table={table}
         height={height}
         onRowAdd={async () => {
-          setCreateResourceOpen(true);
+          setResourceAction({ variant: "create" });
         }}
       />
-      <If condition={createResourceOpen}>
-        <ResourceSheet
-          tableSchema={tableSchema}
-          columnsSchema={columnsSchema ?? []}
-          data={null}
-          open={createResourceOpen}
-          onOpenChange={setCreateResourceOpen}
-          create={true}
-        />
-      </If>
-      <If condition={rowAction?.variant === "delete" && tableSchema}>
-        <DeleteResourceDialog
-          open={rowAction?.variant === "delete"}
-          onOpenChange={() => setRowAction(null)}
-          resources={rowAction?.row.original ? [rowAction?.row.original] : []}
-          tableSchema={tableSchema ?? null}
-          columnSchema={columnsSchema ?? []}
-          showTrigger={false}
-          onSuccess={() => rowAction?.row.toggleSelected(false)}
-        />
-      </If>
     </div>
   );
 }

@@ -24,11 +24,6 @@ import { ColumnSchema, DatabaseSchemas, DatabaseTables, PrimaryKey, ResourceData
 import { updateResourceDataAction } from "../lib/actions";
 import { KanbanViewData, KanbanViewReducedData } from "../lib/types";
 import { If } from "@/components/makerkit/if";
-import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
-import { DeleteResourceDialog } from "./delete-resource-dialog";
-import { ResourceSheet } from "./resource-sheet";
-import { ResourceDetailSheet } from "./resource-detail-sheet";
-import { Row } from "@tanstack/react-table";
 import { useResourceContext } from "./resource-context";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
@@ -38,13 +33,11 @@ import { cn } from "@/lib/utils";
 export function ResourceKanbanView({
   data,
   tableSchema,
-  columnsSchema,
   groupBy,
   layout,
 }: {
   data: KanbanViewReducedData;
   tableSchema: TableSchema;
-  columnsSchema: ColumnSchema[];
   groupBy: string;
   layout: "list" | "board";
 }) {
@@ -52,10 +45,7 @@ export function ResourceKanbanView({
   const resource = tableSchema.name as DatabaseTables<DatabaseSchemas>;
 
   const [columns, setColumns] = useState<KanbanViewReducedData>(data);
-  const [rowAction, setRowAction] =
-    useState<DataTableRowAction<ResourceDataSchema> | null>(null);
-
-  const { permissions } = useResourceContext();
+  const { permissions, setResourceAction } = useResourceContext();
 
   const buildId = useCallback((item: KanbanViewData) => {
     return Object.values(item).join("/");
@@ -172,9 +162,9 @@ export function ResourceKanbanView({
                       <ContextMenuSeparator />
                       <ContextMenuItem
                         onClick={() =>
-                          setRowAction({
+                          setResourceAction({
                             variant: "view",
-                            row: { original: task.data } as Row<ResourceDataSchema>,
+                            data: task.data,
                           })
                         }
                       >
@@ -184,9 +174,9 @@ export function ResourceKanbanView({
                       <If condition={permissions?.canUpdate}>
                         <ContextMenuItem
                           onClick={() =>
-                            setRowAction({
+                            setResourceAction({
                               variant: "update",
-                              row: { original: task.data } as Row<ResourceDataSchema>,
+                              data: task.data,
                             })
                           }
                         >
@@ -199,9 +189,9 @@ export function ResourceKanbanView({
                         <ContextMenuItem
                           variant="destructive"
                           onClick={() =>
-                            setRowAction({
+                            setResourceAction({
                               variant: "delete",
-                              row: { original: task.data } as Row<ResourceDataSchema>,
+                              data: task.data,
                             })
                           }
                         >
@@ -219,36 +209,6 @@ export function ResourceKanbanView({
         <KanbanOverlay>
           <div className="bg-primary/10 size-full rounded-md" />
         </KanbanOverlay>
-        <If condition={rowAction?.variant === "delete" && tableSchema}>
-          <DeleteResourceDialog
-            open={rowAction?.variant === "delete"}
-            onOpenChange={() => setRowAction(null)}
-            resources={rowAction?.row.original ? [rowAction?.row.original] : []}
-            tableSchema={tableSchema ?? null}
-            columnSchema={columnsSchema ?? []}
-            showTrigger={false}
-            onSuccess={() => rowAction?.row.toggleSelected(false)}
-          />
-        </If>
-        <If condition={rowAction?.variant === "update" && tableSchema}>
-          <ResourceSheet
-            open={rowAction?.variant === "update"}
-            onOpenChange={() => setRowAction(null)}
-            tableSchema={tableSchema ?? null}
-            columnsSchema={columnsSchema ?? []}
-            data={rowAction?.row.original ?? null}
-            create={false}
-          />
-        </If>
-        <If condition={rowAction?.variant === "view" && tableSchema}>
-          <ResourceDetailSheet
-            open={rowAction?.variant === "view"}
-            onOpenChange={() => setRowAction(null)}
-            tableSchema={tableSchema ?? null}
-            columnsSchema={columnsSchema ?? []}
-            data={rowAction?.row.original ?? null}
-          />
-        </If>
       </Kanban>
     </div>
   );
