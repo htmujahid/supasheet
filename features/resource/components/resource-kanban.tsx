@@ -237,6 +237,7 @@ export function ResourceKanbanView({
             tableSchema={tableSchema ?? null}
             columnsSchema={columnsSchema ?? []}
             data={rowAction?.row.original ?? null}
+            create={false}
           />
         </If>
         <If condition={rowAction?.variant === "view" && tableSchema}>

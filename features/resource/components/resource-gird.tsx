@@ -102,6 +102,7 @@ export function ResourceGrid({
           data={null}
           open={createResourceOpen}
           onOpenChange={setCreateResourceOpen}
+          create={true}
         />
       </If>
       <If condition={rowAction?.variant === "delete" && tableSchema}>

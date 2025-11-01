@@ -41,12 +41,14 @@ interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   data: ResourceDataSchema | null;
+  create: boolean;
 }
 
 export function ResourceSheet({
   tableSchema,
   columnsSchema,
   data,
+  create,
   ...props
 }: ResourceSheetProps) {
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
@@ -168,16 +170,16 @@ export function ResourceSheet({
       >
         <SheetHeader className="text-left">
           <SheetTitle>
-            {data ? "Update" : "Create"} {resource}
+            {create ? "Create" : "Update"} {resource}
           </SheetTitle>
           <SheetDescription>
-            {data ? "Update the" : "Create a new"} {resource} and save the
+            {create ? "Create a new" : "Update the"} {resource} and save the
             changes
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(data ? onUpdate : onCreate)}
+            onSubmit={form.handleSubmit(create ? onCreate : onUpdate)}
             className="flex flex-col gap-4 overflow-y-auto px-4"
           >
             {columnsSchema
@@ -207,7 +209,7 @@ export function ResourceSheet({
                     aria-hidden="true"
                   />
                 )}
-                {data ? "Update" : "Create"}
+                {create ? "Create" : "Update"}
               </Button>
             </SheetFooter>
           </form>
