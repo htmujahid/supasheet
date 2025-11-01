@@ -133,6 +133,7 @@ async function Page(props: {
             view={view}
             data={arrangedData}
             tableSchema={tableSchema}
+            columnsSchema={columnsSchema}
             currentView={currentView}
           />
         </ResourceContextProvider>

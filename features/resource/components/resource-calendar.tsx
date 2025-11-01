@@ -19,6 +19,7 @@ import {
   IEvent,
 } from "@/components/ui/event-calendar";
 import {
+  ColumnSchema,
   DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
@@ -27,17 +28,21 @@ import {
 } from "@/lib/database-meta.types";
 
 import { updateResourceDataAction } from "../lib/actions";
+import { getColumnMeta } from "../lib/columns";
 import { useResourceContext } from "./resource-context";
+import { ResourceFilterList } from "./resource-filter-list";
 
 export function ResourceCalendarView({
   view,
   data,
   tableSchema,
+  columnsSchema,
   currentView,
 }: {
   view: "day" | "week" | "month" | "year" | "agenda";
   data: IEvent[];
   tableSchema: TableSchema;
+  columnsSchema: ColumnSchema[];
   currentView: Required<TableMetadata>["items"][number];
 }) {
   const schema = tableSchema.schema as DatabaseSchemas;
@@ -97,7 +102,10 @@ export function ResourceCalendarView({
   return (
     <div className="flex h-full flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <Button variant={"outline"}>Filter</Button>
+        <ResourceFilterList
+          columns={columnsSchema.map((c) => getColumnMeta(c))}
+          shallow={false}
+        />
         <EventCalendarNavigation view={view} />
       </div>
       <EventCalendarRoot

@@ -56,6 +56,12 @@ export type ColumnMetadata = {
   }[];
 };
 
+export type ColumnMeta = {
+  label: string;
+  variant: "text" | "number" | "date" | "boolean" | "multiSelect" | "select";
+  options?: { label: string; value: string }[];
+};
+
 export type FieldProps = {
   field: ControllerRenderProps<ResourceDataSchema, string>;
   columnMetadata: ColumnMetadata;

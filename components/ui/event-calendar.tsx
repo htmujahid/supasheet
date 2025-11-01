@@ -499,6 +499,10 @@ function EventCalendarProvider({
   // and the request that fetches the events should be refetched
   const [localEvents, setLocalEvents] = useState<IEvent[]>(events);
 
+  useEffect(() => {
+    setLocalEvents(events);
+  }, [events]);
+
   const filteredEvents = useMemo(() => {
     return localEvents.filter((event) => {
       const eventStartDate = parseISO(event.startDate);

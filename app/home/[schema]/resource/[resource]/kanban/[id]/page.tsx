@@ -116,6 +116,7 @@ export default async function Page(props: {
           <ResourceKanbanView
             data={groupedData}
             tableSchema={tableSchema}
+            columnsSchema={columnsSchema}
             groupBy={groupFieldName}
             layout={layout}
           />

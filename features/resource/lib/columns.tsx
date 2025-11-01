@@ -26,7 +26,7 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 
-import { ColumnMetadata } from "../components/fields/types";
+import { ColumnMeta, ColumnMetadata } from "../components/fields/types";
 
 export function getColumnCell(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
@@ -335,7 +335,7 @@ export function getColumnMetadata(
   }
 }
 
-export function getColumnMeta(columnSchema: ColumnSchema) {
+export function getColumnMeta(columnSchema: ColumnSchema): ColumnMeta {
   switch (columnSchema.data_type) {
     case "character":
     case "varchar":
@@ -345,7 +345,7 @@ export function getColumnMeta(columnSchema: ColumnSchema) {
     case "varbit":
     case "bytea":
       return {
-        label: columnSchema.name,
+        label: columnSchema.name as string,
         variant: "text",
       };
 
@@ -360,7 +360,7 @@ export function getColumnMeta(columnSchema: ColumnSchema) {
     case "serial":
     case "money":
       return {
-        label: columnSchema.name,
+        label: columnSchema.name as string,
         variant: "number",
       };
 
@@ -370,26 +370,26 @@ export function getColumnMeta(columnSchema: ColumnSchema) {
     case "timestamptz":
     case "timestamp":
       return {
-        label: columnSchema.name,
+        label: columnSchema.name as string,
         variant: "date",
       };
 
     case "json":
     case "jsonb":
       return {
-        label: columnSchema.name,
+        label: columnSchema.name as string,
         variant: "text",
       };
 
     case "boolean":
       return {
-        label: columnSchema.name,
-        variant: "checkbox",
+        label: columnSchema.name as string,
+        variant: "boolean",
       };
 
     case "USER-DEFINED":
       return {
-        label: columnSchema.name,
+        label: columnSchema.name as string,
         variant: "multiSelect",
         options:
           (columnSchema.enums as string[])?.map((option) => ({
@@ -399,7 +399,7 @@ export function getColumnMeta(columnSchema: ColumnSchema) {
       };
     default:
       return {
-        label: columnSchema.name,
+        label: columnSchema.name as string,
         variant: "text",
       };
   }

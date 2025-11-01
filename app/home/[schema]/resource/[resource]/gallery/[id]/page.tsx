@@ -93,7 +93,10 @@ async function HomeResourcePage(props: {
           tableSchema={tableSchema}
           columnsSchema={columnsSchema}
         >
-          <ResourceGalleryView data={arrangedData} />
+          <ResourceGalleryView
+            data={arrangedData}
+            columnsSchema={columnsSchema}
+          />
         </ResourceContextProvider>
       </div>
     </div>

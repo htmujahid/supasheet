@@ -4,7 +4,6 @@ import { Eye, Image as ImageIcon, Pencil, Trash } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,16 +18,35 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { ColumnSchema } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
 
+import { getColumnMeta } from "../lib/columns";
 import { GalleryViewData } from "../lib/types";
 import { useResourceContext } from "./resource-context";
+import { ResourceFilterList } from "./resource-filter-list";
 
-export function ResourceGalleryView({ data }: { data: GalleryViewData[] }) {
+export function ResourceGalleryView({
+  data,
+  columnsSchema,
+}: {
+  data: GalleryViewData[];
+  columnsSchema: ColumnSchema[];
+}) {
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <Button variant="outline">Filter</Button>
+        <ResourceFilterList
+          columns={columnsSchema.map((c) => getColumnMeta(c))}
+          shallow={false}
+        />
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {data.map((item, index) => (
@@ -79,13 +97,17 @@ export function ResourceGalleryView({ data }: { data: GalleryViewData[] }) {
       </div>
 
       <If condition={data.length === 0}>
-        <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
-          <ImageIcon className="text-muted-foreground/40 h-12 w-12" />
-          <h3 className="mt-4 text-lg font-semibold">No items to display</h3>
-          <p className="text-muted-foreground mt-2 text-sm">
-            There are no gallery items available at the moment.
-          </p>
-        </div>
+        <Empty className="border min-h-[400px]">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <ImageIcon />
+            </EmptyMedia>
+            <EmptyTitle>No items to display</EmptyTitle>
+            <EmptyDescription>
+              There are no gallery items available at the moment.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       </If>
     </div>
   );

@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Link from "next/link";
 
 import {
   AlignStartHorizontalIcon,
   AlignStartVerticalIcon,
-  Copy,
   Eye,
   Pencil,
   Trash,
@@ -25,6 +24,13 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
   Kanban,
   KanbanBoard,
   KanbanColumn,
@@ -32,6 +38,7 @@ import {
   KanbanOverlay,
 } from "@/components/ui/kanban";
 import {
+  ColumnSchema,
   DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
@@ -40,17 +47,21 @@ import {
 import { cn } from "@/lib/utils";
 
 import { updateResourceDataAction } from "../lib/actions";
+import { getColumnMeta } from "../lib/columns";
 import { KanbanViewData, KanbanViewReducedData } from "../lib/types";
 import { useResourceContext } from "./resource-context";
+import { ResourceFilterList } from "./resource-filter-list";
 
 export function ResourceKanbanView({
   data,
   tableSchema,
+  columnsSchema,
   groupBy,
   layout,
 }: {
   data: KanbanViewReducedData;
   tableSchema: TableSchema;
+  columnsSchema: ColumnSchema[];
   groupBy: string;
   layout: "list" | "board";
 }) {
@@ -59,14 +70,25 @@ export function ResourceKanbanView({
 
   const [columns, setColumns] = useState<KanbanViewReducedData>(data);
 
+  useEffect(() => {
+    setColumns(data);
+  }, [data]);
+
   const buildId = useCallback((item: KanbanViewData) => {
     return Object.values(item).join("/");
   }, []);
 
+  const hasNoData =
+    Object.keys(columns).length === 0 ||
+    Object.values(columns).every((tasks) => tasks.length === 0);
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between">
-        <Button variant={"outline"}>Filter</Button>
+        <ResourceFilterList
+          columns={columnsSchema.map((c) => getColumnMeta(c))}
+          shallow={false}
+        />
         <ButtonGroup>
           <Button
             size="icon-sm"
@@ -88,7 +110,23 @@ export function ResourceKanbanView({
           </Button>
         </ButtonGroup>
       </div>
-      <Kanban
+
+      <If condition={hasNoData}>
+        <Empty className="border min-h-[400px]">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <AlignStartHorizontalIcon />
+            </EmptyMedia>
+            <EmptyTitle>No items to display</EmptyTitle>
+            <EmptyDescription>
+              There are no items available in this kanban view.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </If>
+
+      <If condition={!hasNoData}>
+        <Kanban
         value={columns}
         onValueChange={setColumns}
         onUpdate={async function (item, _, to) {
@@ -175,6 +213,7 @@ export function ResourceKanbanView({
           <div className="bg-primary/10 size-full rounded-md" />
         </KanbanOverlay>
       </Kanban>
+      </If>
     </div>
   );
 }
