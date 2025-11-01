@@ -1640,9 +1640,9 @@ function WeekViewMultiDayEventsRow({
   selectedDate: Date;
   multiDayEvents: IEvent[]
 }) {
-  const weekStart = startOfWeek(selectedDate);
-  const weekEnd = endOfWeek(selectedDate);
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const weekStart = useMemo(() => startOfWeek(selectedDate), [selectedDate]);
+  const weekEnd = useMemo(() => endOfWeek(selectedDate), [selectedDate]);
+  const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
 
   const processedEvents = useMemo(() => {
     return multiDayEvents
@@ -1667,6 +1667,7 @@ function WeekViewMultiDayEventsRow({
         if (startDiff !== 0) return startDiff;
         return b.endIndex - b.startIndex - (a.endIndex - a.startIndex);
       });
+   
   }, [multiDayEvents, weekStart, weekEnd]);
 
   const eventRows = useMemo(() => {

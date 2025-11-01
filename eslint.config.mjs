@@ -1,8 +1,10 @@
 import { defineConfig, globalIgnores } from "eslint/config"
 import nextVitals from "eslint-config-next/core-web-vitals"
+import typescript from "eslint-config-next/typescript"
 
 const eslintConfig = defineConfig([
   ...nextVitals,
+  ...typescript,
   globalIgnores([
     "node_modules/**",
     ".next/**",
@@ -20,6 +22,8 @@ const eslintConfig = defineConfig([
       "@next/next/no-html-link-for-pages": "off",
       "@next/next/no-img-element": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
     },
   },
 ])

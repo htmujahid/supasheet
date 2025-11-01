@@ -1,16 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { useState } from "react";
-
-import { Row } from "@tanstack/react-table";
-
-import { If } from "@/components/makerkit/if";
+import { useCallback, useMemo } from "react";
 import { useWindowSize } from "@/hooks/use-window-size";
-import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
-  ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
 
@@ -36,7 +29,7 @@ export function ResourceGrid({
   const { setResourceAction } = useResourceContext();
   const windowSize = useWindowSize({ defaultHeight: 760 });
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () =>
       getResourceGridColumns({
         columnsSchema: columnsSchema ?? [],
@@ -47,7 +40,7 @@ export function ResourceGrid({
 
   const onRowAdd: NonNullable<
     UseDataGridProps<Record<string, unknown>>["onRowAdd"]
-  > = React.useCallback(() => {
+  > = useCallback(() => {
     return {
       rowIndex: data.length,
       columnId: "name",
@@ -56,12 +49,12 @@ export function ResourceGrid({
 
   const onRowsDelete: NonNullable<
     UseDataGridProps<Record<string, unknown>>["onRowsDelete"]
-  > = React.useCallback((rows) => {
+  > = useCallback((rows) => {
     setResourceAction({
       variant: "delete",
       data: rows[0]
     });
-  }, []);
+  }, [setResourceAction]);
 
   const { table, ...dataGridProps } = useDataGrid({
     columns,

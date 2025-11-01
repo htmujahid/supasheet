@@ -37,9 +37,13 @@ export function ResourceTable({
         tableSchema,
         setRowAction: (
           rowAction: DataTableRowAction<ResourceDataSchema> | null
-        ) => setResourceAction({ variant: rowAction?.variant!, data: rowAction?.row.original! }),
+        ) => {
+          if (rowAction?.variant && rowAction?.row.original) {
+            setResourceAction({ variant: rowAction?.variant, data: rowAction?.row.original });
+          }
+        },
       }),
-    [columnsSchema, tableSchema],
+    [columnsSchema, tableSchema, setResourceAction],
   );
 
   const getRowId = useCallback(

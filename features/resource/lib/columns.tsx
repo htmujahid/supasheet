@@ -46,7 +46,7 @@ export function getColumnMetadata(
   tableSchema: TableSchema | null,
   columnSchema: ColumnSchema,
 ): ColumnMetadata {
-  let format = columnSchema.format?.startsWith("_")
+  const format = columnSchema.format?.startsWith("_")
     ? columnSchema.format?.slice(1)
     : columnSchema.format;
 
