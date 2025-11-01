@@ -1,3 +1,5 @@
+import { ListFilter } from "lucide-react";
+
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +19,10 @@ export default async function Loading() {
       <DefaultHeader breadcrumbs={[{ title: "..." }]} />
       <div className="flex flex-col gap-2 px-4">
         <div className="flex items-center justify-between gap-2">
-          <Button variant={"outline"}>Filter</Button>
+          <Button variant={"outline"} size={"sm"}>
+            <ListFilter />
+            Filter
+          </Button>
         </div>
         <EventCalendarRoot events={[]} view="day">
           <EventCalendarHeader />
