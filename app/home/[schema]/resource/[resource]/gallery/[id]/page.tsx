@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
+import { ResourceGalleryView } from "@/features/resource/components/resource-gallery";
 import {
   loadColumnsSchema,
   loadResourceData,
@@ -9,10 +10,13 @@ import {
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
-import { DatabaseSchemas, DatabaseTables, TableMetadata } from "@/lib/database-meta.types";
+import {
+  DatabaseSchemas,
+  DatabaseTables,
+  TableMetadata,
+} from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { ResourceGalleryView } from "@/features/resource/components/resource-gallery";
 
 async function HomeResourcePage(props: {
   params: Promise<{
@@ -27,7 +31,7 @@ async function HomeResourcePage(props: {
 }) {
   const { resource, schema, id } = await props.params;
 
-  const { page = '1', perPage = "1000", ...rest } = await props.searchParams;
+  const { page = "1", perPage = "1000", ...rest } = await props.searchParams;
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
@@ -36,9 +40,13 @@ async function HomeResourcePage(props: {
     notFound();
   }
 
-  const meta = (tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}) as TableMetadata;
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata;
 
-  const currentView = meta.items?.find((item) => item.id === id && item.type === "gallery");
+  const currentView = meta.items?.find(
+    (item) => item.id === id && item.type === "gallery",
+  );
 
   if (!currentView) {
     notFound();
@@ -54,7 +62,6 @@ async function HomeResourcePage(props: {
     loadResourceData(schema, resource, search),
     loadResourcePermissions(schema, resource),
   ]);
-
 
   if (
     !coverFieldName ||
@@ -86,9 +93,7 @@ async function HomeResourcePage(props: {
           tableSchema={tableSchema}
           columnsSchema={columnsSchema}
         >
-          <ResourceGalleryView
-            data={arrangedData}
-          />
+          <ResourceGalleryView data={arrangedData} />
         </ResourceContextProvider>
       </div>
     </div>

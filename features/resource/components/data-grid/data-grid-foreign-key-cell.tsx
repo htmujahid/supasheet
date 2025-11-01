@@ -1,12 +1,15 @@
 "use client";
 
+import { useRef } from "react";
+
+import Link from "next/link";
+
 import type { Cell, Table } from "@tanstack/react-table";
 import { ArrowUpRightIcon } from "lucide-react";
 
-import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 import { Relationship } from "@/lib/database-meta.types";
-import Link from "next/link";
-import { useRef } from "react";
+
+import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
 interface CellVariantProps<TData> {
   cell: Cell<TData, unknown>;
@@ -44,12 +47,12 @@ export function DataGridForeignKeyCell<TData>({
       isEditing={isEditing}
       isFocused={isFocused}
       isSelected={isSelected}
-      className="truncate relative pl-7"
+      className="relative truncate pl-7"
     >
       <Link
         href={`/home/${relationship.target_table_schema}/resource/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"${initialValue}","variant":"text","operator":"eq","filterId":"0QdV0twS"}]`}
         target="_blank"
-        className="absolute left-1 top-2 rounded border p-0.5"
+        className="absolute top-2 left-1 rounded border p-0.5"
       >
         <ArrowUpRightIcon className="size-3" />
       </Link>

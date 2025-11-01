@@ -12,7 +12,7 @@ export const Captcha = createContext<{
 }>({
   token: "",
   instance: null,
-   
+
   setToken: (_: string) => {
     // do nothing
     return "";

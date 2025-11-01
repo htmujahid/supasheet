@@ -10,7 +10,11 @@ import {
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
-import { DatabaseSchemas, DatabaseTables, TableMetadata } from "@/lib/database-meta.types";
+import {
+  DatabaseSchemas,
+  DatabaseTables,
+  TableMetadata,
+} from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 import { withI18n } from "@/lib/i18n/with-i18n";
 
@@ -27,14 +31,18 @@ async function HomeResourcePage(props: {
 }) {
   const { resource, schema, id } = await props.params;
 
-  const { page = '1', perPage = "1000", ...rest } = await props.searchParams;
+  const { page = "1", perPage = "1000", ...rest } = await props.searchParams;
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
 
-  const meta = (tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}) as TableMetadata;
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata;
 
-  const currentView = meta.items?.find((item) => item.id === id && item.type === "sheet");
+  const currentView = meta.items?.find(
+    (item) => item.id === id && item.type === "sheet",
+  );
 
   if (!currentView) {
     notFound();

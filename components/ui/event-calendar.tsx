@@ -1,20 +1,86 @@
 "use client";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { Dispatch, HTMLAttributes, SetStateAction } from "react";
 
-import { cva, VariantProps } from "class-variance-authority";
-import { addDays, addMonths, addWeeks, addYears, areIntervalsOverlapping, differenceInDays, differenceInMilliseconds, differenceInMinutes, eachDayOfInterval, endOfDay, endOfMonth, endOfWeek, endOfYear, format, formatDate, getDaysInMonth, isAfter, isBefore, isSameDay, isSameMonth, isSameWeek, isSameYear, isToday, isWithinInterval, parseISO, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays, subMonths, subWeeks, subYears } from "date-fns";
-import { CalendarIcon, CalendarX2, ChevronLeft, ChevronRight, Clock, Text } from "lucide-react";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { VariantProps, cva } from "class-variance-authority";
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addYears,
+  areIntervalsOverlapping,
+  differenceInDays,
+  differenceInMilliseconds,
+  differenceInMinutes,
+  eachDayOfInterval,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  format,
+  formatDate,
+  getDaysInMonth,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isSameMonth,
+  isSameWeek,
+  isSameYear,
+  isToday,
+  isWithinInterval,
+  parseISO,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subDays,
+  subMonths,
+  subWeeks,
+  subYears,
+} from "date-fns";
+import {
+  CalendarIcon,
+  CalendarX2,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Text,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 export type TCalendarView = "day" | "week" | "month" | "year" | "agenda";
-export type TEventColor = "blue" | "green" | "red" | "yellow" | "purple" | "orange" | "gray";
+export type TEventColor =
+  | "blue"
+  | "green"
+  | "red"
+  | "yellow"
+  | "purple"
+  | "orange"
+  | "gray";
 export type TBadgeVariant = "dot" | "colored" | "mixed";
 export type TWorkingHours = { [key: number]: { from: number; to: number } };
 export type TVisibleHours = { from: number; to: number };
@@ -26,13 +92,13 @@ export type IEvent = {
   endDate: string;
   color: TEventColor;
   data: Record<string, unknown>;
-}
+};
 
 export type ICalendarCell = {
   day: number;
   currentMonth: boolean;
   date: Date;
-}
+};
 
 const WORKING_HOURS = {
   0: { from: 0, to: 24 },
@@ -45,7 +111,6 @@ const WORKING_HOURS = {
 };
 
 const VISIBLE_HOURS = { from: 0, to: 24 };
-
 
 function rangeText(view: TCalendarView, date: Date) {
   const formatString = "MMM d, yyyy";
@@ -78,7 +143,11 @@ function rangeText(view: TCalendarView, date: Date) {
   return `${format(start, formatString)} - ${format(end, formatString)}`;
 }
 
-function navigateDate(date: Date, view: TCalendarView, direction: "previous" | "next"): Date {
+function navigateDate(
+  date: Date,
+  view: TCalendarView,
+  direction: "previous" | "next",
+): Date {
   const operations = {
     agenda: direction === "next" ? addMonths : subMonths,
     year: direction === "next" ? addYears : subYears,
@@ -90,7 +159,11 @@ function navigateDate(date: Date, view: TCalendarView, direction: "previous" | "
   return operations[view](date, 1);
 }
 
-function getEventsCount(events: IEvent[], date: Date, view: TCalendarView): number {
+function getEventsCount(
+  events: IEvent[],
+  date: Date,
+  view: TCalendarView,
+): number {
   const compareFns = {
     agenda: isSameMonth,
     year: isSameYear,
@@ -99,16 +172,27 @@ function getEventsCount(events: IEvent[], date: Date, view: TCalendarView): numb
     month: isSameMonth,
   };
 
-  return events.filter(event => compareFns[view](new Date(event.startDate), date)).length;
+  return events.filter((event) =>
+    compareFns[view](new Date(event.startDate), date),
+  ).length;
 }
 
 function getCurrentEvents(events: IEvent[]) {
   const now = new Date();
-  return events.filter(event => isWithinInterval(now, { start: parseISO(event.startDate), end: parseISO(event.endDate) })) || null;
+  return (
+    events.filter((event) =>
+      isWithinInterval(now, {
+        start: parseISO(event.startDate),
+        end: parseISO(event.endDate),
+      }),
+    ) || null
+  );
 }
 
 function groupEvents(dayEvents: IEvent[]) {
-  const sortedEvents = dayEvents.sort((a, b) => parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime());
+  const sortedEvents = dayEvents.sort(
+    (a, b) => parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime(),
+  );
   const groups: IEvent[][] = [];
 
   for (const event of sortedEvents) {
@@ -132,7 +216,13 @@ function groupEvents(dayEvents: IEvent[]) {
   return groups;
 }
 
-function getEventBlockStyle(event: IEvent, day: Date, groupIndex: number, groupSize: number, visibleHoursRange?: { from: number; to: number }) {
+function getEventBlockStyle(
+  event: IEvent,
+  day: Date,
+  groupIndex: number,
+  groupSize: number,
+  visibleHoursRange?: { from: number; to: number },
+) {
   const startDate = parseISO(event.startDate);
   const dayStart = new Date(day.setHours(0, 0, 0, 0));
   const eventStart = startDate < dayStart ? dayStart : startDate;
@@ -161,11 +251,14 @@ function isWorkingHour(day: Date, hour: number, workingHours: TWorkingHours) {
   return hour >= dayHours.from && hour < dayHours.to;
 }
 
-function getVisibleHours(visibleHours: TVisibleHours, singleDayEvents: IEvent[]) {
+function getVisibleHours(
+  visibleHours: TVisibleHours,
+  singleDayEvents: IEvent[],
+) {
   let earliestEventHour = visibleHours.from;
   let latestEventHour = visibleHours.to;
 
-  singleDayEvents.forEach(event => {
+  singleDayEvents.forEach((event) => {
     const startHour = parseISO(event.startDate).getHours();
     const endTime = parseISO(event.endDate);
     const endHour = endTime.getHours() + (endTime.getMinutes() > 0 ? 1 : 0);
@@ -175,7 +268,10 @@ function getVisibleHours(visibleHours: TVisibleHours, singleDayEvents: IEvent[])
 
   latestEventHour = Math.min(latestEventHour, 24);
 
-  const hours = Array.from({ length: latestEventHour - earliestEventHour }, (_, i) => i + earliestEventHour);
+  const hours = Array.from(
+    { length: latestEventHour - earliestEventHour },
+    (_, i) => i + earliestEventHour,
+  );
 
   return { hours, earliestEventHour, latestEventHour };
 }
@@ -184,8 +280,10 @@ function getCalendarCells(selectedDate: Date): ICalendarCell[] {
   const currentYear = selectedDate.getFullYear();
   const currentMonth = selectedDate.getMonth();
 
-  const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
-  const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
+  const getDaysInMonth = (year: number, month: number) =>
+    new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (year: number, month: number) =>
+    new Date(year, month, 1).getDay();
 
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
@@ -195,7 +293,11 @@ function getCalendarCells(selectedDate: Date): ICalendarCell[] {
   const prevMonthCells = Array.from({ length: firstDayOfMonth }, (_, i) => ({
     day: daysInPrevMonth - firstDayOfMonth + i + 1,
     currentMonth: false,
-    date: new Date(currentYear, currentMonth - 1, daysInPrevMonth - firstDayOfMonth + i + 1),
+    date: new Date(
+      currentYear,
+      currentMonth - 1,
+      daysInPrevMonth - firstDayOfMonth + i + 1,
+    ),
   }));
 
   const currentMonthCells = Array.from({ length: daysInMonth }, (_, i) => ({
@@ -204,36 +306,55 @@ function getCalendarCells(selectedDate: Date): ICalendarCell[] {
     date: new Date(currentYear, currentMonth, i + 1),
   }));
 
-  const nextMonthCells = Array.from({ length: (7 - (totalDays % 7)) % 7 }, (_, i) => ({
-    day: i + 1,
-    currentMonth: false,
-    date: new Date(currentYear, currentMonth + 1, i + 1),
-  }));
+  const nextMonthCells = Array.from(
+    { length: (7 - (totalDays % 7)) % 7 },
+    (_, i) => ({
+      day: i + 1,
+      currentMonth: false,
+      date: new Date(currentYear, currentMonth + 1, i + 1),
+    }),
+  );
 
   return [...prevMonthCells, ...currentMonthCells, ...nextMonthCells];
 }
 
-function calculateMonthEventPositions(multiDayEvents: IEvent[], singleDayEvents: IEvent[], selectedDate: Date) {
+function calculateMonthEventPositions(
+  multiDayEvents: IEvent[],
+  singleDayEvents: IEvent[],
+  selectedDate: Date,
+) {
   const monthStart = startOfMonth(selectedDate);
   const monthEnd = endOfMonth(selectedDate);
 
   const eventPositions: { [key: string]: number } = {};
   const occupiedPositions: { [key: string]: boolean[] } = {};
 
-  eachDayOfInterval({ start: monthStart, end: monthEnd }).forEach(day => {
+  eachDayOfInterval({ start: monthStart, end: monthEnd }).forEach((day) => {
     occupiedPositions[day.toISOString()] = [false, false, false];
   });
 
   const sortedEvents = [
     ...multiDayEvents.sort((a, b) => {
-      const aDuration = differenceInDays(parseISO(a.endDate), parseISO(a.startDate));
-      const bDuration = differenceInDays(parseISO(b.endDate), parseISO(b.startDate));
-      return bDuration - aDuration || parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime();
+      const aDuration = differenceInDays(
+        parseISO(a.endDate),
+        parseISO(a.startDate),
+      );
+      const bDuration = differenceInDays(
+        parseISO(b.endDate),
+        parseISO(b.startDate),
+      );
+      return (
+        bDuration - aDuration ||
+        parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+      );
     }),
-    ...singleDayEvents.sort((a, b) => parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()),
+    ...singleDayEvents.sort(
+      (a, b) =>
+        parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime(),
+    ),
   ];
 
-  sortedEvents.forEach(event => {
+  sortedEvents.forEach((event) => {
     const eventStart = parseISO(event.startDate);
     const eventEnd = parseISO(event.endDate);
     const eventDays = eachDayOfInterval({
@@ -245,7 +366,7 @@ function calculateMonthEventPositions(multiDayEvents: IEvent[], singleDayEvents:
 
     for (let i = 0; i < 3; i++) {
       if (
-        eventDays.every(day => {
+        eventDays.every((day) => {
           const dayPositions = occupiedPositions[startOfDay(day).toISOString()];
           return dayPositions && !dayPositions[i];
         })
@@ -256,7 +377,7 @@ function calculateMonthEventPositions(multiDayEvents: IEvent[], singleDayEvents:
     }
 
     if (position !== -1) {
-      eventDays.forEach(day => {
+      eventDays.forEach((day) => {
         const dayKey = startOfDay(day).toISOString();
         occupiedPositions[dayKey][position] = true;
       });
@@ -267,15 +388,23 @@ function calculateMonthEventPositions(multiDayEvents: IEvent[], singleDayEvents:
   return eventPositions;
 }
 
-function getMonthCellEvents(date: Date, events: IEvent[], eventPositions: Record<string, number>) {
-  const eventsForDate = events.filter(event => {
+function getMonthCellEvents(
+  date: Date,
+  events: IEvent[],
+  eventPositions: Record<string, number>,
+) {
+  const eventsForDate = events.filter((event) => {
     const eventStart = parseISO(event.startDate);
     const eventEnd = parseISO(event.endDate);
-    return (date >= eventStart && date <= eventEnd) || isSameDay(date, eventStart) || isSameDay(date, eventEnd);
+    return (
+      (date >= eventStart && date <= eventEnd) ||
+      isSameDay(date, eventStart) ||
+      isSameDay(date, eventEnd)
+    );
   });
 
   return eventsForDate
-    .map(event => ({
+    .map((event) => ({
       ...event,
       position: eventPositions[event.id as string] ?? -1,
       isMultiDay: event.startDate !== event.endDate,
@@ -287,23 +416,33 @@ function getMonthCellEvents(date: Date, events: IEvent[], eventPositions: Record
     });
 }
 
-const EventCalendarContext = createContext({} as {
-  selectedDate: Date;
-  setSelectedDate: (date: Date | undefined) => void;
-  workingHours: TWorkingHours;
-  visibleHours: TVisibleHours;
-  events: IEvent[];
-  setLocalEvents: Dispatch<SetStateAction<IEvent[]>>;
-  view: TCalendarView;
-  badgeVariant: TBadgeVariant;
-  updateEvent: (event: IEvent) => void;
-  singleDayEvents: IEvent[];
-  multiDayEvents: IEvent[];
-  onAddEvent?: ({ startDate, hour, minute }: { startDate: Date; hour: number; minute: number }) => void;
-  onDragEvent?: (event: IEvent) => void;
-  onEventClick?: (event: IEvent) => void;
-  onViewUpdate?: (view: TCalendarView) => void;
-});
+const EventCalendarContext = createContext(
+  {} as {
+    selectedDate: Date;
+    setSelectedDate: (date: Date | undefined) => void;
+    workingHours: TWorkingHours;
+    visibleHours: TVisibleHours;
+    events: IEvent[];
+    setLocalEvents: Dispatch<SetStateAction<IEvent[]>>;
+    view: TCalendarView;
+    badgeVariant: TBadgeVariant;
+    updateEvent: (event: IEvent) => void;
+    singleDayEvents: IEvent[];
+    multiDayEvents: IEvent[];
+    onAddEvent?: ({
+      startDate,
+      hour,
+      minute,
+    }: {
+      startDate: Date;
+      hour: number;
+      minute: number;
+    }) => void;
+    onDragEvent?: (event: IEvent) => void;
+    onEventClick?: (event: IEvent) => void;
+    onViewUpdate?: (view: TCalendarView) => void;
+  },
+);
 
 function EventCalendarProvider({
   children,
@@ -323,7 +462,15 @@ function EventCalendarProvider({
   visibleHours?: TVisibleHours;
   view?: TCalendarView;
   badgeVariant?: TBadgeVariant;
-  onAddEvent?: ({ startDate, hour, minute }: { startDate: Date; hour: number; minute: number }) => void;
+  onAddEvent?: ({
+    startDate,
+    hour,
+    minute,
+  }: {
+    startDate: Date;
+    hour: number;
+    minute: number;
+  }) => void;
   onDragEvent?: (event: IEvent) => void;
   onEventClick?: (event: IEvent) => void;
   onViewUpdate?: (view: TCalendarView) => void;
@@ -337,21 +484,43 @@ function EventCalendarProvider({
   const [localEvents, setLocalEvents] = useState<IEvent[]>(events);
 
   const filteredEvents = useMemo(() => {
-    return localEvents.filter(event => {
+    return localEvents.filter((event) => {
       const eventStartDate = parseISO(event.startDate);
       const eventEndDate = parseISO(event.endDate);
 
       if (view === "year") {
         const yearStart = new Date(selectedDate.getFullYear(), 0, 1);
-        const yearEnd = new Date(selectedDate.getFullYear(), 11, 31, 23, 59, 59, 999);
-        const isInSelectedYear = eventStartDate <= yearEnd && eventEndDate >= yearStart;
+        const yearEnd = new Date(
+          selectedDate.getFullYear(),
+          11,
+          31,
+          23,
+          59,
+          59,
+          999,
+        );
+        const isInSelectedYear =
+          eventStartDate <= yearEnd && eventEndDate >= yearStart;
         return isInSelectedYear;
       }
 
       if (view === "month" || view === "agenda") {
-        const monthStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-        const monthEnd = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0, 23, 59, 59, 999);
-        const isInSelectedMonth = eventStartDate <= monthEnd && eventEndDate >= monthStart;
+        const monthStart = new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          1,
+        );
+        const monthEnd = new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth() + 1,
+          0,
+          23,
+          59,
+          59,
+          999,
+        );
+        const isInSelectedMonth =
+          eventStartDate <= monthEnd && eventEndDate >= monthStart;
         return isInSelectedMonth;
       }
 
@@ -366,26 +535,42 @@ function EventCalendarProvider({
         weekEnd.setDate(weekStart.getDate() + 6);
         weekEnd.setHours(23, 59, 59, 999);
 
-        const isInSelectedWeek = eventStartDate <= weekEnd && eventEndDate >= weekStart;
+        const isInSelectedWeek =
+          eventStartDate <= weekEnd && eventEndDate >= weekStart;
         return isInSelectedWeek;
       }
 
       if (view === "day") {
-        const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
-        const dayEnd = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
-        const isInSelectedDay = eventStartDate <= dayEnd && eventEndDate >= dayStart;
+        const dayStart = new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          selectedDate.getDate(),
+          0,
+          0,
+          0,
+        );
+        const dayEnd = new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          selectedDate.getDate(),
+          23,
+          59,
+          59,
+        );
+        const isInSelectedDay =
+          eventStartDate <= dayEnd && eventEndDate >= dayStart;
         return isInSelectedDay;
       }
     });
   }, [selectedDate, localEvents, view]);
 
-  const singleDayEvents = filteredEvents.filter(event => {
+  const singleDayEvents = filteredEvents.filter((event) => {
     const startDate = parseISO(event.startDate);
     const endDate = parseISO(event.endDate);
     return isSameDay(startDate, endDate);
   });
 
-  const multiDayEvents = filteredEvents.filter(event => {
+  const multiDayEvents = filteredEvents.filter((event) => {
     const startDate = parseISO(event.startDate);
     const endDate = parseISO(event.endDate);
     return !isSameDay(startDate, endDate);
@@ -403,8 +588,8 @@ function EventCalendarProvider({
     newEvent.startDate = new Date(event.startDate).toISOString();
     newEvent.endDate = new Date(event.endDate).toISOString();
 
-    setLocalEvents(prev => {
-      const index = prev.findIndex(e => e.id === event.id);
+    setLocalEvents((prev) => {
+      const index = prev.findIndex((e) => e.id === event.id);
       if (index === -1) return prev;
       return [...prev.slice(0, index), newEvent, ...prev.slice(index + 1)];
     });
@@ -438,13 +623,16 @@ function EventCalendarProvider({
 
 function useEventCalendar() {
   const context = useContext(EventCalendarContext);
-  if (!context) throw new Error("useEventCalendar must be used within a EventCalendarProvider.");
+  if (!context)
+    throw new Error(
+      "useEventCalendar must be used within a EventCalendarProvider.",
+    );
   return context;
 }
 
 function CustomDragLayer({
   activeId,
-  activeData
+  activeData,
 }: {
   activeId: string | null;
   activeData: {
@@ -472,11 +660,7 @@ function CustomDragLayer({
   );
 }
 
-function DndProviderWrapper({
-  children
-}: {
-  children: React.ReactNode
-}) {
+function DndProviderWrapper({ children }: { children: React.ReactNode }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeData, setActiveData] = useState<any>(null);
   const { updateEvent } = useEventCalendar();
@@ -486,7 +670,7 @@ function DndProviderWrapper({
       activationConstraint: {
         distance: 8,
       },
-    })
+    }),
   );
 
   function handleDragStart(event: DragStartEvent) {
@@ -505,14 +689,17 @@ function DndProviderWrapper({
         const cell = overData.cell;
         const eventStartDate = parseISO(droppedEvent.startDate);
         const eventEndDate = parseISO(droppedEvent.endDate);
-        const eventDurationMs = differenceInMilliseconds(eventEndDate, eventStartDate);
+        const eventDurationMs = differenceInMilliseconds(
+          eventEndDate,
+          eventStartDate,
+        );
 
         const newStartDate = new Date(cell.date);
         newStartDate.setHours(
           eventStartDate.getHours(),
           eventStartDate.getMinutes(),
           eventStartDate.getSeconds(),
-          eventStartDate.getMilliseconds()
+          eventStartDate.getMilliseconds(),
         );
         const newEndDate = new Date(newStartDate.getTime() + eventDurationMs);
 
@@ -525,7 +712,10 @@ function DndProviderWrapper({
         const { date, hour, minute } = overData;
         const eventStartDate = parseISO(droppedEvent.startDate);
         const eventEndDate = parseISO(droppedEvent.endDate);
-        const eventDurationMs = differenceInMilliseconds(eventEndDate, eventStartDate);
+        const eventDurationMs = differenceInMilliseconds(
+          eventEndDate,
+          eventStartDate,
+        );
 
         const newStartDate = new Date(date);
         newStartDate.setHours(hour, minute, 0, 0);
@@ -558,7 +748,7 @@ function DndProviderWrapper({
 function DraggableEvent({
   event,
   children,
-  segmentId
+  segmentId,
 }: {
   event: IEvent;
   children: React.ReactNode;
@@ -606,10 +796,10 @@ function DraggableEvent({
 
 function DroppableDayCell({
   cell,
-  children
+  children,
 }: {
   cell: ICalendarCell;
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `day-cell-${cell.date}`,
@@ -630,12 +820,12 @@ function DroppableTimeBlock({
   date,
   hour,
   minute,
-  children
+  children,
 }: {
   date: Date;
   hour: number;
   minute: number;
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `time-block-${date.toISOString()}-${hour}-${minute}`,
@@ -664,7 +854,15 @@ export function EventCalendarRoot({
   visibleHours?: TVisibleHours;
   view?: TCalendarView;
   badgeVariant?: TBadgeVariant;
-  onAddEvent?: ({ startDate, hour, minute }: { startDate: Date; hour: number; minute: number }) => void;
+  onAddEvent?: ({
+    startDate,
+    hour,
+    minute,
+  }: {
+    startDate: Date;
+    hour: number;
+    minute: number;
+  }) => void;
   onDragEvent?: (event: IEvent) => void;
   onEventClick?: (event: IEvent) => void;
   onViewUpdate?: (view: TCalendarView) => void;
@@ -673,11 +871,11 @@ export function EventCalendarRoot({
     <EventCalendarProvider {...props}>
       <div className="overflow-hidden rounded-xl border">{children}</div>
     </EventCalendarProvider>
-  )
+  );
 }
 
 export function EventCalendarContainer({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -688,11 +886,11 @@ export function EventCalendarContainer({
         <ScrollBar orientation="vertical" className="relative z-30" />
       </ScrollArea>
     </DndProviderWrapper>
-  )
+  );
 }
 
 export function EventCalendarHeader({
-  children
+  children,
 }: {
   children?: React.ReactNode;
 }) {
@@ -704,19 +902,21 @@ export function EventCalendarHeader({
   const month = formatDate(selectedDate, "MMMM");
   const year = selectedDate.getFullYear();
 
-  const eventCount = useMemo(() => getEventsCount(events, selectedDate, view), [events, selectedDate, view]);
+  const eventCount = useMemo(
+    () => getEventsCount(events, selectedDate, view),
+    [events, selectedDate, view],
+  );
 
-  const handlePrevious = () => setSelectedDate(navigateDate(selectedDate, view, "previous"));
-  const handleNext = () => setSelectedDate(navigateDate(selectedDate, view, "next"));
+  const handlePrevious = () =>
+    setSelectedDate(navigateDate(selectedDate, view, "previous"));
+  const handleNext = () =>
+    setSelectedDate(navigateDate(selectedDate, view, "next"));
 
   return (
     <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex items-center gap-3 flex-1">
+      <div className="flex flex-1 items-center gap-3">
         <div className="flex flex-1 items-center gap-2">
-          <Button
-            size={"icon-sm"}
-            onClick={handleClick}
-          >
+          <Button size={"icon-sm"} onClick={handleClick}>
             {today.getDate()}
           </Button>
           <span className="text-lg font-semibold">
@@ -729,13 +929,23 @@ export function EventCalendarHeader({
 
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <Button variant="outline" className="size-6.5 px-0 [&_svg]:size-4.5" onClick={handlePrevious}>
+            <Button
+              variant="outline"
+              className="size-6.5 px-0 [&_svg]:size-4.5"
+              onClick={handlePrevious}
+            >
               <ChevronLeft />
             </Button>
 
-            <p className="text-sm text-muted-foreground">{rangeText(view, selectedDate)}</p>
+            <p className="text-muted-foreground text-sm">
+              {rangeText(view, selectedDate)}
+            </p>
 
-            <Button variant="outline" className="size-6.5 px-0 [&_svg]:size-4.5" onClick={handleNext}>
+            <Button
+              variant="outline"
+              className="size-6.5 px-0 [&_svg]:size-4.5"
+              onClick={handleNext}
+            >
               <ChevronRight />
             </Button>
           </div>
@@ -747,39 +957,50 @@ export function EventCalendarHeader({
 }
 
 const agendaEventCardVariants = cva(
-  "flex select-none items-center justify-between gap-3 rounded-md border p-3 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+  "focus-visible:ring-ring flex items-center justify-between gap-3 rounded-md border p-3 text-sm select-none focus-visible:ring-1 focus-visible:outline-none",
   {
     variants: {
       color: {
         // Colored variants
         blue: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300 [&_.event-dot]:fill-blue-600",
-        green: "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 [&_.event-dot]:fill-green-600",
+        green:
+          "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 [&_.event-dot]:fill-green-600",
         red: "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300 [&_.event-dot]:fill-red-600",
-        yellow: "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 [&_.event-dot]:fill-yellow-600",
-        purple: "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 [&_.event-dot]:fill-purple-600",
-        orange: "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 [&_.event-dot]:fill-orange-600",
+        yellow:
+          "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 [&_.event-dot]:fill-yellow-600",
+        purple:
+          "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 [&_.event-dot]:fill-purple-600",
+        orange:
+          "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 [&_.event-dot]:fill-orange-600",
         gray: "border-neutral-200 bg-neutral-50 text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 [&_.event-dot]:fill-neutral-600",
 
         // Dot variants
-        "blue-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-blue-600",
-        "green-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-green-600",
-        "red-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-red-600",
-        "orange-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-orange-600",
-        "purple-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-purple-600",
-        "yellow-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-yellow-600",
-        "gray-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-neutral-600",
+        "blue-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-blue-600",
+        "green-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-green-600",
+        "red-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-red-600",
+        "orange-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-orange-600",
+        "purple-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-purple-600",
+        "yellow-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-yellow-600",
+        "gray-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-neutral-600",
       },
     },
     defaultVariants: {
       color: "blue-dot",
     },
-  }
+  },
 );
 
 function AgendaEventCard({
   event,
   eventCurrentDay,
-  eventTotalDays
+  eventTotalDays,
 }: {
   event: IEvent;
   eventCurrentDay?: number;
@@ -790,7 +1011,9 @@ function AgendaEventCard({
   const startDate = parseISO(event.startDate);
   const endDate = parseISO(event.endDate);
 
-  const color = (badgeVariant === "dot" ? `${event.color}-dot` : event.color) as VariantProps<typeof agendaEventCardVariants>["color"];
+  const color = (
+    badgeVariant === "dot" ? `${event.color}-dot` : event.color
+  ) as VariantProps<typeof agendaEventCardVariants>["color"];
 
   const agendaEventCardClasses = agendaEventCardVariants({ color });
 
@@ -802,11 +1025,22 @@ function AgendaEventCard({
   };
 
   return (
-    <div role="button" tabIndex={0} className={agendaEventCardClasses} onKeyDown={handleKeyDown} onClick={() => onEventClick?.(event)}>
+    <div
+      role="button"
+      tabIndex={0}
+      className={agendaEventCardClasses}
+      onKeyDown={handleKeyDown}
+      onClick={() => onEventClick?.(event)}
+    >
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1.5">
           {["mixed", "dot"].includes(badgeVariant) && (
-            <svg width="8" height="8" viewBox="0 0 8 8" className="event-dot shrink-0">
+            <svg
+              width="8"
+              height="8"
+              viewBox="0 0 8 8"
+              className="event-dot shrink-0"
+            >
               <circle cx="4" cy="4" r="4" />
             </svg>
           )}
@@ -823,7 +1057,7 @@ function AgendaEventCard({
 
         <div className="flex items-center gap-1">
           <Clock className="size-3 shrink-0" />
-          <p className="text-xs text-foreground">
+          <p className="text-foreground text-xs">
             {format(startDate, "h:mm a")} - {format(endDate, "h:mm a")}
           </p>
         </div>
@@ -840,58 +1074,81 @@ function AgendaEventCard({
 function AgendaDayGroup({
   date,
   events,
-  multiDayEvents
+  multiDayEvents,
 }: {
   date: Date;
   events: IEvent[];
-  multiDayEvents: IEvent[]
+  multiDayEvents: IEvent[];
 }) {
-  const sortedEvents = [...events].sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+  const sortedEvents = [...events].sort(
+    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+  );
 
   return (
     <div className="space-y-4">
-      <div className="sticky top-0 flex items-center gap-4 bg-background py-2">
-        <p className="text-sm font-semibold">{format(date, "EEEE, MMMM d, yyyy")}</p>
+      <div className="bg-background sticky top-0 flex items-center gap-4 py-2">
+        <p className="text-sm font-semibold">
+          {format(date, "EEEE, MMMM d, yyyy")}
+        </p>
       </div>
 
       <div className="space-y-2">
         {multiDayEvents.length > 0 &&
-          multiDayEvents.map(event => {
+          multiDayEvents.map((event) => {
             const eventStart = startOfDay(parseISO(event.startDate));
             const eventEnd = startOfDay(parseISO(event.endDate));
             const currentDate = startOfDay(date);
 
             const eventTotalDays = differenceInDays(eventEnd, eventStart) + 1;
-            const eventCurrentDay = differenceInDays(currentDate, eventStart) + 1;
-            return <AgendaEventCard key={event.id} event={event} eventCurrentDay={eventCurrentDay} eventTotalDays={eventTotalDays} />;
+            const eventCurrentDay =
+              differenceInDays(currentDate, eventStart) + 1;
+            return (
+              <AgendaEventCard
+                key={event.id}
+                event={event}
+                eventCurrentDay={eventCurrentDay}
+                eventTotalDays={eventTotalDays}
+              />
+            );
           })}
 
-        {sortedEvents.length > 0 && sortedEvents.map(event => <AgendaEventCard key={event.id} event={event} />)}
+        {sortedEvents.length > 0 &&
+          sortedEvents.map((event) => (
+            <AgendaEventCard key={event.id} event={event} />
+          ))}
       </div>
     </div>
   );
 }
 
 export function EventCalendarAgendaView() {
-  const { selectedDate, singleDayEvents, multiDayEvents, view } = useEventCalendar();
+  const { selectedDate, singleDayEvents, multiDayEvents, view } =
+    useEventCalendar();
 
   const eventsByDay = useMemo(() => {
-    const allDates = new Map<string, { date: Date; events: IEvent[]; multiDayEvents: IEvent[] }>();
+    const allDates = new Map<
+      string,
+      { date: Date; events: IEvent[]; multiDayEvents: IEvent[] }
+    >();
 
-    singleDayEvents.forEach(event => {
+    singleDayEvents.forEach((event) => {
       const eventDate = parseISO(event.startDate);
       if (!isSameMonth(eventDate, selectedDate)) return;
 
       const dateKey = format(eventDate, "yyyy-MM-dd");
 
       if (!allDates.has(dateKey)) {
-        allDates.set(dateKey, { date: startOfDay(eventDate), events: [], multiDayEvents: [] });
+        allDates.set(dateKey, {
+          date: startOfDay(eventDate),
+          events: [],
+          multiDayEvents: [],
+        });
       }
 
       allDates.get(dateKey)?.events.push(event);
     });
 
-    multiDayEvents.forEach(event => {
+    multiDayEvents.forEach((event) => {
       const eventStart = parseISO(event.startDate);
       const eventEnd = parseISO(event.endDate);
 
@@ -903,7 +1160,11 @@ export function EventCalendarAgendaView() {
           const dateKey = format(currentDate, "yyyy-MM-dd");
 
           if (!allDates.has(dateKey)) {
-            allDates.set(dateKey, { date: new Date(currentDate), events: [], multiDayEvents: [] });
+            allDates.set(dateKey, {
+              date: new Date(currentDate),
+              events: [],
+              multiDayEvents: [],
+            });
           }
 
           allDates.get(dateKey)?.multiDayEvents.push(event);
@@ -912,7 +1173,9 @@ export function EventCalendarAgendaView() {
       }
     });
 
-    return Array.from(allDates.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+    return Array.from(allDates.values()).sort(
+      (a, b) => a.date.getTime() - b.date.getTime(),
+    );
   }, [singleDayEvents, multiDayEvents, selectedDate]);
 
   if (view !== "agenda") return null;
@@ -923,14 +1186,21 @@ export function EventCalendarAgendaView() {
     <div className="h-full">
       <ScrollArea className="h-full" type="always">
         <div className="space-y-6 p-4">
-          {eventsByDay.map(dayGroup => (
-            <AgendaDayGroup key={format(dayGroup.date, "yyyy-MM-dd")} date={dayGroup.date} events={dayGroup.events} multiDayEvents={dayGroup.multiDayEvents} />
+          {eventsByDay.map((dayGroup) => (
+            <AgendaDayGroup
+              key={format(dayGroup.date, "yyyy-MM-dd")}
+              date={dayGroup.date}
+              events={dayGroup.events}
+              multiDayEvents={dayGroup.multiDayEvents}
+            />
           ))}
 
           {!hasAnyEvents && (
-            <div className="flex flex-col items-center justify-center gap-2 py-20 text-muted-foreground">
+            <div className="text-muted-foreground flex flex-col items-center justify-center gap-2 py-20">
               <CalendarX2 className="size-10" />
-              <p className="text-sm md:text-base">No events scheduled for the selected month</p>
+              <p className="text-sm md:text-base">
+                No events scheduled for the selected month
+              </p>
             </div>
           )}
         </div>
@@ -942,11 +1212,11 @@ export function EventCalendarAgendaView() {
 function YearViewDayCell({
   day,
   date,
-  events
+  events,
 }: {
   day: number;
   date: Date;
-  events: IEvent[]
+  events: IEvent[];
 }) {
   const { setSelectedDate, onViewUpdate } = useEventCalendar();
 
@@ -962,12 +1232,12 @@ function YearViewDayCell({
     <button
       onClick={handleClick}
       type="button"
-      className="flex h-11 flex-1 flex-col items-center justify-start gap-0.5 rounded-md pt-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      className="hover:bg-accent focus-visible:ring-ring flex h-11 flex-1 flex-col items-center justify-start gap-0.5 rounded-md pt-1 focus-visible:ring-1 focus-visible:outline-none"
     >
       <div
         className={cn(
           "flex size-6 items-center justify-center rounded-full text-xs font-medium",
-          isToday(date) && "bg-primary font-semibold text-primary-foreground"
+          isToday(date) && "bg-primary text-primary-foreground font-semibold",
         )}
       >
         {day}
@@ -976,7 +1246,7 @@ function YearViewDayCell({
       {eventCount > 0 && (
         <div className="mt-0.5 flex gap-0.5">
           {eventCount <= maxIndicators ? (
-            events.map(event => (
+            events.map((event) => (
               <div
                 key={event.id}
                 className={cn(
@@ -987,7 +1257,7 @@ function YearViewDayCell({
                   event.color === "yellow" && "bg-yellow-600",
                   event.color === "purple" && "bg-purple-600",
                   event.color === "orange" && "bg-orange-600",
-                  event.color === "gray" && "bg-neutral-600"
+                  event.color === "gray" && "bg-neutral-600",
                 )}
               />
             ))
@@ -1001,10 +1271,12 @@ function YearViewDayCell({
                   events[0].color === "red" && "bg-red-600",
                   events[0].color === "yellow" && "bg-yellow-600",
                   events[0].color === "purple" && "bg-purple-600",
-                  events[0].color === "orange" && "bg-orange-600"
+                  events[0].color === "orange" && "bg-orange-600",
                 )}
               />
-              <span className="text-[7px] text-muted-foreground">+{eventCount - 1}</span>
+              <span className="text-muted-foreground text-[7px]">
+                +{eventCount - 1}
+              </span>
             </>
           )}
         </div>
@@ -1013,13 +1285,7 @@ function YearViewDayCell({
   );
 }
 
-function YearViewMonth({
-  month,
-  events
-}: {
-  month: Date;
-  events: IEvent[]
-}) {
+function YearViewMonth({ month, events }: { month: Date; events: IEvent[] }) {
   const { setSelectedDate, onViewUpdate } = useEventCalendar();
 
   const monthName = format(month, "MMMM");
@@ -1046,7 +1312,7 @@ function YearViewMonth({
       <button
         type="button"
         onClick={handleClick}
-        className="w-full rounded-t-lg border px-3 py-2 text-sm font-semibold hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="hover:bg-accent focus-visible:ring-ring w-full rounded-t-lg border px-3 py-2 text-sm font-semibold focus-visible:ring-1 focus-visible:outline-none"
       >
         {monthName}
       </button>
@@ -1054,7 +1320,10 @@ function YearViewMonth({
       <div className="flex-1 space-y-2 rounded-b-lg border border-t-0 p-3">
         <div className="grid grid-cols-7 gap-x-0.5 text-center">
           {weekDays.map((day, index) => (
-            <div key={index} className="text-xs font-medium text-muted-foreground">
+            <div
+              key={index}
+              className="text-muted-foreground text-xs font-medium"
+            >
               {day}
             </div>
           ))}
@@ -1062,12 +1331,24 @@ function YearViewMonth({
 
         <div className="grid grid-cols-7 gap-x-0.5 gap-y-2">
           {daysInMonth.map((day, index) => {
-            if (day === null) return <div key={`blank-${index}`} className="h-10" />;
+            if (day === null)
+              return <div key={`blank-${index}`} className="h-10" />;
 
             const date = new Date(month.getFullYear(), month.getMonth(), day);
-            const dayEvents = events.filter(event => isSameDay(parseISO(event.startDate), date) || isSameDay(parseISO(event.endDate), date));
+            const dayEvents = events.filter(
+              (event) =>
+                isSameDay(parseISO(event.startDate), date) ||
+                isSameDay(parseISO(event.endDate), date),
+            );
 
-            return <YearViewDayCell key={`day-${day}`} day={day} date={date} events={dayEvents} />;
+            return (
+              <YearViewDayCell
+                key={`day-${day}`}
+                day={day}
+                date={date}
+                events={dayEvents}
+              />
+            );
           })}
         </div>
       </div>
@@ -1076,7 +1357,8 @@ function YearViewMonth({
 }
 
 export function EventCalendarYearView() {
-  const { selectedDate, singleDayEvents, multiDayEvents, view } = useEventCalendar();
+  const { selectedDate, singleDayEvents, multiDayEvents, view } =
+    useEventCalendar();
 
   const months = useMemo(() => {
     const yearStart = startOfYear(selectedDate);
@@ -1088,10 +1370,14 @@ export function EventCalendarYearView() {
   const allEvents = [...singleDayEvents, ...multiDayEvents];
 
   return (
-    <div className="p-4 h-max">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 h-max">
-        {months.map(month => (
-          <YearViewMonth key={month.toString()} month={month} events={allEvents} />
+    <div className="h-max p-4">
+      <div className="grid h-max grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {months.map((month) => (
+          <YearViewMonth
+            key={month.toString()}
+            month={month}
+            events={allEvents}
+          />
         ))}
       </div>
     </div>
@@ -1109,7 +1395,7 @@ function MonthEventBadge({
   eventTotalDays,
   className,
   position: propPosition,
-  segmentId
+  segmentId,
 }: {
   event: IEvent;
   cellDate: Date;
@@ -1118,7 +1404,10 @@ function MonthEventBadge({
   className?: string;
   position?: "first" | "middle" | "last" | "none";
   segmentId: string;
-} & Omit<VariantProps<typeof eventBadgeVariants>, "color" | "multiDayPosition">) {
+} & Omit<
+  VariantProps<typeof eventBadgeVariants>,
+  "color" | "multiDayPosition"
+>) {
   const { badgeVariant, onEventClick } = useEventCalendar();
 
   const itemStart = startOfDay(parseISO(event.startDate));
@@ -1144,9 +1433,13 @@ function MonthEventBadge({
 
   const renderBadgeText = ["first", "none"].includes(position);
 
-  const color = (badgeVariant === "dot" ? `${event.color}-dot` : event.color) as VariantProps<typeof eventBadgeVariants>["color"];
+  const color = (
+    badgeVariant === "dot" ? `${event.color}-dot` : event.color
+  ) as VariantProps<typeof eventBadgeVariants>["color"];
 
-  const eventBadgeClasses = cn(eventBadgeVariants({ color, multiDayPosition: position, className }));
+  const eventBadgeClasses = cn(
+    eventBadgeVariants({ color, multiDayPosition: position, className }),
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -1157,13 +1450,25 @@ function MonthEventBadge({
 
   return (
     <DraggableEvent event={event} segmentId={segmentId}>
-      <div role="button" tabIndex={0} className={eventBadgeClasses} onKeyDown={handleKeyDown} onClick={() => onEventClick?.(event)}>
+      <div
+        role="button"
+        tabIndex={0}
+        className={eventBadgeClasses}
+        onKeyDown={handleKeyDown}
+        onClick={() => onEventClick?.(event)}
+      >
         <div className="flex items-center gap-1.5 truncate">
-          {!["middle", "last"].includes(position) && ["mixed", "dot"].includes(badgeVariant) && (
-            <svg width="8" height="8" viewBox="0 0 8 8" className="event-dot shrink-0">
-              <circle cx="4" cy="4" r="4" />
-            </svg>
-          )}
+          {!["middle", "last"].includes(position) &&
+            ["mixed", "dot"].includes(badgeVariant) && (
+              <svg
+                width="8"
+                height="8"
+                viewBox="0 0 8 8"
+                className="event-dot shrink-0"
+              >
+                <circle cx="4" cy="4" r="4" />
+              </svg>
+            )}
 
           {renderBadgeText && (
             <p className="flex-1 truncate font-semibold">
@@ -1177,7 +1482,9 @@ function MonthEventBadge({
           )}
         </div>
 
-        {renderBadgeText && <span>{format(new Date(event.startDate), "h:mm a")}</span>}
+        {renderBadgeText && (
+          <span>{format(new Date(event.startDate), "h:mm a")}</span>
+        )}
       </div>
     </DraggableEvent>
   );
@@ -1202,10 +1509,10 @@ const eventBulletVariants = cva("size-2 rounded-full", {
 
 function EventBullet({
   color,
-  className
+  className,
 }: {
   color: TEventColor;
-  className: string
+  className: string;
 }) {
   return <div className={cn(eventBulletVariants({ color, className }))} />;
 }
@@ -1213,7 +1520,7 @@ function EventBullet({
 function DayCell({
   cell,
   events,
-  eventPositions
+  eventPositions,
 }: {
   cell: ICalendarCell;
   events: IEvent[];
@@ -1223,7 +1530,10 @@ function DayCell({
 
   const { day, currentMonth, date } = cell;
 
-  const cellEvents = useMemo(() => getMonthCellEvents(date, events, eventPositions), [date, events, eventPositions]);
+  const cellEvents = useMemo(
+    () => getMonthCellEvents(date, events, eventPositions),
+    [date, events, eventPositions],
+  );
   const isSunday = date.getDay() === 0;
 
   const handleClick = () => {
@@ -1233,29 +1543,47 @@ function DayCell({
 
   return (
     <DroppableDayCell cell={cell}>
-      <div className={cn("flex h-full flex-col gap-1 border-l border-t py-1.5 lg:pb-2 lg:pt-1", isSunday && "border-l-0")}>
+      <div
+        className={cn(
+          "flex h-full flex-col gap-1 border-t border-l py-1.5 lg:pt-1 lg:pb-2",
+          isSunday && "border-l-0",
+        )}
+      >
         <button
           onClick={handleClick}
           className={cn(
-            "flex size-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:px-2",
+            "hover:bg-accent focus-visible:ring-ring flex size-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold focus-visible:ring-1 focus-visible:outline-none lg:px-2",
             !currentMonth && "opacity-20",
-            isToday(date) && "bg-primary font-bold text-primary-foreground hover:bg-primary"
+            isToday(date) &&
+              "bg-primary text-primary-foreground hover:bg-primary font-bold",
           )}
         >
           {day}
         </button>
 
-        <div className={cn("flex h-6 gap-1 px-2 lg:h-[94px] lg:flex-col lg:gap-2 lg:px-0", !currentMonth && "opacity-50")}>
-          {[0, 1, 2].map(position => {
-            const event = cellEvents.find(e => e.position === position);
-            const eventKey = event ? `event-${event.id}-${position}` : `empty-${position}`;
+        <div
+          className={cn(
+            "flex h-6 gap-1 px-2 lg:h-[94px] lg:flex-col lg:gap-2 lg:px-0",
+            !currentMonth && "opacity-50",
+          )}
+        >
+          {[0, 1, 2].map((position) => {
+            const event = cellEvents.find((e) => e.position === position);
+            const eventKey = event
+              ? `event-${event.id}-${position}`
+              : `empty-${position}`;
 
             return (
               <div key={eventKey} className="lg:flex-1">
                 {event && (
                   <>
                     <EventBullet className="lg:hidden" color={event.color} />
-                    <MonthEventBadge className="hidden lg:flex" event={event} cellDate={startOfDay(date)} segmentId={date.toISOString()} />
+                    <MonthEventBadge
+                      className="hidden lg:flex"
+                      event={event}
+                      cellDate={startOfDay(date)}
+                      segmentId={date.toISOString()}
+                    />
                   </>
                 )}
               </div>
@@ -1264,9 +1592,19 @@ function DayCell({
         </div>
 
         {cellEvents.length > MAX_VISIBLE_EVENTS && (
-          <p className={cn("h-4.5 px-1.5 text-xs font-semibold text-muted-foreground", !currentMonth && "opacity-50")}>
-            <span className="sm:hidden">+{cellEvents.length - MAX_VISIBLE_EVENTS}</span>
-            <span className="hidden sm:inline"> {cellEvents.length - MAX_VISIBLE_EVENTS} more...</span>
+          <p
+            className={cn(
+              "text-muted-foreground h-4.5 px-1.5 text-xs font-semibold",
+              !currentMonth && "opacity-50",
+            )}
+          >
+            <span className="sm:hidden">
+              +{cellEvents.length - MAX_VISIBLE_EVENTS}
+            </span>
+            <span className="hidden sm:inline">
+              {" "}
+              {cellEvents.length - MAX_VISIBLE_EVENTS} more...
+            </span>
           </p>
         )}
       </div>
@@ -1275,32 +1613,51 @@ function DayCell({
 }
 
 export function EventCalendarMonthView() {
-  const { selectedDate, multiDayEvents, singleDayEvents, view } = useEventCalendar();
+  const { selectedDate, multiDayEvents, singleDayEvents, view } =
+    useEventCalendar();
 
   const allEvents = [...multiDayEvents, ...singleDayEvents];
 
   const cells = useMemo(() => getCalendarCells(selectedDate), [selectedDate]);
 
   const eventPositions = useMemo(
-    () => calculateMonthEventPositions(multiDayEvents, singleDayEvents, selectedDate),
-    [multiDayEvents, singleDayEvents, selectedDate]
+    () =>
+      calculateMonthEventPositions(
+        multiDayEvents,
+        singleDayEvents,
+        selectedDate,
+      ),
+    [multiDayEvents, singleDayEvents, selectedDate],
   );
 
   if (view !== "month") return null;
 
   return (
     <>
-      <div className="grid grid-cols-7 sticky top-0 z-20">
+      <div className="sticky top-0 z-20 grid grid-cols-7">
         {WEEK_DAYS.map((day, index) => (
-          <div key={day} className={cn("flex items-center justify-center py-2 bg-background", index !== 0 && "border-l")}>
-            <span className="text-xs font-medium text-muted-foreground">{day}</span>
+          <div
+            key={day}
+            className={cn(
+              "bg-background flex items-center justify-center py-2",
+              index !== 0 && "border-l",
+            )}
+          >
+            <span className="text-muted-foreground text-xs font-medium">
+              {day}
+            </span>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-7 overflow-hidden">
-        {cells.map(cell => (
-          <DayCell key={cell.date.toISOString()} cell={cell} events={allEvents} eventPositions={eventPositions} />
+        {cells.map((cell) => (
+          <DayCell
+            key={cell.date.toISOString()}
+            cell={cell}
+            events={allEvents}
+            eventPositions={eventPositions}
+          />
         ))}
       </div>
     </>
@@ -1309,10 +1666,10 @@ export function EventCalendarMonthView() {
 
 function CalendarTimeline({
   firstVisibleHour,
-  lastVisibleHour
+  lastVisibleHour,
 }: {
   firstVisibleHour: number;
-  lastVisibleHour: number
+  lastVisibleHour: number;
 }) {
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -1336,54 +1693,72 @@ function CalendarTimeline({
   };
 
   const currentHour = currentTime.getHours();
-  if (currentHour < firstVisibleHour || currentHour >= lastVisibleHour) return null;
+  if (currentHour < firstVisibleHour || currentHour >= lastVisibleHour)
+    return null;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 z-50 border-t border-primary" style={{ top: `${getCurrentTimePosition()}%` }}>
-      <div className="absolute left-0 top-0 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary"></div>
-      <div className="absolute -left-18 flex w-16 -translate-y-1/2 justify-end bg-background pr-1 text-xs font-medium text-primary">{formatCurrentTime()}</div>
+    <div
+      className="border-primary pointer-events-none absolute inset-x-0 z-50 border-t"
+      style={{ top: `${getCurrentTimePosition()}%` }}
+    >
+      <div className="bg-primary absolute top-0 left-0 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full"></div>
+      <div className="bg-background text-primary absolute -left-18 flex w-16 -translate-y-1/2 justify-end pr-1 text-xs font-medium">
+        {formatCurrentTime()}
+      </div>
     </div>
   );
 }
 
 const calendarWeekEventCardVariants = cva(
-  "flex select-none flex-col gap-0.5 truncate whitespace-nowrap rounded-md border px-2 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+  "focus-visible:ring-ring flex flex-col gap-0.5 truncate rounded-md border px-2 py-1.5 text-xs whitespace-nowrap select-none focus-visible:ring-1 focus-visible:outline-none",
   {
     variants: {
       color: {
         // Colored and mixed variants
         blue: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300 [&_.event-dot]:fill-blue-600",
-        green: "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 [&_.event-dot]:fill-green-600",
+        green:
+          "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 [&_.event-dot]:fill-green-600",
         red: "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300 [&_.event-dot]:fill-red-600",
-        yellow: "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 [&_.event-dot]:fill-yellow-600",
-        purple: "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 [&_.event-dot]:fill-purple-600",
-        orange: "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 [&_.event-dot]:fill-orange-600",
+        yellow:
+          "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 [&_.event-dot]:fill-yellow-600",
+        purple:
+          "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 [&_.event-dot]:fill-purple-600",
+        orange:
+          "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 [&_.event-dot]:fill-orange-600",
         gray: "border-neutral-200 bg-neutral-50 text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 [&_.event-dot]:fill-neutral-600",
 
         // Dot variants
-        "blue-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-blue-600",
-        "green-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-green-600",
-        "red-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-red-600",
-        "orange-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-orange-600",
-        "purple-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-purple-600",
-        "yellow-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-yellow-600",
-        "gray-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-neutral-600",
+        "blue-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-blue-600",
+        "green-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-green-600",
+        "red-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-red-600",
+        "orange-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-orange-600",
+        "purple-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-purple-600",
+        "yellow-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-yellow-600",
+        "gray-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-neutral-600",
       },
     },
     defaultVariants: {
       color: "blue-dot",
     },
-  }
+  },
 );
 
 function EventBlock({
   event,
   className,
-  segmentId
+  segmentId,
 }: {
   event: IEvent;
   segmentId: string;
-} & (HTMLAttributes<HTMLDivElement> & Omit<VariantProps<typeof calendarWeekEventCardVariants>, "color">)) {
+} & (HTMLAttributes<HTMLDivElement> &
+  Omit<VariantProps<typeof calendarWeekEventCardVariants>, "color">)) {
   const { badgeVariant, onEventClick } = useEventCalendar();
 
   const start = parseISO(event.startDate);
@@ -1391,9 +1766,14 @@ function EventBlock({
   const durationInMinutes = differenceInMinutes(end, start);
   const heightInPixels = (durationInMinutes / 60) * 96 - 8;
 
-  const color = (badgeVariant === "dot" ? `${event.color}-dot` : event.color) as VariantProps<typeof calendarWeekEventCardVariants>["color"];
+  const color = (
+    badgeVariant === "dot" ? `${event.color}-dot` : event.color
+  ) as VariantProps<typeof calendarWeekEventCardVariants>["color"];
 
-  const calendarWeekEventCardClasses = cn(calendarWeekEventCardVariants({ color, className }), durationInMinutes < 35 && "py-0 justify-center");
+  const calendarWeekEventCardClasses = cn(
+    calendarWeekEventCardVariants({ color, className }),
+    durationInMinutes < 35 && "justify-center py-0",
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -1404,10 +1784,22 @@ function EventBlock({
 
   return (
     <DraggableEvent event={event} segmentId={segmentId}>
-      <div role="button" tabIndex={0} className={calendarWeekEventCardClasses} style={{ height: `${heightInPixels}px` }} onKeyDown={handleKeyDown} onClick={() => onEventClick?.(event)}>
+      <div
+        role="button"
+        tabIndex={0}
+        className={calendarWeekEventCardClasses}
+        style={{ height: `${heightInPixels}px` }}
+        onKeyDown={handleKeyDown}
+        onClick={() => onEventClick?.(event)}
+      >
         <div className="flex items-center gap-1.5 truncate">
           {["mixed", "dot"].includes(badgeVariant) && (
-            <svg width="8" height="8" viewBox="0 0 8 8" className="event-dot shrink-0">
+            <svg
+              width="8"
+              height="8"
+              viewBox="0 0 8 8"
+              className="event-dot shrink-0"
+            >
               <circle cx="4" cy="4" r="4" />
             </svg>
           )}
@@ -1427,7 +1819,7 @@ function EventBlock({
 
 function DayViewMultiDayEventsRow({
   selectedDate,
-  multiDayEvents
+  multiDayEvents,
 }: {
   selectedDate: Date;
   multiDayEvents: IEvent[];
@@ -1436,7 +1828,7 @@ function DayViewMultiDayEventsRow({
   const dayEnd = endOfDay(selectedDate);
 
   const multiDayEventsInDay = multiDayEvents
-    .filter(event => {
+    .filter((event) => {
       const eventStart = parseISO(event.startDate);
       const eventEnd = parseISO(event.endDate);
 
@@ -1448,8 +1840,14 @@ function DayViewMultiDayEventsRow({
       return isOverlapping;
     })
     .sort((a, b) => {
-      const durationA = differenceInDays(parseISO(a.endDate), parseISO(a.startDate));
-      const durationB = differenceInDays(parseISO(b.endDate), parseISO(b.startDate));
+      const durationA = differenceInDays(
+        parseISO(a.endDate),
+        parseISO(a.startDate),
+      );
+      const durationB = differenceInDays(
+        parseISO(b.endDate),
+        parseISO(b.startDate),
+      );
       return durationB - durationA;
     });
 
@@ -1458,17 +1856,27 @@ function DayViewMultiDayEventsRow({
   return (
     <div className="flex border-b">
       <div className="w-18"></div>
-      <ScrollArea className="flex-1 h-20" type="always">
+      <ScrollArea className="h-20 flex-1" type="always">
         <div className="flex flex-col gap-1 border-l py-1">
-          {multiDayEventsInDay.map(event => {
+          {multiDayEventsInDay.map((event) => {
             const eventStart = startOfDay(parseISO(event.startDate));
             const eventEnd = startOfDay(parseISO(event.endDate));
             const currentDate = startOfDay(selectedDate);
 
             const eventTotalDays = differenceInDays(eventEnd, eventStart) + 1;
-            const eventCurrentDay = differenceInDays(currentDate, eventStart) + 1;
+            const eventCurrentDay =
+              differenceInDays(currentDate, eventStart) + 1;
 
-            return <MonthEventBadge key={event.id} event={event} cellDate={selectedDate} eventCurrentDay={eventCurrentDay} eventTotalDays={eventTotalDays} segmentId={selectedDate.toISOString()} />;
+            return (
+              <MonthEventBadge
+                key={event.id}
+                event={event}
+                cellDate={selectedDate}
+                eventCurrentDay={eventCurrentDay}
+                eventTotalDays={eventTotalDays}
+                segmentId={selectedDate.toISOString()}
+              />
+            );
           })}
         </div>
       </ScrollArea>
@@ -1477,31 +1885,44 @@ function DayViewMultiDayEventsRow({
 }
 
 const eventBadgeVariants = cva(
-  "mx-1 flex size-auto h-6.5 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+  "focus-visible:ring-ring mx-1 flex size-auto h-6.5 items-center justify-between gap-1.5 truncate rounded-md border px-2 text-xs whitespace-nowrap select-none focus-visible:ring-1 focus-visible:outline-none",
   {
     variants: {
       color: {
         // Colored and mixed variants
         blue: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300 [&_.event-dot]:fill-blue-600",
-        green: "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 [&_.event-dot]:fill-green-600",
+        green:
+          "border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300 [&_.event-dot]:fill-green-600",
         red: "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300 [&_.event-dot]:fill-red-600",
-        yellow: "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 [&_.event-dot]:fill-yellow-600",
-        purple: "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 [&_.event-dot]:fill-purple-600",
-        orange: "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 [&_.event-dot]:fill-orange-600",
+        yellow:
+          "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 [&_.event-dot]:fill-yellow-600",
+        purple:
+          "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 [&_.event-dot]:fill-purple-600",
+        orange:
+          "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 [&_.event-dot]:fill-orange-600",
         gray: "border-neutral-200 bg-neutral-50 text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 [&_.event-dot]:fill-neutral-600",
 
         // Dot variants
-        "blue-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-blue-600",
-        "green-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-green-600",
-        "red-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-red-600",
-        "yellow-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-yellow-600",
-        "purple-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-purple-600",
-        "orange-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-orange-600",
-        "gray-dot": "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-neutral-600",
+        "blue-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-blue-600",
+        "green-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-green-600",
+        "red-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-red-600",
+        "yellow-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-yellow-600",
+        "purple-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-purple-600",
+        "orange-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-orange-600",
+        "gray-dot":
+          "bg-neutral-50 dark:bg-neutral-900 [&_.event-dot]:fill-neutral-600",
       },
       multiDayPosition: {
-        first: "relative z-10 mr-0 w-[calc(100%_-_3px)] rounded-r-none border-r-0 [&>span]:mr-2.5",
-        middle: "relative z-10 mx-0 w-[calc(100%_+_1px)] rounded-none border-x-0",
+        first:
+          "relative z-10 mr-0 w-[calc(100%_-_3px)] rounded-r-none border-r-0 [&>span]:mr-2.5",
+        middle:
+          "relative z-10 mx-0 w-[calc(100%_+_1px)] rounded-none border-x-0",
         last: "ml-0 rounded-l-none border-l-0",
         none: "",
       },
@@ -1509,37 +1930,57 @@ const eventBadgeVariants = cva(
     defaultVariants: {
       color: "blue-dot",
     },
-  }
+  },
 );
 
 export function EventCalendarWeekView() {
-  const { selectedDate, workingHours, visibleHours, singleDayEvents, multiDayEvents, view, onAddEvent } = useEventCalendar();
+  const {
+    selectedDate,
+    workingHours,
+    visibleHours,
+    singleDayEvents,
+    multiDayEvents,
+    view,
+    onAddEvent,
+  } = useEventCalendar();
 
   if (view !== "week") return null;
 
-  const { hours, earliestEventHour, latestEventHour } = getVisibleHours(visibleHours, singleDayEvents);
+  const { hours, earliestEventHour, latestEventHour } = getVisibleHours(
+    visibleHours,
+    singleDayEvents,
+  );
 
   const weekStart = startOfWeek(selectedDate);
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center border-b py-4 text-sm text-muted-foreground sm:hidden">
+      <div className="text-muted-foreground flex flex-col items-center justify-center border-b py-4 text-sm sm:hidden">
         <p>Weekly view is not available on smaller devices.</p>
         <p>Please switch to daily or monthly view.</p>
       </div>
 
       <div className="hidden flex-col sm:flex">
         <div>
-          <WeekViewMultiDayEventsRow selectedDate={selectedDate} multiDayEvents={multiDayEvents} />
+          <WeekViewMultiDayEventsRow
+            selectedDate={selectedDate}
+            multiDayEvents={multiDayEvents}
+          />
 
           {/* Week header */}
           <div className="relative z-20 flex border-b">
             <div className="w-18"></div>
             <div className="grid flex-1 grid-cols-7 divide-x border-l">
               {weekDays.map((day, index) => (
-                <span key={index} className="py-2 text-center text-xs font-medium text-muted-foreground">
-                  {format(day, "EE")} <span className="ml-1 font-semibold text-foreground">{format(day, "d")}</span>
+                <span
+                  key={index}
+                  className="text-muted-foreground py-2 text-center text-xs font-medium"
+                >
+                  {format(day, "EE")}{" "}
+                  <span className="text-foreground ml-1 font-semibold">
+                    {format(day, "d")}
+                  </span>
                 </span>
               ))}
             </div>
@@ -1553,7 +1994,11 @@ export function EventCalendarWeekView() {
               {hours.map((hour, index) => (
                 <div key={hour} className="relative" style={{ height: "96px" }}>
                   <div className="absolute -top-3 right-2 flex h-6 items-center">
-                    {index !== 0 && <span className="text-xs text-muted-foreground">{format(new Date().setHours(hour, 0, 0, 0), "hh a")}</span>}
+                    {index !== 0 && (
+                      <span className="text-muted-foreground text-xs">
+                        {format(new Date().setHours(hour, 0, 0, 0), "hh a")}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1563,68 +2008,160 @@ export function EventCalendarWeekView() {
             <div className="relative flex-1 border-l">
               <div className="grid grid-cols-7 divide-x">
                 {weekDays.map((day, dayIndex) => {
-                  const dayEvents = singleDayEvents.filter(event => isSameDay(parseISO(event.startDate), day) || isSameDay(parseISO(event.endDate), day));
+                  const dayEvents = singleDayEvents.filter(
+                    (event) =>
+                      isSameDay(parseISO(event.startDate), day) ||
+                      isSameDay(parseISO(event.endDate), day),
+                  );
                   const groupedEvents = groupEvents(dayEvents);
 
                   return (
                     <div key={dayIndex} className="relative">
                       {hours.map((hour, index) => {
-                        const isDisabled = !isWorkingHour(day, hour, workingHours);
+                        const isDisabled = !isWorkingHour(
+                          day,
+                          hour,
+                          workingHours,
+                        );
 
                         return (
-                          <div key={hour} className={cn("relative", isDisabled && "bg-calendar-disabled-hour")} style={{ height: "96px" }}>
-                            {index !== 0 && <div className="pointer-events-none absolute inset-x-0 top-0 border-b"></div>}
+                          <div
+                            key={hour}
+                            className={cn(
+                              "relative",
+                              isDisabled && "bg-calendar-disabled-hour",
+                            )}
+                            style={{ height: "96px" }}
+                          >
+                            {index !== 0 && (
+                              <div className="pointer-events-none absolute inset-x-0 top-0 border-b"></div>
+                            )}
 
-                            <DroppableTimeBlock date={day} hour={hour} minute={0}>
-                              <div className="absolute inset-x-0 top-0 h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: day, hour, minute: 0 })} />
+                            <DroppableTimeBlock
+                              date={day}
+                              hour={hour}
+                              minute={0}
+                            >
+                              <div
+                                className="hover:bg-accent absolute inset-x-0 top-0 h-[24px] cursor-pointer transition-colors"
+                                onClick={() =>
+                                  onAddEvent?.({
+                                    startDate: day,
+                                    hour,
+                                    minute: 0,
+                                  })
+                                }
+                              />
                             </DroppableTimeBlock>
 
-                            <DroppableTimeBlock date={day} hour={hour} minute={15}>
-                              <div className="absolute inset-x-0 top-[24px] h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: day, hour, minute: 15 })} />
+                            <DroppableTimeBlock
+                              date={day}
+                              hour={hour}
+                              minute={15}
+                            >
+                              <div
+                                className="hover:bg-accent absolute inset-x-0 top-[24px] h-[24px] cursor-pointer transition-colors"
+                                onClick={() =>
+                                  onAddEvent?.({
+                                    startDate: day,
+                                    hour,
+                                    minute: 15,
+                                  })
+                                }
+                              />
                             </DroppableTimeBlock>
 
                             <div className="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed"></div>
 
-                            <DroppableTimeBlock date={day} hour={hour} minute={30}>
-                              <div className="absolute inset-x-0 top-[48px] h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: day, hour, minute: 30 })} />
+                            <DroppableTimeBlock
+                              date={day}
+                              hour={hour}
+                              minute={30}
+                            >
+                              <div
+                                className="hover:bg-accent absolute inset-x-0 top-[48px] h-[24px] cursor-pointer transition-colors"
+                                onClick={() =>
+                                  onAddEvent?.({
+                                    startDate: day,
+                                    hour,
+                                    minute: 30,
+                                  })
+                                }
+                              />
                             </DroppableTimeBlock>
 
-                            <DroppableTimeBlock date={day} hour={hour} minute={45}>
-                              <div className="absolute inset-x-0 top-[72px] h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: day, hour, minute: 45 })} />
+                            <DroppableTimeBlock
+                              date={day}
+                              hour={hour}
+                              minute={45}
+                            >
+                              <div
+                                className="hover:bg-accent absolute inset-x-0 top-[72px] h-[24px] cursor-pointer transition-colors"
+                                onClick={() =>
+                                  onAddEvent?.({
+                                    startDate: day,
+                                    hour,
+                                    minute: 45,
+                                  })
+                                }
+                              />
                             </DroppableTimeBlock>
                           </div>
                         );
                       })}
 
                       {groupedEvents.map((group, groupIndex) =>
-                        group.map(event => {
-                          let style = getEventBlockStyle(event, day, groupIndex, groupedEvents.length, { from: earliestEventHour, to: latestEventHour });
+                        group.map((event) => {
+                          let style = getEventBlockStyle(
+                            event,
+                            day,
+                            groupIndex,
+                            groupedEvents.length,
+                            { from: earliestEventHour, to: latestEventHour },
+                          );
                           const hasOverlap = groupedEvents.some(
                             (otherGroup, otherIndex) =>
                               otherIndex !== groupIndex &&
-                              otherGroup.some(otherEvent =>
+                              otherGroup.some((otherEvent) =>
                                 areIntervalsOverlapping(
-                                  { start: parseISO(event.startDate), end: parseISO(event.endDate) },
-                                  { start: parseISO(otherEvent.startDate), end: parseISO(otherEvent.endDate) }
-                                )
-                              )
+                                  {
+                                    start: parseISO(event.startDate),
+                                    end: parseISO(event.endDate),
+                                  },
+                                  {
+                                    start: parseISO(otherEvent.startDate),
+                                    end: parseISO(otherEvent.endDate),
+                                  },
+                                ),
+                              ),
                           );
 
-                          if (!hasOverlap) style = { ...style, width: "100%", left: "0%" };
+                          if (!hasOverlap)
+                            style = { ...style, width: "100%", left: "0%" };
 
                           return (
-                            <div key={event.id} className="absolute p-1" style={style}>
-                              <EventBlock event={event} segmentId={day.toISOString()} />
+                            <div
+                              key={event.id}
+                              className="absolute p-1"
+                              style={style}
+                            >
+                              <EventBlock
+                                event={event}
+                                segmentId={day.toISOString()}
+                              />
                             </div>
                           );
-                        })
+                        }),
                       )}
                     </div>
                   );
                 })}
               </div>
 
-              <CalendarTimeline firstVisibleHour={earliestEventHour} lastVisibleHour={latestEventHour} />
+              <CalendarTimeline
+                firstVisibleHour={earliestEventHour}
+                lastVisibleHour={latestEventHour}
+              />
             </div>
           </div>
         </ScrollArea>
@@ -1635,18 +2172,21 @@ export function EventCalendarWeekView() {
 
 function WeekViewMultiDayEventsRow({
   selectedDate,
-  multiDayEvents
+  multiDayEvents,
 }: {
   selectedDate: Date;
-  multiDayEvents: IEvent[]
+  multiDayEvents: IEvent[];
 }) {
   const weekStart = useMemo(() => startOfWeek(selectedDate), [selectedDate]);
   const weekEnd = useMemo(() => endOfWeek(selectedDate), [selectedDate]);
-  const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
+  const weekDays = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
+    [weekStart],
+  );
 
   const processedEvents = useMemo(() => {
     return multiDayEvents
-      .map(event => {
+      .map((event) => {
         const start = parseISO(event.startDate);
         const end = parseISO(event.endDate);
         const adjustedStart = isBefore(start, weekStart) ? weekStart : start;
@@ -1667,14 +2207,17 @@ function WeekViewMultiDayEventsRow({
         if (startDiff !== 0) return startDiff;
         return b.endIndex - b.startIndex - (a.endIndex - a.startIndex);
       });
-   
   }, [multiDayEvents, weekStart, weekEnd]);
 
   const eventRows = useMemo(() => {
     const rows: (typeof processedEvents)[] = [];
 
-    processedEvents.forEach(event => {
-      let rowIndex = rows.findIndex(row => row.every(e => e.endIndex < event.startIndex || e.startIndex > event.endIndex));
+    processedEvents.forEach((event) => {
+      let rowIndex = rows.findIndex((row) =>
+        row.every(
+          (e) => e.endIndex < event.startIndex || e.startIndex > event.endIndex,
+        ),
+      );
 
       if (rowIndex === -1) {
         rowIndex = rows.length;
@@ -1688,7 +2231,7 @@ function WeekViewMultiDayEventsRow({
   }, [processedEvents]);
 
   const hasEventsInWeek = useMemo(() => {
-    return multiDayEvents.some(event => {
+    return multiDayEvents.some((event) => {
       const start = parseISO(event.startDate);
       const end = parseISO(event.endDate);
 
@@ -1710,20 +2253,30 @@ function WeekViewMultiDayEventsRow({
   return (
     <div className="hidden overflow-hidden sm:flex">
       <div className="w-18 border-b"></div>
-      <ScrollArea className="flex-1 h-20" type="always">
+      <ScrollArea className="h-20 flex-1" type="always">
         <div className="grid grid-cols-7 divide-x border-b border-l">
           {weekDays.map((day, dayIndex) => (
-            <div key={day.toISOString()} className="flex h-full flex-col gap-1 py-1">
+            <div
+              key={day.toISOString()}
+              className="flex h-full flex-col gap-1 py-1"
+            >
               {eventRows.map((row, rowIndex) => {
-                const event = row.find(e => e.startIndex <= dayIndex && e.endIndex >= dayIndex);
+                const event = row.find(
+                  (e) => e.startIndex <= dayIndex && e.endIndex >= dayIndex,
+                );
 
                 if (!event) {
-                  return <div key={`${rowIndex}-${dayIndex}`} className="h-6.5" />;
+                  return (
+                    <div key={`${rowIndex}-${dayIndex}`} className="h-6.5" />
+                  );
                 }
 
                 let position: "first" | "middle" | "last" | "none" = "none";
 
-                if (dayIndex === event.startIndex && dayIndex === event.endIndex) {
+                if (
+                  dayIndex === event.startIndex &&
+                  dayIndex === event.endIndex
+                ) {
                   position = "none";
                 } else if (dayIndex === event.startIndex) {
                   position = "first";
@@ -1735,7 +2288,15 @@ function WeekViewMultiDayEventsRow({
 
                 const segmentId = day.toISOString();
 
-                return <MonthEventBadge key={`${event.id}-${dayIndex}-${segmentId}`} event={event} cellDate={startOfDay(day)} position={position} segmentId={day.toISOString()} />;
+                return (
+                  <MonthEventBadge
+                    key={`${event.id}-${dayIndex}-${segmentId}`}
+                    event={event}
+                    cellDate={startOfDay(day)}
+                    position={position}
+                    segmentId={day.toISOString()}
+                  />
+                );
               })}
             </div>
           ))}
@@ -1746,15 +2307,27 @@ function WeekViewMultiDayEventsRow({
 }
 
 export function EventCalendarDayView() {
-  const { selectedDate, setSelectedDate, singleDayEvents, multiDayEvents, visibleHours, workingHours, view, onAddEvent } = useEventCalendar();
+  const {
+    selectedDate,
+    setSelectedDate,
+    singleDayEvents,
+    multiDayEvents,
+    visibleHours,
+    workingHours,
+    view,
+    onAddEvent,
+  } = useEventCalendar();
 
   if (view !== "day") return null;
 
-  const { hours, earliestEventHour, latestEventHour } = getVisibleHours(visibleHours, singleDayEvents);
+  const { hours, earliestEventHour, latestEventHour } = getVisibleHours(
+    visibleHours,
+    singleDayEvents,
+  );
 
   const currentEvents = getCurrentEvents(singleDayEvents);
 
-  const dayEvents = singleDayEvents.filter(event => {
+  const dayEvents = singleDayEvents.filter((event) => {
     const eventDate = parseISO(event.startDate);
     return (
       eventDate.getDate() === selectedDate.getDate() &&
@@ -1769,13 +2342,19 @@ export function EventCalendarDayView() {
     <div className="flex">
       <div className="flex flex-1 flex-col">
         <div>
-          <DayViewMultiDayEventsRow selectedDate={selectedDate} multiDayEvents={multiDayEvents} />
+          <DayViewMultiDayEventsRow
+            selectedDate={selectedDate}
+            multiDayEvents={multiDayEvents}
+          />
 
           {/* Day header */}
           <div className="relative z-20 flex border-b">
             <div className="w-18"></div>
-            <span className="flex-1 border-l py-2 text-center text-xs font-medium text-muted-foreground">
-              {format(selectedDate, "EE")} <span className="font-semibold text-foreground">{format(selectedDate, "d")}</span>
+            <span className="text-muted-foreground flex-1 border-l py-2 text-center text-xs font-medium">
+              {format(selectedDate, "EE")}{" "}
+              <span className="text-foreground font-semibold">
+                {format(selectedDate, "d")}
+              </span>
             </span>
           </div>
         </div>
@@ -1787,7 +2366,11 @@ export function EventCalendarDayView() {
               {hours.map((hour, index) => (
                 <div key={hour} className="relative" style={{ height: "96px" }}>
                   <div className="absolute -top-3 right-2 flex h-6 items-center">
-                    {index !== 0 && <span className="text-xs text-muted-foreground">{format(new Date().setHours(hour, 0, 0, 0), "hh a")}</span>}
+                    {index !== 0 && (
+                      <span className="text-muted-foreground text-xs">
+                        {format(new Date().setHours(hour, 0, 0, 0), "hh a")}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1797,66 +2380,160 @@ export function EventCalendarDayView() {
             <div className="relative flex-1 border-l">
               <div className="relative">
                 {hours.map((hour, index) => {
-                  const isDisabled = !isWorkingHour(selectedDate, hour, workingHours);
+                  const isDisabled = !isWorkingHour(
+                    selectedDate,
+                    hour,
+                    workingHours,
+                  );
 
                   return (
-                    <div key={hour} className={cn("relative", isDisabled && "bg-calendar-disabled-hour")} style={{ height: "96px" }}>
-                      {index !== 0 && <div className="pointer-events-none absolute inset-x-0 top-0 border-b"></div>}
+                    <div
+                      key={hour}
+                      className={cn(
+                        "relative",
+                        isDisabled && "bg-calendar-disabled-hour",
+                      )}
+                      style={{ height: "96px" }}
+                    >
+                      {index !== 0 && (
+                        <div className="pointer-events-none absolute inset-x-0 top-0 border-b"></div>
+                      )}
 
-                      <DroppableTimeBlock date={selectedDate} hour={hour} minute={0}>
-                        <div className="absolute inset-x-0 top-0 h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: selectedDate, hour, minute: 0 })} />
+                      <DroppableTimeBlock
+                        date={selectedDate}
+                        hour={hour}
+                        minute={0}
+                      >
+                        <div
+                          className="hover:bg-accent absolute inset-x-0 top-0 h-[24px] cursor-pointer transition-colors"
+                          onClick={() =>
+                            onAddEvent?.({
+                              startDate: selectedDate,
+                              hour,
+                              minute: 0,
+                            })
+                          }
+                        />
                       </DroppableTimeBlock>
 
-                      <DroppableTimeBlock date={selectedDate} hour={hour} minute={15}>
-                        <div className="absolute inset-x-0 top-[24px] h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: selectedDate, hour, minute: 15 })} />
+                      <DroppableTimeBlock
+                        date={selectedDate}
+                        hour={hour}
+                        minute={15}
+                      >
+                        <div
+                          className="hover:bg-accent absolute inset-x-0 top-[24px] h-[24px] cursor-pointer transition-colors"
+                          onClick={() =>
+                            onAddEvent?.({
+                              startDate: selectedDate,
+                              hour,
+                              minute: 15,
+                            })
+                          }
+                        />
                       </DroppableTimeBlock>
 
                       <div className="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed"></div>
 
-                      <DroppableTimeBlock date={selectedDate} hour={hour} minute={30}>
-                        <div className="absolute inset-x-0 top-[48px] h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: selectedDate, hour, minute: 45 })} />
+                      <DroppableTimeBlock
+                        date={selectedDate}
+                        hour={hour}
+                        minute={30}
+                      >
+                        <div
+                          className="hover:bg-accent absolute inset-x-0 top-[48px] h-[24px] cursor-pointer transition-colors"
+                          onClick={() =>
+                            onAddEvent?.({
+                              startDate: selectedDate,
+                              hour,
+                              minute: 45,
+                            })
+                          }
+                        />
                       </DroppableTimeBlock>
 
-                      <DroppableTimeBlock date={selectedDate} hour={hour} minute={45}>
-                        <div className="absolute inset-x-0 top-[72px] h-[24px] cursor-pointer transition-colors hover:bg-accent" onClick={() => onAddEvent?.({ startDate: selectedDate, hour, minute: 45 })} />
+                      <DroppableTimeBlock
+                        date={selectedDate}
+                        hour={hour}
+                        minute={45}
+                      >
+                        <div
+                          className="hover:bg-accent absolute inset-x-0 top-[72px] h-[24px] cursor-pointer transition-colors"
+                          onClick={() =>
+                            onAddEvent?.({
+                              startDate: selectedDate,
+                              hour,
+                              minute: 45,
+                            })
+                          }
+                        />
                       </DroppableTimeBlock>
                     </div>
                   );
                 })}
 
                 {groupedEvents.map((group, groupIndex) =>
-                  group.map(event => {
-                    let style = getEventBlockStyle(event, selectedDate, groupIndex, groupedEvents.length, { from: earliestEventHour, to: latestEventHour });
+                  group.map((event) => {
+                    let style = getEventBlockStyle(
+                      event,
+                      selectedDate,
+                      groupIndex,
+                      groupedEvents.length,
+                      { from: earliestEventHour, to: latestEventHour },
+                    );
                     const hasOverlap = groupedEvents.some(
                       (otherGroup, otherIndex) =>
                         otherIndex !== groupIndex &&
-                        otherGroup.some(otherEvent =>
+                        otherGroup.some((otherEvent) =>
                           areIntervalsOverlapping(
-                            { start: parseISO(event.startDate), end: parseISO(event.endDate) },
-                            { start: parseISO(otherEvent.startDate), end: parseISO(otherEvent.endDate) }
-                          )
-                        )
+                            {
+                              start: parseISO(event.startDate),
+                              end: parseISO(event.endDate),
+                            },
+                            {
+                              start: parseISO(otherEvent.startDate),
+                              end: parseISO(otherEvent.endDate),
+                            },
+                          ),
+                        ),
                     );
 
-                    if (!hasOverlap) style = { ...style, width: "100%", left: "0%" };
+                    if (!hasOverlap)
+                      style = { ...style, width: "100%", left: "0%" };
 
                     return (
-                      <div key={event.id} className="absolute p-1" style={style}>
-                        <EventBlock event={event} segmentId={selectedDate.toISOString()} />
+                      <div
+                        key={event.id}
+                        className="absolute p-1"
+                        style={style}
+                      >
+                        <EventBlock
+                          event={event}
+                          segmentId={selectedDate.toISOString()}
+                        />
                       </div>
                     );
-                  })
+                  }),
                 )}
               </div>
 
-              <CalendarTimeline firstVisibleHour={earliestEventHour} lastVisibleHour={latestEventHour} />
+              <CalendarTimeline
+                firstVisibleHour={earliestEventHour}
+                lastVisibleHour={latestEventHour}
+              />
             </div>
           </div>
         </ScrollArea>
       </div>
 
       <div className="hidden w-64 divide-y border-l md:block">
-        <Calendar className="mx-auto w-fit" mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus />
+        <Calendar
+          className="mx-auto w-fit"
+          mode="single"
+          selected={selectedDate}
+          onSelect={setSelectedDate}
+          initialFocus
+        />
 
         <div className="flex-1 space-y-3">
           {currentEvents.length > 0 ? (
@@ -1866,29 +2543,38 @@ export function EventCalendarDayView() {
                 <span className="relative inline-flex size-2.5 rounded-full bg-green-600"></span>
               </span>
 
-              <p className="text-sm font-semibold text-foreground">Happening now</p>
+              <p className="text-foreground text-sm font-semibold">
+                Happening now
+              </p>
             </div>
           ) : (
-            <p className="p-4 text-center text-sm italic text-muted-foreground">No appointments or consultations at the moment</p>
+            <p className="text-muted-foreground p-4 text-center text-sm italic">
+              No appointments or consultations at the moment
+            </p>
           )}
 
           {currentEvents.length > 0 && (
             <ScrollArea className="h-[422px] px-4" type="always">
               <div className="space-y-6 pb-4">
-                {currentEvents.map(event => {
+                {currentEvents.map((event) => {
                   return (
                     <div key={event.id} className="space-y-1.5">
-                      <p className="line-clamp-2 text-sm font-semibold">{event.title}</p>
+                      <p className="line-clamp-2 text-sm font-semibold">
+                        {event.title}
+                      </p>
 
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <div className="text-muted-foreground flex items-center gap-1.5">
                         <CalendarIcon className="size-3.5" />
-                        <span className="text-sm">{format(new Date(), "MMM d, yyyy")}</span>
+                        <span className="text-sm">
+                          {format(new Date(), "MMM d, yyyy")}
+                        </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <div className="text-muted-foreground flex items-center gap-1.5">
                         <Clock className="size-3.5" />
                         <span className="text-sm">
-                          {format(parseISO(event.startDate), "h:mm a")} - {format(parseISO(event.endDate), "h:mm a")}
+                          {format(parseISO(event.startDate), "h:mm a")} -{" "}
+                          {format(parseISO(event.endDate), "h:mm a")}
                         </span>
                       </div>
                     </div>

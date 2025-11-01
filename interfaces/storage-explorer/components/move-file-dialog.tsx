@@ -93,7 +93,8 @@ export function MoveFileDialog({
         <DialogHeader>
           <DialogTitle>Move {file.isFolder ? "Folder" : "File"}</DialogTitle>
           <DialogDescription>
-            Move &quot;{file.name}&quot; to a new location. Enter the destination path.
+            Move &quot;{file.name}&quot; to a new location. Enter the
+            destination path.
           </DialogDescription>
         </DialogHeader>
 

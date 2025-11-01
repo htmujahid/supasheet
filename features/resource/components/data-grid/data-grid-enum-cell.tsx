@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
+import { toast } from "sonner";
 
 import {
   Select,
@@ -12,10 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
-import { EnumCell } from "../cells/enum-cell";
 import { updateResourceDataAction } from "../../lib/actions";
-import { toast } from "sonner";
+import { EnumCell } from "../cells/enum-cell";
+import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
 interface CellVariantProps<TData> {
   cell: Cell<TData, unknown>;
@@ -42,7 +42,8 @@ export function DataGridEnumCell<TData>({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
   const cellOpts = cell.column.columnDef.meta;
-  const options = cellOpts?.variant === "select" ? cellOpts.options ?? [] : [];
+  const options =
+    cellOpts?.variant === "select" ? (cellOpts.options ?? []) : [];
 
   const onValueChange = React.useCallback(
     (newValue: string) => {
@@ -50,13 +51,14 @@ export function DataGridEnumCell<TData>({
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
 
-      const resourceIds = cellOpts?.primaryKeys?.reduce(
-        (acc, key) => {
-          acc[key.name] = row[key.name as keyof TData];
-          return acc;
-        },
-        {} as Record<string, unknown>,
-      ) ?? {};
+      const resourceIds =
+        cellOpts?.primaryKeys?.reduce(
+          (acc, key) => {
+            acc[key.name] = row[key.name as keyof TData];
+            return acc;
+          },
+          {} as Record<string, unknown>,
+        ) ?? {};
 
       updateResourceDataAction({
         schema: cellOpts?.schema as never,

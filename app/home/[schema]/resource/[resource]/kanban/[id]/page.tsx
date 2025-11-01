@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
+import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import { ResourceKanbanView } from "@/features/resource/components/resource-kanban";
 import {
   loadColumnsSchema,
@@ -8,6 +9,8 @@ import {
   loadResourcePermissions,
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
+import { KanbanViewReducedData } from "@/features/resource/lib/types";
+import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import {
   DatabaseSchemas,
   DatabaseTables,
@@ -15,9 +18,6 @@ import {
   TableMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
-import { ResourceContextProvider } from "@/features/resource/components/resource-context";
-import { KanbanViewReducedData } from "@/features/resource/lib/types";
 
 export default async function Page(props: {
   params: Promise<{
@@ -33,7 +33,12 @@ export default async function Page(props: {
 }) {
   const { resource, schema, id } = await props.params;
 
-  const { page = '1', perPage = "1000", layout = "board", ...rest } = await props.searchParams;
+  const {
+    page = "1",
+    perPage = "1000",
+    layout = "board",
+    ...rest
+  } = await props.searchParams;
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
@@ -42,7 +47,9 @@ export default async function Page(props: {
     notFound();
   }
 
-  const meta = (tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}) as TableMetadata;
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata;
 
   const currentView = meta.items?.find((item) => item.id === id);
 
@@ -74,7 +81,7 @@ export default async function Page(props: {
 
   const groupedData = data.results.reduce((acc, item) => {
     const groupKey = item[groupFieldName] as string;
-    
+
     if (!acc[groupKey]) {
       acc[groupKey] = [];
     }

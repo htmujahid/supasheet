@@ -2,9 +2,21 @@
 
 import { useCallback, useState } from "react";
 
-import { AlignStartHorizontalIcon, AlignStartVerticalIcon, Copy, Eye, Pencil, Trash } from "lucide-react";
+import Link from "next/link";
 
+import {
+  AlignStartHorizontalIcon,
+  AlignStartVerticalIcon,
+  Copy,
+  Eye,
+  Pencil,
+  Trash,
+} from "lucide-react";
+
+import { If } from "@/components/makerkit/if";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -19,16 +31,19 @@ import {
   KanbanItem,
   KanbanOverlay,
 } from "@/components/ui/kanban";
-import { ColumnSchema, DatabaseSchemas, DatabaseTables, PrimaryKey, ResourceDataSchema, TableSchema } from "@/lib/database-meta.types";
+import {
+  ColumnSchema,
+  DatabaseSchemas,
+  DatabaseTables,
+  PrimaryKey,
+  ResourceDataSchema,
+  TableSchema,
+} from "@/lib/database-meta.types";
+import { cn } from "@/lib/utils";
 
 import { updateResourceDataAction } from "../lib/actions";
 import { KanbanViewData, KanbanViewReducedData } from "../lib/types";
-import { If } from "@/components/makerkit/if";
 import { useResourceContext } from "./resource-context";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 export function ResourceKanbanView({
   data,
@@ -82,10 +97,13 @@ export function ResourceKanbanView({
         onUpdate={async function (item, _, to) {
           const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
-          const pk = primaryKeys.reduce((pkAcc, pkField) => {
-            pkAcc[pkField.name] = item.data[pkField.name];
-            return pkAcc;
-          }, {} as Record<string, unknown>);
+          const pk = primaryKeys.reduce(
+            (pkAcc, pkField) => {
+              pkAcc[pkField.name] = item.data[pkField.name];
+              return pkAcc;
+            },
+            {} as Record<string, unknown>,
+          );
 
           await updateResourceDataAction({
             schema,
@@ -97,9 +115,17 @@ export function ResourceKanbanView({
         orientation={layout === "list" ? "vertical" : "horizontal"}
         getItemValue={buildId}
       >
-        <KanbanBoard className={cn("overflow-x-auto", { "h-[calc(100vh-114px)]": layout === "board" })}>
+        <KanbanBoard
+          className={cn("overflow-x-auto", {
+            "h-[calc(100vh-114px)]": layout === "board",
+          })}
+        >
           {Object.entries(columns).map(([columnValue, tasks]) => (
-            <KanbanColumn key={columnValue} value={columnValue} className="min-w-xs">
+            <KanbanColumn
+              key={columnValue}
+              value={columnValue}
+              className="min-w-xs"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold">{columnValue}</span>
@@ -111,15 +137,11 @@ export function ResourceKanbanView({
                   </Badge>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 p-0.5 overflow-y-auto">
+              <div className="flex flex-col gap-2 overflow-y-auto p-0.5">
                 {tasks.map((task) => (
                   <ContextMenu key={buildId(task)}>
                     <ContextMenuTrigger asChild>
-                      <KanbanItem
-                        value={buildId(task)}
-                        asHandle
-                        asChild
-                      >
+                      <KanbanItem value={buildId(task)} asHandle asChild>
                         <div className="bg-card rounded-md border p-3 shadow-xs">
                           <div className="flex flex-col gap-2">
                             <div className="flex items-center justify-between gap-2">
@@ -152,7 +174,7 @@ export function ResourceKanbanView({
                       <ContextMenuItem
                         onClick={() =>
                           navigator.clipboard.writeText(
-                            JSON.stringify(task, null, 2)
+                            JSON.stringify(task, null, 2),
                           )
                         }
                       >

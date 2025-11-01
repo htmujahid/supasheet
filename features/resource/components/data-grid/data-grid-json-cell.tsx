@@ -31,7 +31,6 @@ export function DataGridJsonCell<TData>({
   const initialValue = cell.getValue() as string;
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-
   return (
     <DataGridCellWrapper
       ref={containerRef}
@@ -45,7 +44,10 @@ export function DataGridJsonCell<TData>({
       className="flex size-full items-center justify-start"
     >
       <Avatar className="size-5.5">
-        <AvatarImage alt="Avatar" src={initialValue ? initialValue.toString() : undefined} />
+        <AvatarImage
+          alt="Avatar"
+          src={initialValue ? initialValue.toString() : undefined}
+        />
         <AvatarFallback>
           <UserIcon className="size-4" />
         </AvatarFallback>

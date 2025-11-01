@@ -112,7 +112,7 @@ async function getPatterns() {
   let URLPatternClass: any = (globalThis as any).URLPattern;
 
   if (!URLPatternClass) {
-    const { URLPattern: polyfill } = await import('urlpattern-polyfill');
+    const { URLPattern: polyfill } = await import("urlpattern-polyfill");
     URLPatternClass = polyfill;
   }
 

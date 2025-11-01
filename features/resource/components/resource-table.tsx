@@ -15,9 +15,9 @@ import {
   loadResourceData,
   loadTableSchema,
 } from "../lib/loaders";
+import { useResourceContext } from "./resource-context";
 import { getResourceTableColumns } from "./resource-table-columns";
 import { ResourceTableToolbarActions } from "./resource-table-toolbar-action";
-import { useResourceContext } from "./resource-context";
 
 export function ResourceTable({
   tableSchema,
@@ -36,10 +36,13 @@ export function ResourceTable({
         columnsSchema: columnsSchema ?? [],
         tableSchema,
         setRowAction: (
-          rowAction: DataTableRowAction<ResourceDataSchema> | null
+          rowAction: DataTableRowAction<ResourceDataSchema> | null,
         ) => {
           if (rowAction?.variant && rowAction?.row.original) {
-            setResourceAction({ variant: rowAction?.variant, data: rowAction?.row.original });
+            setResourceAction({
+              variant: rowAction?.variant,
+              data: rowAction?.row.original,
+            });
           }
         },
       }),

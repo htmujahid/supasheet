@@ -4,11 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function KanbanLoading() {
   return (
     <div className="w-full flex-1">
-      <DefaultHeader
-        breadcrumbs={[
-          { title: "..." },
-        ]}
-      />
+      <DefaultHeader breadcrumbs={[{ title: "..." }]} />
 
       <div className="px-4 pt-2">
         <div className="flex items-center justify-between">
@@ -28,7 +24,7 @@ export default function KanbanLoading() {
           {[1, 2, 3, 4].map((column) => (
             <div
               key={column}
-              className="flex flex-1 flex-col gap-3 rounded-lg border bg-muted/50 p-4"
+              className="bg-muted/50 flex flex-1 flex-col gap-3 rounded-lg border p-4"
             >
               <div className="flex items-center justify-between">
                 <Skeleton className="h-5 w-24" />
@@ -38,7 +34,7 @@ export default function KanbanLoading() {
               {[1, 2, 3].map((card) => (
                 <div
                   key={card}
-                  className="rounded-lg border bg-card p-3 shadow-sm"
+                  className="bg-card rounded-lg border p-3 shadow-sm"
                 >
                   <div className="space-y-3">
                     <Skeleton className="h-5 w-3/4" />

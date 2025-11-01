@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+
 import type { Cell, Table } from "@tanstack/react-table";
 
 import { ArrayCell } from "../cells/array-cell";

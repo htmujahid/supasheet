@@ -182,7 +182,7 @@ function FloatingLinkEditor({
       inputRef.current.focus();
       setIsLink(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLinkEditMode, isLink]);
 
   const monitorInputInteraction = (

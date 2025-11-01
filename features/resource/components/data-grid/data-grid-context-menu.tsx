@@ -14,8 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useResourceContext } from "../resource-context";
 import { parseCellKey } from "../../lib/utils/data-grid";
+import { useResourceContext } from "../resource-context";
 
 interface DataGridContextMenuProps<TData> {
   table: Table<TData>;

@@ -1,15 +1,11 @@
 import { DefaultHeader } from "@/components/layouts/default-header";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function GalleryLoading() {
   return (
     <div className="w-full flex-1">
-      <DefaultHeader
-        breadcrumbs={[
-          { title: "..." },
-        ]}
-      />
+      <DefaultHeader breadcrumbs={[{ title: "..." }]} />
 
       <div className="px-4">
         <div className="flex flex-col gap-2">
@@ -24,7 +20,7 @@ export default function GalleryLoading() {
                   <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md">
                     <Skeleton className="h-full w-full" />
                     {/* Badge skeleton in top-right */}
-                    <Skeleton className="absolute right-2 top-2 h-5 w-16 rounded-full" />
+                    <Skeleton className="absolute top-2 right-2 h-5 w-16 rounded-full" />
                   </div>
                 </CardHeader>
                 <CardContent>

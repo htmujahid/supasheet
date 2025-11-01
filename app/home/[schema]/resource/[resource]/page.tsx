@@ -44,7 +44,7 @@ async function HomeResourcePage(props: {
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]} />
       <div className="px-4">
-        <ResourceContextProvider 
+        <ResourceContextProvider
           permissions={permissions}
           tableSchema={tableSchema}
           columnsSchema={columnsSchema}

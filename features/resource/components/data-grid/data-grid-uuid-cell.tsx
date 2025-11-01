@@ -3,12 +3,12 @@
 import * as React from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 
-import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 import { updateResourceDataAction } from "../../lib/actions";
-import { toast } from "sonner";
+import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
 interface CellVariantProps<TData> {
   cell: Cell<TData, unknown>;
@@ -100,17 +100,17 @@ export function DataGridUuidCell<TData>({
 
   React.useEffect(() => {
     if (!isEditing && initialValue !== value) {
-
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
 
-      const resourceIds = cellOpts?.primaryKeys?.reduce(
-        (acc, key) => {
-          acc[key.name] = row[key.name as keyof TData];
-          return acc;
-        },
-        {} as Record<string, unknown>,
-      ) ?? {};
+      const resourceIds =
+        cellOpts?.primaryKeys?.reduce(
+          (acc, key) => {
+            acc[key.name] = row[key.name as keyof TData];
+            return acc;
+          },
+          {} as Record<string, unknown>,
+        ) ?? {};
 
       updateResourceDataAction({
         schema: cellOpts?.schema as never,
@@ -181,7 +181,7 @@ export function DataGridUuidCell<TData>({
         onInput={onInput}
         suppressContentEditableWarning
         className={cn(
-          "size-full overflow-hidden font-mono whitespace-nowrap truncate outline-none",
+          "size-full truncate overflow-hidden font-mono whitespace-nowrap outline-none",
           {
             "[&_*]:inline [&_*]:whitespace-nowrap [&_br]:hidden": isEditing,
           },

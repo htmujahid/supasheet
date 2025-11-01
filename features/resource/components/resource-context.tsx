@@ -1,11 +1,13 @@
 "use client";
 
+import { type ReactNode, createContext, useContext, useState } from "react";
+
 import { If } from "@/components/makerkit/if";
 import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
-import { type ReactNode, createContext, useContext, useState } from "react";
+
 import { DeleteResourceDialog } from "./delete-resource-dialog";
-import { ResourceSheet } from "./resource-sheet";
 import { ResourceDetailSheet } from "./resource-detail-sheet";
+import { ResourceSheet } from "./resource-sheet";
 
 type ResourcePermissions = {
   canSelect: boolean;
@@ -14,18 +16,22 @@ type ResourcePermissions = {
   canDelete: boolean;
 };
 
-type ResourceAction = {
-  variant: "update" | "view" | "delete";
-  data: Record<string, unknown>;
-} | {
-  variant: "create";
-  data?: Record<string, unknown>;
-}
+type ResourceAction =
+  | {
+      variant: "update" | "view" | "delete";
+      data: Record<string, unknown>;
+    }
+  | {
+      variant: "create";
+      data?: Record<string, unknown>;
+    };
 
 const ResourceContext = createContext<{
-  permissions: ResourcePermissions
+  permissions: ResourcePermissions;
   resourceAction: ResourceAction | null;
-  setResourceAction: React.Dispatch<React.SetStateAction<ResourceAction | null>>;
+  setResourceAction: React.Dispatch<
+    React.SetStateAction<ResourceAction | null>
+  >;
 }>({
   permissions: {
     canSelect: false,
@@ -34,7 +40,7 @@ const ResourceContext = createContext<{
     canDelete: false,
   },
   resourceAction: null,
-  setResourceAction: () => { },
+  setResourceAction: () => {},
 });
 
 export function ResourceContextProvider({
@@ -48,13 +54,22 @@ export function ResourceContextProvider({
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[] | null;
 }) {
-  const [resourceAction, setResourceAction] =
-    useState<ResourceAction| null>(null);
+  const [resourceAction, setResourceAction] = useState<ResourceAction | null>(
+    null,
+  );
 
   return (
-    <ResourceContext.Provider value={{ permissions, resourceAction, setResourceAction }}>
+    <ResourceContext.Provider
+      value={{ permissions, resourceAction, setResourceAction }}
+    >
       {children}
-      <If condition={resourceAction?.variant === "delete" && tableSchema && permissions.canDelete}>
+      <If
+        condition={
+          resourceAction?.variant === "delete" &&
+          tableSchema &&
+          permissions.canDelete
+        }
+      >
         <DeleteResourceDialog
           open={resourceAction?.variant === "delete"}
           onOpenChange={() => setResourceAction(null)}
@@ -64,7 +79,13 @@ export function ResourceContextProvider({
           showTrigger={false}
         />
       </If>
-      <If condition={resourceAction?.variant === "update" && tableSchema && permissions.canUpdate}>
+      <If
+        condition={
+          resourceAction?.variant === "update" &&
+          tableSchema &&
+          permissions.canUpdate
+        }
+      >
         <ResourceSheet
           open={resourceAction?.variant === "update"}
           onOpenChange={() => setResourceAction(null)}
@@ -74,7 +95,13 @@ export function ResourceContextProvider({
           create={false}
         />
       </If>
-      <If condition={resourceAction?.variant === "create" && tableSchema && permissions.canInsert}>
+      <If
+        condition={
+          resourceAction?.variant === "create" &&
+          tableSchema &&
+          permissions.canInsert
+        }
+      >
         <ResourceSheet
           open={resourceAction?.variant === "create"}
           onOpenChange={() => setResourceAction(null)}
@@ -84,7 +111,13 @@ export function ResourceContextProvider({
           create={true}
         />
       </If>
-      <If condition={resourceAction?.variant === "view" && tableSchema && permissions.canSelect}>
+      <If
+        condition={
+          resourceAction?.variant === "view" &&
+          tableSchema &&
+          permissions.canSelect
+        }
+      >
         <ResourceDetailSheet
           open={resourceAction?.variant === "view"}
           onOpenChange={() => setResourceAction(null)}

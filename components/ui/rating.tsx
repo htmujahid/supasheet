@@ -279,7 +279,6 @@ function RatingRoot(props: RatingRootProps) {
   );
 }
 
- 
 interface RatingRootImplProps
   extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
 

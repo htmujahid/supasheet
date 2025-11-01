@@ -62,7 +62,9 @@ export function FileDetailsDrawer({
     if (type.includes("zip") || type.includes("tar"))
       return <ArchiveIcon className={`${iconClass} text-muted-foreground`} />;
     if (type.includes("text") || type.includes("document"))
-      return <FileTextIcon className={`${iconClass} text-muted-foreground/80`} />;
+      return (
+        <FileTextIcon className={`${iconClass} text-muted-foreground/80`} />
+      );
 
     return <FileIcon className={`${iconClass} text-muted-foreground/60`} />;
   };

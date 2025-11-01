@@ -111,7 +111,6 @@ export const enhanceRouteHandler = <
       user = auth.data as UserParam;
     }
 
-     
     let body: any;
 
     if (params?.schema) {

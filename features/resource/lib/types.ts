@@ -1,5 +1,6 @@
-import { TableMetadata, ViewMetadata } from "@/lib/database-meta.types";
 import { UniqueIdentifier } from "@dnd-kit/core";
+
+import { TableMetadata, ViewMetadata } from "@/lib/database-meta.types";
 
 export type TableResource = {
   name: string;

@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
+import { toast } from "sonner";
 
 import {
   Popover,
@@ -12,9 +13,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 
-import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 import { updateResourceDataAction } from "../../lib/actions";
-import { toast } from "sonner";
+import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
 interface CellVariantProps<TData> {
   cell: Cell<TData, unknown>;
@@ -60,13 +60,14 @@ export function DataGridLongTextCell<TData>({
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
 
-      const resourceIds = cellOpts?.primaryKeys?.reduce(
-        (acc, key) => {
-          acc[key.name] = row[key.name as keyof TData];
-          return acc;
-        },
-        {} as Record<string, unknown>,
-      ) ?? {};
+      const resourceIds =
+        cellOpts?.primaryKeys?.reduce(
+          (acc, key) => {
+            acc[key.name] = row[key.name as keyof TData];
+            return acc;
+          },
+          {} as Record<string, unknown>,
+        ) ?? {};
 
       updateResourceDataAction({
         schema: cellOpts?.schema as never,

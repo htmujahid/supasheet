@@ -1,11 +1,9 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
+
 import { useWindowSize } from "@/hooks/use-window-size";
-import {
-  ColumnSchema,
-  TableSchema,
-} from "@/lib/database-meta.types";
+import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 
 import { type UseDataGridProps, useDataGrid } from "../lib/hooks/use-data-grid";
 import { loadResourceData } from "../lib/loaders";
@@ -14,8 +12,8 @@ import { DataGridKeyboardShortcuts } from "./data-grid/data-grid-keyboard-shortc
 import { DataGridRowHeightMenu } from "./data-grid/data-grid-row-height-menu";
 import { DataGridSortMenu } from "./data-grid/data-grid-sort-menu";
 import { DataGridViewMenu } from "./data-grid/data-grid-view-menu";
-import { getResourceGridColumns } from "./resource-grid-columns";
 import { useResourceContext } from "./resource-context";
+import { getResourceGridColumns } from "./resource-grid-columns";
 
 export function ResourceGrid({
   tableSchema,
@@ -49,17 +47,20 @@ export function ResourceGrid({
 
   const onRowsDelete: NonNullable<
     UseDataGridProps<Record<string, unknown>>["onRowsDelete"]
-  > = useCallback((rows) => {
-    setResourceAction({
-      variant: "delete",
-      data: rows[0]
-    });
-  }, [setResourceAction]);
+  > = useCallback(
+    (rows) => {
+      setResourceAction({
+        variant: "delete",
+        data: rows[0],
+      });
+    },
+    [setResourceAction],
+  );
 
   const { table, ...dataGridProps } = useDataGrid({
     columns,
     data: data.results,
-    onDataChange: () => { },
+    onDataChange: () => {},
     onRowAdd,
     onRowsDelete,
     enableSearch: true,

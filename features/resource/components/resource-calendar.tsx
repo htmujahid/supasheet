@@ -2,21 +2,38 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { CalendarRange, Columns, Grid2x2, Grid3x3, List } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import {
+  EventCalendarAgendaView,
+  EventCalendarContainer,
+  EventCalendarDayView,
+  EventCalendarHeader,
+  EventCalendarMonthView,
+  EventCalendarRoot,
+  EventCalendarWeekView,
+  EventCalendarYearView,
+  IEvent,
+} from "@/components/ui/event-calendar";
+import {
+  DatabaseSchemas,
+  DatabaseTables,
+  PrimaryKey,
+  TableMetadata,
+  TableSchema,
+} from "@/lib/database-meta.types";
 
-import { EventCalendarAgendaView, EventCalendarContainer, EventCalendarDayView, EventCalendarHeader, EventCalendarMonthView, EventCalendarRoot, EventCalendarWeekView, EventCalendarYearView, IEvent } from "@/components/ui/event-calendar";
-import { DatabaseSchemas, DatabaseTables, PrimaryKey, TableMetadata, TableSchema } from "@/lib/database-meta.types";
-import { useResourceContext } from "./resource-context";
 import { updateResourceDataAction } from "../lib/actions";
+import { useResourceContext } from "./resource-context";
 
 export function ResourceCalendarView({
   view,
   data,
   tableSchema,
-  currentView
+  currentView,
 }: {
   view: "day" | "week" | "month" | "year" | "agenda";
   data: IEvent[];
@@ -29,7 +46,11 @@ export function ResourceCalendarView({
   const router = useRouter();
   const { setResourceAction } = useResourceContext();
 
-  function onAddEvent(event: { startDate: Date; hour: number; minute: number }) {
+  function onAddEvent(event: {
+    startDate: Date;
+    hour: number;
+    minute: number;
+  }) {
     const startDateFieldName = currentView.startDate as string;
     const endDateFieldName = currentView.endDate as string;
 
@@ -44,7 +65,7 @@ export function ResourceCalendarView({
       data: {
         [startDateFieldName]: startDate.toISOString(),
         [endDateFieldName]: endDate.toISOString(),
-      }
+      },
     });
   }
 
@@ -54,10 +75,13 @@ export function ResourceCalendarView({
 
     const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
-    const pk = primaryKeys.reduce((pkAcc, pkField) => {
-      pkAcc[pkField.name] = event.data?.[pkField.name];
-      return pkAcc;
-    }, {} as Record<string, unknown>);
+    const pk = primaryKeys.reduce(
+      (pkAcc, pkField) => {
+        pkAcc[pkField.name] = event.data?.[pkField.name];
+        return pkAcc;
+      },
+      {} as Record<string, unknown>,
+    );
 
     await updateResourceDataAction({
       schema,
@@ -66,16 +90,14 @@ export function ResourceCalendarView({
       data: {
         [startDateFieldName]: event.startDate,
         [endDateFieldName]: event.endDate,
-      }
+      },
     });
   }
 
   return (
-    <div className="flex flex-col h-full gap-2">
-      <div className="flex justify-between items-center gap-2">
-        <Button variant={"outline"}>
-          Filter
-        </Button>
+    <div className="flex h-full flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <Button variant={"outline"}>Filter</Button>
         <EventCalendarNavigation view={view} />
       </div>
       <EventCalendarRoot
@@ -100,11 +122,11 @@ export function ResourceCalendarView({
         </EventCalendarContainer>
       </EventCalendarRoot>
     </div>
-  )
+  );
 }
 
 function EventCalendarNavigation({
-  view
+  view,
 }: {
   view: "day" | "week" | "month" | "year" | "agenda";
 }) {
@@ -165,5 +187,5 @@ function EventCalendarNavigation({
         </Link>
       </Button>
     </ButtonGroup>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import { defineConfig, globalIgnores } from "eslint/config"
-import nextVitals from "eslint-config-next/core-web-vitals"
-import typescript from "eslint-config-next/typescript"
+import nextVitals from "eslint-config-next/core-web-vitals";
+import typescript from "eslint-config-next/typescript";
+import { defineConfig, globalIgnores } from "eslint/config";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -26,6 +26,6 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-empty-object-type": "off",
     },
   },
-])
+]);
 
-export default eslintConfig
+export default eslintConfig;
