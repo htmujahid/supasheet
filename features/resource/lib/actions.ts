@@ -24,7 +24,7 @@ export async function deleteResourceDataAction(input: {
 
   const { data, error } = await query.select("*");
 
-  revalidatePath(`/home/${input.schema}/resource/${input.resourceName}`);
+  revalidatePath(".");
 
   return {
     data,
@@ -51,7 +51,7 @@ export async function updateResourceDataAction(input: {
 
   const { data, error } = await query.select("*");
 
-  revalidatePath(`/home/${input.schema}/resource/${input.resourceName}`);
+  revalidatePath(".");
 
   return {
     data,
@@ -72,7 +72,7 @@ export async function createResourceDataAction(input: {
     .insert(input.data as never)
     .select("*");
 
-  revalidatePath(`/home/${input.schema}/resource/${input.resourceName}`);
+  revalidatePath(".");
 
   return {
     data,

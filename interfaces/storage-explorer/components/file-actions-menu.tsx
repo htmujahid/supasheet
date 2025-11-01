@@ -52,7 +52,7 @@ export function FileActionsMenu({
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-52">
         {!file.isFolder && (
           <>
             <DropdownMenuItem

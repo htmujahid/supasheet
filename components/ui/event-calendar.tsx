@@ -69,6 +69,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
@@ -440,6 +447,9 @@ const EventCalendarContext = createContext(
     }) => void;
     onDragEvent?: (event: IEvent) => void;
     onEventClick?: (event: IEvent) => void;
+    onEventView?: (event: IEvent) => void;
+    onEventUpdate?: (event: IEvent) => void;
+    onEventDelete?: (event: IEvent) => void;
     onViewUpdate?: (view: TCalendarView) => void;
   },
 );
@@ -454,6 +464,9 @@ function EventCalendarProvider({
   onAddEvent,
   onDragEvent,
   onEventClick,
+  onEventView,
+  onEventUpdate,
+  onEventDelete,
   onViewUpdate,
 }: {
   children: React.ReactNode;
@@ -473,6 +486,9 @@ function EventCalendarProvider({
   }) => void;
   onDragEvent?: (event: IEvent) => void;
   onEventClick?: (event: IEvent) => void;
+  onEventView?: (event: IEvent) => void;
+  onEventUpdate?: (event: IEvent) => void;
+  onEventDelete?: (event: IEvent) => void;
   onViewUpdate?: (view: TCalendarView) => void;
 }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -613,6 +629,9 @@ function EventCalendarProvider({
         onAddEvent,
         onDragEvent,
         onEventClick,
+        onEventView,
+        onEventUpdate,
+        onEventDelete,
         onViewUpdate,
       }}
     >
@@ -865,6 +884,9 @@ export function EventCalendarRoot({
   }) => void;
   onDragEvent?: (event: IEvent) => void;
   onEventClick?: (event: IEvent) => void;
+  onEventView?: (event: IEvent) => void;
+  onEventUpdate?: (event: IEvent) => void;
+  onEventDelete?: (event: IEvent) => void;
   onViewUpdate?: (view: TCalendarView) => void;
 }) {
   return (
@@ -1006,7 +1028,13 @@ function AgendaEventCard({
   eventCurrentDay?: number;
   eventTotalDays?: number;
 }) {
-  const { badgeVariant, onEventClick } = useEventCalendar();
+  const {
+    badgeVariant,
+    onEventClick,
+    onEventView,
+    onEventUpdate,
+    onEventDelete,
+  } = useEventCalendar();
 
   const startDate = parseISO(event.startDate);
   const endDate = parseISO(event.endDate);
@@ -1024,7 +1052,9 @@ function AgendaEventCard({
     }
   };
 
-  return (
+  const hasContextMenu = onEventView || onEventUpdate || onEventDelete;
+
+  const cardContent = (
     <div
       role="button"
       tabIndex={0}
@@ -1068,6 +1098,39 @@ function AgendaEventCard({
         </div> */}
       </div>
     </div>
+  );
+
+  if (!hasContextMenu) {
+    return cardContent;
+  }
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>{cardContent}</ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        {onEventView && (
+          <ContextMenuItem onClick={() => onEventView(event)}>
+            View Details
+          </ContextMenuItem>
+        )}
+        {onEventUpdate && (
+          <ContextMenuItem onClick={() => onEventUpdate(event)}>
+            Edit Details
+          </ContextMenuItem>
+        )}
+        {(onEventView || onEventUpdate) && onEventDelete && (
+          <ContextMenuSeparator />
+        )}
+        {onEventDelete && (
+          <ContextMenuItem
+            variant="destructive"
+            onClick={() => onEventDelete(event)}
+          >
+            Delete Event
+          </ContextMenuItem>
+        )}
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
 
@@ -1408,7 +1471,13 @@ function MonthEventBadge({
   VariantProps<typeof eventBadgeVariants>,
   "color" | "multiDayPosition"
 >) {
-  const { badgeVariant, onEventClick } = useEventCalendar();
+  const {
+    badgeVariant,
+    onEventClick,
+    onEventView,
+    onEventUpdate,
+    onEventDelete,
+  } = useEventCalendar();
 
   const itemStart = startOfDay(parseISO(event.startDate));
   const itemEnd = endOfDay(parseISO(event.endDate));
@@ -1448,7 +1517,9 @@ function MonthEventBadge({
     }
   };
 
-  return (
+  const hasContextMenu = onEventView || onEventUpdate || onEventDelete;
+
+  const badgeContent = (
     <DraggableEvent event={event} segmentId={segmentId}>
       <div
         role="button"
@@ -1487,6 +1558,39 @@ function MonthEventBadge({
         )}
       </div>
     </DraggableEvent>
+  );
+
+  if (!hasContextMenu) {
+    return badgeContent;
+  }
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>{badgeContent}</ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        {onEventView && (
+          <ContextMenuItem onClick={() => onEventView(event)}>
+            View Details
+          </ContextMenuItem>
+        )}
+        {onEventUpdate && (
+          <ContextMenuItem onClick={() => onEventUpdate(event)}>
+            Edit Details
+          </ContextMenuItem>
+        )}
+        {(onEventView || onEventUpdate) && onEventDelete && (
+          <ContextMenuSeparator />
+        )}
+        {onEventDelete && (
+          <ContextMenuItem
+            variant="destructive"
+            onClick={() => onEventDelete(event)}
+          >
+            Delete Event
+          </ContextMenuItem>
+        )}
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
 
@@ -1759,7 +1863,13 @@ function EventBlock({
   segmentId: string;
 } & (HTMLAttributes<HTMLDivElement> &
   Omit<VariantProps<typeof calendarWeekEventCardVariants>, "color">)) {
-  const { badgeVariant, onEventClick } = useEventCalendar();
+  const {
+    badgeVariant,
+    onEventClick,
+    onEventView,
+    onEventUpdate,
+    onEventDelete,
+  } = useEventCalendar();
 
   const start = parseISO(event.startDate);
   const end = parseISO(event.endDate);
@@ -1782,7 +1892,9 @@ function EventBlock({
     }
   };
 
-  return (
+  const hasContextMenu = onEventView || onEventUpdate || onEventDelete;
+
+  const blockContent = (
     <DraggableEvent event={event} segmentId={segmentId}>
       <div
         role="button"
@@ -1814,6 +1926,39 @@ function EventBlock({
         )}
       </div>
     </DraggableEvent>
+  );
+
+  if (!hasContextMenu) {
+    return blockContent;
+  }
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>{blockContent}</ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        {onEventView && (
+          <ContextMenuItem onClick={() => onEventView(event)}>
+            View Details
+          </ContextMenuItem>
+        )}
+        {onEventUpdate && (
+          <ContextMenuItem onClick={() => onEventUpdate(event)}>
+            Edit Details
+          </ContextMenuItem>
+        )}
+        {(onEventView || onEventUpdate) && onEventDelete && (
+          <ContextMenuSeparator />
+        )}
+        {onEventDelete && (
+          <ContextMenuItem
+            variant="destructive"
+            onClick={() => onEventDelete(event)}
+          >
+            Delete Event
+          </ContextMenuItem>
+        )}
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
 
@@ -2359,7 +2504,7 @@ export function EventCalendarDayView() {
           </div>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-290px)]" type="always">
+        <ScrollArea className="h-[calc(100vh-295px)]" type="always">
           <div className="flex">
             {/* Hours column */}
             <div className="relative w-18">

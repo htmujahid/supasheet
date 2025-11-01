@@ -32,11 +32,9 @@ import {
   KanbanOverlay,
 } from "@/components/ui/kanban";
 import {
-  ColumnSchema,
   DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
-  ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
@@ -60,7 +58,6 @@ export function ResourceKanbanView({
   const resource = tableSchema.name as DatabaseTables<DatabaseSchemas>;
 
   const [columns, setColumns] = useState<KanbanViewReducedData>(data);
-  const { permissions, setResourceAction } = useResourceContext();
 
   const buildId = useCallback((item: KanbanViewData) => {
     return Object.values(item).join("/");
@@ -139,90 +136,36 @@ export function ResourceKanbanView({
               </div>
               <div className="flex flex-col gap-2 overflow-y-auto p-0.5">
                 {tasks.map((task) => (
-                  <ContextMenu key={buildId(task)}>
-                    <ContextMenuTrigger asChild>
-                      <KanbanItem value={buildId(task)} asHandle asChild>
-                        <div className="bg-card rounded-md border p-3 shadow-xs">
-                          <div className="flex flex-col gap-2">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="line-clamp-1 text-sm font-medium">
-                                {task.title}
-                              </span>
-                              <Badge className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize">
-                                {task.badge}
-                              </Badge>
-                            </div>
-                            <div className="text-muted-foreground flex items-center justify-between text-xs">
-                              {task.description && (
-                                <div className="flex items-center gap-1">
-                                  <span className="line-clamp-1">
-                                    {task.description}
-                                  </span>
-                                </div>
-                              )}
-                              {task.date && (
-                                <time className="text-[10px] tabular-nums">
-                                  {task.date}
-                                </time>
-                              )}
-                            </div>
+                  <KanbanContextMenu key={buildId(task)} task={task}>
+                    <KanbanItem value={buildId(task)} asHandle asChild>
+                      <div className="bg-card rounded-md border p-3 shadow-xs">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="line-clamp-1 text-sm font-medium">
+                              {task.title}
+                            </span>
+                            <Badge className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize">
+                              {task.badge}
+                            </Badge>
+                          </div>
+                          <div className="text-muted-foreground flex items-center justify-between text-xs">
+                            {task.description && (
+                              <div className="flex items-center gap-1">
+                                <span className="line-clamp-1">
+                                  {task.description}
+                                </span>
+                              </div>
+                            )}
+                            {task.date && (
+                              <time className="text-[10px] tabular-nums">
+                                {task.date}
+                              </time>
+                            )}
                           </div>
                         </div>
-                      </KanbanItem>
-                    </ContextMenuTrigger>
-                    <ContextMenuContent className="w-52">
-                      <ContextMenuItem
-                        onClick={() =>
-                          navigator.clipboard.writeText(
-                            JSON.stringify(task, null, 2),
-                          )
-                        }
-                      >
-                        <Copy className="size-4" />
-                        Copy
-                      </ContextMenuItem>
-                      <ContextMenuSeparator />
-                      <ContextMenuItem
-                        onClick={() =>
-                          setResourceAction({
-                            variant: "view",
-                            data: task.data,
-                          })
-                        }
-                      >
-                        <Eye className="size-4" />
-                        View Details
-                      </ContextMenuItem>
-                      <If condition={permissions?.canUpdate}>
-                        <ContextMenuItem
-                          onClick={() =>
-                            setResourceAction({
-                              variant: "update",
-                              data: task.data,
-                            })
-                          }
-                        >
-                          <Pencil className="size-4" />
-                          Edit
-                        </ContextMenuItem>
-                      </If>
-                      <If condition={permissions?.canDelete}>
-                        <ContextMenuSeparator />
-                        <ContextMenuItem
-                          variant="destructive"
-                          onClick={() =>
-                            setResourceAction({
-                              variant: "delete",
-                              data: task.data,
-                            })
-                          }
-                        >
-                          <Trash className="size-4" />
-                          Delete
-                        </ContextMenuItem>
-                      </If>
-                    </ContextMenuContent>
-                  </ContextMenu>
+                      </div>
+                    </KanbanItem>
+                  </KanbanContextMenu>
                 ))}
               </div>
             </KanbanColumn>
@@ -233,5 +176,62 @@ export function ResourceKanbanView({
         </KanbanOverlay>
       </Kanban>
     </div>
+  );
+}
+
+function KanbanContextMenu({
+  children,
+  task,
+}: {
+  children: React.ReactNode;
+  task: KanbanViewData;
+}) {
+  const { permissions, setResourceAction } = useResourceContext();
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        <ContextMenuItem
+          onClick={() =>
+            setResourceAction({
+              variant: "view",
+              data: task.data,
+            })
+          }
+        >
+          <Eye className="size-4" />
+          View Details
+        </ContextMenuItem>
+        <If condition={permissions?.canUpdate}>
+          <ContextMenuItem
+            onClick={() =>
+              setResourceAction({
+                variant: "update",
+                data: task.data,
+              })
+            }
+          >
+            <Pencil className="size-4" />
+            Edit Details
+          </ContextMenuItem>
+        </If>
+        <If condition={permissions?.canDelete}>
+          <ContextMenuSeparator />
+          <ContextMenuItem
+            variant="destructive"
+            onClick={() =>
+              setResourceAction({
+                variant: "delete",
+                data: task.data,
+              })
+            }
+          >
+            <Trash className="size-4" />
+            Delete Item
+          </ContextMenuItem>
+        </If>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }

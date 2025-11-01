@@ -20,7 +20,7 @@ export default function KanbanLoading() {
       </div>
 
       <div className="px-4 py-2">
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex h-[calc(100vh-114px)] gap-4 overflow-x-auto pb-4">
           {[1, 2, 3, 4].map((column) => (
             <div
               key={column}

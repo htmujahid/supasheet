@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import type { Table, TableMeta } from "@tanstack/react-table";
-import { CopyIcon, Trash2Icon } from "lucide-react";
+import { CopyIcon, EditIcon, EyeIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -245,7 +245,7 @@ function ContextMenuImpl<TData>({
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onSelect={onDelete}>
               <Trash2Icon />
-              Delete rows
+              Delete Row
             </DropdownMenuItem>
           </>
         )}

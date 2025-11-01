@@ -44,7 +44,7 @@ export function ResourceCalendarView({
   const resource = tableSchema.name as DatabaseTables<DatabaseSchemas>;
 
   const router = useRouter();
-  const { setResourceAction } = useResourceContext();
+  const { setResourceAction, permissions } = useResourceContext();
 
   function onAddEvent(event: {
     startDate: Date;
@@ -108,9 +108,27 @@ export function ResourceCalendarView({
         }}
         onAddEvent={onAddEvent}
         onDragEvent={onDragEvent}
-        onEventClick={(event) => {
-          setResourceAction({ variant: "view", data: event.data });
-        }}
+        onEventView={
+          permissions.canSelect
+            ? (event) => {
+                setResourceAction({ variant: "view", data: event.data });
+              }
+            : undefined
+        }
+        onEventUpdate={
+          permissions.canUpdate
+            ? (event) => {
+                setResourceAction({ variant: "update", data: event.data });
+              }
+            : undefined
+        }
+        onEventDelete={
+          permissions.canDelete
+            ? (event) => {
+                setResourceAction({ variant: "delete", data: event.data });
+              }
+            : undefined
+        }
       >
         <EventCalendarHeader />
         <EventCalendarContainer>

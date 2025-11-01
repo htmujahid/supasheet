@@ -3,7 +3,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { getColumnMetadata } from "@/features/resource/lib/columns";
 import {
   ColumnSchema,
-  PrimaryKey,
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";

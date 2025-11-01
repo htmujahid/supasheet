@@ -143,7 +143,7 @@ export const ResourceRowCell = memo(function ResourceRowCell({
           <If condition={permissions.canUpdate}>
             <ContextMenuItem onClick={handleEdit}>
               <EditIcon className="size-4" />
-              Edit Row
+              Edit Details
             </ContextMenuItem>
           </If>
           <If condition={permissions.canDelete}>
