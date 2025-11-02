@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
+import { If } from "@/components/makerkit/if";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import { ResourceKanbanView } from "@/features/resource/components/resource-kanban";
+import { ResourceSheet } from "@/features/resource/components/resource-sheet";
 import {
   loadColumnsSchema,
   loadResourceData,
@@ -14,7 +16,6 @@ import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import {
   DatabaseSchemas,
   DatabaseTables,
-  PrimaryKey,
   TableMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
@@ -68,8 +69,6 @@ export default async function Page(props: {
   const badgeFieldName = currentView.badge as string;
   const dateFieldName = currentView.date as string;
 
-  const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
-
   if (
     !groupFieldName ||
     !titleFieldName ||
@@ -106,7 +105,17 @@ export default async function Page(props: {
           { title: formatTitle(resource), url: ".." },
           { title: formatTitle(id) },
         ]}
-      />
+      >
+        <If condition={permissions.canInsert}>
+          <ResourceSheet
+            tableSchema={tableSchema}
+            columnsSchema={columnsSchema}
+            data={null}
+            create={true}
+            showTrigger={true}
+          />
+        </If>
+      </DefaultHeader>
       <div className="px-4 py-2">
         <ResourceContextProvider
           permissions={permissions}

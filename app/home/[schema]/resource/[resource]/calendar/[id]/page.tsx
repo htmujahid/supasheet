@@ -3,9 +3,11 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
+import { If } from "@/components/makerkit/if";
 import { TCalendarView, TEventColor } from "@/components/ui/event-calendar";
 import { ResourceCalendarView } from "@/features/resource/components/resource-calendar";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
+import { ResourceSheet } from "@/features/resource/components/resource-sheet";
 import {
   loadColumnsSchema,
   loadResourceData,
@@ -122,7 +124,22 @@ async function Page(props: {
 
   return (
     <div className="w-full flex-1">
-      <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]} />
+      <DefaultHeader
+        breadcrumbs={[
+          { title: formatTitle(resource), url: ".." },
+          { title: formatTitle(id) },
+        ]}
+      >
+        <If condition={permissions.canInsert}>
+          <ResourceSheet
+            tableSchema={tableSchema}
+            columnsSchema={columnsSchema}
+            data={null}
+            create={true}
+            showTrigger={true}
+          />
+        </If>
+      </DefaultHeader>
       <div className="px-4">
         <ResourceContextProvider
           permissions={permissions}

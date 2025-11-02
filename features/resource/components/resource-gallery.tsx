@@ -97,7 +97,7 @@ export function ResourceGalleryView({
       </div>
 
       <If condition={data.length === 0}>
-        <Empty className="border min-h-[400px]">
+        <Empty className="min-h-[400px] border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <ImageIcon />

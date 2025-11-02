@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { useParams } from "next/navigation";
 
-import { Loader } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -18,6 +18,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -28,6 +29,7 @@ import {
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 import {
   createResourceDataAction,
@@ -38,6 +40,7 @@ import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
 
 interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
+  showTrigger?: boolean;
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   data: ResourceDataSchema | null;
@@ -45,6 +48,7 @@ interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
 }
 
 export function ResourceSheet({
+  showTrigger,
   tableSchema,
   columnsSchema,
   data,
@@ -164,6 +168,14 @@ export function ResourceSheet({
 
   return (
     <Sheet {...props}>
+      {showTrigger && (
+        <SheetTrigger asChild>
+          <Button variant={"outline"} size={"sm"}>
+            <Plus />
+            Create {formatTitle(tableSchema?.name as string) || "Resource"}
+          </Button>
+        </SheetTrigger>
+      )}
       <SheetContent
         side={isMobile ? "bottom" : "right"}
         className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg"

@@ -112,7 +112,7 @@ export function ResourceKanbanView({
       </div>
 
       <If condition={hasNoData}>
-        <Empty className="border min-h-[400px]">
+        <Empty className="min-h-[400px] border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <AlignStartHorizontalIcon />
@@ -127,92 +127,92 @@ export function ResourceKanbanView({
 
       <If condition={!hasNoData}>
         <Kanban
-        value={columns}
-        onValueChange={setColumns}
-        onUpdate={async function (item, _, to) {
-          const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
+          value={columns}
+          onValueChange={setColumns}
+          onUpdate={async function (item, _, to) {
+            const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
-          const pk = primaryKeys.reduce(
-            (pkAcc, pkField) => {
-              pkAcc[pkField.name] = item.data[pkField.name];
-              return pkAcc;
-            },
-            {} as Record<string, unknown>,
-          );
+            const pk = primaryKeys.reduce(
+              (pkAcc, pkField) => {
+                pkAcc[pkField.name] = item.data[pkField.name];
+                return pkAcc;
+              },
+              {} as Record<string, unknown>,
+            );
 
-          await updateResourceDataAction({
-            schema,
-            resourceName: resource,
-            resourceIds: pk,
-            data: { [groupBy]: to },
-          });
-        }}
-        orientation={layout === "list" ? "vertical" : "horizontal"}
-        getItemValue={buildId}
-      >
-        <KanbanBoard
-          className={cn("overflow-x-auto", {
-            "h-[calc(100vh-114px)]": layout === "board",
-          })}
+            await updateResourceDataAction({
+              schema,
+              resourceName: resource,
+              resourceIds: pk,
+              data: { [groupBy]: to },
+            });
+          }}
+          orientation={layout === "list" ? "vertical" : "horizontal"}
+          getItemValue={buildId}
         >
-          {Object.entries(columns).map(([columnValue, tasks]) => (
-            <KanbanColumn
-              key={columnValue}
-              value={columnValue}
-              className="min-w-xs"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold">{columnValue}</span>
-                  <Badge
-                    variant="secondary"
-                    className="pointer-events-none rounded-sm"
-                  >
-                    {tasks.length}
-                  </Badge>
+          <KanbanBoard
+            className={cn("overflow-x-auto", {
+              "h-[calc(100vh-114px)]": layout === "board",
+            })}
+          >
+            {Object.entries(columns).map(([columnValue, tasks]) => (
+              <KanbanColumn
+                key={columnValue}
+                value={columnValue}
+                className="min-w-xs"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold">{columnValue}</span>
+                    <Badge
+                      variant="secondary"
+                      className="pointer-events-none rounded-sm"
+                    >
+                      {tasks.length}
+                    </Badge>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-2 overflow-y-auto p-0.5">
-                {tasks.map((task) => (
-                  <KanbanContextMenu key={buildId(task)} task={task}>
-                    <KanbanItem value={buildId(task)} asHandle asChild>
-                      <div className="bg-card rounded-md border p-3 shadow-xs">
-                        <div className="flex flex-col gap-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="line-clamp-1 text-sm font-medium">
-                              {task.title}
-                            </span>
-                            <Badge className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize">
-                              {task.badge}
-                            </Badge>
-                          </div>
-                          <div className="text-muted-foreground flex items-center justify-between text-xs">
-                            {task.description && (
-                              <div className="flex items-center gap-1">
-                                <span className="line-clamp-1">
-                                  {task.description}
-                                </span>
-                              </div>
-                            )}
-                            {task.date && (
-                              <time className="text-[10px] tabular-nums">
-                                {task.date}
-                              </time>
-                            )}
+                <div className="flex flex-col gap-2 overflow-y-auto p-0.5">
+                  {tasks.map((task) => (
+                    <KanbanContextMenu key={buildId(task)} task={task}>
+                      <KanbanItem value={buildId(task)} asHandle asChild>
+                        <div className="bg-card rounded-md border p-3 shadow-xs">
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="line-clamp-1 text-sm font-medium">
+                                {task.title}
+                              </span>
+                              <Badge className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize">
+                                {task.badge}
+                              </Badge>
+                            </div>
+                            <div className="text-muted-foreground flex items-center justify-between text-xs">
+                              {task.description && (
+                                <div className="flex items-center gap-1">
+                                  <span className="line-clamp-1">
+                                    {task.description}
+                                  </span>
+                                </div>
+                              )}
+                              {task.date && (
+                                <time className="text-[10px] tabular-nums">
+                                  {task.date}
+                                </time>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </KanbanItem>
-                  </KanbanContextMenu>
-                ))}
-              </div>
-            </KanbanColumn>
-          ))}
-        </KanbanBoard>
-        <KanbanOverlay>
-          <div className="bg-primary/10 size-full rounded-md" />
-        </KanbanOverlay>
-      </Kanban>
+                      </KanbanItem>
+                    </KanbanContextMenu>
+                  ))}
+                </div>
+              </KanbanColumn>
+            ))}
+          </KanbanBoard>
+          <KanbanOverlay>
+            <div className="bg-primary/10 size-full rounded-md" />
+          </KanbanOverlay>
+        </Kanban>
       </If>
     </div>
   );
