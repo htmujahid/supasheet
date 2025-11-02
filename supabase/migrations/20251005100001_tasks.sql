@@ -36,7 +36,7 @@ create table tasks (
 comment on table public.tasks is 
 '{
     "icon": "ListTodo", 
-    "display": "block", 
+    "display": "block",
     "items": [
         {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"created_at","badge":"priority"},

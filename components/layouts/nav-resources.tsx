@@ -46,18 +46,18 @@ function LucideIconComponent({
   return <Icon className="size-4 shrink-0" />;
 }
 
-function SubItemsIcon({ type }: { type: string }) {
+function getSubItemsIcon({ type }: { type: string }) {
   switch (type) {
     case "kanban":
-      return <SquareKanbanIcon className="size-4 shrink-0" />;
+      return "SquareKanban"
     case "calendar":
-      return <CalendarDaysIcon className="size-4 shrink-0" />;
+      return "CalendarDays"
     case "sheet":
-      return <Grid3X3Icon className="size-4 shrink-0" />;
+      return "Grid3X3"
     case "gallery":
-      return <ImageIcon className="size-4 shrink-0" />;
+      return "Image"
   }
-  return <EyeIcon className="size-4 shrink-0" />;
+  return "Eye"
 }
 
 export function NavResources({ activeSchema }: { activeSchema: string }) {
@@ -79,61 +79,85 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
-          {resources?.map((item) => (
-            <Collapsible
-              key={item.id}
-              defaultOpen={params?.resource === item.id}
-            >
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={params?.resource === item.id}
-                >
-                  <Link href={`/home/${item.schema}/resource/${item.id}`}>
-                    <LucideIconComponent
-                      iconName={
-                        (item.meta.icon as keyof typeof LucideIcons) ||
-                        (item.type === "table" ? "Table2" : "Eye")
-                      }
-                    />
-                    <span>{formatTitle(item.name)}</span>
-                  </Link>
-                </SidebarMenuButton>
-                {item.type === "table" && item.meta?.items?.length ? (
-                  <>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuAction
-                        className="bg-sidebar-accent text-sidebar-accent-foreground left-2 data-[state=open]:rotate-90"
-                        showOnHover
-                      >
-                        <ChevronRight />
+          {resources?.map((item) => {
+            const itemType = item.meta?.items?.find((i) => i.id === item.meta.primaryItem);
+            const href = itemType
+              ? `/home/${item.schema}/resource/${item.id}/${itemType.type}/${itemType.id}`
+              : `/home/${item.schema}/resource/${item.id}`;
+
+            const icon = itemType
+              ? <LucideIconComponent
+                iconName={
+                  (item.meta.icon as keyof typeof LucideIcons) ||
+                  (getSubItemsIcon({ type: itemType.type }) as keyof typeof LucideIcons)
+                }
+              />
+              : <LucideIconComponent
+                iconName={
+                  (item.meta.icon as keyof typeof LucideIcons) ||
+                  (item.type === "table" ? "Table2" : "Eye")
+                }
+              />;
+
+            const metaItems = itemType
+              ? item.meta?.items?.filter((i) => i.id !== itemType.id)
+              : item.meta?.items;
+
+            return (
+              <Collapsible
+                key={item.id}
+                defaultOpen={params?.resource === item.id}
+              >
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={params?.resource === item.id}
+                  >
+                    <Link href={href}>
+                      {icon}
+                      <span>{formatTitle(item.name)}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  {metaItems?.length ? (
+                    <>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuAction
+                          className="bg-sidebar-accent text-sidebar-accent-foreground left-2 data-[state=open]:rotate-90"
+                          showOnHover
+                        >
+                          <ChevronRight />
+                        </SidebarMenuAction>
+                      </CollapsibleTrigger>
+                      <SidebarMenuAction showOnHover>
+                        <PlusIcon />
                       </SidebarMenuAction>
-                    </CollapsibleTrigger>
-                    <SidebarMenuAction showOnHover>
-                      <PlusIcon />
-                    </SidebarMenuAction>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.meta.items.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.id}>
-                            <SidebarMenuSubButton asChild>
-                              <Link
-                                href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}
-                                title={subItem.name}
-                              >
-                                <SubItemsIcon type={subItem.type} />
-                                <span>{subItem.name}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </>
-                ) : null}
-              </SidebarMenuItem>
-            </Collapsible>
-          ))}
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {metaItems?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.id}>
+                              <SidebarMenuSubButton asChild>
+                                <Link
+                                  href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}
+                                  title={subItem.name}
+                                >
+                                  <LucideIconComponent
+                                    iconName={
+                                      (getSubItemsIcon({ type: subItem.type }) as keyof typeof LucideIcons)
+                                    }
+                                  />
+                                  <span>{subItem.name}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </>
+                  ) : null}
+                </SidebarMenuItem>
+              </Collapsible>
+            )
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

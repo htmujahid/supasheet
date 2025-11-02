@@ -24,6 +24,9 @@ async function HomeResourcePage(props: {
   searchParams: Promise<{
     page: string;
     perPage: string;
+    filters: string;
+    sort: string;
+    joinOperator: string;
   }>;
 }) {
   const { resource, schema } = await props.params;

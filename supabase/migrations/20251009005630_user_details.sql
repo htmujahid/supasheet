@@ -22,7 +22,14 @@ create table if not exists public.user_details (
   notes text
 );
 
-comment on table public.user_details is '{"icon": "UsersRound"}';
+comment on table public.user_details is 
+'{
+  "icon": "UsersRound",
+  "primaryItem": "sheet",
+  "items": [
+    {"id":"sheet","name":"Sheet View","type":"sheet"}
+  ]
+}';
 
 -- Create indexes for common queries
 create index if not exists user_details_email_idx on public.user_details(email);

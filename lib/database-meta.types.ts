@@ -55,6 +55,7 @@ export type ViewsForSchema<TSchema extends SchemaKey> =
 export type TableMetadata = {
   display?: "block" | "none";
   icon?: string;
+  primaryItem?: string;
   items?: {
     id: string;
     name: string;
