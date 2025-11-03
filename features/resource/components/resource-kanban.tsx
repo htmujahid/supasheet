@@ -140,7 +140,7 @@ export function ResourceKanbanView({
               {} as Record<string, unknown>,
             );
 
-            await updateResourceDataAction({
+            updateResourceDataAction({
               schema,
               resourceName: resource,
               resourceIds: pk,

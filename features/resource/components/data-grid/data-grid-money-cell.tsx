@@ -18,9 +18,15 @@ interface CellVariantProps<TData> {
   isSelected: boolean;
 }
 
+function parseMoney(value: number | string): number {
+  const numValue = typeof value === "string"
+    ? parseFloat(value.replace("$", "").replaceAll(",", ""))
+    : value;
+  return isNaN(numValue) ? 0 : numValue;
+}
+
 function formatMoney(value: number | string): string {
-  const numValue = typeof value === "string" ? parseFloat(value) : value;
-  if (isNaN(numValue)) return "$0.00";
+  const numValue = parseMoney(value);
   return `$${numValue.toFixed(2)}`;
 }
 
@@ -33,16 +39,21 @@ export function DataGridMoneyCell<TData>({
   isEditing,
   isSelected,
 }: CellVariantProps<TData>) {
-  const initialValue = cell.getValue() as number;
-  const [value, setValue] = useState(String(initialValue ?? "0"));
+  const initialValue = cell.getValue() as string;
+  const [value, setValue] = useState(() => {
+    // Parse money value to number for editing
+    return String(parseMoney(initialValue ?? "$0"));
+  });
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
   const onBlur = useCallback(() => {
     const numValue = value === "" ? 0 : Number(value);
-    if (numValue !== initialValue) {
-      meta?.onDataUpdate?.({ rowIndex, columnId, value: numValue });
+    const initialNumValue = parseMoney(initialValue);
+
+    if (numValue !== initialNumValue) {
+      meta?.onDataUpdate?.({ rowIndex, columnId, value: formatMoney(numValue) });
     }
     meta?.onCellEditingStop?.();
   }, [meta, rowIndex, columnId, initialValue, value]);
@@ -57,22 +68,26 @@ export function DataGridMoneyCell<TData>({
         if (event.key === "Enter") {
           event.preventDefault();
           const numValue = value === "" ? 0 : Number(value);
-          if (numValue !== initialValue) {
-            meta?.onDataUpdate?.({ rowIndex, columnId, value: numValue });
+          const initialNumValue = parseMoney(initialValue);
+
+          if (numValue !== initialNumValue) {
+            meta?.onDataUpdate?.({ rowIndex, columnId, value: formatMoney(numValue) });
           }
           meta?.onCellEditingStop?.({ moveToNextRow: true });
         } else if (event.key === "Tab") {
           event.preventDefault();
           const numValue = value === "" ? 0 : Number(value);
-          if (numValue !== initialValue) {
-            meta?.onDataUpdate?.({ rowIndex, columnId, value: numValue });
+          const initialNumValue = parseMoney(initialValue);
+
+          if (numValue !== initialNumValue) {
+            meta?.onDataUpdate?.({ rowIndex, columnId, value: formatMoney(numValue) });
           }
           meta?.onCellEditingStop?.({
             direction: event.shiftKey ? "left" : "right",
           });
         } else if (event.key === "Escape") {
           event.preventDefault();
-          setValue(String(initialValue ?? "0"));
+          setValue(String(parseMoney(initialValue)));
           inputRef.current?.blur();
         }
       }
@@ -81,7 +96,10 @@ export function DataGridMoneyCell<TData>({
   );
 
   useEffect(() => {
-    if (!isEditing && initialValue !== Number(value)) {
+    const initialNumValue = parseMoney(initialValue);
+    const currentNumValue = Number(value);
+
+    if (!isEditing && initialNumValue !== currentNumValue) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
 
@@ -98,7 +116,7 @@ export function DataGridMoneyCell<TData>({
         schema: cellOpts?.schema as never,
         resourceName: cellOpts?.table as never,
         resourceIds,
-        data: { [columnId]: value },
+        data: { [columnId]: formatMoney(currentNumValue) },
       }).catch((error) => {
         toast.error(error.message);
       });
@@ -107,7 +125,7 @@ export function DataGridMoneyCell<TData>({
   }, [isEditing]);
 
   useEffect(() => {
-    setValue(String(initialValue ?? "0"));
+    setValue(String(parseMoney(initialValue ?? "$0")));
   }, [initialValue]);
 
   useEffect(() => {
@@ -149,7 +167,7 @@ export function DataGridMoneyCell<TData>({
           className="w-full border-none bg-transparent p-0 outline-none"
         />
       ) : (
-        <span data-slot="grid-cell-content">{formatMoney(value)}</span>
+        <span data-slot="grid-cell-content">{initialValue}</span>
       )}
     </DataGridCellWrapper>
   );

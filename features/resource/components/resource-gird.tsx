@@ -24,7 +24,7 @@ export function ResourceGrid({
   columnsSchema: ColumnSchema[] | null;
   data: Awaited<ReturnType<typeof loadResourceData>> | null;
 }) {
-  const { setResourceAction } = useResourceContext();
+  const { setResourceAction, permissions } = useResourceContext();
   const windowSize = useWindowSize({ defaultHeight: 760 });
 
   const columns = useMemo(
@@ -82,9 +82,9 @@ export function ResourceGrid({
         {...dataGridProps}
         table={table}
         height={height}
-        onRowAdd={async () => {
+        onRowAdd={permissions.canInsert ? async () => {
           setResourceAction({ variant: "create" });
-        }}
+        } : undefined}
       />
     </div>
   );

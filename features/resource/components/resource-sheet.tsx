@@ -2,9 +2,10 @@
 
 import { useTransition } from "react";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { Loader, Plus } from "lucide-react";
+import { Maximize2, Loader, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -181,12 +182,17 @@ export function ResourceSheet({
         className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg"
       >
         <SheetHeader className="text-left">
-          <SheetTitle>
+          <SheetTitle className="flex items-center gap-2">
+            <Link 
+              href={`/home/${schema}/resource/${resource}/create`} 
+              title="Create New"
+            >
+              <Maximize2 className="size-4" />
+            </Link>
             {create ? "Create" : "Update"} {resource}
           </SheetTitle>
           <SheetDescription>
             {create ? "Create a new" : "Update the"} {resource} and save the
-            changes
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>

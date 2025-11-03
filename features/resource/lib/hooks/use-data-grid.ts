@@ -112,7 +112,6 @@ interface UseDataGridProps<TData>
     | Partial<CellPosition>
     | Promise<Partial<CellPosition>>
     | null
-    // biome-ignore lint/suspicious/noConfusingVoidType: void is needed here to allow functions without explicit return
     | void;
   onRowsDelete?: (rows: TData[], rowIndices: number[]) => void | Promise<void>;
   rowHeight?: RowHeightValue;
@@ -348,9 +347,9 @@ function useDataGrid<TData>({
       selectionRange:
         columnIds.length > 0 && rowCount > 0 && firstColumnId && lastColumnId
           ? {
-              start: { rowIndex: 0, columnId: firstColumnId },
-              end: { rowIndex: rowCount - 1, columnId: lastColumnId },
-            }
+            start: { rowIndex: 0, columnId: firstColumnId },
+            end: { rowIndex: rowCount - 1, columnId: lastColumnId },
+          }
           : null,
       isSelecting: false,
     });
@@ -1197,7 +1196,7 @@ function useDataGrid<TData>({
             case "down":
               newRowIndex = Math.min(
                 (tableRef.current?.getRowModel().rows.length || data.length) -
-                  1,
+                1,
                 currentState.focusedCell.rowIndex + 1,
               );
               break;
@@ -1474,7 +1473,7 @@ function useDataGrid<TData>({
     overscan,
     measureElement:
       typeof window !== "undefined" &&
-      navigator.userAgent.indexOf("Firefox") === -1
+        navigator.userAgent.indexOf("Firefox") === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
     onChange: (instance) => {

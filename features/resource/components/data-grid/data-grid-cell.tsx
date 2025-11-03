@@ -20,6 +20,7 @@ import { DataGridRatingCell } from "./data-grid-rating-cell";
 import { DataGridTextCell } from "./data-grid-text-cell";
 import { DataGridTimeCell } from "./data-grid-time-cell";
 import { DataGridUuidCell } from "./data-grid-uuid-cell";
+import { useResourceContext } from "../resource-context";
 
 interface DataGridCellProps<TData> {
   cell: Cell<TData, unknown>;
@@ -27,6 +28,7 @@ interface DataGridCellProps<TData> {
 }
 
 export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
+  const { permissions } = useResourceContext();
   const meta = table.options.meta;
   const originalRowIndex = cell.row.index;
 
@@ -54,7 +56,11 @@ export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
     table,
     rowIndex,
     columnId,
-    isEditing: isEditing && !cellOpts?.isPrimaryKey && !cellOpts?.isMetadata,
+    isEditing: 
+      isEditing 
+      && !cellOpts?.isPrimaryKey 
+      && !cellOpts?.isMetadata 
+      && permissions.canUpdate,
     isFocused,
     isSelected,
   };

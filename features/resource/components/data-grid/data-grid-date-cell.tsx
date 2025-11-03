@@ -57,7 +57,7 @@ export function DataGridDateCell<TData>({
   const onDateSelect = useCallback(
     (date: Date | undefined) => {
       if (!date) return;
-      const formattedDate = date.toISOString().split("T")[0] ?? "";
+      const formattedDate = date.toLocaleDateString("en-CA");
       setValue(formattedDate);
       meta?.onDataUpdate?.({ rowIndex, columnId, value: formattedDate });
       setOpen(false);
