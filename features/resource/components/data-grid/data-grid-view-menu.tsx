@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useMemo } from "react";
 
 import type { Table } from "@tanstack/react-table";
 import { Check, Settings2 } from "lucide-react";
@@ -30,7 +30,7 @@ export function DataGridViewMenu<TData>({
   table,
   ...props
 }: DataGridViewMenuProps<TData>) {
-  const columns = React.useMemo(
+  const columns = useMemo(
     () =>
       table
         .getAllColumns()

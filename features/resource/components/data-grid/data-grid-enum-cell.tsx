@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -36,15 +36,15 @@ export function DataGridEnumCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue);
-  const [open, setOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue);
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
   const cellOpts = cell.column.columnDef.meta;
   const options =
     cellOpts?.variant === "select" ? (cellOpts.options ?? []) : [];
 
-  const onValueChange = React.useCallback(
+  const onValueChange = useCallback(
     (newValue: string) => {
       setValue(newValue);
       const row = cell.row.original;
@@ -74,7 +74,7 @@ export function DataGridEnumCell<TData>({
     [meta, rowIndex, columnId],
   );
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       setOpen(isOpen);
       if (!isOpen) {
@@ -84,7 +84,7 @@ export function DataGridEnumCell<TData>({
     [meta],
   );
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Escape") {
@@ -104,11 +104,11 @@ export function DataGridEnumCell<TData>({
     [isEditing, initialValue, meta],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && !open) {
       setOpen(true);
     }

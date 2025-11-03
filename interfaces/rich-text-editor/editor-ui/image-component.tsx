@@ -1,4 +1,3 @@
-import * as React from "react";
 import { JSX, Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";

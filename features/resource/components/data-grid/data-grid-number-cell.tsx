@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -28,12 +28,12 @@ export function DataGridNumberCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as number;
-  const [value, setValue] = React.useState(String(initialValue ?? ""));
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(String(initialValue ?? ""));
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
-  const onBlur = React.useCallback(() => {
+  const onBlur = useCallback(() => {
     const numValue = value === "" ? null : Number(value);
     if (numValue !== initialValue) {
       meta?.onDataUpdate?.({ rowIndex, columnId, value: numValue });
@@ -41,14 +41,11 @@ export function DataGridNumberCell<TData>({
     meta?.onCellEditingStop?.();
   }, [meta, rowIndex, columnId, initialValue, value]);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(event.target.value);
-    },
-    [],
-  );
+  const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  }, []);
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Enter") {
@@ -85,11 +82,11 @@ export function DataGridNumberCell<TData>({
     [isEditing, isFocused, initialValue, meta, rowIndex, columnId, value],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(String(initialValue ?? ""));
   }, [initialValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditing && initialValue !== Number(value)) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
@@ -115,7 +112,7 @@ export function DataGridNumberCell<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
       inputRef.current.select();

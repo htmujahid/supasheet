@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import {
-  ChevronRight,
-  type LucideIcon,
-  PlusIcon,
-} from "lucide-react";
+import { ChevronRight, type LucideIcon, PlusIcon } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 
 import {
@@ -44,15 +40,15 @@ function LucideIconComponent({
 function getSubItemsIcon({ type }: { type: string }) {
   switch (type) {
     case "kanban":
-      return "SquareKanban"
+      return "SquareKanban";
     case "calendar":
-      return "CalendarDays"
+      return "CalendarDays";
     case "sheet":
-      return "Grid3X3"
+      return "Grid3X3";
     case "gallery":
-      return "Image"
+      return "Image";
   }
-  return "Eye"
+  return "Eye";
 }
 
 export function NavResources({ activeSchema }: { activeSchema: string }) {
@@ -75,24 +71,30 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
               </SidebarMenuItem>
             ))}
           {resources?.map((item) => {
-            const itemType = item.meta?.items?.find((i) => i.id === item.meta.primaryItem);
+            const itemType = item.meta?.items?.find(
+              (i) => i.id === item.meta.primaryItem,
+            );
             const href = itemType
               ? `/home/${item.schema}/resource/${item.id}/${itemType.type}/${itemType.id}`
               : `/home/${item.schema}/resource/${item.id}`;
 
-            const icon = itemType
-              ? <LucideIconComponent
+            const icon = itemType ? (
+              <LucideIconComponent
                 iconName={
                   (item.meta.icon as keyof typeof LucideIcons) ||
-                  (getSubItemsIcon({ type: itemType.type }) as keyof typeof LucideIcons)
+                  (getSubItemsIcon({
+                    type: itemType.type,
+                  }) as keyof typeof LucideIcons)
                 }
               />
-              : <LucideIconComponent
+            ) : (
+              <LucideIconComponent
                 iconName={
                   (item.meta.icon as keyof typeof LucideIcons) ||
                   (item.type === "table" ? "Table2" : "Eye")
                 }
-              />;
+              />
+            );
 
             const metaItems = itemType
               ? item.meta?.items?.filter((i) => i.id !== itemType.id)
@@ -137,7 +139,9 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                                 >
                                   <LucideIconComponent
                                     iconName={
-                                      (getSubItemsIcon({ type: subItem.type }) as keyof typeof LucideIcons)
+                                      getSubItemsIcon({
+                                        type: subItem.type,
+                                      }) as keyof typeof LucideIcons
                                     }
                                   />
                                   <span>{subItem.name}</span>
@@ -151,7 +155,7 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                   ) : null}
                 </SidebarMenuItem>
               </Collapsible>
-            )
+            );
           })}
         </SidebarMenu>
       </SidebarGroupContent>

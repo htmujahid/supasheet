@@ -1,5 +1,4 @@
-import * as React from "react";
-import { JSX, Suspense } from "react";
+import { JSX, Suspense, lazy } from "react";
 
 import type {
   DOMConversionMap,
@@ -17,7 +16,7 @@ import { $applyNodeReplacement, DecoratorNode, createEditor } from "lexical";
 
 import { IMAGE_MAX_WIDTH } from "@/interfaces/rich-text-editor/plugins/images-plugin";
 
-const ImageComponent = React.lazy(() => import("../editor-ui/image-component"));
+const ImageComponent = lazy(() => import("../editor-ui/image-component"));
 
 export interface ImagePayload {
   altText: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useRef } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 
@@ -27,7 +27,7 @@ export function DataGridFileCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string | string[];
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   return (
     <DataGridCellWrapper
       ref={containerRef}

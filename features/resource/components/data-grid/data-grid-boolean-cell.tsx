@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -29,11 +29,11 @@ export function DataGridCheckboxCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as boolean;
-  const [value, setValue] = React.useState(Boolean(initialValue));
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(Boolean(initialValue));
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
-  const onCheckedChange = React.useCallback(
+  const onCheckedChange = useCallback(
     (checked: boolean) => {
       setValue(checked);
       const row = cell.row.original;
@@ -62,7 +62,7 @@ export function DataGridCheckboxCell<TData>({
     [meta, rowIndex, columnId],
   );
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isFocused && (event.key === " " || event.key === "Enter")) {
         event.preventDefault();
@@ -73,11 +73,11 @@ export function DataGridCheckboxCell<TData>({
     [isFocused, value, onCheckedChange],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(Boolean(initialValue));
   }, [initialValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       isFocused &&
       !meta?.searchOpen &&
@@ -88,7 +88,7 @@ export function DataGridCheckboxCell<TData>({
     }
   }, [isFocused, meta?.searchOpen, meta?.isScrolling]);
 
-  const onWrapperClick = React.useCallback(
+  const onWrapperClick = useCallback(
     (event: React.MouseEvent) => {
       if (isFocused) {
         event.preventDefault();
@@ -99,18 +99,18 @@ export function DataGridCheckboxCell<TData>({
     [isFocused, value, onCheckedChange],
   );
 
-  const onCheckboxClick = React.useCallback((event: React.MouseEvent) => {
+  const onCheckboxClick = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
   }, []);
 
-  const onCheckboxMouseDown = React.useCallback(
+  const onCheckboxMouseDown = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
     },
     [],
   );
 
-  const onCheckboxDoubleClick = React.useCallback(
+  const onCheckboxDoubleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
     },

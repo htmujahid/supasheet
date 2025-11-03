@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo } from "react";
 
 import { type Row, flexRender } from "@tanstack/react-table";
 import type { Virtualizer } from "@tanstack/react-virtual";
@@ -21,7 +21,7 @@ interface DataGridRowProps<TData> extends React.ComponentProps<"div"> {
   focusedCell: CellPosition | null;
 }
 
-export const DataGridRow = React.memo(DataGridRowImpl, (prev, next) => {
+export const DataGridRow = memo(DataGridRowImpl, (prev, next) => {
   if (prev.row.id !== next.row.id) {
     return false;
   }

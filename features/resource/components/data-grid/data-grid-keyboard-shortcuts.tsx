@@ -1,6 +1,14 @@
 "use client";
 
-import * as React from "react";
+import {
+  Fragment,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { SearchIcon, XIcon } from "lucide-react";
 
@@ -31,7 +39,7 @@ interface DataGridKeyboardShortcutsProps {
   enableSearch?: boolean;
 }
 
-export const DataGridKeyboardShortcuts = React.memo(
+export const DataGridKeyboardShortcuts = memo(
   DataGridKeyboardShortcutsImpl,
   (prev, next) => {
     return prev.enableSearch === next.enableSearch;
@@ -41,9 +49,9 @@ export const DataGridKeyboardShortcuts = React.memo(
 function DataGridKeyboardShortcutsImpl({
   enableSearch = false,
 }: DataGridKeyboardShortcutsProps) {
-  const [open, setOpen] = React.useState(false);
-  const [input, setInput] = React.useState("");
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const isMac =
     typeof navigator !== "undefined"
@@ -52,26 +60,26 @@ function DataGridKeyboardShortcutsImpl({
 
   const modKey = isMac ? "⌘" : "Ctrl";
 
-  const onOpenChange = React.useCallback((isOpen: boolean) => {
+  const onOpenChange = useCallback((isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
       setInput("");
     }
   }, []);
 
-  const onOpenAutoFocus = React.useCallback((event: Event) => {
+  const onOpenAutoFocus = useCallback((event: Event) => {
     event.preventDefault();
     inputRef.current?.focus();
   }, []);
 
-  const onInputChange = React.useCallback(
+  const onInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setInput(event.target.value);
     },
     [],
   );
 
-  const shortcutGroups: ShortcutGroup[] = React.useMemo(
+  const shortcutGroups: ShortcutGroup[] = useMemo(
     () => [
       {
         title: "Navigation",
@@ -215,7 +223,7 @@ function DataGridKeyboardShortcutsImpl({
     [modKey, enableSearch],
   );
 
-  const filteredGroups = React.useMemo(() => {
+  const filteredGroups = useMemo(() => {
     if (!input.trim()) return shortcutGroups;
 
     const query = input.toLowerCase();
@@ -231,7 +239,7 @@ function DataGridKeyboardShortcutsImpl({
       .filter((group) => group.shortcuts.length > 0);
   }, [shortcutGroups, input]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key === SHORTCUT_KEY) {
         event.preventDefault();
@@ -327,12 +335,12 @@ function ShortcutCard({
       <span className="flex-1 text-sm">{description}</span>
       <KbdGroup className="shrink-0">
         {keys.map((key, index) => (
-          <React.Fragment key={key}>
+          <Fragment key={key}>
             {index > 0 && (
               <span className="text-muted-foreground text-xs">+</span>
             )}
             <Kbd>{key}</Kbd>
-          </React.Fragment>
+          </Fragment>
         ))}
       </KbdGroup>
     </div>

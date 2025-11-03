@@ -1,6 +1,17 @@
 "use client";
 
-import * as React from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import { Slot } from "@radix-ui/react-slot";
 import { Star } from "lucide-react";
@@ -73,7 +84,7 @@ function focusFirst(
 }
 
 function useLazyRef<T>(fn: () => T) {
-  const ref = React.useRef<T | null>(null);
+  const ref = useRef<T | null>(null);
 
   if (ref.current === null) {
     ref.current = fn();
@@ -83,7 +94,7 @@ function useLazyRef<T>(fn: () => T) {
 }
 
 const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 type Direction = "ltr" | "rtl";
 type Orientation = "horizontal" | "vertical";
@@ -92,10 +103,10 @@ type Size = "default" | "sm" | "lg";
 type Step = 0.5 | 1;
 type DataState = "full" | "partial" | "empty";
 
-const DirectionContext = React.createContext<Direction | undefined>(undefined);
+const DirectionContext = createContext<Direction | undefined>(undefined);
 
 function useDirection(dirProp?: Direction): Direction {
-  const contextDir = React.useContext(DirectionContext);
+  const contextDir = useContext(DirectionContext);
   return dirProp ?? contextDir ?? "ltr";
 }
 
@@ -158,10 +169,10 @@ function createStore(
   return store;
 }
 
-const StoreContext = React.createContext<Store | null>(null);
+const StoreContext = createContext<Store | null>(null);
 
 function useStoreContext(consumerName: string) {
-  const context = React.useContext(StoreContext);
+  const context = useContext(StoreContext);
   if (!context) {
     throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``);
   }
@@ -171,12 +182,12 @@ function useStoreContext(consumerName: string) {
 function useStore<T>(selector: (state: StoreState) => T): T {
   const store = useStoreContext("useStore");
 
-  const getSnapshot = React.useCallback(
+  const getSnapshot = useCallback(
     () => selector(store.getState()),
     [store, selector],
   );
 
-  return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
+  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
 
 interface ItemData {
@@ -200,10 +211,10 @@ interface RatingContextValue {
   getAutoIndex: (instanceId: string) => number;
 }
 
-const RatingContext = React.createContext<RatingContextValue | null>(null);
+const RatingContext = createContext<RatingContextValue | null>(null);
 
 function useRatingContext(consumerName: string) {
-  const context = React.useContext(RatingContext);
+  const context = useContext(RatingContext);
   if (!context) {
     throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``);
   }
@@ -221,10 +232,10 @@ interface FocusContextValue {
   getItems: () => ItemData[];
 }
 
-const FocusContext = React.createContext<FocusContextValue | null>(null);
+const FocusContext = createContext<FocusContextValue | null>(null);
 
 function useFocusContext(consumerName: string) {
-  const context = React.useContext(FocusContext);
+  const context = useContext(FocusContext);
   if (!context) {
     throw new Error(
       `\`${consumerName}\` must be used within \`FocusProvider\``,
@@ -267,7 +278,7 @@ function RatingRoot(props: RatingRootProps) {
   }));
   const listenersRef = useLazyRef(() => new Set<() => void>());
 
-  const store = React.useMemo(
+  const store = useMemo(
     () => createStore(listenersRef, stateRef, onValueChange, onHover),
     [listenersRef, stateRef, onValueChange, onHover],
   );
@@ -312,27 +323,25 @@ function RatingRootImpl(props: RatingRootImplProps) {
   }, [value]);
 
   const dir = useDirection(dirProp);
-  const id = React.useId();
+  const id = useId();
   const rootId = idProp ?? id;
   const currentValue = useStore((state) => state.value);
 
-  const [formTrigger, setFormTrigger] = React.useState<HTMLDivElement | null>(
-    null,
-  );
+  const [formTrigger, setFormTrigger] = useState<HTMLDivElement | null>(null);
   const composedRef = useComposedRefs(ref, (node) => setFormTrigger(node));
 
   const isFormControl = formTrigger ? !!formTrigger.closest("form") : true;
 
-  const [tabStopId, setTabStopId] = React.useState<string | null>(null);
-  const [isTabbingBackOut, setIsTabbingBackOut] = React.useState(false);
-  const [focusableItemCount, setFocusableItemCount] = React.useState(0);
-  const isClickFocusRef = React.useRef(false);
-  const itemsRef = React.useRef<Map<string, ItemData>>(new Map());
+  const [tabStopId, setTabStopId] = useState<string | null>(null);
+  const [isTabbingBackOut, setIsTabbingBackOut] = useState(false);
+  const [focusableItemCount, setFocusableItemCount] = useState(0);
+  const isClickFocusRef = useRef(false);
+  const itemsRef = useRef<Map<string, ItemData>>(new Map());
 
-  const autoIndexMapRef = React.useRef(new Map<string, number>());
-  const nextAutoIndexRef = React.useRef(0);
+  const autoIndexMapRef = useRef(new Map<string, number>());
+  const nextAutoIndexRef = useRef(0);
 
-  const getAutoIndex = React.useCallback((instanceId: string) => {
+  const getAutoIndex = useCallback((instanceId: string) => {
     const existingIndex = autoIndexMapRef.current.get(instanceId);
     if (existingIndex !== undefined) {
       return existingIndex;
@@ -343,31 +352,31 @@ function RatingRootImpl(props: RatingRootImplProps) {
     return newIndex;
   }, []);
 
-  const onItemFocus = React.useCallback((tabStopId: string) => {
+  const onItemFocus = useCallback((tabStopId: string) => {
     setTabStopId(tabStopId);
   }, []);
 
-  const onItemShiftTab = React.useCallback(() => {
+  const onItemShiftTab = useCallback(() => {
     setIsTabbingBackOut(true);
   }, []);
 
-  const onFocusableItemAdd = React.useCallback(() => {
+  const onFocusableItemAdd = useCallback(() => {
     setFocusableItemCount((prevCount) => prevCount + 1);
   }, []);
 
-  const onFocusableItemRemove = React.useCallback(() => {
+  const onFocusableItemRemove = useCallback(() => {
     setFocusableItemCount((prevCount) => prevCount - 1);
   }, []);
 
-  const onItemRegister = React.useCallback((item: ItemData) => {
+  const onItemRegister = useCallback((item: ItemData) => {
     itemsRef.current.set(item.id, item);
   }, []);
 
-  const onItemUnregister = React.useCallback((id: string) => {
+  const onItemUnregister = useCallback((id: string) => {
     itemsRef.current.delete(id);
   }, []);
 
-  const getItems = React.useCallback(() => {
+  const getItems = useCallback(() => {
     return Array.from(itemsRef.current.values())
       .filter((item) => item.ref.current)
       .sort((a, b) => {
@@ -385,7 +394,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
       });
   }, []);
 
-  const onBlur = React.useCallback(
+  const onBlur = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       rootProps.onBlur?.(event);
       if (event.defaultPrevented) return;
@@ -396,7 +405,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
     [rootProps.onBlur],
   );
 
-  const onFocus = React.useCallback(
+  const onFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       rootProps.onFocus?.(event);
       if (event.defaultPrevented) return;
@@ -432,7 +441,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
     [rootProps.onFocus, isTabbingBackOut, currentValue, tabStopId],
   );
 
-  const onMouseDown = React.useCallback(
+  const onMouseDown = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       rootProps.onMouseDown?.(event);
 
@@ -444,7 +453,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
     [rootProps.onMouseDown],
   );
 
-  const contextValue = React.useMemo<RatingContextValue>(
+  const contextValue = useMemo<RatingContextValue>(
     () => ({
       id: rootId,
       dir,
@@ -473,7 +482,7 @@ function RatingRootImpl(props: RatingRootImplProps) {
     ],
   );
 
-  const focusContextValue = React.useMemo<FocusContextValue>(
+  const focusContextValue = useMemo<FocusContextValue>(
     () => ({
       tabStopId,
       onItemFocus,
@@ -568,14 +577,14 @@ function RatingItem(props: RatingItemProps) {
   const { index, asChild, disabled, className, ref, children, ...itemProps } =
     props;
 
-  const itemRef = React.useRef<ItemElement>(null);
+  const itemRef = useRef<ItemElement>(null);
   const composedRef = useComposedRefs(ref, itemRef);
 
   const context = useRatingContext(ITEM_NAME);
 
-  const instanceId = React.useId();
+  const instanceId = useId();
 
-  const actualIndex = React.useMemo(() => {
+  const actualIndex = useMemo(() => {
     if (index !== undefined) {
       return index;
     }
@@ -603,7 +612,7 @@ function RatingItem(props: RatingItemProps) {
     step < 1 && displayValue >= itemValue - step && displayValue < itemValue;
   const isHovered = hoveredValue !== null && hoveredValue < itemValue;
 
-  const isMouseClickRef = React.useRef(false);
+  const isMouseClickRef = useRef(false);
 
   useIsomorphicLayoutEffect(() => {
     focusContext.onItemRegister({
@@ -625,7 +634,7 @@ function RatingItem(props: RatingItemProps) {
     };
   }, [focusContext, itemId, itemValue, isDisabled]);
 
-  const onClick = React.useCallback(
+  const onClick = useCallback(
     (event: React.MouseEvent<ItemElement>) => {
       itemProps.onClick?.(event);
       if (event.defaultPrevented) return;
@@ -670,7 +679,7 @@ function RatingItem(props: RatingItemProps) {
     ],
   );
 
-  const onMouseEnter = React.useCallback(
+  const onMouseEnter = useCallback(
     (event: React.MouseEvent<ItemElement>) => {
       itemProps.onMouseEnter?.(event);
       if (event.defaultPrevented) return;
@@ -709,7 +718,7 @@ function RatingItem(props: RatingItemProps) {
     ],
   );
 
-  const onMouseMove = React.useCallback(
+  const onMouseMove = useCallback(
     (event: React.MouseEvent<ItemElement>) => {
       itemProps.onMouseMove?.(event);
       if (event.defaultPrevented) return;
@@ -741,7 +750,7 @@ function RatingItem(props: RatingItemProps) {
     ],
   );
 
-  const onMouseLeave = React.useCallback(
+  const onMouseLeave = useCallback(
     (event: React.MouseEvent<ItemElement>) => {
       itemProps.onMouseLeave?.(event);
       if (event.defaultPrevented) return;
@@ -754,7 +763,7 @@ function RatingItem(props: RatingItemProps) {
     [isDisabled, isReadOnly, store, itemProps.onMouseLeave],
   );
 
-  const onFocus = React.useCallback(
+  const onFocus = useCallback(
     (event: React.FocusEvent<ItemElement>) => {
       itemProps.onFocus?.(event);
       if (event.defaultPrevented) return;
@@ -790,7 +799,7 @@ function RatingItem(props: RatingItemProps) {
     ],
   );
 
-  const onKeyDown = React.useCallback(
+  const onKeyDown = useCallback(
     (event: React.KeyboardEvent<ItemElement>) => {
       itemProps.onKeyDown?.(event);
       if (event.defaultPrevented) return;
@@ -852,7 +861,7 @@ function RatingItem(props: RatingItemProps) {
     ],
   );
 
-  const onMouseDown = React.useCallback(
+  const onMouseDown = useCallback(
     (event: React.MouseEvent<ItemElement>) => {
       itemProps.onMouseDown?.(event);
       if (event.defaultPrevented) return;

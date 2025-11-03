@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useMemo } from "react";
 
 import type { Column, Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
@@ -26,12 +26,12 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => table.getAllColumns().filter((column) => column.getCanFilter()),
     [table],
   );
 
-  const onReset = React.useCallback(() => {
+  const onReset = useCallback(() => {
     table.resetColumnFilters();
   }, [table]);
 
@@ -79,7 +79,7 @@ function DataTableToolbarFilter<TData>({
   {
     const columnMeta = column.columnDef.meta;
 
-    const onFilterRender = React.useCallback(() => {
+    const onFilterRender = useCallback(() => {
       if (!columnMeta?.filterVariant) return null;
 
       switch (columnMeta.filterVariant) {

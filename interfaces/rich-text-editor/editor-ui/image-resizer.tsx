@@ -1,4 +1,3 @@
-import * as React from "react";
 import { JSX, useRef } from "react";
 
 import { calculateZoomLevel } from "@lexical/utils";

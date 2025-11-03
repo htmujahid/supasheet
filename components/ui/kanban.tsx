@@ -1,6 +1,15 @@
 "use client";
 
-import * as React from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import * as ReactDOM from "react-dom";
 
@@ -171,12 +180,10 @@ interface KanbanContextValue<T> {
   flatCursor: boolean;
 }
 
-const KanbanContext = React.createContext<KanbanContextValue<unknown> | null>(
-  null,
-);
+const KanbanContext = createContext<KanbanContextValue<unknown> | null>(null);
 
 function useKanbanContext(consumerName: string) {
-  const context = React.useContext(KanbanContext);
+  const context = useContext(KanbanContext);
   if (!context) {
     throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``);
   }
@@ -219,10 +226,10 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     ...kanbanProps
   } = props;
 
-  const id = React.useId();
-  const [activeId, setActiveId] = React.useState<UniqueIdentifier | null>(null);
-  const lastOverIdRef = React.useRef<UniqueIdentifier | null>(null);
-  const hasMovedRef = React.useRef(false);
+  const id = useId();
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const lastOverIdRef = useRef<UniqueIdentifier | null>(null);
+  const hasMovedRef = useRef(false);
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor),
@@ -231,7 +238,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     }),
   );
 
-  const getItemValue = React.useCallback(
+  const getItemValue = useCallback(
     (item: T): UniqueIdentifier => {
       if (typeof item === "object" && !getItemValueProp) {
         throw new Error("getItemValue is required when using array of objects");
@@ -243,7 +250,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [getItemValueProp],
   );
 
-  const getColumn = React.useCallback(
+  const getColumn = useCallback(
     (id: UniqueIdentifier) => {
       if (id in value) return id;
 
@@ -258,7 +265,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [value, getItemValue],
   );
 
-  const collisionDetection: CollisionDetection = React.useCallback(
+  const collisionDetection: CollisionDetection = useCallback(
     (args) => {
       if (activeId && activeId in value) {
         return closestCenter({
@@ -309,7 +316,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [activeId, value, getItemValue],
   );
 
-  const onDragStart = React.useCallback(
+  const onDragStart = useCallback(
     (event: DragStartEvent) => {
       kanbanProps.onDragStart?.(event);
 
@@ -320,7 +327,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [kanbanProps.onDragStart],
   );
 
-  const onDragOver = React.useCallback(
+  const onDragOver = useCallback(
     (event: DragOverEvent) => {
       kanbanProps.onDragOver?.(event);
 
@@ -384,7 +391,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [value, getColumn, getItemValue, onValueChange, kanbanProps.onDragOver],
   );
 
-  const onDragEnd = React.useCallback(
+  const onDragEnd = useCallback(
     (event: DragEndEvent) => {
       kanbanProps.onDragEnd?.(event);
 
@@ -472,7 +479,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     ],
   );
 
-  const onDragCancel = React.useCallback(
+  const onDragCancel = useCallback(
     (event: DragCancelEvent) => {
       kanbanProps.onDragCancel?.(event);
 
@@ -485,7 +492,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [kanbanProps.onDragCancel],
   );
 
-  const announcements: Announcements = React.useMemo(
+  const announcements: Announcements = useMemo(
     () => ({
       onDragStart({ active }) {
         const isColumn = active.id in value;
@@ -591,7 +598,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
     [value, getColumn, getItemValue],
   );
 
-  const contextValue = React.useMemo<KanbanContextValue<T>>(
+  const contextValue = useMemo<KanbanContextValue<T>>(
     () => ({
       id,
       items: value,
@@ -648,7 +655,7 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
   );
 }
 
-const KanbanBoardContext = React.createContext<boolean>(false);
+const KanbanBoardContext = createContext<boolean>(false);
 
 interface KanbanBoardProps extends React.ComponentProps<"div"> {
   children: React.ReactNode;
@@ -660,7 +667,7 @@ function KanbanBoard(props: KanbanBoardProps) {
 
   const context = useKanbanContext(BOARD_NAME);
 
-  const columns = React.useMemo(() => {
+  const columns = useMemo(() => {
     return Object.keys(context.items);
   }, [context.items]);
 
@@ -702,11 +709,12 @@ interface KanbanColumnContextValue {
   disabled?: boolean;
 }
 
-const KanbanColumnContext =
-  React.createContext<KanbanColumnContextValue | null>(null);
+const KanbanColumnContext = createContext<KanbanColumnContextValue | null>(
+  null,
+);
 
 function useKanbanColumnContext(consumerName: string) {
-  const context = React.useContext(KanbanColumnContext);
+  const context = useContext(KanbanColumnContext);
   if (!context) {
     throw new Error(
       `\`${consumerName}\` must be used within \`${COLUMN_NAME}\``,
@@ -738,10 +746,10 @@ function KanbanColumn(props: KanbanColumnProps) {
     ...columnProps
   } = props;
 
-  const id = React.useId();
+  const id = useId();
   const context = useKanbanContext(COLUMN_NAME);
-  const inBoard = React.useContext(KanbanBoardContext);
-  const inOverlay = React.useContext(KanbanOverlayContext);
+  const inBoard = useContext(KanbanBoardContext);
+  const inOverlay = useContext(KanbanOverlayContext);
 
   if (!inBoard && !inOverlay) {
     throw new Error(
@@ -772,7 +780,7 @@ function KanbanColumn(props: KanbanColumnProps) {
     setNodeRef(node);
   });
 
-  const composedStyle = React.useMemo<React.CSSProperties>(() => {
+  const composedStyle = useMemo<React.CSSProperties>(() => {
     return {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -780,13 +788,13 @@ function KanbanColumn(props: KanbanColumnProps) {
     };
   }, [transform, transition, style]);
 
-  const items = React.useMemo(() => {
+  const items = useMemo(() => {
     const items = context.items[value] ?? [];
     return items.map((item) => context.getItemValue(item));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context.items, value, context.getItemValue]);
 
-  const columnContext = React.useMemo<KanbanColumnContextValue>(
+  const columnContext = useMemo<KanbanColumnContextValue>(
     () => ({
       id,
       attributes,
@@ -889,12 +897,10 @@ interface KanbanItemContextValue {
   disabled?: boolean;
 }
 
-const KanbanItemContext = React.createContext<KanbanItemContextValue | null>(
-  null,
-);
+const KanbanItemContext = createContext<KanbanItemContextValue | null>(null);
 
 function useKanbanItemContext(consumerName: string) {
-  const context = React.useContext(KanbanItemContext);
+  const context = useContext(KanbanItemContext);
   if (!context) {
     throw new Error(`\`${consumerName}\` must be used within \`${ITEM_NAME}\``);
   }
@@ -920,10 +926,10 @@ function KanbanItem(props: KanbanItemProps) {
     ...itemProps
   } = props;
 
-  const id = React.useId();
+  const id = useId();
   const context = useKanbanContext(ITEM_NAME);
-  const inBoard = React.useContext(KanbanBoardContext);
-  const inOverlay = React.useContext(KanbanOverlayContext);
+  const inBoard = useContext(KanbanBoardContext);
+  const inOverlay = useContext(KanbanOverlayContext);
 
   if (!inBoard && !inOverlay) {
     throw new Error(`\`${ITEM_NAME}\` must be used within \`${BOARD_NAME}\``);
@@ -948,7 +954,7 @@ function KanbanItem(props: KanbanItemProps) {
     setNodeRef(node);
   });
 
-  const composedStyle = React.useMemo<React.CSSProperties>(() => {
+  const composedStyle = useMemo<React.CSSProperties>(() => {
     return {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -956,7 +962,7 @@ function KanbanItem(props: KanbanItemProps) {
     };
   }, [transform, transition, style]);
 
-  const itemContext = React.useMemo<KanbanItemContextValue>(
+  const itemContext = useMemo<KanbanItemContextValue>(
     () => ({
       id,
       attributes,
@@ -1041,7 +1047,7 @@ function KanbanItemHandle(props: KanbanItemHandleProps) {
   );
 }
 
-const KanbanOverlayContext = React.createContext(false);
+const KanbanOverlayContext = createContext(false);
 
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
@@ -1069,8 +1075,8 @@ function KanbanOverlay(props: KanbanOverlayProps) {
 
   const context = useKanbanContext(OVERLAY_NAME);
 
-  const [mounted, setMounted] = React.useState(false);
-  React.useLayoutEffect(() => setMounted(true), []);
+  const [mounted, setMounted] = useState(false);
+  useLayoutEffect(() => setMounted(true), []);
 
   const container =
     containerProp ?? (mounted ? globalThis.document?.body : null);

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
 import * as ReactDOM from "react-dom";
 
@@ -32,13 +32,13 @@ function DataTableActionBar<TData>({
   className,
   ...props
 }: DataTableActionBarProps<TData>) {
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     setMounted(true);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         table.toggleAllRowsSelected(false);
@@ -134,7 +134,7 @@ interface DataTableActionBarSelectionProps<TData> {
 function DataTableActionBarSelection<TData>({
   table,
 }: DataTableActionBarSelectionProps<TData>) {
-  const onClearSelection = React.useCallback(() => {
+  const onClearSelection = useCallback(() => {
     table.toggleAllRowsSelected(false);
   }, [table]);
 

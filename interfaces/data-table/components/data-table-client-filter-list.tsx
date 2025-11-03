@@ -1,6 +1,13 @@
 "use client";
 
-import * as React from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import type { Column, ColumnMeta, Table } from "@tanstack/react-table";
 import {
@@ -86,26 +93,24 @@ export function DataTableClientFilterList<TData>({
   debounceMs = DEBOUNCE_MS,
   ...props
 }: DataTableClientFilterListProps<TData>) {
-  const id = React.useId();
-  const labelId = React.useId();
-  const descriptionId = React.useId();
-  const [open, setOpen] = React.useState(false);
-  const addButtonRef = React.useRef<HTMLButtonElement>(null);
+  const id = useId();
+  const labelId = useId();
+  const descriptionId = useId();
+  const [open, setOpen] = useState(false);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
 
-  const columns = React.useMemo(() => {
+  const columns = useMemo(() => {
     return table
       .getAllColumns()
       .filter((column) => column.columnDef.enableColumnFilter);
   }, [table]);
 
-  const [filters, setFilters] = React.useState<ExtendedColumnFilter<TData>[]>(
-    [],
-  );
+  const [filters, setFilters] = useState<ExtendedColumnFilter<TData>[]>([]);
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
-  const [joinOperator, setJoinOperator] = React.useState<JoinOperator>("and");
+  const [joinOperator, setJoinOperator] = useState<JoinOperator>("and");
 
-  const onFilterAdd = React.useCallback(() => {
+  const onFilterAdd = useCallback(() => {
     const column = columns[0];
 
     if (!column) return;
@@ -126,7 +131,7 @@ export function DataTableClientFilterList<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columns, filters, debouncedSetFilters]);
 
-  const onFilterUpdate = React.useCallback(
+  const onFilterUpdate = useCallback(
     (
       filterId: string,
       updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
@@ -144,7 +149,7 @@ export function DataTableClientFilterList<TData>({
     [debouncedSetFilters],
   );
 
-  const onFilterRemove = React.useCallback(
+  const onFilterRemove = useCallback(
     (filterId: string) => {
       const updatedFilters = filters.filter(
         (filter) => filter.filterId !== filterId,
@@ -157,12 +162,12 @@ export function DataTableClientFilterList<TData>({
     [filters, setFilters],
   );
 
-  const onFiltersReset = React.useCallback(() => {
+  const onFiltersReset = useCallback(() => {
     void setFilters([]);
     void setJoinOperator("and");
   }, [setFilters, setJoinOperator]);
 
-  // React.useEffect(() => {
+  // useEffect(() => {
   //   function onKeyDown(event: KeyboardEvent) {
   //     if (
   //       event.target instanceof HTMLInputElement ||
@@ -195,7 +200,7 @@ export function DataTableClientFilterList<TData>({
   //   return () => window.removeEventListener("keydown", onKeyDown);
   // }, [filters, onFilterRemove]);
 
-  const onTriggerKeyDown = React.useCallback(
+  const onTriggerKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
       if (
         REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
@@ -208,7 +213,7 @@ export function DataTableClientFilterList<TData>({
     [filters, onFilterRemove],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     table.setColumnFilters(filters);
   }, [filters, table]);
 
@@ -337,9 +342,9 @@ function DataTableFilterItem<TData>({
   onFilterUpdate,
   onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
-  const [showFieldSelector, setShowFieldSelector] = React.useState(false);
-  const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
-  const [showValueSelector, setShowValueSelector] = React.useState(false);
+  const [showFieldSelector, setShowFieldSelector] = useState(false);
+  const [showOperatorSelector, setShowOperatorSelector] = useState(false);
+  const [showValueSelector, setShowValueSelector] = useState(false);
 
   const column = columns.find((column) => column.id === filter.id);
   if (!column) return null;
@@ -353,7 +358,7 @@ function DataTableFilterItem<TData>({
   const filterOperators = getFilterOperators(filter.variant);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const onItemKeyDown = React.useCallback(
+  const onItemKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (
         event.target instanceof HTMLInputElement ||

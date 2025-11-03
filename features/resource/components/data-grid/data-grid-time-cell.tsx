@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -28,26 +28,23 @@ export function DataGridTimeCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "");
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
-  const onBlur = React.useCallback(() => {
+  const onBlur = useCallback(() => {
     if (value !== initialValue) {
       meta?.onDataUpdate?.({ rowIndex, columnId, value });
     }
     meta?.onCellEditingStop?.();
   }, [meta, rowIndex, columnId, initialValue, value]);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(event.target.value);
-    },
-    [],
-  );
+  const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  }, []);
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Enter") {
@@ -74,11 +71,11 @@ export function DataGridTimeCell<TData>({
     [isEditing, initialValue, meta, rowIndex, columnId, value],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(initialValue ?? "");
   }, [initialValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditing && initialValue !== value) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
@@ -104,7 +101,7 @@ export function DataGridTimeCell<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
     }

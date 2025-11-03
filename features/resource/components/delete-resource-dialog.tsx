@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useTransition } from "react";
 
 import { useParams } from "next/navigation";
 
@@ -63,7 +63,7 @@ export function DeleteResourceDialog({
 
   const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
 
-  const [isDeletePending, startDeleteTransition] = React.useTransition();
+  const [isDeletePending, startDeleteTransition] = useTransition();
   const isDesktop = useMediaQuery("(min-width: 640px)");
 
   function onDelete() {

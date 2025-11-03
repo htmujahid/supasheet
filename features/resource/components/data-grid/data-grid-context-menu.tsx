@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo, useCallback, useMemo } from "react";
 
 import type { Table, TableMeta } from "@tanstack/react-table";
 import { CopyIcon, Trash2Icon } from "lucide-react";
@@ -57,7 +57,7 @@ interface ContextMenuProps<TData>
   table: Table<TData>;
 }
 
-const ContextMenu = React.memo(ContextMenuImpl, (prev, next) => {
+const ContextMenu = memo(ContextMenuImpl, (prev, next) => {
   if (prev.contextMenu.open !== next.contextMenu.open) return false;
   if (!next.contextMenu.open) return true;
   if (prev.contextMenu.x !== next.contextMenu.x) return false;
@@ -79,7 +79,7 @@ function ContextMenuImpl<TData>({
   onRowsDelete,
 }: ContextMenuProps<TData>) {
   const { permissions } = useResourceContext();
-  const triggerStyle = React.useMemo<React.CSSProperties>(
+  const triggerStyle = useMemo<React.CSSProperties>(
     () => ({
       position: "fixed",
       left: `${contextMenu.x}px`,
@@ -98,7 +98,7 @@ function ContextMenuImpl<TData>({
 
   const onCloseAutoFocus: NonNullable<
     React.ComponentProps<typeof DropdownMenuContent>["onCloseAutoFocus"]
-  > = React.useCallback(
+  > = useCallback(
     (event) => {
       event.preventDefault();
       dataGridRef?.current?.focus();
@@ -106,7 +106,7 @@ function ContextMenuImpl<TData>({
     [dataGridRef],
   );
 
-  const onCopy = React.useCallback(() => {
+  const onCopy = useCallback(() => {
     if (
       !selectionState?.selectedCells ||
       selectionState.selectedCells.size === 0
@@ -172,7 +172,7 @@ function ContextMenuImpl<TData>({
     );
   }, [table, selectionState]);
 
-  const onCopyRow = React.useCallback(() => {
+  const onCopyRow = useCallback(() => {
     // copy row in json format
     if (
       !selectionState?.selectedCells ||
@@ -203,7 +203,7 @@ function ContextMenuImpl<TData>({
     );
   }, [table, selectionState]);
 
-  const onDelete = React.useCallback(async () => {
+  const onDelete = useCallback(async () => {
     if (
       !selectionState?.selectedCells ||
       selectionState.selectedCells.size === 0

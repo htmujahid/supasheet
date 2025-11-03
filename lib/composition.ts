@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useCallback } from "react";
 
 /**
  * A utility to compose multiple event handlers into a single event handler.
@@ -81,7 +81,7 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
  */
 function useComposedRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  return React.useCallback(composeRefs(...refs), refs);
+  return useCallback(composeRefs(...refs), refs);
 }
 
 export { composeEventHandlers, composeRefs, useComposedRefs };

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 
 interface WindowSize {
   width: number;
@@ -13,12 +13,12 @@ interface UseWindowSizeProps {
 export function useWindowSize(props: UseWindowSizeProps = {}): WindowSize {
   const { defaultWidth = 0, defaultHeight = 0 } = props;
 
-  const [windowSize, setWindowSize] = React.useState<WindowSize>({
+  const [windowSize, setWindowSize] = useState<WindowSize>({
     width: defaultWidth,
     height: defaultHeight,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
 
     // Set initial size after mount to avoid hydration mismatch

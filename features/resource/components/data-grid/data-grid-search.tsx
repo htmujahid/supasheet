@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
@@ -12,7 +12,7 @@ import type { SearchState } from "../../lib/types/data-grid";
 
 interface DataGridSearchProps extends SearchState {}
 
-export const DataGridSearch = React.memo(DataGridSearchImpl, (prev, next) => {
+export const DataGridSearch = memo(DataGridSearchImpl, (prev, next) => {
   if (prev.searchOpen !== next.searchOpen) return false;
 
   if (!next.searchOpen) return true;
@@ -54,9 +54,9 @@ function DataGridSearchImpl({
   onNavigateToNextMatch,
   onNavigateToPrevMatch,
 }: DataGridSearchProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (searchOpen) {
       requestAnimationFrame(() => {
         inputRef.current?.focus();
@@ -64,7 +64,7 @@ function DataGridSearchImpl({
     }
   }, [searchOpen]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!searchOpen) return;
 
     function onEscape(event: KeyboardEvent) {
@@ -78,7 +78,7 @@ function DataGridSearchImpl({
     return () => document.removeEventListener("keydown", onEscape);
   }, [searchOpen, onSearchOpenChange]);
 
-  const onKeyDown = React.useCallback(
+  const onKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       event.stopPropagation();
 
@@ -98,7 +98,7 @@ function DataGridSearchImpl({
     onSearch(query);
   }, 150);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
       onSearchQueryChange(value);
@@ -107,7 +107,7 @@ function DataGridSearchImpl({
     [onSearchQueryChange, debouncedSearch],
   );
 
-  const onTriggerPointerDown = React.useCallback(
+  const onTriggerPointerDown = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>) => {
       // prevent implicit pointer capture
       const target = event.target;
@@ -130,19 +130,19 @@ function DataGridSearchImpl({
     [],
   );
 
-  const onPrevMatchPointerDown = React.useCallback(
+  const onPrevMatchPointerDown = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>) =>
       onTriggerPointerDown(event),
     [onTriggerPointerDown],
   );
 
-  const onNextMatchPointerDown = React.useCallback(
+  const onNextMatchPointerDown = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>) =>
       onTriggerPointerDown(event),
     [onTriggerPointerDown],
   );
 
-  const onClose = React.useCallback(() => {
+  const onClose = useCallback(() => {
     onSearchOpenChange(false);
   }, [onSearchOpenChange]);
 

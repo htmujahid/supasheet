@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useId, useMemo } from "react";
 
 import type { Column } from "@tanstack/react-table";
 import { PlusCircle, XCircle } from "lucide-react";
@@ -42,7 +42,7 @@ export function DataTableSliderFilter<TData>({
   column,
   title,
 }: DataTableSliderFilterProps<TData>) {
-  const id = React.useId();
+  const id = useId();
 
   const columnFilterValue = getIsValidRange(column.getFilterValue())
     ? (column.getFilterValue() as RangeValue)
@@ -51,7 +51,7 @@ export function DataTableSliderFilter<TData>({
   const defaultRange = column.columnDef.meta?.range;
   const unit = column.columnDef.meta?.unit;
 
-  const { min, max, step } = React.useMemo<Range & { step: number }>(() => {
+  const { min, max, step } = useMemo<Range & { step: number }>(() => {
     let minValue = 0;
     let maxValue = 100;
 
@@ -82,15 +82,15 @@ export function DataTableSliderFilter<TData>({
     return { min: minValue, max: maxValue, step };
   }, [column, defaultRange]);
 
-  const range = React.useMemo((): RangeValue => {
+  const range = useMemo((): RangeValue => {
     return columnFilterValue ?? [min, max];
   }, [columnFilterValue, min, max]);
 
-  const formatValue = React.useCallback((value: number) => {
+  const formatValue = useCallback((value: number) => {
     return value.toLocaleString(undefined, { maximumFractionDigits: 0 });
   }, []);
 
-  const onFromInputChange = React.useCallback(
+  const onFromInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const numValue = Number(event.target.value);
       if (!Number.isNaN(numValue) && numValue >= min && numValue <= range[1]) {
@@ -100,7 +100,7 @@ export function DataTableSliderFilter<TData>({
     [column, min, range],
   );
 
-  const onToInputChange = React.useCallback(
+  const onToInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const numValue = Number(event.target.value);
       if (!Number.isNaN(numValue) && numValue <= max && numValue >= range[0]) {
@@ -110,7 +110,7 @@ export function DataTableSliderFilter<TData>({
     [column, max, range],
   );
 
-  const onSliderValueChange = React.useCallback(
+  const onSliderValueChange = useCallback(
     (value: RangeValue) => {
       if (Array.isArray(value) && value.length === 2) {
         column.setFilterValue(value);
@@ -119,7 +119,7 @@ export function DataTableSliderFilter<TData>({
     [column],
   );
 
-  const onReset = React.useCallback(
+  const onReset = useCallback(
     (event: React.MouseEvent) => {
       if (event.target instanceof HTMLDivElement) {
         event.stopPropagation();

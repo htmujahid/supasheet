@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 
@@ -34,7 +34,7 @@ export function DataGridCellWrapper<TData>({
   const isActiveSearchMatch =
     meta?.getIsActiveSearchMatch?.(rowIndex, columnId) ?? false;
 
-  const onClick = React.useCallback(
+  const onClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (!isEditing) {
         event.preventDefault();
@@ -49,7 +49,7 @@ export function DataGridCellWrapper<TData>({
     [meta, rowIndex, columnId, isEditing, isFocused, onClickProp],
   );
 
-  const onContextMenu = React.useCallback(
+  const onContextMenu = useCallback(
     (event: React.MouseEvent) => {
       if (!isEditing) {
         meta?.onCellContextMenu?.(rowIndex, columnId, event);
@@ -58,7 +58,7 @@ export function DataGridCellWrapper<TData>({
     [meta, rowIndex, columnId, isEditing],
   );
 
-  const onMouseDown = React.useCallback(
+  const onMouseDown = useCallback(
     (event: React.MouseEvent) => {
       if (!isEditing) {
         meta?.onCellMouseDown?.(rowIndex, columnId, event);
@@ -67,7 +67,7 @@ export function DataGridCellWrapper<TData>({
     [meta, rowIndex, columnId, isEditing],
   );
 
-  const onMouseEnter = React.useCallback(
+  const onMouseEnter = useCallback(
     (event: React.MouseEvent) => {
       if (!isEditing) {
         meta?.onCellMouseEnter?.(rowIndex, columnId, event);
@@ -76,13 +76,13 @@ export function DataGridCellWrapper<TData>({
     [meta, rowIndex, columnId, isEditing],
   );
 
-  const onMouseUp = React.useCallback(() => {
+  const onMouseUp = useCallback(() => {
     if (!isEditing) {
       meta?.onCellMouseUp?.();
     }
   }, [meta, isEditing]);
 
-  const onDoubleClick = React.useCallback(
+  const onDoubleClick = useCallback(
     (event: React.MouseEvent) => {
       if (!isEditing) {
         event.preventDefault();
@@ -92,7 +92,7 @@ export function DataGridCellWrapper<TData>({
     [meta, rowIndex, columnId, isEditing],
   );
 
-  const onKeyDown = React.useCallback(
+  const onKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       onKeyDownProp?.(event);
 

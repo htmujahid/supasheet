@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -30,11 +30,11 @@ export function DataGridRatingCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as number;
-  const [value, setValue] = React.useState(initialValue ?? 0);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? 0);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
-  const onValueChange = React.useCallback(
+  const onValueChange = useCallback(
     (newValue: number) => {
       setValue(newValue);
       meta?.onDataUpdate?.({ rowIndex, columnId, value: newValue });
@@ -42,7 +42,7 @@ export function DataGridRatingCell<TData>({
     [meta, rowIndex, columnId],
   );
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isFocused) {
         if (event.key >= "0" && event.key <= "5") {
@@ -55,11 +55,11 @@ export function DataGridRatingCell<TData>({
     [isFocused, onValueChange],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(initialValue ?? 0);
   }, [initialValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditing && initialValue !== Number(value)) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
@@ -85,7 +85,7 @@ export function DataGridRatingCell<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       isFocused &&
       !meta?.searchOpen &&

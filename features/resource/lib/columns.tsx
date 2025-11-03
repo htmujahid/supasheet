@@ -335,7 +335,9 @@ export function getColumnMetadata(
   }
 }
 
-export function getColumnFilterData(columnSchema: ColumnSchema): ColumnFilterData {
+export function getColumnFilterData(
+  columnSchema: ColumnSchema,
+): ColumnFilterData {
   switch (columnSchema.data_type) {
     case "character":
     case "varchar":

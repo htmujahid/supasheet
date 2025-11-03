@@ -16,10 +16,7 @@ export function getReportTableColumns({
       id: c.name,
       accessorKey: c.name as string,
       header: ({ column }: { column: Column<ResourceDataSchema, unknown> }) => (
-        <ReportColumnHeader
-          column={column}
-          title={c.name as string}
-        />
+        <ReportColumnHeader column={column} title={c.name as string} />
       ),
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
         <ReportRowCell row={row} columnSchema={c} />

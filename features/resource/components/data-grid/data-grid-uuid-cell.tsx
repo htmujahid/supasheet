@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -30,12 +30,12 @@ export function DataGridUuidCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue);
-  const cellRef = React.useRef<HTMLDivElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue);
+  const cellRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
-  const onBlur = React.useCallback(() => {
+  const onBlur = useCallback(() => {
     const currentValue = cellRef.current?.textContent ?? "";
     if (currentValue !== initialValue) {
       meta?.onDataUpdate?.({ rowIndex, columnId, value: currentValue });
@@ -43,15 +43,12 @@ export function DataGridUuidCell<TData>({
     meta?.onCellEditingStop?.();
   }, [meta, rowIndex, columnId, initialValue]);
 
-  const onInput = React.useCallback(
-    (event: React.FormEvent<HTMLDivElement>) => {
-      const currentValue = event.currentTarget.textContent ?? "";
-      setValue(currentValue);
-    },
-    [],
-  );
+  const onInput = useCallback((event: React.FormEvent<HTMLDivElement>) => {
+    const currentValue = event.currentTarget.textContent ?? "";
+    setValue(currentValue);
+  }, []);
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Enter") {
@@ -98,7 +95,7 @@ export function DataGridUuidCell<TData>({
     [isEditing, isFocused, initialValue, meta, rowIndex, columnId],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditing && initialValue !== value) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;
@@ -124,14 +121,14 @@ export function DataGridUuidCell<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(initialValue);
     if (cellRef.current && !isEditing) {
       cellRef.current.textContent = initialValue;
     }
   }, [initialValue, isEditing]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && cellRef.current) {
       cellRef.current.focus();
       if (!cellRef.current.textContent && value) {

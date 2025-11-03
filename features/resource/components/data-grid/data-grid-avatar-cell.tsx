@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useRef } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { UserIcon } from "lucide-react";
@@ -29,7 +29,7 @@ export function DataGridAvatarCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
     <DataGridCellWrapper

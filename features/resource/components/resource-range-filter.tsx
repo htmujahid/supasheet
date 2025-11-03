@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useMemo } from "react";
 
 import { Input } from "@/components/ui/input";
 import type { ExtendedColumnFilter } from "@/interfaces/data-table/types/data-table";
@@ -26,25 +26,22 @@ export function ResourceRangeFilter<TData>({
   className,
   ...props
 }: ResourceRangeFilterProps<TData>) {
-  const formatValue = React.useCallback(
-    (value: string | number | undefined) => {
-      if (value === undefined || value === "") return "";
-      const numValue = Number(value);
-      return Number.isNaN(numValue)
-        ? ""
-        : numValue.toLocaleString(undefined, {
-            maximumFractionDigits: 0,
-          });
-    },
-    [],
-  );
+  const formatValue = useCallback((value: string | number | undefined) => {
+    if (value === undefined || value === "") return "";
+    const numValue = Number(value);
+    return Number.isNaN(numValue)
+      ? ""
+      : numValue.toLocaleString(undefined, {
+          maximumFractionDigits: 0,
+        });
+  }, []);
 
-  const value = React.useMemo(() => {
+  const value = useMemo(() => {
     if (Array.isArray(filter.value)) return filter.value.map(formatValue);
     return [formatValue(filter.value), ""];
   }, [filter.value, formatValue]);
 
-  const onRangeValueChange = React.useCallback(
+  const onRangeValueChange = useCallback(
     (value: string, isMin?: boolean) => {
       const numValue = Number(value);
       const currentValues = Array.isArray(filter.value)

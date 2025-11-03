@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useState } from "react";
 
 import type { Column } from "@tanstack/react-table";
 import { Check, PlusCircle, XCircle } from "lucide-react";
@@ -39,7 +39,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
   multiple,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const columnFilterValue = column?.getFilterValue();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +47,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     Array.isArray(columnFilterValue) ? columnFilterValue : [],
   );
 
-  const onItemSelect = React.useCallback(
+  const onItemSelect = useCallback(
     (option: Option, isSelected: boolean) => {
       if (!column) return;
 
@@ -68,7 +68,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     [column, multiple, selectedValues],
   );
 
-  const onReset = React.useCallback(
+  const onReset = useCallback(
     (event?: React.MouseEvent) => {
       event?.stopPropagation();
       column?.setFilterValue(undefined);

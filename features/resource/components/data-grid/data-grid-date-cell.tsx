@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -41,12 +41,12 @@ export function DataGridDateCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "");
-  const [open, setOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "");
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? "");
@@ -54,7 +54,7 @@ export function DataGridDateCell<TData>({
 
   const selectedDate = value ? new Date(value) : undefined;
 
-  const onDateSelect = React.useCallback(
+  const onDateSelect = useCallback(
     (date: Date | undefined) => {
       if (!date) return;
       const formattedDate = date.toISOString().split("T")[0] ?? "";
@@ -66,7 +66,7 @@ export function DataGridDateCell<TData>({
     [meta, rowIndex, columnId],
   );
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       setOpen(isOpen);
       if (!isOpen && isEditing) {
@@ -76,7 +76,7 @@ export function DataGridDateCell<TData>({
     [isEditing, meta],
   );
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Escape") {
@@ -95,7 +95,7 @@ export function DataGridDateCell<TData>({
     [isEditing, initialValue, meta],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing) {
       setOpen(true);
     } else {
@@ -126,7 +126,7 @@ export function DataGridDateCell<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       isFocused &&
       !isEditing &&

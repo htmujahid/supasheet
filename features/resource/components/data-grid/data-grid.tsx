@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback } from "react";
 
 import { flexRender } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
@@ -41,14 +41,14 @@ export function DataGrid<TData>({
   const rowHeight = meta?.rowHeight ?? "short";
   const focusedCell = meta?.focusedCell ?? null;
 
-  const onGridContextMenu = React.useCallback(
+  const onGridContextMenu = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
     },
     [],
   );
 
-  const onAddRowKeyDown = React.useCallback(
+  const onAddRowKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (!onRowAdd) return;
 

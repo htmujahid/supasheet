@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
@@ -36,14 +36,14 @@ export function DataGridLongTextCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "");
-  const [open, setOpen] = React.useState(false);
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "");
+  const [open, setOpen] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
   const sideOffset = -(containerRef.current?.clientHeight ?? 0);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? "");
@@ -54,7 +54,7 @@ export function DataGridLongTextCell<TData>({
     meta?.onDataUpdate?.({ rowIndex, columnId, value: newValue });
   }, 300);
 
-  const onSave = React.useCallback(() => {
+  const onSave = useCallback(() => {
     // Immediately save any pending changes and close the popover
     if (value !== initialValue) {
       const row = cell.row.original;
@@ -84,7 +84,7 @@ export function DataGridLongTextCell<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta, value, initialValue, rowIndex, columnId]);
 
-  const onCancel = React.useCallback(() => {
+  const onCancel = useCallback(() => {
     // Restore the original value
     setValue(initialValue ?? "");
     meta?.onDataUpdate?.({ rowIndex, columnId, value: initialValue });
@@ -92,7 +92,7 @@ export function DataGridLongTextCell<TData>({
     meta?.onCellEditingStop?.();
   }, [meta, initialValue, rowIndex, columnId]);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = event.target.value;
       setValue(newValue);
@@ -102,7 +102,7 @@ export function DataGridLongTextCell<TData>({
     [debouncedSave],
   );
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       setOpen(isOpen);
       if (!isOpen) {
@@ -118,7 +118,7 @@ export function DataGridLongTextCell<TData>({
 
   const onOpenAutoFocus: NonNullable<
     React.ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
-  > = React.useCallback((event) => {
+  > = useCallback((event) => {
     event.preventDefault();
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -127,7 +127,7 @@ export function DataGridLongTextCell<TData>({
     }
   }, []);
 
-  const onWrapperKeyDown = React.useCallback(
+  const onWrapperKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (isEditing && !open) {
         if (event.key === "Escape") {
@@ -148,7 +148,7 @@ export function DataGridLongTextCell<TData>({
     [isEditing, open, meta, value, initialValue, rowIndex, columnId],
   );
 
-  const onTextareaKeyDown = React.useCallback(
+  const onTextareaKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -163,7 +163,7 @@ export function DataGridLongTextCell<TData>({
     [onCancel, onSave],
   );
 
-  const onTextareaBlur = React.useCallback(() => {
+  const onTextareaBlur = useCallback(() => {
     // Immediately save any pending changes on blur
     if (value !== initialValue) {
       meta?.onDataUpdate?.({ rowIndex, columnId, value });
@@ -172,7 +172,7 @@ export function DataGridLongTextCell<TData>({
     meta?.onCellEditingStop?.();
   }, [meta, value, initialValue, rowIndex, columnId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && !open) {
       setOpen(true);
     }
