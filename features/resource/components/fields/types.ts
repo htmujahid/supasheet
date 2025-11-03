@@ -56,7 +56,7 @@ export type ColumnMetadata = {
   }[];
 };
 
-export type ColumnMeta = {
+export type ColumnFilterData = {
   label: string;
   variant: "text" | "number" | "date" | "boolean" | "multiSelect" | "select";
   options?: { label: string; value: string }[];

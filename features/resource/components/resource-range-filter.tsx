@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import type { ExtendedColumnFilter } from "@/interfaces/data-table/types/data-table";
 import { cn } from "@/lib/utils";
 
-import { ColumnMeta } from "./fields/types";
+import { ColumnFilterData } from "./fields/types";
 
 interface ResourceRangeFilterProps<TData> extends React.ComponentProps<"div"> {
   filter: ExtendedColumnFilter<TData>;
-  column: ColumnMeta;
+  column: ColumnFilterData;
   inputId: string;
   onFilterUpdate: (
     filterId: string,

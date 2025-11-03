@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-import { getColumnCell, getColumnMeta } from "@/features/resource/lib/columns";
+import { getColumnCell, getColumnFilterData } from "@/features/resource/lib/columns";
 import { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
 
 export function getSheetTableColumns({
@@ -49,7 +49,7 @@ export function getSheetTableColumns({
     },
     size: 150,
     enableColumnFilter: true,
-    meta: getColumnMeta(c),
+    meta: getColumnFilterData(c),
     enableSorting: true,
     enableHiding: true,
   })) as ColumnDef<ResourceDataSchema, unknown>[];

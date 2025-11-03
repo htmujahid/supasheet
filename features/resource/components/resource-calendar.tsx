@@ -28,7 +28,7 @@ import {
 } from "@/lib/database-meta.types";
 
 import { updateResourceDataAction } from "../lib/actions";
-import { getColumnMeta } from "../lib/columns";
+import { getColumnFilterData } from "../lib/columns";
 import { useResourceContext } from "./resource-context";
 import { ResourceFilterList } from "./resource-filter-list";
 
@@ -103,7 +103,7 @@ export function ResourceCalendarView({
     <div className="flex h-full flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
         <ResourceFilterList
-          columns={columnsSchema.map((c) => getColumnMeta(c))}
+          columns={columnsSchema.map((c) => getColumnFilterData(c))}
           shallow={false}
         />
         <EventCalendarNavigation view={view} />

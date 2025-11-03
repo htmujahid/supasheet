@@ -26,7 +26,7 @@ import {
   TableSchema,
 } from "@/lib/database-meta.types";
 
-import { ColumnMeta, ColumnMetadata } from "../components/fields/types";
+import { ColumnFilterData, ColumnMetadata } from "../components/fields/types";
 
 export function getColumnCell(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
@@ -335,7 +335,7 @@ export function getColumnMetadata(
   }
 }
 
-export function getColumnMeta(columnSchema: ColumnSchema): ColumnMeta {
+export function getColumnFilterData(columnSchema: ColumnSchema): ColumnFilterData {
   switch (columnSchema.data_type) {
     case "character":
     case "varchar":

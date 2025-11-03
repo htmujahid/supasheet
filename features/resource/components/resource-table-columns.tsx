@@ -3,7 +3,7 @@ import { Column, ColumnDef, Row, Table } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ResourceColumnHeader } from "@/features/resource/components/resource-column-header";
 import { ResourceRowCell } from "@/features/resource/components/resource-row-cell";
-import { getColumnMeta } from "@/features/resource/lib/columns";
+import { getColumnFilterData } from "@/features/resource/lib/columns";
 import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
@@ -78,7 +78,7 @@ export function getResourceTableColumns({
       ),
       size: 170,
       enableColumnFilter: true,
-      meta: getColumnMeta(c),
+      meta: getColumnFilterData(c),
       enableSorting: true,
       enableHiding: true,
     })),

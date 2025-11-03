@@ -28,7 +28,7 @@ import {
 import { ColumnSchema } from "@/lib/database-meta.types";
 import { cn } from "@/lib/utils";
 
-import { getColumnMeta } from "../lib/columns";
+import { getColumnFilterData } from "../lib/columns";
 import { GalleryViewData } from "../lib/types";
 import { useResourceContext } from "./resource-context";
 import { ResourceFilterList } from "./resource-filter-list";
@@ -44,7 +44,7 @@ export function ResourceGalleryView({
     <div className="flex flex-col gap-2">
       <div>
         <ResourceFilterList
-          columns={columnsSchema.map((c) => getColumnMeta(c))}
+          columns={columnsSchema.map((c) => getColumnFilterData(c))}
           shallow={false}
         />
       </div>

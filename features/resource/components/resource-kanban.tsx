@@ -47,7 +47,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { updateResourceDataAction } from "../lib/actions";
-import { getColumnMeta } from "../lib/columns";
+import { getColumnFilterData } from "../lib/columns";
 import { KanbanViewData, KanbanViewReducedData } from "../lib/types";
 import { useResourceContext } from "./resource-context";
 import { ResourceFilterList } from "./resource-filter-list";
@@ -86,7 +86,7 @@ export function ResourceKanbanView({
     <div className="flex flex-col gap-2">
       <div className="flex justify-between">
         <ResourceFilterList
-          columns={columnsSchema.map((c) => getColumnMeta(c))}
+          columns={columnsSchema.map((c) => getColumnFilterData(c))}
           shallow={false}
         />
         <ButtonGroup>

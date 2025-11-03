@@ -1,6 +1,6 @@
 import { Column, ColumnDef, Row } from "@tanstack/react-table";
 
-import { getColumnMeta } from "@/features/resource/lib/columns";
+import { getColumnFilterData } from "@/features/resource/lib/columns";
 import { ColumnSchema, ResourceDataSchema } from "@/lib/database-meta.types";
 
 import { ReportColumnHeader } from "./report-column-header";
@@ -28,7 +28,7 @@ export function getReportTableColumns({
       ),
       size: 170,
       enableColumnFilter: true,
-      meta: getColumnMeta(c),
+      meta: getColumnFilterData(c),
       enableSorting: true,
       enableHiding: true,
     })),

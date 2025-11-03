@@ -71,7 +71,7 @@ import type {
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-import { ColumnMeta } from "./fields/types";
+import { ColumnFilterData } from "./fields/types";
 import { ResourceRangeFilter } from "./resource-range-filter";
 
 const FILTERS_KEY = "filters";
@@ -83,7 +83,7 @@ const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
 interface ResourceFilterListProps<TData>
   extends React.ComponentProps<typeof PopoverContent> {
-  columns: ColumnMeta[];
+  columns: ColumnFilterData[];
   debounceMs?: number;
   throttleMs?: number;
   shallow?: boolean;
@@ -335,7 +335,7 @@ interface DataTableFilterItemProps<TData> {
   filterItemId: string;
   joinOperator: JoinOperator;
   setJoinOperator: (value: JoinOperator) => void;
-  columns: ColumnMeta[];
+  columns: ColumnFilterData[];
   onFilterUpdate: (
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
@@ -571,7 +571,7 @@ function onFilterInputRender<TData>({
 }: {
   filter: ExtendedColumnFilter<TData>;
   inputId: string;
-  column: ColumnMeta;
+  column: ColumnFilterData;
   onFilterUpdate: (
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
