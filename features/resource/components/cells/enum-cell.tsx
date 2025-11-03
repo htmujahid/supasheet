@@ -1,6 +1,4 @@
-import { Badge, badgeVariants } from "@/components/ui/badge";
-
-import { ColumnMetadata } from "../fields/types";
+import { Badge } from "@/components/ui/badge";
 
 export function EnumCell({ value }: { value: string | null }) {
   if (!value) {

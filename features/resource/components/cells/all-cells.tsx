@@ -1,7 +1,6 @@
 import { memo } from "react";
 
 import { ColumnMetadata } from "../fields/types";
-import { ArrayCell } from "./array-cell";
 import { AvatarCell } from "./avatar-cell";
 import { BooleanCell } from "./boolean-cell";
 import { ColorCell } from "./color-cell";

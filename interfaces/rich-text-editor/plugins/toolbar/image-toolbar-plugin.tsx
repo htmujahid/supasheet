@@ -11,7 +11,7 @@ export function ImageToolbarPlugin() {
 
   return (
     <Button
-      onClick={(e) => {
+      onClick={() => {
         showModal("Insert Image", (onClose) => (
           <InsertImageDialog activeEditor={activeEditor} onClose={onClose} />
         ));

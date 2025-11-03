@@ -1,19 +1,10 @@
 import type {
   DatabaseSchemas,
   DatabaseTables,
-  DatabaseViews,
 } from "@/lib/database-meta.types";
 import type { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import {
-  BoardViewData,
-  BoardViewReducedData,
-  CalendarViewData,
-  GalleryViewData,
-  KanbanViewData,
-  KanbanViewReducedData,
-} from "./types";
 import type { ResourceSearchParams } from "./validations";
 
 export async function loadColumnsSchema(schema: string, id: string) {

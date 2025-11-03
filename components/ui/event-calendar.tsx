@@ -63,7 +63,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  Text,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";

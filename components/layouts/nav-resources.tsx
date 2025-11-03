@@ -4,14 +4,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import {
-  CalendarDaysIcon,
   ChevronRight,
-  EyeIcon,
-  Grid3X3Icon,
-  ImageIcon,
   type LucideIcon,
   PlusIcon,
-  SquareKanbanIcon,
 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 

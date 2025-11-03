@@ -8,7 +8,6 @@
  *
  */
 import { Dispatch, JSX, useCallback, useEffect, useRef, useState } from "react";
-import * as React from "react";
 
 import { createPortal } from "react-dom";
 
@@ -97,7 +96,7 @@ function FloatingTextFormat({
       }
     }
   }
-  function mouseUpListener(e: MouseEvent) {
+  function mouseUpListener() {
     if (popupCharStylesEditorRef?.current) {
       if (popupCharStylesEditorRef.current.style.pointerEvents !== "auto") {
         popupCharStylesEditorRef.current.style.pointerEvents = "auto";

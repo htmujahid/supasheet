@@ -1,5 +1,3 @@
-import { DatabaseTables } from "@/lib/database-meta.types";
-
 import { loadChart } from "../lib/loaders";
 import { ChartsSchema } from "../lib/types";
 import { PieChartWidget } from "./pie-chart";

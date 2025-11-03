@@ -10,18 +10,11 @@ import type {
   Table,
 } from "@tanstack/react-table";
 import {
-  BaselineIcon,
-  CalendarIcon,
-  CheckSquareIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   EyeOffIcon,
-  HashIcon,
-  ListChecksIcon,
-  ListIcon,
   PinIcon,
   PinOffIcon,
-  TextInitialIcon,
   XIcon,
 } from "lucide-react";
 

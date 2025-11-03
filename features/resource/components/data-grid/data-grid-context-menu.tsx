@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import type { Table, TableMeta } from "@tanstack/react-table";
-import { CopyIcon, EditIcon, EyeIcon, Trash2Icon } from "lucide-react";
+import { CopyIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import {

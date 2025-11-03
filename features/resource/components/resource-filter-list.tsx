@@ -2,7 +2,6 @@
 
 import * as React from "react";
 
-import type { Column } from "@tanstack/react-table";
 import {
   CalendarIcon,
   Check,
@@ -81,7 +80,7 @@ const THROTTLE_MS = 50;
 // const OPEN_MENU_SHORTCUT = "f";
 const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
-interface ResourceFilterListProps<TData>
+interface ResourceFilterListProps
   extends React.ComponentProps<typeof PopoverContent> {
   columns: ColumnFilterData[];
   debounceMs?: number;
@@ -95,7 +94,7 @@ export function ResourceFilterList<TData>({
   throttleMs = THROTTLE_MS,
   shallow = true,
   ...props
-}: ResourceFilterListProps<TData>) {
+}: ResourceFilterListProps) {
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();

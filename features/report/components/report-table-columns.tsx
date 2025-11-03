@@ -18,8 +18,6 @@ export function getReportTableColumns({
       header: ({ column }: { column: Column<ResourceDataSchema, unknown> }) => (
         <ReportColumnHeader
           column={column}
-          columnSchema={c}
-          tableSchema={null}
           title={c.name as string}
         />
       ),

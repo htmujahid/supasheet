@@ -5,8 +5,6 @@ import * as React from "react";
 import type { Cell, Table } from "@tanstack/react-table";
 import { toast } from "sonner";
 
-import { Progress } from "@/components/ui/progress";
-
 import { updateResourceDataAction } from "../../lib/actions";
 import { PercentageCell } from "../cells/percentage-cell";
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";

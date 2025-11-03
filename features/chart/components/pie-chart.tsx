@@ -57,7 +57,6 @@ export function PieChartWidget({
   const chartData = data.map((item, index) => {
     const label = String(item[labelKey]);
     const value = Number(item[valueKey]) || 0;
-    const colorVar = `chart-${(index % 5) + 1}`;
 
     chartConfig[label] = {
       label: label,

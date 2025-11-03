@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";

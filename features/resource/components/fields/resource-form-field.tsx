@@ -18,7 +18,6 @@ import {
 import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../../lib/columns";
-import { getDataTypeIcon } from "../icons";
 import { AllFields } from "./all-fields";
 import { ArrayField } from "./array-field";
 import { AvatarField } from "./avatar-field";

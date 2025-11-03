@@ -18,7 +18,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -29,14 +28,10 @@ export const ReportColumnHeader = memo(function ReportColumnHeader<
   column,
   title,
   className,
-  columnSchema,
-  tableSchema,
   ...props
 }: React.ComponentProps<typeof DropdownMenuTrigger> & {
   column: Column<TData, TValue>;
   title: string;
-  tableSchema: TableSchema | null;
-  columnSchema: ColumnSchema;
 }) {
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
@@ -114,7 +109,5 @@ export const ReportColumnHeader = memo(function ReportColumnHeader<
   props: React.ComponentProps<typeof DropdownMenuTrigger> & {
     column: Column<TData, TValue>;
     title: string;
-    tableSchema: TableSchema | null;
-    columnSchema: ColumnSchema;
   },
 ) => React.ReactElement;

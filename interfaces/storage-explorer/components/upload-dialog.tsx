@@ -4,7 +4,7 @@ import { useRef, useState, useTransition } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { Upload, X } from "lucide-react";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
