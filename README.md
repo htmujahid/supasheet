@@ -2,9 +2,9 @@
   <h1 align="center">
   Supasheet
   </h1>
-  <h3 align="center"><strong>The admin panel you've been waiting for</strong></h3>
-  <p>Supasheet is an opinionated admin panel designed to work seamlessly with Supabase. It provides an intuitive interface for managing your data, users, and settings, making it easier than ever to build and maintain your applications.</p>
-  <p>Try out Supasheet using our hosted version at <a href="https://supasheet.app">supasheet.app</a></p>
+  <h3 align="center"><strong>Complete CMS Platform built on Supabase</strong></h3>
+  <p>An opinionated, full-fledged open-source CMS with everything included. Go beyond basic admin panels with built-in authentication, dashboards, charts, reports, file management, and comprehensive data tools.</p>
+  <p>Try out Supasheet demo using at <a href="https://supasheet.app">supasheet.app</a></p>
 </div>
 
 <h1 align="center">
@@ -20,12 +20,14 @@
 - [x] User management
 - [x] Authorization (RBAC)
 - [x] Resource (CRUD)
+- [x] Data Views (Sheet, Kanban, Calendar, Gallery)
 - [x] Customizable UI
 - [x] Internationalization (i18n)
 - [x] SQL Editor
 - [x] Dashboard
 - [x] Analytics
 - [x] Report
+- [x] Charts
 - [x] File Storage
 - [x] Chart
 - [x] Audit Logs
