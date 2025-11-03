@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 import { ChevronRight, type LucideIcon, PlusIcon } from "lucide-react";
 import * as LucideIcons from "lucide-react";
@@ -52,6 +52,7 @@ function getSubItemsIcon({ type }: { type: string }) {
 }
 
 export function NavResources({ activeSchema }: { activeSchema: string }) {
+  const pathname = usePathname();
   const params = useParams<{ resource?: string }>();
   const { data: resources, isLoading } = useResources(activeSchema);
 
@@ -132,7 +133,10 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                         <SidebarMenuSub>
                           {metaItems?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.id}>
-                              <SidebarMenuSubButton asChild>
+                              <SidebarMenuSubButton 
+                                asChild
+                                isActive={pathname === `/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}
+                              >
                                 <Link
                                   href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}
                                   title={subItem.name}
