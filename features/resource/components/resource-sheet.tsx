@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { Maximize2, Loader, Plus } from "lucide-react";
+import { Loader, Maximize2, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -183,8 +183,8 @@ export function ResourceSheet({
       >
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2">
-            <Link 
-              href={`/home/${schema}/resource/${resource}/create`} 
+            <Link
+              href={`/home/${schema}/resource/${resource}/create`}
               title="Create New"
             >
               <Maximize2 className="size-4" />

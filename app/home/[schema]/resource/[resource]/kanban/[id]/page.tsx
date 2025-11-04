@@ -47,11 +47,13 @@ export default async function Page(props: {
   const tableSchema = await loadTableSchema(schema, resource);
   const viewSchema = await loadViewSchema(schema, resource);
 
-  const meta = tableSchema ? (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata : (
-    viewSchema?.comment ? JSON.parse(viewSchema.comment) : {}
-  ) as ViewMetadata;
+  const meta = tableSchema
+    ? ((tableSchema?.comment
+        ? JSON.parse(tableSchema.comment)
+        : {}) as TableMetadata)
+    : ((viewSchema?.comment
+        ? JSON.parse(viewSchema.comment)
+        : {}) as ViewMetadata);
 
   const currentView = meta.items?.find((item) => item.id === id);
 

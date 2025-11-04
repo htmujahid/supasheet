@@ -108,11 +108,9 @@ function useStore<T>(
 interface UseDataGridProps<TData>
   extends Omit<TableOptions<TData>, "pageCount" | "getCoreRowModel"> {
   onDataChange?: (data: TData[]) => void;
-  onRowAdd?: (event?: React.MouseEvent<HTMLDivElement>) =>
-    | Partial<CellPosition>
-    | Promise<Partial<CellPosition>>
-    | null
-    | void;
+  onRowAdd?: (
+    event?: React.MouseEvent<HTMLDivElement>,
+  ) => Partial<CellPosition> | Promise<Partial<CellPosition>> | null | void;
   onRowsDelete?: (rows: TData[], rowIndices: number[]) => void | Promise<void>;
   rowHeight?: RowHeightValue;
   overscan?: number;
@@ -347,9 +345,9 @@ function useDataGrid<TData>({
       selectionRange:
         columnIds.length > 0 && rowCount > 0 && firstColumnId && lastColumnId
           ? {
-            start: { rowIndex: 0, columnId: firstColumnId },
-            end: { rowIndex: rowCount - 1, columnId: lastColumnId },
-          }
+              start: { rowIndex: 0, columnId: firstColumnId },
+              end: { rowIndex: rowCount - 1, columnId: lastColumnId },
+            }
           : null,
       isSelecting: false,
     });
@@ -1196,7 +1194,7 @@ function useDataGrid<TData>({
             case "down":
               newRowIndex = Math.min(
                 (tableRef.current?.getRowModel().rows.length || data.length) -
-                1,
+                  1,
                 currentState.focusedCell.rowIndex + 1,
               );
               break;
@@ -1473,7 +1471,7 @@ function useDataGrid<TData>({
     overscan,
     measureElement:
       typeof window !== "undefined" &&
-        navigator.userAgent.indexOf("Firefox") === -1
+      navigator.userAgent.indexOf("Firefox") === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
     onChange: (instance) => {

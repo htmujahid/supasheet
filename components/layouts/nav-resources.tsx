@@ -133,9 +133,12 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                         <SidebarMenuSub>
                           {metaItems?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.id}>
-                              <SidebarMenuSubButton 
+                              <SidebarMenuSubButton
                                 asChild
-                                isActive={pathname === `/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}
+                                isActive={
+                                  pathname ===
+                                  `/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`
+                                }
                               >
                                 <Link
                                   href={`/home/${item.schema}/resource/${item.id}/${subItem.type}/${subItem.id}`}

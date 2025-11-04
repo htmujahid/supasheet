@@ -2,6 +2,7 @@
 
 import type { Cell, Table } from "@tanstack/react-table";
 
+import { useResourceContext } from "../resource-context";
 import { DataGridArrayCell } from "./data-grid-array-cell";
 import { DataGridAvatarCell } from "./data-grid-avatar-cell";
 import { DataGridCheckboxCell } from "./data-grid-boolean-cell";
@@ -20,7 +21,6 @@ import { DataGridRatingCell } from "./data-grid-rating-cell";
 import { DataGridTextCell } from "./data-grid-text-cell";
 import { DataGridTimeCell } from "./data-grid-time-cell";
 import { DataGridUuidCell } from "./data-grid-uuid-cell";
-import { useResourceContext } from "../resource-context";
 
 interface DataGridCellProps<TData> {
   cell: Cell<TData, unknown>;
@@ -56,11 +56,11 @@ export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
     table,
     rowIndex,
     columnId,
-    isEditing: 
-      isEditing 
-      && !cellOpts?.isPrimaryKey 
-      && !cellOpts?.isMetadata 
-      && permissions.canUpdate,
+    isEditing:
+      isEditing &&
+      !cellOpts?.isPrimaryKey &&
+      !cellOpts?.isMetadata &&
+      permissions.canUpdate,
     isFocused,
     isSelected,
   };

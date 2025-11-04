@@ -82,9 +82,13 @@ export function ResourceGrid({
         {...dataGridProps}
         table={table}
         height={height}
-        onRowAdd={permissions.canInsert ? async () => {
-          setResourceAction({ variant: "create" });
-        } : undefined}
+        onRowAdd={
+          permissions.canInsert
+            ? async () => {
+                setResourceAction({ variant: "create" });
+              }
+            : undefined
+        }
       />
     </div>
   );

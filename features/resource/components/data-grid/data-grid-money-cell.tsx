@@ -19,9 +19,10 @@ interface CellVariantProps<TData> {
 }
 
 function parseMoney(value: number | string): number {
-  const numValue = typeof value === "string"
-    ? parseFloat(value.replace("$", "").replaceAll(",", ""))
-    : value;
+  const numValue =
+    typeof value === "string"
+      ? parseFloat(value.replace("$", "").replaceAll(",", ""))
+      : value;
   return isNaN(numValue) ? 0 : numValue;
 }
 
@@ -53,7 +54,11 @@ export function DataGridMoneyCell<TData>({
     const initialNumValue = parseMoney(initialValue);
 
     if (numValue !== initialNumValue) {
-      meta?.onDataUpdate?.({ rowIndex, columnId, value: formatMoney(numValue) });
+      meta?.onDataUpdate?.({
+        rowIndex,
+        columnId,
+        value: formatMoney(numValue),
+      });
     }
     meta?.onCellEditingStop?.();
   }, [meta, rowIndex, columnId, initialValue, value]);
@@ -71,7 +76,11 @@ export function DataGridMoneyCell<TData>({
           const initialNumValue = parseMoney(initialValue);
 
           if (numValue !== initialNumValue) {
-            meta?.onDataUpdate?.({ rowIndex, columnId, value: formatMoney(numValue) });
+            meta?.onDataUpdate?.({
+              rowIndex,
+              columnId,
+              value: formatMoney(numValue),
+            });
           }
           meta?.onCellEditingStop?.({ moveToNextRow: true });
         } else if (event.key === "Tab") {
@@ -80,7 +89,11 @@ export function DataGridMoneyCell<TData>({
           const initialNumValue = parseMoney(initialValue);
 
           if (numValue !== initialNumValue) {
-            meta?.onDataUpdate?.({ rowIndex, columnId, value: formatMoney(numValue) });
+            meta?.onDataUpdate?.({
+              rowIndex,
+              columnId,
+              value: formatMoney(numValue),
+            });
           }
           meta?.onCellEditingStop?.({
             direction: event.shiftKey ? "left" : "right",

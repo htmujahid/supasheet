@@ -194,11 +194,11 @@ export function useResources(schema: string) {
               : {}) as TableMetadata,
           }))
           ?.filter((resource) => resource.meta.display !== "none") ?? [];
-      
+
       const viewSchema = await client
         .schema("supasheet")
         .rpc("get_views", { schema_name: schema });
-        
+
       const viewResources =
         viewSchema.data
           ?.map((resource) => ({
