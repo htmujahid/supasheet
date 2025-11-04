@@ -36,7 +36,7 @@ export function Editor({
   placeholder?: string;
 }) {
   return (
-    <div className="bg-background w-full overflow-hidden rounded-lg border">
+    <div className={`bg-background w-full overflow-hidden rounded-lg ${!disabled && "border"}`}>
       <LexicalComposer
         initialConfig={{
           nodes,

@@ -116,7 +116,7 @@ export function Plugins({
               <div className="" ref={onRef}>
                 <ContentEditable
                   placeholder={placeholder}
-                  className="ContentEditable__root relative block h-48 w-full overflow-auto px-8 py-4 focus:outline-none"
+                  className={`ContentEditable__root relative block h-48 w-full overflow-auto focus:outline-none ${!disabled && "px-8 py-4"}`}
                 />
               </div>
             </div>
