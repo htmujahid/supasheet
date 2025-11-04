@@ -184,7 +184,9 @@ export function ResourceSheet({
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2">
             <Link
-              href={`/home/${schema}/resource/${resource}/create`}
+              href={`/home/${schema}/resource/${resource}/${
+                create ? "create" : "edit/" + primaryKeys.map((key) => `${data?.[key]}`).join("/") 
+              }`}
               title="Create New"
             >
               <Maximize2 className="size-4" />

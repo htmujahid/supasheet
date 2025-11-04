@@ -17,6 +17,7 @@ import { METADATA_COLUMNS } from "@/config/database.config";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   ColumnSchema,
+  PrimaryKey,
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
@@ -24,6 +25,8 @@ import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../lib/columns";
 import { AllCells } from "./cells/all-cells";
+import Link from "next/link";
+import { Maximize2 } from "lucide-react";
 
 interface ResourceDetailSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
@@ -39,7 +42,12 @@ export function ResourceDetailSheet({
   ...props
 }: ResourceDetailSheetProps) {
   const isMobile = useIsMobile();
+  const schema = tableSchema?.schema as string;
+  const resource = tableSchema?.name as string;
 
+  const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
+    (key) => key.name,
+  );
   // Filter out metadata columns
   const detailColumns =
     columnsSchema?.filter((column) => {
@@ -53,7 +61,15 @@ export function ResourceDetailSheet({
         className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg"
       >
         <SheetHeader className="text-left">
-          <SheetTitle>Resource Details</SheetTitle>
+          <SheetTitle className="flex items-center gap-2">
+            <Link
+              href={`/home/${schema}/resource/${resource}/view/${primaryKeys.map((key) => `${data?.[key]}`).join("/")}`}
+              title="Create New"
+            >
+              <Maximize2 className="size-4" />
+            </Link>
+            Resource Details
+          </SheetTitle>
           <SheetDescription>
             View detailed information about this resource
           </SheetDescription>
