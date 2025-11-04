@@ -31,6 +31,35 @@ export async function loadTableSchema(schema: string, id: string) {
   return tableResponse.data?.[0] || null;
 }
 
+export async function loadViewSchema(schema: string, id: string) {
+  const client = await getSupabaseServerClient();
+
+  const viewResponse = await client
+    .schema("supasheet")
+    .rpc("get_views", { schema_name: schema, view_name: id });
+
+  if (viewResponse.error) {
+    return null;
+  }
+
+  if (!viewResponse.data || viewResponse.data.length === 0) {
+    const materializedViewResponse = await client
+      .schema("supasheet")
+      .rpc("get_materialized_views", {
+        schema_name: schema,
+        view_name: id,
+      });
+
+    if (materializedViewResponse.error) {
+      return null;
+    }
+
+    return materializedViewResponse.data?.[0] || null;
+  }
+
+  return viewResponse.data?.[0] || null;
+}
+
 export async function loadResourceData(
   schema: DatabaseSchemas,
   id: DatabaseTables<typeof schema>,

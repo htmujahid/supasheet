@@ -34,7 +34,7 @@ export function DataGridDateTimeCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = useState(initialValue ?? "");
+  const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;
@@ -88,6 +88,7 @@ export function DataGridDateTimeCell<TData>({
   }, [initialValue]);
 
   useEffect(() => {
+    console.log("isEditing changed:", isEditing, initialValue, value);
     if (!isEditing && initialValue !== value) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;

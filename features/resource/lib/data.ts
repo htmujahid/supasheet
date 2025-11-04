@@ -194,7 +194,46 @@ export function useResources(schema: string) {
               : {}) as TableMetadata,
           }))
           ?.filter((resource) => resource.meta.display !== "none") ?? [];
-      return tableResources;
+      
+      const viewSchema = await client
+        .schema("supasheet")
+        .rpc("get_views", { schema_name: schema });
+        
+      const viewResources =
+        viewSchema.data
+          ?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            schema: resource.schema as string,
+            type: "view" as const,
+            meta: (resource.comment
+              ? JSON.parse(resource.comment)
+              : {}) as ViewMetadata,
+          }))
+          ?.filter((resource) => resource.meta.display === "block") ?? [];
+
+      const materializedViewSchema = await client
+        .schema("supasheet")
+        .rpc("get_materialized_views", { schema_name: schema });
+
+      const materializedViewResources =
+        materializedViewSchema.data
+          ?.map((resource) => ({
+            name: resource.name as string,
+            id: resource.name as string,
+            schema: resource.schema as string,
+            type: "view" as const,
+            meta: (resource.comment
+              ? JSON.parse(resource.comment)
+              : {}) as ViewMetadata,
+          }))
+          ?.filter((resource) => resource.meta.display === "block") ?? [];
+
+      return [
+        ...tableResources,
+        ...viewResources,
+        ...materializedViewResources,
+      ];
     },
   });
 }

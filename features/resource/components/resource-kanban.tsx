@@ -60,13 +60,13 @@ export function ResourceKanbanView({
   layout,
 }: {
   data: KanbanViewReducedData;
-  tableSchema: TableSchema;
+  tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   groupBy: string;
   layout: "list" | "board";
 }) {
-  const schema = tableSchema.schema as DatabaseSchemas;
-  const resource = tableSchema.name as DatabaseTables<DatabaseSchemas>;
+  const schema = tableSchema?.schema as DatabaseSchemas;
+  const resource = tableSchema?.name as DatabaseTables<DatabaseSchemas>;
 
   const [columns, setColumns] = useState<KanbanViewReducedData>(data);
 
@@ -130,6 +130,7 @@ export function ResourceKanbanView({
           value={columns}
           onValueChange={setColumns}
           onUpdate={async function (item, _, to) {
+            if (!tableSchema) return null;
             const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
             const pk = primaryKeys.reduce(

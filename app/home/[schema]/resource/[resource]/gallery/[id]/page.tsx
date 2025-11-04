@@ -10,12 +10,14 @@ import {
   loadResourceData,
   loadResourcePermissions,
   loadTableSchema,
+  loadViewSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import {
   DatabaseSchemas,
   DatabaseTables,
   TableMetadata,
+  ViewMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 import { withI18n } from "@/lib/i18n/with-i18n";
@@ -37,14 +39,13 @@ async function HomeResourcePage(props: {
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
+  const viewSchema = await loadViewSchema(schema, resource);
 
-  if (!tableSchema) {
-    notFound();
-  }
-
-  const meta = (
+  const meta = tableSchema ? (
     tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata;
+  ) as TableMetadata : (
+    viewSchema?.comment ? JSON.parse(viewSchema.comment) : {}
+  ) as ViewMetadata;
 
   const currentView = meta.items?.find(
     (item) => item.id === id && item.type === "gallery",

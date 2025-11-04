@@ -28,7 +28,7 @@ export function DataGridTimeCell<TData>({
   isSelected,
 }: CellVariantProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = useState(initialValue ?? "");
+  const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const meta = table.options.meta;

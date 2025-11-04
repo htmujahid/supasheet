@@ -41,12 +41,12 @@ export function ResourceCalendarView({
 }: {
   view: "day" | "week" | "month" | "year" | "agenda";
   data: IEvent[];
-  tableSchema: TableSchema;
+  tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   currentView: Required<TableMetadata>["items"][number];
 }) {
-  const schema = tableSchema.schema as DatabaseSchemas;
-  const resource = tableSchema.name as DatabaseTables<DatabaseSchemas>;
+  const schema = tableSchema?.schema as DatabaseSchemas;
+  const resource = tableSchema?.name as DatabaseTables<DatabaseSchemas>;
 
   const router = useRouter();
   const { setResourceAction, permissions } = useResourceContext();
@@ -75,6 +75,7 @@ export function ResourceCalendarView({
   }
 
   async function onDragEvent(event: IEvent) {
+    if (!tableSchema) return;
     const startDateFieldName = currentView.startDate as string;
     const endDateFieldName = currentView.endDate as string;
 

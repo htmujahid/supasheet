@@ -68,4 +68,12 @@ export type TableMetadata = {
 export type ViewMetadata = {
   display?: "block" | "none";
   icon?: string;
+  primaryItem?: string;
+  items?: {
+    id: string;
+    name: string;
+    query?: { [key: string]: unknown };
+    [key: string]: unknown;
+    type: "calendar" | "kanban" | "sheet" | "gallery";
+  }[];
 };
