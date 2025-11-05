@@ -154,11 +154,15 @@ begin
     insert into supasheet.accounts(id,
                                 name,
                                 picture_url,
-                                email)
+                                email,
+                                created_at,
+                                updated_at)
     values (new.id,
             user_name,
             picture_url,
-            new.email);
+            new.email,
+            now(),
+            now());
 
     return new;
 
