@@ -92,8 +92,6 @@ export function LineChartWidget({
     return processed;
   });
 
-  console.log(xAxisKey);
-
   return (
     <Card className="col-span-2">
       <CardHeader>

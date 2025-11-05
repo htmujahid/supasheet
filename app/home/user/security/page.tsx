@@ -1,3 +1,4 @@
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
@@ -18,7 +19,9 @@ async function SecurityPage() {
   const { data: user } = await requireUser(client);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div>
+      <DefaultHeader breadcrumbs={[{ title: "Security" }]} />
+      <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
       <Card>
         <CardHeader>
           <CardTitle>
@@ -52,6 +55,7 @@ async function SecurityPage() {
           <MultiFactorAuthFactorsList userId={user?.id ?? ""} />
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

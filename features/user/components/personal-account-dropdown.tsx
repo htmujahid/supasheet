@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { usePersonalAccountData } from "../hooks/use-personal-account-data";
+import { usePersonalAccountData } from "../lib/hooks/use-personal-account-data";
 
 export function PersonalAccountDropdown({
   user,

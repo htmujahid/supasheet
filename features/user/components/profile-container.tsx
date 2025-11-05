@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { usePersonalAccountData } from "../hooks/use-personal-account-data";
+import { usePersonalAccountData } from "../lib/hooks/use-personal-account-data";
 import { UpdateAccountDetailsFormContainer } from "./update-account-details-form-container";
 import { UpdateAccountImageContainer } from "./update-account-image-container";
 
@@ -22,7 +22,7 @@ export function ProfileContainer({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
       <Card>
         <CardHeader>
           <CardTitle>

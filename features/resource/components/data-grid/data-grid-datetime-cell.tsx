@@ -40,12 +40,6 @@ export function DataGridDateTimeCell<TData>({
   const meta = table.options.meta;
 
   const onBlur = useCallback(() => {
-    console.log(
-      "onBlur called with value:",
-      value,
-      "initialValue:",
-      initialValue,
-    );
     if (value !== initialValue) {
       meta?.onDataUpdate?.({ rowIndex, columnId, value });
     }
@@ -88,7 +82,6 @@ export function DataGridDateTimeCell<TData>({
   }, [initialValue]);
 
   useEffect(() => {
-    console.log("isEditing changed:", isEditing, initialValue, value);
     if (!isEditing && initialValue !== value) {
       const row = cell.row.original;
       const cellOpts = cell.column.columnDef.meta;

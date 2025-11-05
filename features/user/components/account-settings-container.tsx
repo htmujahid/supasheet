@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { usePersonalAccountData } from "../hooks/use-personal-account-data";
+import { usePersonalAccountData } from "../lib/hooks/use-personal-account-data";
 import { AccountDangerZone } from "./account-danger-zone";
 import { UpdateEmailFormContainer } from "./email/update-email-form-container";
 import { MultiFactorAuthFactorsList } from "./mfa/multi-factor-auth-list";

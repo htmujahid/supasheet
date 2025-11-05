@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useUpdateUser } from "@/lib/supabase/hooks/use-update-user-mutation";
 
-import { UpdateEmailSchema } from "../../schema/update-email.schema";
+import { UpdateEmailSchema } from "../../lib/schema/update-email.schema";
 
 function createEmailResolver(currentEmail: string, errorMessage: string) {
   return zodResolver(

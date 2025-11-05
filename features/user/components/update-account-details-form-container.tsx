@@ -1,6 +1,6 @@
 "use client";
 
-import { useRevalidatePersonalAccountDataQuery } from "../hooks/use-personal-account-data";
+import { useRevalidatePersonalAccountDataQuery } from "../lib/hooks/use-personal-account-data";
 import { UpdateAccountDetailsForm } from "./update-account-details-form";
 
 export function UpdateAccountDetailsFormContainer({

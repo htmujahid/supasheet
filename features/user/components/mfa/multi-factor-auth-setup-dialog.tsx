@@ -42,7 +42,7 @@ import {
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 import { useFactorsMutationKey } from "@/lib/supabase/hooks/use-user-factors-mutation-key";
 
-import { refreshAuthSession } from "../../server/server-actions";
+import { refreshAuthSession } from "../../lib/server/server-actions";
 
 export function MultiFactorAuthSetupDialog(props: { userId: string }) {
   const { t } = useTranslation();

@@ -12,7 +12,7 @@ import { Trans } from "@/components/makerkit/trans";
 import { Database } from "@/lib/database.types";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-import { useRevalidatePersonalAccountDataQuery } from "../hooks/use-personal-account-data";
+import { useRevalidatePersonalAccountDataQuery } from "../lib/hooks/use-personal-account-data";
 
 const AVATARS_BUCKET = "account_image";
 

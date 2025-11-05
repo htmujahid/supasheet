@@ -380,7 +380,6 @@ function KanbanRoot<T>(props: KanbanRootProps<T>) {
           [overColumn]: [...overItems, activeItem],
         };
 
-        // console.log("Moved to different column", { activeItem, from: activeColumn, to: overColumn });
         onUpdate?.(activeItem, activeColumn, overColumn);
 
         onValueChange?.(updatedItems);

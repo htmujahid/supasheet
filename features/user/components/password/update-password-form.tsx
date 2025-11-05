@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUpdateUser } from "@/lib/supabase/hooks/use-update-user-mutation";
 
-import { PasswordUpdateSchema } from "../../schema/update-password.schema";
+import { PasswordUpdateSchema } from "../../lib/schema/update-password.schema";
 
 export const UpdatePasswordForm = ({
   user,

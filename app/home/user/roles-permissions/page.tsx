@@ -1,5 +1,6 @@
 import { LockIcon, ShieldIcon } from "lucide-react";
 
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -15,7 +16,9 @@ async function RolesPermissionsPage() {
   const rolesWithPermissions = await loadRolesPermissions();
 
   return (
-    <div className="space-y-4">
+    <div>
+      <DefaultHeader breadcrumbs={[{ title: "Roles & Permissions" }]} />
+      <div className="space-y-4 mx-auto max-w-3xl px-4">
       {rolesWithPermissions && rolesWithPermissions.length > 0 ? (
         rolesWithPermissions.map((role, index) => (
           <Card key={index}>
@@ -69,6 +72,7 @@ async function RolesPermissionsPage() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

@@ -19,8 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { DeletePersonalAccountSchema } from "../schema/delete-personal-account.schema";
-import { deletePersonalAccountAction } from "../server/server-actions";
+import { DeletePersonalAccountSchema } from "../lib/schema/delete-personal-account.schema";
+import { deletePersonalAccountAction } from "../lib/server/server-actions";
 
 export function AccountDangerZone() {
   return (

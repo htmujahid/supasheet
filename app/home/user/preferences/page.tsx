@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { If } from "@/components/makerkit/if";
 import { LanguageSelector } from "@/components/makerkit/language-selector";
 import { Trans } from "@/components/makerkit/trans";
@@ -18,7 +19,9 @@ function PreferencesPage() {
   const supportsLanguageSelection = useSupportMultiLanguage();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div>
+      <DefaultHeader breadcrumbs={[{ title: "Preferences" }]} />
+      <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
       <Card>
         <CardHeader>
           <CardTitle>
@@ -52,6 +55,7 @@ function PreferencesPage() {
           </CardContent>
         </Card>
       </If>
+      </div>
     </div>
   );
 }

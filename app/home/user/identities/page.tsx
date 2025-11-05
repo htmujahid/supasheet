@@ -1,3 +1,4 @@
+import { DefaultHeader } from "@/components/layouts/default-header";
 import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
@@ -14,7 +15,9 @@ import { withI18n } from "@/lib/i18n/with-i18n";
 
 function IdentitiesPage() {
   return (
-    <div className="flex flex-col gap-4">
+    <div>
+      <DefaultHeader breadcrumbs={[{ title: "Identities" }]} />
+      <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
       <Card>
         <CardHeader>
           <CardTitle>
@@ -46,6 +49,7 @@ function IdentitiesPage() {
           <LinkAccountsList providers={authConfig.providers.oAuth} />
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

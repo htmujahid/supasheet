@@ -16,8 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Database } from "@/lib/database.types";
 
-import { useUpdateAccountData } from "../hooks/use-update-account";
-import { AccountDetailsSchema } from "../schema/account-details.schema";
+import { useUpdateAccountData } from "../lib/hooks/use-update-account";
+import { AccountDetailsSchema } from "../lib/schema/account-details.schema";
 
 type UpdateUserDataParams =
   Database["supasheet"]["Tables"]["accounts"]["Update"];
