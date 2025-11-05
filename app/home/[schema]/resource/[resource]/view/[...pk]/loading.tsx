@@ -1,7 +1,7 @@
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ResourceDetailLoading() {
+export default function ResourceViewLoading() {
   return (
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: "..." }, { title: "View" }]} />

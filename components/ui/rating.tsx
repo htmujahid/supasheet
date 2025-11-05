@@ -16,7 +16,7 @@ import {
 import { Slot } from "@radix-ui/react-slot";
 import { Star } from "lucide-react";
 
-import { VisuallyHiddenInput } from "@/components/visually-hidden-input";
+import { VisuallyHiddenInput } from "@/components/misc/visually-hidden-input";
 import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
 
@@ -110,17 +110,17 @@ function useDirection(dirProp?: Direction): Direction {
   return dirProp ?? contextDir ?? "ltr";
 }
 
-interface StoreState {
+type StoreState = {
   value: number;
   hoveredValue: number | null;
-}
+};
 
-interface Store {
+type Store = {
   subscribe: (callback: () => void) => () => void;
   getState: () => StoreState;
   setState: <K extends keyof StoreState>(key: K, value: StoreState[K]) => void;
   notify: () => void;
-}
+};
 
 function createStore(
   listenersRef: React.RefObject<Set<() => void>>,
@@ -190,14 +190,14 @@ function useStore<T>(selector: (state: StoreState) => T): T {
   return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
 
-interface ItemData {
+type ItemData = {
   id: string;
   ref: React.RefObject<ItemElement | null>;
   value: number;
   disabled: boolean;
-}
+};
 
-interface RatingContextValue {
+type RatingContextValue = {
   id: string;
   dir: Direction;
   orientation: Orientation;
@@ -209,7 +209,7 @@ interface RatingContextValue {
   disabled: boolean;
   readOnly: boolean;
   getAutoIndex: (instanceId: string) => number;
-}
+};
 
 const RatingContext = createContext<RatingContextValue | null>(null);
 
@@ -221,7 +221,7 @@ function useRatingContext(consumerName: string) {
   return context;
 }
 
-interface FocusContextValue {
+type FocusContextValue = {
   tabStopId: string | null;
   onItemFocus: (tabStopId: string) => void;
   onItemShiftTab: () => void;
@@ -230,7 +230,7 @@ interface FocusContextValue {
   onItemRegister: (item: ItemData) => void;
   onItemUnregister: (id: string) => void;
   getItems: () => ItemData[];
-}
+};
 
 const FocusContext = createContext<FocusContextValue | null>(null);
 
@@ -244,7 +244,7 @@ function useFocusContext(consumerName: string) {
   return context;
 }
 
-interface RatingRootProps extends React.ComponentProps<"div"> {
+type RatingRootProps = React.ComponentProps<"div"> & {
   value?: number;
   defaultValue?: number;
   onValueChange?: (value: number) => void;
@@ -261,17 +261,15 @@ interface RatingRootProps extends React.ComponentProps<"div"> {
   readOnly?: boolean;
   required?: boolean;
   name?: string;
-}
+};
 
-function RatingRoot(props: RatingRootProps) {
-  const {
-    value,
-    defaultValue = 0,
-    onValueChange,
-    onHover,
-    ...rootProps
-  } = props;
-
+function RatingRoot({
+  value,
+  defaultValue = 0,
+  onValueChange,
+  onHover,
+  ...rootProps
+}: RatingRootProps) {
   const stateRef = useLazyRef(() => ({
     value: value ?? defaultValue,
     hoveredValue: null,
@@ -290,30 +288,30 @@ function RatingRoot(props: RatingRootProps) {
   );
 }
 
-interface RatingRootImplProps
-  extends Omit<RatingRootProps, "defaultValue" | "onValueChange" | "onHover"> {}
+type RatingRootImplProps = Omit<
+  RatingRootProps,
+  "defaultValue" | "onValueChange" | "onHover"
+>;
 
-function RatingRootImpl(props: RatingRootImplProps) {
-  const {
-    value,
-    id: idProp,
-    dir: dirProp,
-    orientation = "horizontal",
-    activationMode = "automatic",
-    size = "default",
-    max = 5,
-    step = 1,
-    clearable = false,
-    asChild,
-    disabled = false,
-    readOnly = false,
-    required = false,
-    name,
-    className,
-    ref,
-    ...rootProps
-  } = props;
-
+function RatingRootImpl({
+  value,
+  id: idProp,
+  dir: dirProp,
+  orientation = "horizontal",
+  activationMode = "automatic",
+  size = "default",
+  max = 5,
+  step = 1,
+  clearable = false,
+  asChild,
+  disabled = false,
+  readOnly = false,
+  required = false,
+  name,
+  className,
+  ref,
+  ...rootProps
+}: RatingRootImplProps) {
   const store = useStoreContext("RatingRootImpl");
 
   useIsomorphicLayoutEffect(() => {
@@ -566,17 +564,21 @@ function RatingRootImpl(props: RatingRootImplProps) {
   );
 }
 
-interface RatingItemProps
-  extends Omit<React.ComponentProps<"button">, "children"> {
+type RatingItemProps = Omit<React.ComponentProps<"button">, "children"> & {
   index?: number;
   asChild?: boolean;
   children?: React.ReactNode | ((dataState: DataState) => React.ReactNode);
-}
+};
 
-function RatingItem(props: RatingItemProps) {
-  const { index, asChild, disabled, className, ref, children, ...itemProps } =
-    props;
-
+function RatingItem({
+  index,
+  asChild,
+  disabled,
+  className,
+  ref,
+  children,
+  ...itemProps
+}: RatingItemProps) {
   const itemRef = useRef<ItemElement>(null);
   const composedRef = useComposedRefs(ref, itemRef);
 

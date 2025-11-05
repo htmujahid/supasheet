@@ -12,13 +12,12 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
-const ErrorPage = ({
-  error,
-  reset,
-}: {
+type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
-}) => {
+};
+
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
   console.error(error);
 
   return (
@@ -46,6 +45,4 @@ const ErrorPage = ({
       </div>
     </div>
   );
-};
-
-export default ErrorPage;
+}

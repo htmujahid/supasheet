@@ -1,6 +1,5 @@
 import { AlertCircleIcon } from "lucide-react";
 
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 /**
@@ -20,23 +19,17 @@ export function AuthErrorAlert({
     return null;
   }
 
-  const DefaultError = <Trans i18nKey="auth:errors.default" />;
-  const errorCode = error instanceof Error ? error.message : error;
+  const DefaultError =
+    "We have encountered an error. Please ensure you have a working internet connection and try again";
 
   return (
     <Alert variant={"destructive"}>
       <AlertCircleIcon className={"w-4"} />
 
-      <AlertTitle>
-        <Trans i18nKey={`auth:errorAlertHeading`} />
-      </AlertTitle>
+      <AlertTitle>Sorry, we weren&apos;t able to authenticate you</AlertTitle>
 
       <AlertDescription data-test={"auth-error-message"}>
-        <Trans
-          i18nKey={`auth:errors.${errorCode}`}
-          defaults={"<DefaultError />"}
-          components={{ DefaultError }}
-        />
+        {DefaultError}
       </AlertDescription>
     </Alert>
   );

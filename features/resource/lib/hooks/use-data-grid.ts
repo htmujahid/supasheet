@@ -66,7 +66,7 @@ function useAsRef<T>(data: T) {
   return ref;
 }
 
-interface DataGridState {
+type DataGridState = {
   sorting: SortingState;
   rowHeight: RowHeightValue;
   rowSelection: RowSelectionState;
@@ -80,9 +80,9 @@ interface DataGridState {
   searchOpen: boolean;
   lastClickedRowIndex: number | null;
   isScrolling: boolean;
-}
+};
 
-interface DataGridStore {
+type DataGridStore = {
   subscribe: (callback: () => void) => () => void;
   getState: () => DataGridState;
   setState: <K extends keyof DataGridState>(
@@ -91,7 +91,7 @@ interface DataGridStore {
   ) => void;
   notify: () => void;
   batch: (fn: () => void) => void;
-}
+};
 
 function useStore<T>(
   store: DataGridStore,
@@ -105,8 +105,10 @@ function useStore<T>(
   return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
 
-interface UseDataGridProps<TData>
-  extends Omit<TableOptions<TData>, "pageCount" | "getCoreRowModel"> {
+type UseDataGridProps<TData> = Omit<
+  TableOptions<TData>,
+  "pageCount" | "getCoreRowModel"
+> & {
   onDataChange?: (data: TData[]) => void;
   onRowAdd?: (
     event?: React.MouseEvent<HTMLDivElement>,
@@ -117,7 +119,7 @@ interface UseDataGridProps<TData>
   autoFocus?: boolean | Partial<CellPosition>;
   enableColumnSelection?: boolean;
   enableSearch?: boolean;
-}
+};
 
 function useDataGrid<TData>({
   columns,

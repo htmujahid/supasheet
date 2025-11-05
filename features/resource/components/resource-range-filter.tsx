@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 import { ColumnFilterData } from "./fields/types";
 
-interface ResourceRangeFilterProps<TData> extends React.ComponentProps<"div"> {
+type ResourceRangeFilterProps<TData> = React.ComponentProps<"div"> & {
   filter: ExtendedColumnFilter<TData>;
   column: ColumnFilterData;
   inputId: string;
@@ -16,7 +16,7 @@ interface ResourceRangeFilterProps<TData> extends React.ComponentProps<"div"> {
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
   ) => void;
-}
+};
 
 export function ResourceRangeFilter<TData>({
   filter,

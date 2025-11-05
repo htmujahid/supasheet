@@ -31,11 +31,11 @@ type FacetedValue<Multiple extends boolean> = Multiple extends true
   ? string[]
   : string;
 
-interface FacetedContextValue<Multiple extends boolean = boolean> {
+type FacetedContextValue<Multiple extends boolean = boolean> = {
   value?: FacetedValue<Multiple>;
   onItemSelect?: (value: string) => void;
   multiple?: Multiple;
-}
+};
 
 const FacetedContext = createContext<FacetedContextValue<boolean> | null>(null);
 
@@ -47,13 +47,14 @@ function useFacetedContext(name: string) {
   return context;
 }
 
-interface FacetedProps<Multiple extends boolean = false>
-  extends React.ComponentProps<typeof Popover> {
+type FacetedProps<Multiple extends boolean = false> = React.ComponentProps<
+  typeof Popover
+> & {
   value?: FacetedValue<Multiple>;
   onValueChange?: (value: FacetedValue<Multiple> | undefined) => void;
   children?: React.ReactNode;
   multiple?: Multiple;
-}
+};
 
 function Faceted<Multiple extends boolean = false>(
   props: FacetedProps<Multiple>,
@@ -119,9 +120,11 @@ function Faceted<Multiple extends boolean = false>(
   );
 }
 
-function FacetedTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {
-  const { className, children, ...triggerProps } = props;
-
+function FacetedTrigger({
+  className,
+  children,
+  ...triggerProps
+}: React.ComponentProps<typeof PopoverTrigger>) {
   return (
     <PopoverTrigger
       {...triggerProps}
@@ -132,23 +135,21 @@ function FacetedTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {
   );
 }
 
-interface FacetedBadgeListProps extends React.ComponentProps<"div"> {
+type FacetedBadgeListProps = React.ComponentProps<"div"> & {
   options?: { label: string; value: string }[];
   max?: number;
   badgeClassName?: string;
   placeholder?: string;
-}
+};
 
-function FacetedBadgeList(props: FacetedBadgeListProps) {
-  const {
-    options = [],
-    max = 2,
-    placeholder = "Select options...",
-    className,
-    badgeClassName,
-    ...badgeListProps
-  } = props;
-
+function FacetedBadgeList({
+  options = [],
+  max = 2,
+  placeholder = "Select options...",
+  className,
+  badgeClassName,
+  ...badgeListProps
+}: FacetedBadgeListProps) {
   const context = useFacetedContext("FacetedBadgeList");
   const values = Array.isArray(context.value)
     ? context.value
@@ -201,9 +202,11 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
   );
 }
 
-function FacetedContent(props: React.ComponentProps<typeof PopoverContent>) {
-  const { className, children, ...contentProps } = props;
-
+function FacetedContent({
+  className,
+  children,
+  ...contentProps
+}: React.ComponentProps<typeof PopoverContent>) {
   return (
     <PopoverContent
       {...contentProps}
@@ -226,12 +229,17 @@ const FacetedEmpty = CommandEmpty;
 
 const FacetedGroup = CommandGroup;
 
-interface FacetedItemProps extends React.ComponentProps<typeof CommandItem> {
+type FacetedItemProps = React.ComponentProps<typeof CommandItem> & {
   value: string;
-}
+};
 
-function FacetedItem(props: FacetedItemProps) {
-  const { value, onSelect, className, children, ...itemProps } = props;
+function FacetedItem({
+  value,
+  onSelect,
+  className,
+  children,
+  ...itemProps
+}: FacetedItemProps) {
   const context = useFacetedContext("FacetedItem");
 
   const isSelected = context.multiple

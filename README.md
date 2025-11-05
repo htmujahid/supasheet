@@ -4,13 +4,13 @@
   </h1>
   <h3 align="center"><strong>Complete CMS Platform built on Supabase</strong></h3>
   <p>An opinionated, full-fledged open-source CMS with everything included. Go beyond basic admin panels with built-in authentication, dashboards, charts, reports, file management, and comprehensive data tools.</p>
-  <p>Try out Supasheet demo using at <a href="https://supasheet.app">supasheet.app</a></p>
+  <p>Try out Supasheet demo at <a href="https://supasheet.app">supasheet.app</a></p>
 </div>
 
 <h1 align="center">
    <picture>
    <source media="(prefers-color-scheme: dark)" srcset="public/images/bg-dark.png">
-   <img alt="teable interface" width="100%" src="public/images/bg-light.png">
+   <img alt="supasheet" width="100%" src="public/images/bg-light.png">
    </picture>
 </h1>
 

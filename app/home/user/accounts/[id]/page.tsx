@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -6,16 +8,26 @@ import {
   loadAccountPermissions,
   loadSingleUser,
 } from "@/features/user/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";
 
-type UserDetailPageProps = {
+type AccountDetailPageProps = {
   params: Promise<{ id: string }>;
 };
 
-async function UserDetailPage(props: UserDetailPageProps) {
-  const { id } = await props.params;
+export async function generateMetadata({
+  params,
+}: AccountDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const user = await loadSingleUser(id);
+
+  return {
+    title: user?.email || user?.phone || id,
+  };
+}
+
+async function AccountDetailPage({ params }: AccountDetailPageProps) {
+  const { id } = await params;
   const permissions = await loadAccountPermissions();
 
   if (!permissions.canSelect) {
@@ -57,4 +69,4 @@ async function UserDetailPage(props: UserDetailPageProps) {
   );
 }
 
-export default withI18n(UserDetailPage);
+export default AccountDetailPage;

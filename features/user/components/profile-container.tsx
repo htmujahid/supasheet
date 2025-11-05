@@ -1,7 +1,6 @@
 "use client";
 
 import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
-import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
   CardContent,
@@ -25,12 +24,10 @@ export function ProfileContainer({ userId }: { userId: string }) {
     <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:accountImage"} />
-          </CardTitle>
+          <CardTitle>Your Profile Picture</CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={"account:accountImageDescription"} />
+            Please choose a photo to upload as your profile picture.
           </CardDescription>
         </CardHeader>
 
@@ -46,12 +43,10 @@ export function ProfileContainer({ userId }: { userId: string }) {
 
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:name"} />
-          </CardTitle>
+          <CardTitle>Your Name</CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={"account:nameDescription"} />
+            Update your name to be displayed on your profile
           </CardDescription>
         </CardHeader>
 

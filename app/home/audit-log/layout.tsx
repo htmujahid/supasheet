@@ -9,9 +9,7 @@ import { loadSchemas } from "@/features/audit-log/lib/loaders";
 
 export default function HomeAuditLogsLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren) {
   const schemasPromise = loadSchemas();
 
   return (

@@ -8,9 +8,9 @@ import { exportTableToCSV } from "@/lib/export";
 
 import { AuditLogWithAccount } from "../lib/types";
 
-interface AuditLogTableToolbarActionsProps {
+type AuditLogTableToolbarActionsProps = {
   table: Table<AuditLogWithAccount>;
-}
+};
 
 export function AuditLogTableToolbarActions({
   table,

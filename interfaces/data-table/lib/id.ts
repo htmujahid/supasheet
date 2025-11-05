@@ -2,10 +2,10 @@ import { customAlphabet } from "nanoid";
 
 const prefixes: Record<string, unknown> = {};
 
-interface GenerateIdOptions {
+type GenerateIdOptions = {
   length?: number;
   separator?: string;
-}
+};
 
 export function generateId(
   prefixOrOptions?: keyof typeof prefixes | GenerateIdOptions,

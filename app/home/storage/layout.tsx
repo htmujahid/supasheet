@@ -13,11 +13,7 @@ async function loadBuckets() {
   return buckets;
 }
 
-export default function HomeStorageLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function StorageLayout({ children }: React.PropsWithChildren) {
   const bucketsPromise = loadBuckets();
 
   return (

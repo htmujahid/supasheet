@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export function ReactQueryProvider(props: React.PropsWithChildren) {
+export function ReactQueryProvider({ children }: React.PropsWithChildren) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -19,8 +19,6 @@ export function ReactQueryProvider(props: React.PropsWithChildren) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {props.children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }

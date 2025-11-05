@@ -17,12 +17,13 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-interface DataTableActionBarProps<TData>
-  extends React.ComponentProps<typeof motion.div> {
+type DataTableActionBarProps<TData> = React.ComponentProps<
+  typeof motion.div
+> & {
   table: Table<TData>;
   visible?: boolean;
   container?: Element | DocumentFragment | null;
-}
+};
 
 function DataTableActionBar<TData>({
   table,
@@ -81,11 +82,10 @@ function DataTableActionBar<TData>({
   );
 }
 
-interface DataTableActionBarActionProps
-  extends React.ComponentProps<typeof Button> {
+type DataTableActionBarActionProps = React.ComponentProps<typeof Button> & {
   tooltip?: string;
   isPending?: boolean;
-}
+};
 
 function DataTableActionBarAction({
   size = "sm",
@@ -127,9 +127,9 @@ function DataTableActionBarAction({
   );
 }
 
-interface DataTableActionBarSelectionProps<TData> {
+type DataTableActionBarSelectionProps<TData> = {
   table: Table<TData>;
-}
+};
 
 function DataTableActionBarSelection<TData>({
   table,

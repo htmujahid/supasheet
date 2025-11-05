@@ -30,12 +30,11 @@ import { formatTitle } from "@/lib/format";
 import { getColumnMetadata } from "../lib/columns";
 import { AllCells } from "./cells/all-cells";
 
-interface ResourceDetailSheetProps
-  extends React.ComponentPropsWithRef<typeof Sheet> {
+type ResourceDetailSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   data: ResourceDataSchema | null;
-}
+};
 
 export function ResourceDetailSheet({
   tableSchema,

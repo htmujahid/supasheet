@@ -25,9 +25,9 @@ import { Separator } from "@/components/ui/separator";
 
 import { AuditLogWithAccount } from "../lib/types";
 
-interface AuditLogDetailViewProps {
+type AuditLogDetailViewProps = {
   auditLog: AuditLogWithAccount;
-}
+};
 
 export function AuditLogDetailView({ auditLog }: AuditLogDetailViewProps) {
   const operationColors = {

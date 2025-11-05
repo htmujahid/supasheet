@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { If } from "@/components/makerkit/if";
 import { OauthProviderLogoImage } from "@/components/makerkit/oauth-provider-logo-image";
 import { Spinner } from "@/components/makerkit/spinner";
-import { Trans } from "@/components/makerkit/trans";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +25,7 @@ import { useLinkIdentityWithProvider } from "@/lib/supabase/hooks/use-link-ident
 import { useUnlinkUserIdentity } from "@/lib/supabase/hooks/use-unlink-user-identity";
 import { useUserIdentities } from "@/lib/supabase/hooks/use-user-identities";
 
-export function LinkAccountsList(props: { providers: Provider[] }) {
+export function LinkAccountsList({ providers }: { providers: Provider[] }) {
   const unlinkMutation = useUnlinkUserIdentity();
   const linkMutation = useLinkIdentityWithProvider();
 
@@ -38,7 +37,7 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
   } = useUserIdentities();
 
   // Only show providers from the allowed list that aren't already connected
-  const availableProviders = props.providers.filter(
+  const availableProviders = providers.filter(
     (provider) => !isProviderConnected(provider),
   );
 
@@ -49,9 +48,9 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
     const promise = unlinkMutation.mutateAsync(identity);
 
     toast.promise(promise, {
-      loading: <Trans i18nKey={"account:unlinkingAccount"} />,
-      success: <Trans i18nKey={"account:accountUnlinked"} />,
-      error: <Trans i18nKey={"account:unlinkAccountError"} />,
+      loading: "Unlinking account...",
+      success: "Account unlinked successfully",
+      error: "Failed to unlink account",
     });
   };
 
@@ -59,9 +58,9 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
     const promise = linkMutation.mutateAsync(provider);
 
     toast.promise(promise, {
-      loading: <Trans i18nKey={"account:linkingAccount"} />,
-      success: <Trans i18nKey={"account:accountLinked"} />,
-      error: <Trans i18nKey={"account:linkAccountError"} />,
+      loading: "Linking account...",
+      success: "Account linked successfully",
+      error: "Failed to link account",
     });
   };
 
@@ -80,11 +79,11 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
         <div className="space-y-3">
           <div>
             <h3 className="text-foreground text-sm font-medium">
-              <Trans i18nKey={"account:linkedAccounts"} />
+              Linked Accounts
             </h3>
 
             <p className="text-muted-foreground text-xs">
-              <Trans i18nKey={"account:alreadyLinkedAccountsDescription"} />
+              You have already linked these accounts
             </p>
           </div>
 
@@ -123,34 +122,31 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
                         <If condition={unlinkMutation.isPending}>
                           <Spinner className="mr-2 h-3 w-3" />
                         </If>
-                        <Trans i18nKey={"account:unlinkAccount"} />
+                        Unlink Account
                       </Button>
                     </AlertDialogTrigger>
 
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>
-                          <Trans i18nKey={"account:confirmUnlinkAccount"} />
+                          Confirm Unlink Account
                         </AlertDialogTitle>
 
                         <AlertDialogDescription>
-                          <Trans
-                            i18nKey={"account:unlinkAccountConfirmation"}
-                            values={{ provider: identity.provider }}
-                          />
+                          Are you sure you want to unlink your{" "}
+                          {identity.provider} account? You will no longer be
+                          able to sign in with this provider.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
 
                       <AlertDialogFooter>
-                        <AlertDialogCancel>
-                          <Trans i18nKey={"common:cancel"} />
-                        </AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                         <AlertDialogAction
                           onClick={() => handleUnlinkAccount(identity)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                          <Trans i18nKey={"account:unlinkAccount"} />
+                          Unlink Account
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -169,11 +165,11 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
         <div className="space-y-3">
           <div>
             <h3 className="text-foreground text-sm font-medium">
-              <Trans i18nKey={"account:availableAccounts"} />
+              Available Accounts
             </h3>
 
             <p className="text-muted-foreground text-xs">
-              <Trans i18nKey={"account:availableAccountsDescription"} />
+              Connect other authentication providers to your account
             </p>
           </div>
 
@@ -203,7 +199,7 @@ export function LinkAccountsList(props: { providers: Provider[] }) {
         }
       >
         <div className="text-muted-foreground py-8 text-center">
-          <Trans i18nKey={"account:noAccountsAvailable"} />
+          No additional accounts available to link
         </div>
       </If>
     </div>

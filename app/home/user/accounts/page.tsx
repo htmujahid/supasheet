@@ -1,5 +1,9 @@
+import { Metadata } from "next";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { Button } from "@/components/ui/button";
@@ -9,22 +13,23 @@ import {
   loadAccounts,
 } from "@/features/user/lib/loaders";
 import { usersSearchParamsCache } from "@/features/user/lib/validations";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function UsersPage(props: {
-  searchParams: Promise<{
-    page?: string;
-    per_page?: string;
-  }>;
-}) {
+export const metadata: Metadata = {
+  title: "Accounts",
+};
+
+type AccountsPageProps = {
+  searchParams: Promise<SearchParams>;
+};
+
+async function AccountsPage({ searchParams }: AccountsPageProps) {
   const permissions = await loadAccountPermissions();
 
   if (!permissions.canSelect) {
     notFound();
   }
 
-  const searchParams = await props.searchParams;
-  const params = usersSearchParamsCache.parse(searchParams);
+  const params = usersSearchParamsCache.parse(await searchParams);
 
   const data = await loadAccounts(params);
 
@@ -46,4 +51,4 @@ async function UsersPage(props: {
   );
 }
 
-export default withI18n(UsersPage);
+export default AccountsPage;

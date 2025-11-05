@@ -13,9 +13,9 @@ import { AuditLogWithAccount } from "../lib/types";
 import { auditLogTableColumns } from "./audit-log-table-columns";
 import { AuditLogTableToolbarActions } from "./audit-log-table-toolbar-actions";
 
-interface AuditLogTableProps {
+type AuditLogTableProps = {
   data: Awaited<ReturnType<typeof loadAuditLogs>>;
-}
+};
 
 export function AuditLogTable({ data }: AuditLogTableProps) {
   const columns = useMemo(() => auditLogTableColumns, []);

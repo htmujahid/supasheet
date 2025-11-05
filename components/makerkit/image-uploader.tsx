@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "../ui/button";
 import { ImageUploadInput } from "./image-upload-input";
-import { Trans } from "./trans";
 
 export function ImageUploader(
   props: React.PropsWithChildren<{
@@ -82,7 +81,7 @@ export function ImageUploader(
 
       <div>
         <Button onClick={onClear} size={"sm"} variant={"ghost"}>
-          <Trans i18nKey={"common:clear"} />
+          Clear
         </Button>
       </div>
     </div>

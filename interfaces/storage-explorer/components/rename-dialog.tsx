@@ -21,13 +21,13 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client"
 
 import type { StorageFile } from "../types";
 
-interface RenameDialogProps {
+type RenameDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   file: StorageFile | null;
   bucketId: string;
   onClose?: () => void;
-}
+};
 
 export function RenameDialog({
   open,

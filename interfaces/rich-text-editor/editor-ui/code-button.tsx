@@ -11,10 +11,10 @@ import { CircleCheckIcon, CopyIcon } from "lucide-react";
 
 import { useDebounce } from "@/interfaces/rich-text-editor/editor-hooks/use-debounce";
 
-interface Props {
+type Props = {
   editor: LexicalEditor;
   getCodeDOMNode: () => HTMLElement | null;
-}
+};
 
 export function CopyButton({ editor, getCodeDOMNode }: Props) {
   const [isCopyCompleted, setCopyCompleted] = useState<boolean>(false);

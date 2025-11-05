@@ -6,7 +6,7 @@ import type { User } from "@supabase/supabase-js";
 
 import { ZodType, z } from "zod";
 
-import { verifyCaptchaToken } from "@/features/auth/captcha/server";
+import { verifyCaptchaToken } from "@/features/auth/lib/server/verify-captcha";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";
 

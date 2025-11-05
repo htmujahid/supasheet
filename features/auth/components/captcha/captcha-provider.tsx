@@ -22,7 +22,7 @@ export const Captcha = createContext<{
   },
 });
 
-export function CaptchaProvider(props: { children: React.ReactNode }) {
+export function CaptchaProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string>("");
   const instanceRef = useRef<TurnstileInstance | null>(null);
 
@@ -34,7 +34,7 @@ export function CaptchaProvider(props: { children: React.ReactNode }) {
     <Captcha.Provider
       value={{ token, setToken, instance: instanceRef.current, setInstance }}
     >
-      {props.children}
+      {children}
     </Captcha.Provider>
   );
 }

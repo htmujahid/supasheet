@@ -34,11 +34,12 @@ import {
 import { formatTitle } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-interface DataGridColumnHeaderProps<TData, TValue>
-  extends React.ComponentProps<typeof DropdownMenuTrigger> {
+type DataGridColumnHeaderProps<TData, TValue> = React.ComponentProps<
+  typeof DropdownMenuTrigger
+> & {
   header: Header<TData, TValue>;
   table: Table<TData>;
-}
+};
 
 export function DataGridColumnHeader<TData, TValue>({
   header,
@@ -247,10 +248,12 @@ const DataGridColumnResizer = memo(DataGridColumnResizerImpl, (prev, next) => {
   return true;
 }) as typeof DataGridColumnResizerImpl;
 
-interface DataGridColumnResizerProps<TData, TValue>
-  extends DataGridColumnHeaderProps<TData, TValue> {
+type DataGridColumnResizerProps<TData, TValue> = DataGridColumnHeaderProps<
+  TData,
+  TValue
+> & {
   label: string;
-}
+};
 
 function DataGridColumnResizerImpl<TData, TValue>({
   header,

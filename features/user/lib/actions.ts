@@ -7,11 +7,10 @@ import { enhanceAction } from "@/lib/next/actions";
 import { getSupabaseServerAdminClient } from "@/lib/supabase/clients/server-admin-client";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-import { loadAccountPermissions } from "../loaders";
-import { CreateAccountSchema } from "../schema/create-account.schema";
-import { DeletePersonalAccountSchema } from "../schema/delete-personal-account.schema";
-import { UpdateAccountSchema } from "../schema/update-account.schema";
-import { createDeletePersonalAccountService } from "./services/delete-personal-account.service";
+import { loadAccountPermissions } from "./loaders";
+import { CreateAccountSchema } from "./schema/create-account.schema";
+import { DeletePersonalAccountSchema } from "./schema/delete-personal-account.schema";
+import { UpdateAccountSchema } from "./schema/update-account.schema";
 
 const enableAccountDeletion =
   process.env.NEXT_PUBLIC_ENABLE_PERSONAL_ACCOUNT_DELETION === "true";
@@ -52,18 +51,25 @@ export const deletePersonalAccountAction = enhanceAction(
 
     const client = await getSupabaseServerClient();
 
-    // create a new instance of the personal accounts service
-    const service = createDeletePersonalAccountService();
-
     // sign out the user before deleting their account
     await client.auth.signOut();
 
+    const adminClient = getSupabaseServerAdminClient();
+
     // delete the user's account and cancel all subscriptions
-    await service.deletePersonalAccount({
-      adminClient: getSupabaseServerAdminClient(),
-      userId: user.id,
-      userEmail: user.email ?? null,
-    });
+    try {
+      await adminClient.auth.admin.deleteUser(user.id);
+    } catch (error) {
+      logger.error(
+        {
+          ...ctx,
+          error,
+        },
+        "Encountered an error deleting user",
+      );
+
+      throw new Error("Error deleting user");
+    }
 
     logger.info(ctx, `Account request successfully sent`);
   },

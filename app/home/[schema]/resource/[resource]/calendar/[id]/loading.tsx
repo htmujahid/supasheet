@@ -13,7 +13,7 @@ import {
   EventCalendarYearView,
 } from "@/components/ui/event-calendar";
 
-export default async function Loading() {
+export default async function ResourceCalendarLoading() {
   return (
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: "..." }]} />

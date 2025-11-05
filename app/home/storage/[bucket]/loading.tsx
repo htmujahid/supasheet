@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function StorageLoading() {
+export default function StorageBucketLoading() {
   return (
     <div className="flex h-[calc(100vh-3rem)] flex-grow p-4">
       <div className="bg-card border-border flex w-full flex-col rounded-lg border">

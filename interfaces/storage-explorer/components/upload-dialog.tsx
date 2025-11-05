@@ -20,12 +20,12 @@ import { Input } from "@/components/ui/input";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 import { cn } from "@/lib/utils";
 
-interface UploadDialogProps {
+type UploadDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bucketId: string;
   currentPath: string;
-}
+};
 
 export function UploadDialog({
   open,

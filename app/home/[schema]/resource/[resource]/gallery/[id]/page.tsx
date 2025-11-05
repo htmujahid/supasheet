@@ -1,4 +1,8 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
+
+import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { If } from "@/components/makerkit/if";
@@ -16,26 +20,38 @@ import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import {
   DatabaseSchemas,
   DatabaseTables,
+  DatabaseViews,
   TableMetadata,
   ViewMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function HomeResourcePage(props: {
+type ResourceGalleryPageProps = {
   params: Promise<{
     schema: DatabaseSchemas;
-    resource: DatabaseTables<DatabaseSchemas>;
+    resource: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>;
     id: string;
   }>;
-  searchParams: Promise<{
-    page: string;
-    perPage: string;
-  }>;
-}) {
-  const { resource, schema, id } = await props.params;
+  searchParams: Promise<SearchParams>;
+};
 
-  const { page = "1", perPage = "1000", ...rest } = await props.searchParams;
+export async function generateMetadata({
+  params,
+}: ResourceGalleryPageProps): Promise<Metadata> {
+  const { schema, resource } = await params;
+
+  return {
+    title: `${formatTitle(resource)} Gallery - ${schema}`,
+  };
+}
+
+async function ResourceGalleryPage({
+  params,
+  searchParams,
+}: ResourceGalleryPageProps) {
+  const { resource, schema, id } = await params;
+
+  const { page = "1", perPage = "1000", ...rest } = await searchParams;
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
@@ -123,4 +139,4 @@ async function HomeResourcePage(props: {
   );
 }
 
-export default withI18n(HomeResourcePage);
+export default ResourceGalleryPage;

@@ -1,7 +1,7 @@
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { DataTableSkeleton } from "@/interfaces/data-table/components/data-table-skeleton";
 
-export default function ResourceLoading() {
+export default function ResourceSheetLoading() {
   return (
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: "..." }]} />

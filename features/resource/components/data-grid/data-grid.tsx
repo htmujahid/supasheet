@@ -14,11 +14,10 @@ import { DataGridContextMenu } from "./data-grid-context-menu";
 import { DataGridRow } from "./data-grid-row";
 import { DataGridSearch } from "./data-grid-search";
 
-interface DataGridProps<TData>
-  extends ReturnType<typeof useDataGrid<TData>>,
-    React.ComponentProps<"div"> {
-  height?: number;
-}
+type DataGridProps<TData> = ReturnType<typeof useDataGrid<TData>> &
+  React.ComponentProps<"div"> & {
+    height?: number;
+  };
 
 export function DataGrid<TData>({
   dataGridRef,

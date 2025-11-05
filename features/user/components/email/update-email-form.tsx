@@ -5,11 +5,9 @@ import type { User } from "@supabase/supabase-js";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,9 +23,9 @@ import { useUpdateUser } from "@/lib/supabase/hooks/use-update-user-mutation";
 
 import { UpdateEmailSchema } from "../../lib/schema/update-email.schema";
 
-function createEmailResolver(currentEmail: string, errorMessage: string) {
+function createEmailResolver(currentEmail: string) {
   return zodResolver(
-    UpdateEmailSchema.withTranslation(errorMessage).refine((schema) => {
+    UpdateEmailSchema.refine((schema) => {
       return schema.email !== currentEmail;
     }),
   );
@@ -40,7 +38,6 @@ export function UpdateEmailForm({
   user: User;
   callbackPath: string;
 }) {
-  const { t } = useTranslation("account");
   const updateUserMutation = useUpdateUser();
 
   const updateEmail = ({ email }: { email: string }) => {
@@ -55,16 +52,16 @@ export function UpdateEmailForm({
     };
 
     toast.promise(promise, {
-      success: t(`updateEmailSuccess`),
-      loading: t(`updateEmailLoading`),
-      error: t(`updateEmailError`),
+      success: "Email update request successful",
+      loading: "Updating your email...",
+      error: "Email not updated. Please try again",
     });
   };
 
   const currentEmail = user.email;
 
   const form = useForm({
-    resolver: createEmailResolver(currentEmail!, t("emailNotMatching")),
+    resolver: createEmailResolver(currentEmail!),
     defaultValues: {
       email: "",
       repeatEmail: "",
@@ -82,12 +79,12 @@ export function UpdateEmailForm({
           <Alert variant={"success"}>
             <CheckIcon className={"h-4"} />
 
-            <AlertTitle>
-              <Trans i18nKey={"account:updateEmailSuccess"} />
-            </AlertTitle>
+            <AlertTitle>Email update request successful</AlertTitle>
 
             <AlertDescription>
-              <Trans i18nKey={"account:updateEmailSuccessMessage"} />
+              We sent you an email to confirm your new email address. Please
+              check your inbox and click on the link to confirm your new email
+              address.
             </AlertDescription>
           </Alert>
         </If>
@@ -96,9 +93,7 @@ export function UpdateEmailForm({
           <FormField
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  <Trans i18nKey={"account:newEmail"} />
-                </FormLabel>
+                <FormLabel>Your New Email</FormLabel>
 
                 <FormControl>
                   <Input
@@ -119,9 +114,7 @@ export function UpdateEmailForm({
           <FormField
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  <Trans i18nKey={"account:repeatEmail"} />
-                </FormLabel>
+                <FormLabel>Repeat Email</FormLabel>
 
                 <FormControl>
                   <Input
@@ -140,7 +133,7 @@ export function UpdateEmailForm({
 
           <div>
             <Button disabled={updateUserMutation.isPending}>
-              <Trans i18nKey={"account:updateEmailSubmitLabel"} />
+              Update Email Address
             </Button>
           </div>
         </div>

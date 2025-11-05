@@ -14,11 +14,11 @@ import { exportTableToCSV } from "@/lib/export";
 import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { useResourceContext } from "./resource-context";
 
-interface ResourceTableToolbarActionsProps {
+type ResourceTableToolbarActionsProps = {
   table: Table<ResourceDataSchema>;
   columnsSchema: ColumnSchema[];
   tableSchema: TableSchema | null;
-}
+};
 
 export function ResourceTableToolbarActions({
   table,

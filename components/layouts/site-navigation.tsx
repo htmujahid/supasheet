@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { Menu } from "lucide-react";
 
-import { Trans } from "@/components/makerkit/trans";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,11 +24,11 @@ import { SiteNavigationItem } from "./site-navigation-item";
  *
  * {
  *   FAQ: {
- *     label: 'marketing:faq',
+ *     label: 'FAQ',
  *     path: '/faq',
  *   },
  *   Pricing: {
- *     label: 'marketing:pricing',
+ *     label: 'Pricing',
  *     path: '/pricing',
  *   },
  * }
@@ -44,7 +43,7 @@ const links: Record<
 > = {
   /*
     FAQ: {
-      label: 'marketing:faq',
+      label: 'FAQ',
       path: '/faq',
     },
      */
@@ -54,7 +53,7 @@ export function SiteNavigation() {
   const NavItems = Object.values(links).map((item) => {
     return (
       <SiteNavigationItem key={item.path} path={item.path}>
-        <Trans i18nKey={item.label} />
+        {item.label}
       </SiteNavigationItem>
     );
   });
@@ -94,7 +93,7 @@ function MobileDropdown() {
           return (
             <DropdownMenuItem key={item.path} asChild>
               <Link className={className} href={item.path}>
-                <Trans i18nKey={item.label} />
+                {item.label}
               </Link>
             </DropdownMenuItem>
           );

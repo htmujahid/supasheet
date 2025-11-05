@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
-interface CellVariantProps<TData> {
+type CellVariantProps<TData> = {
   cell: Cell<TData, unknown>;
   table: Table<TData>;
   rowIndex: number;
@@ -17,7 +17,7 @@ interface CellVariantProps<TData> {
   isEditing: boolean;
   isFocused: boolean;
   isSelected: boolean;
-}
+};
 
 export function DataGridJsonCell<TData>({
   cell,

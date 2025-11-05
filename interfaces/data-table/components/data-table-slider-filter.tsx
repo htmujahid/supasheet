@@ -17,10 +17,10 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
-interface Range {
+type Range = {
   min: number;
   max: number;
-}
+};
 
 type RangeValue = [number, number];
 
@@ -33,10 +33,10 @@ function getIsValidRange(value: unknown): value is RangeValue {
   );
 }
 
-interface DataTableSliderFilterProps<TData> {
+type DataTableSliderFilterProps<TData> = {
   column: Column<TData, unknown>;
   title?: string;
-}
+};
 
 export function DataTableSliderFilter<TData>({
   column,

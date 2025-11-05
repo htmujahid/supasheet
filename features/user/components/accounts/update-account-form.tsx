@@ -21,11 +21,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { updateAccountAction } from "../../lib/actions";
 import {
   UpdateAccountFormData,
   UpdateAccountSchema,
 } from "../../lib/schema/update-account.schema";
-import { updateAccountAction } from "../../lib/server/server-actions";
 
 type UpdateAccountFormProps = {
   account: User;

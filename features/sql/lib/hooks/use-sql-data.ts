@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { restSupabaseFetcher } from "@/lib/supabase/fetcher";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-import { useSqlContext } from "../components/sql-context";
+import { useSqlContext } from "../../components/sql-context";
 
 export function useSqlData() {
   const client = useSupabase();

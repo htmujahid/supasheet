@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function AuditLogDetailSkeleton() {
+export default function AuditLogDetailLoading() {
   return (
     <div className="mx-auto max-w-6xl p-4">
       <div className="space-y-6">

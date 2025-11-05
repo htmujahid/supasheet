@@ -8,7 +8,6 @@ import { ArrowRightIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +22,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { useUpdateUser } from "@/lib/supabase/hooks/use-update-user-mutation";
 
-import { PasswordResetSchema } from "../schemas/password-reset.schema";
+import { PasswordResetSchema } from "../lib/schemas/password-reset.schema";
 
 export function UpdatePasswordForm(params: { redirectTo: string }) {
   const updateUser = useUpdateUser();
@@ -48,7 +47,7 @@ export function UpdatePasswordForm(params: { redirectTo: string }) {
     <div className={"flex w-full flex-col space-y-6"}>
       <div className={"flex justify-center"}>
         <Heading level={5} className={"tracking-tight"}>
-          <Trans i18nKey={"auth:passwordResetLabel"} />
+          Reset Password
         </Heading>
       </div>
 
@@ -67,9 +66,7 @@ export function UpdatePasswordForm(params: { redirectTo: string }) {
               name={"password"}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey={"common:password"} />
-                  </FormLabel>
+                  <FormLabel>Password</FormLabel>
 
                   <FormControl>
                     <Input required type="password" {...field} />
@@ -84,9 +81,7 @@ export function UpdatePasswordForm(params: { redirectTo: string }) {
               name={"repeatPassword"}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    <Trans i18nKey={"common:repeatPassword"} />
-                  </FormLabel>
+                  <FormLabel>Repeat Password</FormLabel>
 
                   <FormControl>
                     <Input required type="password" {...field} />
@@ -102,7 +97,7 @@ export function UpdatePasswordForm(params: { redirectTo: string }) {
               type="submit"
               className={"w-full"}
             >
-              <Trans i18nKey={"auth:passwordResetLabel"} />
+              Reset Password
             </Button>
           </div>
         </form>
@@ -111,26 +106,22 @@ export function UpdatePasswordForm(params: { redirectTo: string }) {
   );
 }
 
-function SuccessState(props: { redirectTo: string }) {
+function SuccessState({ redirectTo }: { redirectTo: string }) {
   return (
     <div className={"flex flex-col space-y-4"}>
       <Alert variant={"success"}>
         <CheckIcon className={"s-6"} />
 
-        <AlertTitle>
-          <Trans i18nKey={"account:updatePasswordSuccess"} />
-        </AlertTitle>
+        <AlertTitle>Password update request successful</AlertTitle>
 
         <AlertDescription>
-          <Trans i18nKey={"account:updatePasswordSuccessMessage"} />
+          Your password has been successfully updated!
         </AlertDescription>
       </Alert>
 
-      <Link href={props.redirectTo}>
+      <Link href={redirectTo}>
         <Button variant={"outline"} className={"w-full"}>
-          <span>
-            <Trans i18nKey={"common:backToHomePage"} />
-          </span>
+          <span>Back to Home Page</span>
 
           <ArrowRightIcon className={"ml-2 h-4"} />
         </Button>
@@ -139,23 +130,21 @@ function SuccessState(props: { redirectTo: string }) {
   );
 }
 
-function ErrorState(props: { onRetry: () => void }) {
+function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div className={"flex flex-col space-y-4"}>
       <Alert variant={"destructive"}>
         <AlertCircleIcon className={"s-6"} />
 
-        <AlertTitle>
-          <Trans i18nKey={"common:genericError"} />
-        </AlertTitle>
+        <AlertTitle>Sorry, something went wrong.</AlertTitle>
 
         <AlertDescription>
-          <Trans i18nKey={"auth:resetPasswordError"} />
+          Sorry, we could not reset your password. Please try again.
         </AlertDescription>
       </Alert>
 
-      <Button onClick={props.onRetry} variant={"outline"}>
-        <Trans i18nKey={"common:retry"} />
+      <Button onClick={onRetry} variant={"outline"}>
+        Retry
       </Button>
     </div>
   );

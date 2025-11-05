@@ -3,12 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircleIcon, CheckIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSignInWithOtp } from "@/lib/supabase/hooks/use-sign-in-with-otp";
 
-import { useCaptchaToken } from "../captcha/client";
+import { useCaptchaToken } from "../lib/hooks/use-captcha-token";
 import { TermsAndConditionsFormField } from "./terms-and-conditions-form-field";
 
 export function MagicLinkAuthContainer({
@@ -40,7 +38,6 @@ export function MagicLinkAuthContainer({
   };
 }) {
   const { captchaToken, resetCaptchaToken } = useCaptchaToken();
-  const { t } = useTranslation();
   const signInWithOtpMutation = useSignInWithOtp();
 
   const form = useForm({
@@ -70,9 +67,9 @@ export function MagicLinkAuthContainer({
     };
 
     toast.promise(promise, {
-      loading: t("auth:sendingEmailLink"),
-      success: t(`auth:sendLinkSuccessToast`),
-      error: t(`auth:errors.link`),
+      loading: "Sending Email Link...",
+      success: "Email link sent successfully",
+      error: "Failed to send email link",
     });
 
     resetCaptchaToken();
@@ -93,16 +90,14 @@ export function MagicLinkAuthContainer({
           <FormField
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  <Trans i18nKey={"common:emailAddress"} />
-                </FormLabel>
+                <FormLabel>Email Address</FormLabel>
 
                 <FormControl>
                   <Input
                     data-test={"email-input"}
                     required
                     type="email"
-                    placeholder={t("auth:emailPlaceholder")}
+                    placeholder={"your@email.com"}
                     {...field}
                   />
                 </FormControl>
@@ -120,9 +115,9 @@ export function MagicLinkAuthContainer({
           <Button disabled={signInWithOtpMutation.isPending}>
             <If
               condition={signInWithOtpMutation.isPending}
-              fallback={<Trans i18nKey={"auth:sendEmailLink"} />}
+              fallback={"Send Email Link"}
             >
-              <Trans i18nKey={"auth:sendingEmailLink"} />
+              Sending Email Link...
             </If>
           </Button>
         </div>
@@ -136,12 +131,10 @@ function SuccessAlert() {
     <Alert variant={"success"}>
       <CheckIcon className={"h-4"} />
 
-      <AlertTitle>
-        <Trans i18nKey={"auth:sendLinkSuccess"} />
-      </AlertTitle>
+      <AlertTitle>We sent you a link by email</AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={"auth:sendLinkSuccessDescription"} />
+        Check your email, we just sent you a link. Follow the link to sign in.
       </AlertDescription>
     </Alert>
   );
@@ -153,11 +146,12 @@ function ErrorAlert() {
       <AlertCircleIcon className={"h-4"} />
 
       <AlertTitle>
-        <Trans i18nKey={"auth:errors.generic"} />
+        Sorry, we weren&apos;t able to authenticate you. Please try again.
       </AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={"auth:errors.link"} />
+        Sorry, we encountered an error while sending your link. Please try
+        again.
       </AlertDescription>
     </Alert>
   );

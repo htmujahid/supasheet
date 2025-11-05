@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ReportLoading() {
+export default function ReportsLoading() {
   return (
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: "Report" }]} />

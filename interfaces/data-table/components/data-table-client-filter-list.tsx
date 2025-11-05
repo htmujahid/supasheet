@@ -82,11 +82,12 @@ const DEBOUNCE_MS = 300;
 // const OPEN_MENU_SHORTCUT = "f";
 const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
-interface DataTableClientFilterListProps<TData>
-  extends React.ComponentProps<typeof PopoverContent> {
+type DataTableClientFilterListProps<TData> = React.ComponentProps<
+  typeof PopoverContent
+> & {
   table: Table<TData>;
   debounceMs?: number;
-}
+};
 
 export function DataTableClientFilterList<TData>({
   table,
@@ -318,7 +319,7 @@ export function DataTableClientFilterList<TData>({
   );
 }
 
-interface DataTableFilterItemProps<TData> {
+type DataTableFilterItemProps<TData> = {
   filter: ExtendedColumnFilter<TData>;
   index: number;
   filterItemId: string;
@@ -330,7 +331,7 @@ interface DataTableFilterItemProps<TData> {
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
   ) => void;
   onFilterRemove: (filterId: string) => void;
-}
+};
 
 function DataTableFilterItem<TData>({
   filter,

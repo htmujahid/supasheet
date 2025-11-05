@@ -21,7 +21,7 @@ import {
 
 import type { StorageFile } from "../types";
 
-interface FileActionsMenuProps {
+type FileActionsMenuProps = {
   file: StorageFile;
   onMove: (file: StorageFile) => void;
   onCopy: (file: StorageFile) => void;
@@ -29,7 +29,7 @@ interface FileActionsMenuProps {
   onViewDetails: (file: StorageFile) => void;
   onDelete: (file: StorageFile) => void;
   onDownload?: (file: StorageFile) => void;
-}
+};
 
 export function FileActionsMenu({
   file,

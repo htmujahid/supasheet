@@ -12,9 +12,7 @@ import { loadAccountPermissions } from "@/features/user/lib/loaders";
 
 export default async function HomeUsersLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren) {
   const permissions = await loadAccountPermissions();
 
   const items = [

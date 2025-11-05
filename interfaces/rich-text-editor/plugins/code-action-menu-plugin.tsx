@@ -20,10 +20,10 @@ import { CopyButton } from "@/interfaces/rich-text-editor/editor-ui/code-button"
 
 const CODE_PADDING = 8;
 
-interface Position {
+type Position = {
   top: string;
   right: string;
-}
+};
 
 function CodeActionMenuContainer({
   anchorElem,

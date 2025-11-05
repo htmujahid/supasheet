@@ -12,16 +12,15 @@ import {
 
 type InputValue = string[] | string;
 
-interface VisuallyHiddenInputProps<T = InputValue>
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    "value" | "checked" | "onReset"
-  > {
+type VisuallyHiddenInputProps<T = InputValue> = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "value" | "checked" | "onReset"
+> & {
   value?: T;
   checked?: boolean;
   control: HTMLElement | null;
   bubbles?: boolean;
-}
+};
 
 function VisuallyHiddenInput<T = InputValue>(
   props: VisuallyHiddenInputProps<T>,

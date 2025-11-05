@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -10,20 +12,26 @@ import {
 } from "@/features/resource/lib/loaders";
 import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function CreatePage({
-  params,
-}: {
+type ResourceCreatePageProps = {
   params: Promise<{
-    schema: string;
-    resource: string;
-  }>;
-}) {
-  const { resource, schema } = (await params) as {
     schema: DatabaseSchemas;
-    resource: DatabaseTables<typeof schema>;
+    resource: DatabaseTables<DatabaseSchemas>;
+  }>;
+};
+
+export async function generateMetadata({
+  params,
+}: ResourceCreatePageProps): Promise<Metadata> {
+  const { schema, resource } = await params;
+
+  return {
+    title: `Create ${formatTitle(resource)} - ${schema}`,
   };
+}
+
+async function ResourceCreatePage({ params }: ResourceCreatePageProps) {
+  const { resource, schema } = await params;
 
   const [tableSchema, columnsSchema, permissions] = await Promise.all([
     loadTableSchema(schema, resource),
@@ -59,4 +67,4 @@ async function CreatePage({
   );
 }
 
-export default withI18n(CreatePage);
+export default ResourceCreatePage;

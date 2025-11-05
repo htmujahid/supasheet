@@ -6,12 +6,12 @@ import { Header } from "@/components/makerkit/header";
 
 import { SiteHeaderAccountSection } from "./site-header-account-section";
 
-export function SiteHeader(props: { user?: User | null }) {
+export function SiteHeader({ user }: { user?: User | null }) {
   return (
     <Header
       logo={<AppLogo />}
       navigation={<SiteNavigation />}
-      actions={<SiteHeaderAccountSection user={props.user ?? null} />}
+      actions={<SiteHeaderAccountSection user={user ?? null} />}
     />
   );
 }

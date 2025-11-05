@@ -31,10 +31,10 @@ import { READONLY_COLUMNS } from "../lib/constants";
 import { getJsonColumns, parseJsonColumns } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
 
-interface ResourceCreateFormProps {
+type ResourceCreateFormProps = {
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
-}
+};
 
 export function ResourceCreateForm({
   tableSchema,

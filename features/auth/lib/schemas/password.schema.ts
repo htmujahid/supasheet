@@ -36,7 +36,7 @@ export function refineRepeatPassword(
 ) {
   if (data.password !== data.repeatPassword) {
     ctx.addIssue({
-      message: "auth:errors.passwordsDoNotMatch",
+      message: "The passwords do not match",
       path: ["repeatPassword"],
       code: "custom",
     });
@@ -52,7 +52,7 @@ function validatePassword(password: string, ctx: z.RefinementCtx) {
 
     if (specialCharsCount < 1) {
       ctx.addIssue({
-        message: "auth:errors.minPasswordSpecialChars",
+        message: "Password must contain at least one special character",
         code: "custom",
       });
     }
@@ -63,7 +63,7 @@ function validatePassword(password: string, ctx: z.RefinementCtx) {
 
     if (numbersCount < 1) {
       ctx.addIssue({
-        message: "auth:errors.minPasswordNumbers",
+        message: "Password must contain at least one number",
         code: "custom",
       });
     }
@@ -72,7 +72,7 @@ function validatePassword(password: string, ctx: z.RefinementCtx) {
   if (requirements.uppercase) {
     if (!/[A-Z]/.test(password)) {
       ctx.addIssue({
-        message: "auth:errors.uppercasePassword",
+        message: "Password must contain at least one uppercase letter",
         code: "custom",
       });
     }

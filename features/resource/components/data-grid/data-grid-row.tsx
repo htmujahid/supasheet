@@ -12,14 +12,14 @@ import { cn } from "@/lib/utils";
 import type { CellPosition, RowHeightValue } from "../../lib/types/data-grid";
 import { getRowHeightValue } from "../../lib/utils/data-grid";
 
-interface DataGridRowProps<TData> extends React.ComponentProps<"div"> {
+type DataGridRowProps<TData> = React.ComponentProps<"div"> & {
   row: Row<TData>;
   rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
   virtualRowIndex: number;
   rowMapRef: React.RefObject<Map<number, HTMLDivElement>>;
   rowHeight: RowHeightValue;
   focusedCell: CellPosition | null;
-}
+};
 
 export const DataGridRow = memo(DataGridRowImpl, (prev, next) => {
   if (prev.row.id !== next.row.id) {

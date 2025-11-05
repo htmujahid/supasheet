@@ -30,11 +30,10 @@ import type {
 import { useColumnsSchema, useResourceData } from "../../lib/data";
 import { getSheetTableColumns } from "./sheet-table-columns";
 
-interface ForeignTableSheetProps
-  extends React.ComponentPropsWithRef<typeof Sheet> {
+type ForeignTableSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
   relationship: Relationship;
   setRecord: (record: ResourceDataSchema) => void;
-}
+};
 
 export function ForeignTableSheet({
   relationship,

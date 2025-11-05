@@ -6,17 +6,20 @@ import { Turnstile, TurnstileProps } from "@marsidev/react-turnstile";
 
 import { Captcha } from "./captcha-provider";
 
-export function CaptchaTokenSetter(props: {
+export function CaptchaTokenSetter({
+  siteKey,
+  options: optionsProp,
+}: {
   siteKey: string | undefined;
   options?: TurnstileProps;
 }) {
   const { setToken, setInstance } = useContext(Captcha);
 
-  if (!props.siteKey) {
+  if (!siteKey) {
     return null;
   }
 
-  const options = props.options ?? {
+  const options = optionsProp ?? {
     options: {
       size: "invisible",
     },
@@ -29,7 +32,7 @@ export function CaptchaTokenSetter(props: {
           setInstance(instance);
         }
       }}
-      siteKey={props.siteKey}
+      siteKey={siteKey}
       onSuccess={setToken}
       {...options}
     />

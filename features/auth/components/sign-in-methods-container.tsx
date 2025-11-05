@@ -11,7 +11,10 @@ import { MagicLinkAuthContainer } from "./magic-link-auth-container";
 import { OauthProviders } from "./oauth-providers";
 import { PasswordSignInContainer } from "./password-sign-in-container";
 
-export function SignInMethodsContainer(props: {
+export function SignInMethodsContainer({
+  paths,
+  providers,
+}: {
   paths: {
     callback: string;
     home: string;
@@ -24,10 +27,10 @@ export function SignInMethodsContainer(props: {
   };
 }) {
   const router = useRouter();
-  const nextPath = useSearchParams().get("next") ?? props.paths.home;
+  const nextPath = useSearchParams().get("next") ?? paths.home;
 
   const redirectUrl = isBrowser()
-    ? new URL(props.paths.callback, window?.location.origin).toString()
+    ? new URL(paths.callback, window?.location.origin).toString()
     : "";
 
   const onSignIn = () => {
@@ -36,18 +39,18 @@ export function SignInMethodsContainer(props: {
 
   return (
     <>
-      <If condition={props.providers.password}>
+      <If condition={providers.password}>
         <PasswordSignInContainer onSignIn={onSignIn} />
       </If>
 
-      <If condition={props.providers.magicLink}>
+      <If condition={providers.magicLink}>
         <MagicLinkAuthContainer
           redirectUrl={redirectUrl}
           shouldCreateUser={false}
         />
       </If>
 
-      <If condition={props.providers.oAuth.length}>
+      <If condition={providers.oAuth.length}>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
@@ -55,11 +58,11 @@ export function SignInMethodsContainer(props: {
         </div>
 
         <OauthProviders
-          enabledProviders={props.providers.oAuth}
+          enabledProviders={providers.oAuth}
           shouldCreateUser={false}
           paths={{
-            callback: props.paths.callback,
-            returnPath: props.paths.home,
+            callback: paths.callback,
+            returnPath: paths.home,
           }}
         />
       </If>

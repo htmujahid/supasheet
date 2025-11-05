@@ -1,10 +1,14 @@
-import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
+import {
+  DatabaseSchemas,
+  DatabaseTables,
+  DatabaseViews,
+} from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import { ReportMeta, ReportsSchema } from "./types";
 import { ReportSearchParams } from "./validations";
 
-export async function loadReports(schema: string) {
+export async function loadReports(schema: DatabaseSchemas) {
   const client = await getSupabaseServerClient();
 
   const { data, error } = await client
@@ -27,19 +31,21 @@ export async function loadReports(schema: string) {
   });
 }
 
-export async function loadColumnsSchema(id: string) {
+export async function loadColumnsSchema(
+  table: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>,
+) {
   const client = await getSupabaseServerClient();
 
   const columnResponse = await client
     .schema("supasheet")
-    .rpc("get_columns", { table_name: id });
+    .rpc("get_columns", { table_name: table });
 
   return columnResponse.data;
 }
 
-export async function loadReportData(
-  schema: DatabaseSchemas,
-  resource: DatabaseTables<typeof schema>,
+export async function loadReportData<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  resource: DatabaseViews<Schema>,
   input: ReportSearchParams,
 ) {
   const client = await getSupabaseServerClient();

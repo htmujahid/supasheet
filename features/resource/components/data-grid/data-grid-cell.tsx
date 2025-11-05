@@ -22,10 +22,10 @@ import { DataGridTextCell } from "./data-grid-text-cell";
 import { DataGridTimeCell } from "./data-grid-time-cell";
 import { DataGridUuidCell } from "./data-grid-uuid-cell";
 
-interface DataGridCellProps<TData> {
+type DataGridCellProps<TData> = {
   cell: Cell<TData, unknown>;
   table: Table<TData>;
-}
+};
 
 export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
   const { permissions } = useResourceContext();

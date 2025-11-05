@@ -18,7 +18,7 @@ import { IMAGE_MAX_WIDTH } from "@/interfaces/rich-text-editor/plugins/images-pl
 
 const ImageComponent = lazy(() => import("../editor-ui/image-component"));
 
-export interface ImagePayload {
+export type ImagePayload = {
   altText: string;
   caption?: LexicalEditor;
   height?: number;
@@ -28,7 +28,7 @@ export interface ImagePayload {
   src: string;
   width?: number;
   captionsEnabled?: boolean;
-}
+};
 
 function isGoogleDocCheckboxImg(img: HTMLImageElement): boolean {
   return (

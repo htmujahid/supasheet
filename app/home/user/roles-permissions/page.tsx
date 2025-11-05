@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { LockIcon, ShieldIcon } from "lucide-react";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -10,7 +12,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { loadRolesPermissions } from "@/features/user/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
+
+export const metadata: Metadata = {
+  title: "Roles & Permissions",
+};
 
 async function RolesPermissionsPage() {
   const rolesWithPermissions = await loadRolesPermissions();
@@ -77,4 +82,4 @@ async function RolesPermissionsPage() {
   );
 }
 
-export default withI18n(RolesPermissionsPage);
+export default RolesPermissionsPage;

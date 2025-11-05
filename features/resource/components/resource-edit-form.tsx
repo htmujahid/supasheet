@@ -33,11 +33,11 @@ import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceFormField } from "./fields/resource-form-field";
 import { useResourceContext } from "./resource-context";
 
-interface ResourceEditFormProps {
+type ResourceEditFormProps = {
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   data: ResourceDataSchema;
-}
+};
 
 export function ResourceEditForm({
   tableSchema,

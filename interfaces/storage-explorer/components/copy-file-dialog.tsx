@@ -21,14 +21,14 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client"
 
 import type { StorageFile } from "../types";
 
-interface CopyFileDialogProps {
+type CopyFileDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   file: StorageFile | null;
   currentPath: string;
   bucketId: string;
   onClose?: () => void;
-}
+};
 
 export function CopyFileDialog({
   open,

@@ -5,7 +5,6 @@ import { useFormStatus } from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { Trans } from "@/components/makerkit/trans";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -19,19 +18,19 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { deletePersonalAccountAction } from "../lib/actions";
 import { DeletePersonalAccountSchema } from "../lib/schema/delete-personal-account.schema";
-import { deletePersonalAccountAction } from "../lib/server/server-actions";
 
 export function AccountDangerZone() {
   return (
     <div className={"flex flex-col space-y-4"}>
       <div className={"flex flex-col space-y-1"}>
-        <span className={"text-sm font-medium"}>
-          <Trans i18nKey={"account:deleteAccount"} />
-        </span>
+        <span className={"text-sm font-medium"}>Delete your Account</span>
 
         <p className={"text-muted-foreground text-sm"}>
-          <Trans i18nKey={"account:deleteAccountDescription"} />
+          This will delete your account and the accounts you own. Furthermore,
+          we will immediately cancel any active subscriptions. This action
+          cannot be undone.
         </p>
       </div>
 
@@ -47,15 +46,13 @@ function DeleteAccountModal() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button data-test={"delete-account-button"} variant={"destructive"}>
-          <Trans i18nKey={"account:deleteAccount"} />
+          Delete your Account
         </Button>
       </AlertDialogTrigger>
 
       <AlertDialogContent onEscapeKeyDown={(e) => e.preventDefault()}>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            <Trans i18nKey={"account:deleteAccount"} />
-          </AlertDialogTitle>
+          <AlertDialogTitle>Delete your Account</AlertDialogTitle>
         </AlertDialogHeader>
 
         <DeleteAccountForm />
@@ -87,19 +84,17 @@ function DeleteAccountForm() {
           >
             <div className={"flex flex-col space-y-2"}>
               <div>
-                <Trans i18nKey={"account:deleteAccountDescription"} />
+                This will delete your account and the accounts you own.
+                Furthermore, we will immediately cancel any active
+                subscriptions. This action cannot be undone.
               </div>
 
-              <div>
-                <Trans i18nKey={"common:modalConfirmationQuestion"} />
-              </div>
+              <div>Are you sure you want to continue?</div>
             </div>
           </div>
 
           <FormItem>
-            <FormLabel>
-              <Trans i18nKey={"account:deleteProfileConfirmationInputLabel"} />
-            </FormLabel>
+            <FormLabel>Type DELETE to confirm</FormLabel>
 
             <FormControl>
               <Input
@@ -117,9 +112,7 @@ function DeleteAccountForm() {
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            <Trans i18nKey={"common:cancel"} />
-          </AlertDialogCancel>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
 
           <DeleteAccountSubmitButton />
         </AlertDialogFooter>
@@ -139,11 +132,7 @@ function DeleteAccountSubmitButton() {
       name={"action"}
       variant={"destructive"}
     >
-      {pending ? (
-        <Trans i18nKey={"account:deletingAccount"} />
-      ) : (
-        <Trans i18nKey={"account:deleteAccount"} />
-      )}
+      {pending ? "Deleting Account..." : "Delete your Account"}
     </Button>
   );
 }

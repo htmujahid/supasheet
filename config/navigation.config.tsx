@@ -54,10 +54,10 @@ export const NavigationConfigSchema = z.object({
 
 const routes = [
   {
-    label: "common:routes.application",
+    label: "Application",
     children: [
       {
-        label: "common:routes.home",
+        label: "Home",
         path: pathsConfig.app.home,
         Icon: <Home className={iconClasses} />,
         end: true,
@@ -65,10 +65,10 @@ const routes = [
     ],
   },
   {
-    label: "common:routes.settings",
+    label: "Settings",
     children: [
       {
-        label: "common:routes.account",
+        label: "Account",
         path: pathsConfig.app.account,
         Icon: <User className={iconClasses} />,
       },

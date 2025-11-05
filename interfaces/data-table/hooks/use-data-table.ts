@@ -42,46 +42,43 @@ const ARRAY_SEPARATOR = ",";
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
 
-interface UseDataTableProps<TData>
-  extends Omit<
-      TableOptions<TData>,
-      | "state"
-      | "pageCount"
-      | "getCoreRowModel"
-      | "manualFiltering"
-      | "manualPagination"
-      | "manualSorting"
-    >,
-    Required<Pick<TableOptions<TData>, "pageCount">> {
-  initialState?: Omit<Partial<TableState>, "sorting"> & {
-    sorting?: ExtendedColumnSort<TData>[];
+type UseDataTableProps<TData> = Omit<
+  TableOptions<TData>,
+  | "state"
+  | "pageCount"
+  | "getCoreRowModel"
+  | "manualFiltering"
+  | "manualPagination"
+  | "manualSorting"
+> &
+  Required<Pick<TableOptions<TData>, "pageCount">> & {
+    initialState?: Omit<Partial<TableState>, "sorting"> & {
+      sorting?: ExtendedColumnSort<TData>[];
+    };
+    history?: "push" | "replace";
+    debounceMs?: number;
+    throttleMs?: number;
+    clearOnDefault?: boolean;
+    enableAdvancedFilter?: boolean;
+    scroll?: boolean;
+    shallow?: boolean;
+    startTransition?: React.TransitionStartFunction;
   };
-  history?: "push" | "replace";
-  debounceMs?: number;
-  throttleMs?: number;
-  clearOnDefault?: boolean;
-  enableAdvancedFilter?: boolean;
-  scroll?: boolean;
-  shallow?: boolean;
-  startTransition?: React.TransitionStartFunction;
-}
 
-export function useDataTable<TData>(props: UseDataTableProps<TData>) {
-  const {
-    columns,
-    pageCount = -1,
-    initialState,
-    history = "replace",
-    debounceMs = DEBOUNCE_MS,
-    throttleMs = THROTTLE_MS,
-    clearOnDefault = false,
-    enableAdvancedFilter = false,
-    scroll = false,
-    shallow = true,
-    startTransition,
-    ...tableProps
-  } = props;
-
+export function useDataTable<TData>({
+  columns,
+  pageCount = -1,
+  initialState,
+  history = "replace",
+  debounceMs = DEBOUNCE_MS,
+  throttleMs = THROTTLE_MS,
+  clearOnDefault = false,
+  enableAdvancedFilter = false,
+  scroll = false,
+  shallow = true,
+  startTransition,
+  ...tableProps
+}: UseDataTableProps<TData>) {
   const queryStateOptions = useMemo<
     Omit<UseQueryStateOptions<string>, "parse">
   >(

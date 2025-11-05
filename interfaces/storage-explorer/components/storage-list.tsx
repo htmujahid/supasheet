@@ -26,7 +26,7 @@ import { FileDetailsDrawer } from "./file-details-drawer";
 import { MoveFileDialog } from "./move-file-dialog";
 import { RenameDialog } from "./rename-dialog";
 
-interface StorageListProps {
+type StorageListProps = {
   files: StorageFile[];
   selectedFiles: Set<string>;
   onFileSelect: (fileId: string) => void;
@@ -34,7 +34,7 @@ interface StorageListProps {
   bucketId: string;
   currentPath: string;
   isLoading: boolean;
-}
+};
 
 export function StorageList({
   files,

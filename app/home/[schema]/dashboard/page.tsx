@@ -1,17 +1,29 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
 import { loadDashboardWidgets } from "@/features/dashboard/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
+import { DatabaseSchemas } from "@/lib/database-meta.types";
 
-async function DashboardPage({
-  params,
-}: {
+type DashboardPageProps = {
   params: Promise<{
-    schema: string;
+    schema: DatabaseSchemas;
   }>;
-}) {
+};
+
+export async function generateMetadata({
+  params,
+}: DashboardPageProps): Promise<Metadata> {
+  const { schema } = await params;
+
+  return {
+    title: `Dashboard - ${schema}`,
+  };
+}
+
+async function DashboardPage({ params }: DashboardPageProps) {
   const { schema } = await params;
   const widgets = await loadDashboardWidgets(schema);
 
@@ -31,4 +43,4 @@ async function DashboardPage({
   );
 }
 
-export default withI18n(DashboardPage);
+export default DashboardPage;

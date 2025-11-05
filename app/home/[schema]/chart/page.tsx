@@ -1,17 +1,29 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { ChartWidgets } from "@/features/chart/components/chart-widgets";
 import { loadCharts } from "@/features/chart/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
+import { DatabaseSchemas } from "@/lib/database-meta.types";
 
-interface ChartDetailPageProps {
+type ChartPageProps = {
   params: Promise<{
-    schema: string;
+    schema: DatabaseSchemas;
   }>;
+};
+
+export async function generateMetadata({
+  params,
+}: ChartPageProps): Promise<Metadata> {
+  const { schema } = await params;
+
+  return {
+    title: `Charts - ${schema}`,
+  };
 }
 
-async function ChartDetailPage({ params }: ChartDetailPageProps) {
+async function ChartPage({ params }: ChartPageProps) {
   const { schema } = await params;
   const charts = await loadCharts(schema);
 
@@ -31,4 +43,4 @@ async function ChartDetailPage({ params }: ChartDetailPageProps) {
   );
 }
 
-export default withI18n(ChartDetailPage);
+export default ChartPage;

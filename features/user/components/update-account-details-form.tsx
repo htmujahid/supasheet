@@ -1,9 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-import { Trans } from "@/components/makerkit/trans";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,7 +30,6 @@ export function UpdateAccountDetailsForm({
   onUpdate: (user: Partial<UpdateUserDataParams>) => void;
 }) {
   const updateAccountMutation = useUpdateAccountData(userId);
-  const { t } = useTranslation("account");
 
   const form = useForm({
     resolver: zodResolver(AccountDetailsSchema),
@@ -49,9 +46,9 @@ export function UpdateAccountDetailsForm({
     });
 
     return toast.promise(() => promise, {
-      success: t(`updateProfileSuccess`),
-      error: t(`updateProfileError`),
-      loading: t(`updateProfileLoading`),
+      success: "Profile successfully updated",
+      error: "Encountered an error. Please try again",
+      loading: "Updating profile...",
     });
   };
 
@@ -67,9 +64,7 @@ export function UpdateAccountDetailsForm({
             name={"displayName"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  <Trans i18nKey={"account:name"} />
-                </FormLabel>
+                <FormLabel>Your Name</FormLabel>
 
                 <FormControl>
                   <Input
@@ -88,7 +83,7 @@ export function UpdateAccountDetailsForm({
 
           <div>
             <Button disabled={updateAccountMutation.isPending}>
-              <Trans i18nKey={"account:updateProfileSubmitLabel"} />
+              Update Profile
             </Button>
           </div>
         </form>

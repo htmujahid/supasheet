@@ -4,11 +4,9 @@ import { useCallback } from "react";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { ImageUploader } from "@/components/makerkit/image-uploader";
-import { Trans } from "@/components/makerkit/trans";
 import { Database } from "@/lib/database.types";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
@@ -35,32 +33,29 @@ export function UpdateAccountImageContainer({
   );
 }
 
-function UploadProfileAvatarForm(props: {
+function UploadProfileAvatarForm({
+  pictureUrl,
+  userId,
+  onAvatarUpdated,
+}: {
   pictureUrl: string | null;
   userId: string;
   onAvatarUpdated: () => void;
 }) {
   const client = useSupabase();
-  const { t } = useTranslation("account");
-
-  const createToaster = useCallback(
-    (promise: () => Promise<unknown>) => {
-      return toast.promise(promise, {
-        success: t(`updateProfileSuccess`),
-        error: t(`updateProfileError`),
-        loading: t(`updateProfileLoading`),
-      });
-    },
-    [t],
-  );
+  const createToaster = useCallback((promise: () => Promise<unknown>) => {
+    return toast.promise(promise, {
+      success: "Profile updated successfully",
+      error: "Failed to update profile",
+      loading: "Updating profile...",
+    });
+  }, []);
 
   const onValueChange = useCallback(
     (file: File | null) => {
       const removeExistingStorageFile = () => {
-        if (props.pictureUrl) {
-          return (
-            deleteProfilePhoto(client, props.pictureUrl) ?? Promise.resolve()
-          );
+        if (pictureUrl) {
+          return deleteProfilePhoto(client, pictureUrl) ?? Promise.resolve();
         }
 
         return Promise.resolve();
@@ -69,7 +64,7 @@ function UploadProfileAvatarForm(props: {
       if (file) {
         const promise = () =>
           removeExistingStorageFile().then(() =>
-            uploadUserProfilePhoto(client, file, props.userId)
+            uploadUserProfilePhoto(client, file, userId)
               .then((pictureUrl) => {
                 return client
                   .schema("supasheet")
@@ -77,11 +72,11 @@ function UploadProfileAvatarForm(props: {
                   .update({
                     picture_url: pictureUrl,
                   })
-                  .eq("id", props.userId)
+                  .eq("id", userId)
                   .throwOnError();
               })
               .then(() => {
-                props.onAvatarUpdated();
+                onAvatarUpdated();
               }),
           );
 
@@ -96,28 +91,26 @@ function UploadProfileAvatarForm(props: {
                 .update({
                   picture_url: null,
                 })
-                .eq("id", props.userId)
+                .eq("id", userId)
                 .throwOnError();
             })
             .then(() => {
-              props.onAvatarUpdated();
+              onAvatarUpdated();
             });
 
         createToaster(promise);
       }
     },
-    [client, createToaster, props],
+    [client, createToaster, pictureUrl, userId, onAvatarUpdated],
   );
 
   return (
-    <ImageUploader value={props.pictureUrl} onValueChange={onValueChange}>
+    <ImageUploader value={pictureUrl} onValueChange={onValueChange}>
       <div className={"flex flex-col space-y-1"}>
-        <span className={"text-sm"}>
-          <Trans i18nKey={"account:profilePictureHeading"} />
-        </span>
+        <span className={"text-sm"}>Upload a Profile Picture</span>
 
         <span className={"text-xs"}>
-          <Trans i18nKey={"account:profilePictureSubheading"} />
+          Choose a photo to upload as your profile picture.
         </span>
       </div>
     </ImageUploader>

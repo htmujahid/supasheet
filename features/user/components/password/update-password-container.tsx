@@ -1,7 +1,6 @@
 "use client";
 
 import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useUser } from "@/lib/supabase/hooks/use-user";
 
@@ -37,7 +36,8 @@ function WarnCannotUpdatePasswordAlert() {
   return (
     <Alert variant={"warning"} className="">
       <AlertTitle>
-        <Trans i18nKey={"account:cannotUpdatePassword"} />
+        You cannot update your password because your account is not linked to an
+        email.
       </AlertTitle>
     </Alert>
   );

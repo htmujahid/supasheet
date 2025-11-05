@@ -18,13 +18,13 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client"
 import { CreateFolderDialog } from "./create-folder-dialog";
 import { UploadDialog } from "./upload-dialog";
 
-interface StorageToolbarProps {
+type StorageToolbarProps = {
   selectedFiles: Set<string>;
   bucketId: string;
   currentPath: string;
   onSearchChange: (query: string) => void;
   onSelectionChange: (selectedFiles: Set<string>) => void;
-}
+};
 
 export function StorageToolbar({
   selectedFiles,

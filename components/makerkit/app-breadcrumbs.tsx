@@ -15,16 +15,18 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 import { If } from "./if";
-import { Trans } from "./trans";
 
-export function AppBreadcrumbs(props: {
+export function AppBreadcrumbs({
+  values: valuesProp,
+  maxDepth: maxDepthProp,
+}: {
   values?: Record<string, string>;
   maxDepth?: number;
 }) {
   const pathName = usePathname();
   const splitPath = pathName.split("/").filter(Boolean);
-  const values = props.values ?? {};
-  const maxDepth = props.maxDepth ?? 3;
+  const values = valuesProp ?? {};
+  const maxDepth = maxDepthProp ?? 3;
 
   const Ellipsis = (
     <BreadcrumbItem>
@@ -42,15 +44,7 @@ export function AppBreadcrumbs(props: {
     <Breadcrumb>
       <BreadcrumbList>
         {visiblePaths.map((path, index) => {
-          const label =
-            path in values ? (
-              values[path]
-            ) : (
-              <Trans
-                i18nKey={`common:routes.${formatTitle(path)}`}
-                defaults={formatTitle(path)}
-              />
-            );
+          const label = path in values ? values[path] : formatTitle(path);
 
           return (
             <Fragment key={index}>

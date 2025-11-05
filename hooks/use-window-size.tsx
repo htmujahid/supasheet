@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 
-interface WindowSize {
+type WindowSize = {
   width: number;
   height: number;
-}
+};
 
-interface UseWindowSizeProps {
+type UseWindowSizeProps = {
   defaultWidth?: number;
   defaultHeight?: number;
-}
+};
 
-export function useWindowSize(props: UseWindowSizeProps = {}): WindowSize {
-  const { defaultWidth = 0, defaultHeight = 0 } = props;
-
+export function useWindowSize({
+  defaultWidth = 0,
+  defaultHeight = 0,
+}: UseWindowSizeProps = {}): WindowSize {
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: defaultWidth,
     height: defaultHeight,

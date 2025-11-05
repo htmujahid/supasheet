@@ -6,10 +6,10 @@ export type AuditLogInsert =
 export type AuditLogUpdate =
   Database["supasheet"]["Tables"]["audit_logs"]["Update"];
 
-export interface AuditLogWithAccount extends Omit<AuditLog, "created_by"> {
+export type AuditLogWithAccount = Omit<AuditLog, "created_by"> & {
   created_by: {
     name: string;
     email: string | null;
     picture_url: string | null;
   } | null;
-}
+};

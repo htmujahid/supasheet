@@ -2,7 +2,7 @@ import { DefaultHeader } from "@/components/layouts/default-header";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function GalleryLoading() {
+export default function ResourceGalleryLoading() {
   return (
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: "..." }]} />

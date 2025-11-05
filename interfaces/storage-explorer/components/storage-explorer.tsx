@@ -9,11 +9,11 @@ import { StorageBreadcrumb } from "./storage-breadcrumb";
 import { StorageList } from "./storage-list";
 import { StorageToolbar } from "./storage-toolbar";
 
-interface StorageExplorerProps {
+type StorageExplorerProps = {
   bucketId: string;
   files: StorageFile[];
   currentPath: string;
-}
+};
 
 export function StorageExplorer({
   bucketId,

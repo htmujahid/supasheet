@@ -8,11 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircleIcon } from "lucide-react";
 import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +35,6 @@ export const UpdatePasswordForm = ({
   user: User;
   callbackPath: string;
 }) => {
-  const { t } = useTranslation("account");
   const updateUserMutation = useUpdateUser();
   const [needsReauthentication, setNeedsReauthentication] = useState(false);
 
@@ -58,9 +55,9 @@ export const UpdatePasswordForm = ({
       });
 
     toast.promise(() => promise, {
-      success: t(`updatePasswordSuccess`),
-      error: t(`updatePasswordError`),
-      loading: t(`updatePasswordLoading`),
+      success: "Password update request successful",
+      error: "Encountered an error. Please try again",
+      loading: "Updating password...",
     });
   };
 
@@ -74,16 +71,14 @@ export const UpdatePasswordForm = ({
     // if the user does not have an email assigned, it's possible they
     // don't have an email/password factor linked, and the UI is out of sync
     if (!email) {
-      return Promise.reject(t(`cannotUpdatePassword`));
+      return Promise.reject("Cannot update password");
     }
 
     updatePasswordFromCredential(newPassword);
   };
 
   const form = useForm({
-    resolver: zodResolver(
-      PasswordUpdateSchema.withTranslation(t("passwordNotMatching")),
-    ),
+    resolver: zodResolver(PasswordUpdateSchema),
     defaultValues: {
       newPassword: "",
       repeatPassword: "",
@@ -111,9 +106,7 @@ export const UpdatePasswordForm = ({
               return (
                 <FormItem>
                   <FormLabel>
-                    <Label>
-                      <Trans i18nKey={"account:newPassword"} />
-                    </Label>
+                    <Label>New Password</Label>
                   </FormLabel>
 
                   <FormControl>
@@ -121,7 +114,6 @@ export const UpdatePasswordForm = ({
                       data-test={"account-password-form-password-input"}
                       required
                       type={"password"}
-                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -138,9 +130,7 @@ export const UpdatePasswordForm = ({
               return (
                 <FormItem>
                   <FormLabel>
-                    <Label>
-                      <Trans i18nKey={"account:repeatPassword"} />
-                    </Label>
+                    <Label>Repeat New Password</Label>
                   </FormLabel>
 
                   <FormControl>
@@ -148,13 +138,12 @@ export const UpdatePasswordForm = ({
                       data-test={"account-password-form-repeat-password-input"}
                       required
                       type={"password"}
-                      disabled
                       {...field}
                     />
                   </FormControl>
 
                   <FormDescription>
-                    <Trans i18nKey={"account:repeatPasswordDescription"} />
+                    Please repeat your new password to confirm it
                   </FormDescription>
 
                   <FormMessage />
@@ -165,7 +154,7 @@ export const UpdatePasswordForm = ({
 
           <div>
             <Button disabled={updateUserMutation.isPending}>
-              <Trans i18nKey={"account:updatePasswordSubmitLabel"} />
+              Update Password
             </Button>
           </div>
         </div>
@@ -179,12 +168,10 @@ function SuccessAlert() {
     <Alert variant={"success"}>
       <Check className={"h-4"} />
 
-      <AlertTitle>
-        <Trans i18nKey={"account:updatePasswordSuccess"} />
-      </AlertTitle>
+      <AlertTitle>Password update request successful</AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={"account:updatePasswordSuccessMessage"} />
+        Your password has been successfully updated!
       </AlertDescription>
     </Alert>
   );
@@ -195,12 +182,11 @@ function NeedsReauthenticationAlert() {
     <Alert variant={"warning"}>
       <AlertCircleIcon className={"h-4"} />
 
-      <AlertTitle>
-        <Trans i18nKey={"account:needsReauthentication"} />
-      </AlertTitle>
+      <AlertTitle>Reauthentication Required</AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={"account:needsReauthenticationDescription"} />
+        You need to reauthenticate to change your password. Please sign out and
+        sign in again to change your password.
       </AlertDescription>
     </Alert>
   );

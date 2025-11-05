@@ -7,12 +7,10 @@ import type { Factor } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AlertCircleIcon } from "lucide-react";
 import { ShieldCheck, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { If } from "@/components/makerkit/if";
 import { Spinner } from "@/components/makerkit/spinner";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -46,33 +44,27 @@ import { useFactorsMutationKey } from "@/lib/supabase/hooks/use-user-factors-mut
 
 import { MultiFactorAuthSetupDialog } from "./multi-factor-auth-setup-dialog";
 
-export function MultiFactorAuthFactorsList(props: { userId: string }) {
+export function MultiFactorAuthFactorsList({ userId }: { userId: string }) {
   return (
     <div className={"flex flex-col space-y-4"}>
-      <FactorsTableContainer userId={props.userId} />
+      <FactorsTableContainer userId={userId} />
 
       <div>
-        <MultiFactorAuthSetupDialog userId={props.userId} />
+        <MultiFactorAuthSetupDialog userId={userId} />
       </div>
     </div>
   );
 }
 
-function FactorsTableContainer(props: { userId: string }) {
-  const {
-    data: factors,
-    isLoading,
-    isError,
-  } = useFetchAuthFactors(props.userId);
+function FactorsTableContainer({ userId }: { userId: string }) {
+  const { data: factors, isLoading, isError } = useFetchAuthFactors(userId);
 
   if (isLoading) {
     return (
       <div className={"flex items-center space-x-4"}>
         <Spinner />
 
-        <div>
-          <Trans i18nKey={"account:loadingFactors"} />
-        </div>
+        <div>Loading factors...</div>
       </div>
     );
   }
@@ -83,12 +75,10 @@ function FactorsTableContainer(props: { userId: string }) {
         <Alert variant={"destructive"}>
           <AlertCircleIcon className={"h-4"} />
 
-          <AlertTitle>
-            <Trans i18nKey={"account:factorsListError"} />
-          </AlertTitle>
+          <AlertTitle>Error loading factors list</AlertTitle>
 
           <AlertDescription>
-            <Trans i18nKey={"account:factorsListErrorDescription"} />
+            Sorry, we couldn&quot;t load the factors list. Please try again.
           </AlertDescription>
         </Alert>
       </div>
@@ -104,18 +94,19 @@ function FactorsTableContainer(props: { userId: string }) {
           <ShieldCheck className={"h-4"} />
 
           <AlertTitle>
-            <Trans i18nKey={"account:multiFactorAuthHeading"} />
+            Secure your account with Multi-Factor Authentication
           </AlertTitle>
 
           <AlertDescription>
-            <Trans i18nKey={"account:multiFactorAuthDescription"} />
+            Set up Multi-Factor Authentication method to further secure your
+            account
           </AlertDescription>
         </Alert>
       </div>
     );
   }
 
-  return <FactorsTable factors={allFactors} userId={props.userId} />;
+  return <FactorsTable factors={allFactors} userId={userId} />;
 }
 
 function ConfirmUnenrollFactorModal(
@@ -125,7 +116,6 @@ function ConfirmUnenrollFactorModal(
     setIsModalOpen: (isOpen: boolean) => void;
   }>,
 ) {
-  const { t } = useTranslation();
   const unEnroll = useUnenrollFactor(props.userId);
 
   const onUnenrollRequested = useCallback(
@@ -136,49 +126,42 @@ function ConfirmUnenrollFactorModal(
         props.setIsModalOpen(false);
 
         if (!response.success) {
-          const errorCode = response.data;
-
-          throw t(`auth:errors.${errorCode}`, {
-            defaultValue: t(`account:unenrollFactorError`),
-          });
+          throw "Unenrolling factor failed";
         }
       });
 
       toast.promise(promise, {
-        loading: t(`account:unenrollingFactor`),
-        success: t(`account:unenrollFactorSuccess`),
+        loading: "Unenrolling factor...",
+        success: "Factor successfully unenrolled",
         error: (error: string) => {
           return error;
         },
       });
     },
-    [props, t, unEnroll],
+    [props, unEnroll],
   );
 
   return (
     <AlertDialog open={!!props.factorId} onOpenChange={props.setIsModalOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            <Trans i18nKey={"account:unenrollFactorModalHeading"} />
-          </AlertDialogTitle>
+          <AlertDialogTitle>Unenroll Factor</AlertDialogTitle>
 
           <AlertDialogDescription>
-            <Trans i18nKey={"account:unenrollFactorModalDescription"} />
+            You&quot;re about to unenroll this factor. You will not be able to
+            use it to login to your account.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            <Trans i18nKey={"common:cancel"} />
-          </AlertDialogCancel>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
 
           <AlertDialogAction
             type={"button"}
             disabled={unEnroll.isPending}
             onClick={() => onUnenrollRequested(props.factorId)}
           >
-            <Trans i18nKey={"account:unenrollFactorModalButtonLabel"} />
+            Yes, unenroll factor
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -200,15 +183,9 @@ function FactorsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
-              <Trans i18nKey={"account:factorName"} />
-            </TableHead>
-            <TableHead>
-              <Trans i18nKey={"account:factorType"} />
-            </TableHead>
-            <TableHead>
-              <Trans i18nKey={"account:factorStatus"} />
-            </TableHead>
+            <TableHead>Factor Name</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Status</TableHead>
 
             <TableHead />
           </TableRow>
@@ -249,9 +226,7 @@ function FactorsTable({
                       </Button>
                     </TooltipTrigger>
 
-                    <TooltipContent>
-                      <Trans i18nKey={"account:unenrollTooltip"} />
-                    </TooltipContent>
+                    <TooltipContent>Unenroll this factor</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </td>

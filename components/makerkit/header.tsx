@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 
-interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+type HeaderProps = React.HTMLAttributes<HTMLDivElement> & {
   logo?: React.ReactNode;
   navigation?: React.ReactNode;
   actions?: React.ReactNode;
-}
+};
 
 export const Header: React.FC<HeaderProps> = function ({
   className,

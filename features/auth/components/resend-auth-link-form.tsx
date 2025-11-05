@@ -5,7 +5,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +17,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-import { useCaptchaToken } from "../captcha/client";
+import { useCaptchaToken } from "../lib/hooks/use-captcha-token";
 
-export function ResendAuthLinkForm(props: { redirectPath?: string }) {
+export function ResendAuthLinkForm({
+  redirectPath,
+}: {
+  redirectPath?: string;
+}) {
   const resendLink = useResendLink();
 
   const form = useForm({
@@ -33,15 +36,10 @@ export function ResendAuthLinkForm(props: { redirectPath?: string }) {
   if (resendLink.data && !resendLink.isPending) {
     return (
       <Alert variant={"success"}>
-        <AlertTitle>
-          <Trans i18nKey={"auth:resendLinkSuccess"} />
-        </AlertTitle>
+        <AlertTitle>Check your email!</AlertTitle>
 
         <AlertDescription>
-          <Trans
-            i18nKey={"auth:resendLinkSuccessDescription"}
-            defaults={"Success!"}
-          />
+          We sent you a new link to your email! Follow the link to sign in.
         </AlertDescription>
       </Alert>
     );
@@ -54,7 +52,7 @@ export function ResendAuthLinkForm(props: { redirectPath?: string }) {
         onSubmit={form.handleSubmit((data) => {
           return resendLink.mutate({
             email: data.email,
-            redirectPath: props.redirectPath,
+            redirectPath,
           });
         })}
       >
@@ -62,9 +60,7 @@ export function ResendAuthLinkForm(props: { redirectPath?: string }) {
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel>
-                  <Trans i18nKey={"common:emailAddress"} />
-                </FormLabel>
+                <FormLabel>Email Address</FormLabel>
 
                 <FormControl>
                   <Input type="email" required {...field} />
@@ -75,9 +71,7 @@ export function ResendAuthLinkForm(props: { redirectPath?: string }) {
           name={"email"}
         />
 
-        <Button disabled={resendLink.isPending}>
-          <Trans i18nKey={"auth:resendLink"} defaults={"Resend Link"} />
-        </Button>
+        <Button disabled={resendLink.isPending}>Resend Link</Button>
       </form>
     </Form>
   );

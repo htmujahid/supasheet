@@ -19,12 +19,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
-interface CreateFolderDialogProps {
+type CreateFolderDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bucketId: string;
   currentPath: string;
-}
+};
 
 export function CreateFolderDialog({
   open,

@@ -51,11 +51,11 @@ function parseColumnFilterValue(value: unknown) {
   return [];
 }
 
-interface DataTableDateFilterProps<TData> {
+type DataTableDateFilterProps<TData> = {
   column: Column<TData, unknown>;
   title?: string;
   multiple?: boolean;
-}
+};
 
 export function DataTableDateFilter<TData>({
   column,

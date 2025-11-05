@@ -26,12 +26,12 @@ import { cn } from "@/lib/utils";
 
 import type { Option } from "../types/data-table";
 
-interface DataTableFacetedFilterProps<TData, TValue> {
+type DataTableFacetedFilterProps<TData, TValue> = {
   column?: Column<TData, TValue>;
   title?: string;
   options: Option[];
   multiple?: boolean;
-}
+};
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,

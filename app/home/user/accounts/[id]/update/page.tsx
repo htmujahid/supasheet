@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -13,14 +15,24 @@ import {
   loadAccountPermissions,
   loadSingleUser,
 } from "@/features/user/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-type UpdateAccountPageProps = {
+type AccountUpdatePageProps = {
   params: Promise<{ id: string }>;
 };
 
-async function UpdateAccountPage(props: UpdateAccountPageProps) {
-  const { id } = await props.params;
+export async function generateMetadata({
+  params,
+}: AccountUpdatePageProps): Promise<Metadata> {
+  const { id } = await params;
+  const account = await loadSingleUser(id);
+
+  return {
+    title: `Update ${account?.email || account?.phone || id}`,
+  };
+}
+
+async function AccountUpdatePage({ params }: AccountUpdatePageProps) {
+  const { id } = await params;
 
   const [permissions, account] = await Promise.all([
     loadAccountPermissions(),
@@ -65,4 +77,4 @@ async function UpdateAccountPage(props: UpdateAccountPageProps) {
   );
 }
 
-export default withI18n(UpdateAccountPage);
+export default AccountUpdatePage;

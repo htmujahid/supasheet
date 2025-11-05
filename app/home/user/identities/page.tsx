@@ -1,5 +1,6 @@
+import { Metadata } from "next";
+
 import { DefaultHeader } from "@/components/layouts/default-header";
-import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
   CardContent,
@@ -11,7 +12,10 @@ import authConfig from "@/config/auth.config";
 import pathsConfig from "@/config/paths.config";
 import { UpdateEmailFormContainer } from "@/features/user/components/email/update-email-form-container";
 import { LinkAccountsList } from "@/features/user/components/link-accounts";
-import { withI18n } from "@/lib/i18n/with-i18n";
+
+export const metadata: Metadata = {
+  title: "Identities",
+};
 
 function IdentitiesPage() {
   return (
@@ -20,12 +24,10 @@ function IdentitiesPage() {
       <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
         <Card>
           <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:updateEmailCardTitle"} />
-            </CardTitle>
+            <CardTitle>Update your Email</CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:updateEmailCardDescription"} />
+              Update your email address you use to login to your account
             </CardDescription>
           </CardHeader>
 
@@ -38,12 +40,10 @@ function IdentitiesPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:linkedAccounts"} />
-            </CardTitle>
+            <CardTitle>Linked Accounts</CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:linkedAccountsDescription"} />
+              Connect other authentication providers
             </CardDescription>
           </CardHeader>
 
@@ -56,4 +56,4 @@ function IdentitiesPage() {
   );
 }
 
-export default withI18n(IdentitiesPage);
+export default IdentitiesPage;

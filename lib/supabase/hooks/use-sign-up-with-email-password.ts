@@ -2,12 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 
 import { useSupabase } from "./use-supabase";
 
-interface Credentials {
+type Credentials = {
   email: string;
   password: string;
   emailRedirectTo: string;
   captchaToken?: string;
-}
+};
 
 /**
  * @name useSignUpWithEmailAndPassword

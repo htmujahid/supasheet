@@ -17,9 +17,9 @@ import {
 import { parseCellKey } from "../../lib/utils/data-grid";
 import { useResourceContext } from "../resource-context";
 
-interface DataGridContextMenuProps<TData> {
+type DataGridContextMenuProps<TData> = {
   table: Table<TData>;
-}
+};
 
 export function DataGridContextMenu<TData>({
   table,
@@ -45,17 +45,13 @@ export function DataGridContextMenu<TData>({
   );
 }
 
-interface ContextMenuProps<TData>
-  extends Pick<
-      TableMeta<TData>,
-      | "dataGridRef"
-      | "onContextMenuOpenChange"
-      | "selectionState"
-      | "onRowsDelete"
-    >,
-    Required<Pick<TableMeta<TData>, "contextMenu">> {
-  table: Table<TData>;
-}
+type ContextMenuProps<TData> = Pick<
+  TableMeta<TData>,
+  "dataGridRef" | "onContextMenuOpenChange" | "selectionState" | "onRowsDelete"
+> &
+  Required<Pick<TableMeta<TData>, "contextMenu">> & {
+    table: Table<TData>;
+  };
 
 const ContextMenu = memo(ContextMenuImpl, (prev, next) => {
   if (prev.contextMenu.open !== next.contextMenu.open) return false;

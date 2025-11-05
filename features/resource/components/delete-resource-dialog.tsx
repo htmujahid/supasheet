@@ -41,14 +41,15 @@ import {
 } from "@/lib/database-meta.types";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-interface DeleteResourceDialogProps
-  extends React.ComponentPropsWithoutRef<typeof Dialog> {
+type DeleteResourceDialogProps = React.ComponentPropsWithoutRef<
+  typeof Dialog
+> & {
   resources: Row<ResourceDataSchema>["original"][];
   tableSchema: TableSchema | null;
   columnSchema: ColumnSchema[];
   showTrigger?: boolean;
   onSuccess?: () => void;
-}
+};
 
 export function DeleteResourceDialog({
   resources,

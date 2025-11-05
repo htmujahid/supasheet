@@ -234,16 +234,16 @@ function getAuthErrorMessage(params: { error: string; code?: string }) {
   // this error arises when the user tries to sign in with an expired email link
   if (params.code) {
     if (params.code === "otp_expired") {
-      return "auth:errors.otp_expired";
+      return "The email link has expired. Please try again.";
     }
   }
 
   // this error arises when the user is trying to sign in with a different
   // browser than the one they used to request the sign in link
   if (isVerifierError(params.error)) {
-    return "auth:errors.codeVerifierMismatch";
+    return "It looks like you're trying to sign in using a different browser than the one you used to request the sign in link. Please try again using the same browser.";
   }
 
   // fallback to the default error message
-  return `auth:authenticationErrorAlertBody`;
+  return `Sorry, we could not authenticate you. Please try again.`;
 }

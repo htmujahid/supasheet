@@ -96,6 +96,12 @@ comment on view public.user_tasks is '{"icon": "UserCheck"}';
 revoke all on public.user_tasks from authenticated, service_role;
 grant select on public.user_tasks to authenticated;
 
+create or replace view public.accounts
+with (security_invoker = true) as
+select
+    *
+from supasheet.accounts;
+
 
 ----------------------------------------------------------------
 -- Reports for tasks

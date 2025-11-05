@@ -19,11 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { createAccountAction } from "../../lib/actions";
 import {
   CreateAccountFormData,
   CreateAccountSchema,
 } from "../../lib/schema/create-account.schema";
-import { createAccountAction } from "../../lib/server/server-actions";
 
 export function CreateAccountForm() {
   const [isPending, startTransition] = useTransition();

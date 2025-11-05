@@ -3,11 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSupabase } from "./use-supabase";
 import { USER_IDENTITIES_QUERY_KEY } from "./use-user-identities";
 
-interface Credentials {
+type Credentials = {
   email: string;
   password: string;
   redirectTo: string;
-}
+};
 
 export function useLinkIdentityWithEmailPassword() {
   const client = useSupabase();

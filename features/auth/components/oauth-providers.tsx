@@ -6,7 +6,6 @@ import type { Provider } from "@supabase/supabase-js";
 
 import { If } from "@/components/makerkit/if";
 import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
-import { Trans } from "@/components/makerkit/trans";
 import { useSignInWithProvider } from "@/lib/supabase/hooks/use-sign-in-with-provider";
 
 import { AuthErrorAlert } from "./auth-error-alert";
@@ -26,7 +25,11 @@ const OAUTH_SCOPES: Partial<Record<Provider, string>> = {
   // add your OAuth providers here
 };
 
-export function OauthProviders(props: {
+export function OauthProviders({
+  shouldCreateUser,
+  enabledProviders,
+  paths,
+}: {
   shouldCreateUser: boolean;
   enabledProviders: Provider[];
 
@@ -51,8 +54,6 @@ export function OauthProviders(props: {
     [],
   );
 
-  const enabledProviders = props.enabledProviders;
-
   if (!enabledProviders?.length) {
     return null;
   }
@@ -74,12 +75,12 @@ export function OauthProviders(props: {
                   const origin = window.location.origin;
                   const queryParams = new URLSearchParams();
 
-                  if (props.paths.returnPath) {
-                    queryParams.set("next", props.paths.returnPath);
+                  if (paths.returnPath) {
+                    queryParams.set("next", paths.returnPath);
                   }
 
                   const redirectPath = [
-                    props.paths.callback,
+                    paths.callback,
                     queryParams.toString(),
                   ].join("?");
 
@@ -89,7 +90,7 @@ export function OauthProviders(props: {
                   const credentials = {
                     provider,
                     options: {
-                      shouldCreateUser: props.shouldCreateUser,
+                      shouldCreateUser,
                       redirectTo,
                       ...scopesOpts,
                     },
@@ -100,12 +101,7 @@ export function OauthProviders(props: {
                   );
                 }}
               >
-                <Trans
-                  i18nKey={"auth:signInWithProvider"}
-                  values={{
-                    provider: getProviderName(provider),
-                  }}
-                />
+                Sign in with {getProviderName(provider)}
               </AuthProviderButton>
             );
           })}

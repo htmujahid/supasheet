@@ -14,9 +14,9 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { DataTableSliderFilter } from "./data-table-slider-filter";
 import { DataTableViewOptions } from "./data-table-view-options";
 
-interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
+type DataTableToolbarProps<TData> = React.ComponentProps<"div"> & {
   table: Table<TData>;
-}
+};
 
 export function DataTableToolbar<TData>({
   table,
@@ -69,9 +69,9 @@ export function DataTableToolbar<TData>({
     </div>
   );
 }
-interface DataTableToolbarFilterProps<TData> {
+type DataTableToolbarFilterProps<TData> = {
   column: Column<TData>;
-}
+};
 
 function DataTableToolbarFilter<TData>({
   column,

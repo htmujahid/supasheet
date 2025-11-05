@@ -1,13 +1,17 @@
 import type {
   DatabaseSchemas,
   DatabaseTables,
+  DatabaseViews,
 } from "@/lib/database-meta.types";
 import type { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 import type { ResourceSearchParams } from "./validations";
 
-export async function loadColumnsSchema(schema: string, id: string) {
+export async function loadColumnsSchema<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseTables<Schema> | DatabaseViews<Schema>,
+) {
   const client = await getSupabaseServerClient();
 
   const columnResponse = await client
@@ -17,26 +21,30 @@ export async function loadColumnsSchema(schema: string, id: string) {
   return columnResponse.data;
 }
 
-export async function loadTableSchema(schema: string, id: string) {
-  const client = await getSupabaseServerClient();
+export async function loadTableSchema<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseTables<Schema>,
+) {
+  const client = await getSupabaseServerClient<Database>();
 
-  const tableResponse = await client
-    .schema("supasheet")
-    .rpc("get_tables", { schema_name: schema, table_name: id });
+  const tableResponse = await client.schema("supasheet").rpc("get_tables", {
+    schema_name: schema as string,
+    table_name: id as string,
+  });
 
-  if (tableResponse.error) {
-    return null;
-  }
-
-  return tableResponse.data?.[0] || null;
+  return tableResponse?.data?.[0] ?? null;
 }
 
-export async function loadViewSchema(schema: string, id: string) {
-  const client = await getSupabaseServerClient();
+export async function loadViewSchema<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseViews<Schema>,
+) {
+  const client = await getSupabaseServerClient<Database>();
 
-  const viewResponse = await client
-    .schema("supasheet")
-    .rpc("get_views", { schema_name: schema, view_name: id });
+  const viewResponse = await client.schema("supasheet").rpc("get_views", {
+    schema_name: schema as string,
+    view_name: id as string,
+  });
 
   if (viewResponse.error) {
     return null;
@@ -46,23 +54,23 @@ export async function loadViewSchema(schema: string, id: string) {
     const materializedViewResponse = await client
       .schema("supasheet")
       .rpc("get_materialized_views", {
-        schema_name: schema,
-        view_name: id,
+        schema_name: schema as string,
+        view_name: id as string,
       });
 
     if (materializedViewResponse.error) {
       return null;
     }
 
-    return materializedViewResponse.data?.[0] || null;
+    return materializedViewResponse.data?.[0] ?? null;
   }
 
-  return viewResponse.data?.[0] || null;
+  return viewResponse.data?.[0] ?? null;
 }
 
-export async function loadResourceData(
-  schema: DatabaseSchemas,
-  id: DatabaseTables<typeof schema>,
+export async function loadResourceData<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseTables<Schema> | DatabaseViews<Schema>,
   input: ResourceSearchParams,
 ) {
   const client = await getSupabaseServerClient();
@@ -194,9 +202,9 @@ export async function loadResourceData(
   };
 }
 
-export async function loadSingleResourceData(
-  schema: DatabaseSchemas,
-  id: DatabaseTables<typeof schema>,
+export async function loadSingleResourceData<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseTables<Schema> | DatabaseViews<Schema>,
   pk: Record<string, unknown>,
 ) {
   const client = await getSupabaseServerClient();
@@ -204,7 +212,7 @@ export async function loadSingleResourceData(
   const query = client.schema(schema).from(id).select("*");
 
   for (const [key, value] of Object.entries(pk)) {
-    query.eq(key, value as string | number);
+    query.eq(key, value as any);
   }
 
   const response = await query.maybeSingle();
@@ -212,25 +220,26 @@ export async function loadSingleResourceData(
   return response.data;
 }
 
-export async function loadForeignKeyData(
-  schema: DatabaseSchemas,
-  targetTable: DatabaseTables<typeof schema>,
+export async function loadForeignKeyData<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  targetTable: DatabaseTables<Schema>,
   targetColumn: string,
   value: unknown,
 ) {
   const client = await getSupabaseServerClient();
 
   const response = await client
+    .schema(schema)
     .from(targetTable)
     .select("*")
-    .eq(targetColumn, value as string | number);
+    .eq(targetColumn, value as any);
 
   return response.data;
 }
 
-export async function loadResourcePermissions(
-  schema: DatabaseSchemas,
-  id: DatabaseTables<typeof schema>,
+export async function loadResourcePermissions<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseTables<Schema> | DatabaseViews<Schema>,
 ) {
   const client = await getSupabaseServerClient();
 
@@ -276,9 +285,9 @@ export async function loadResourcePermissions(
   return permissions;
 }
 
-export async function loadSelectPermissions(
-  schema: DatabaseSchemas,
-  id: DatabaseTables<typeof schema>,
+export async function loadSelectPermissions<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseTables<Schema> | DatabaseViews<Schema>,
 ) {
   const client = await getSupabaseServerClient();
 

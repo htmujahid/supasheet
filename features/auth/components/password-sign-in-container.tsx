@@ -6,8 +6,8 @@ import type { z } from "zod";
 
 import { useSignInWithEmailPassword } from "@/lib/supabase/hooks/use-sign-in-with-email-password";
 
-import { useCaptchaToken } from "../captcha/client";
-import type { PasswordSignInSchema } from "../schemas/password-sign-in.schema";
+import { useCaptchaToken } from "../lib/hooks/use-captcha-token";
+import type { PasswordSignInSchema } from "../lib/schemas/password-sign-in.schema";
 import { AuthErrorAlert } from "./auth-error-alert";
 import { PasswordSignInForm } from "./password-sign-in-form";
 

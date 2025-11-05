@@ -9,8 +9,8 @@ import { Loader2, PlayIcon } from "lucide-react";
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { Button } from "@/components/ui/button";
 
+import { useSqlData } from "../lib/hooks/use-sql-data";
 import { IStandaloneCodeEditor } from "../lib/types";
-import { useSqlData } from "../lib/use-sql-data";
 import { useSqlContext } from "./sql-context";
 
 const MonacoEditor = dynamic(() => import("./monaco-editor"), { ssr: false });

@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -14,25 +16,31 @@ import {
 import {
   DatabaseSchemas,
   DatabaseTables,
+  DatabaseViews,
   PrimaryKey,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function ViewPage({
-  params,
-}: {
+type ResourceViewPageProps = {
   params: Promise<{
-    schema: string;
-    resource: string;
+    schema: DatabaseSchemas;
+    resource: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>;
     pk: string[];
   }>;
-}) {
-  const { resource, pk, schema } = (await params) as {
-    schema: DatabaseSchemas;
-    resource: DatabaseTables<typeof schema>;
-    pk: string[];
+};
+
+export async function generateMetadata({
+  params,
+}: ResourceViewPageProps): Promise<Metadata> {
+  const { schema, resource } = await params;
+
+  return {
+    title: `${formatTitle(resource)} - ${schema}`,
   };
+}
+
+async function ResourceViewPage({ params }: ResourceViewPageProps) {
+  const { resource, pk, schema } = await params;
 
   const [tableSchema, columnsSchema, permissions] = await Promise.all([
     loadTableSchema(schema, resource),
@@ -105,4 +113,4 @@ async function ViewPage({
   );
 }
 
-export default withI18n(ViewPage);
+export default ResourceViewPage;

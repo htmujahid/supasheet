@@ -13,12 +13,12 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
+type SidebarNavProps = React.HTMLAttributes<HTMLElement> & {
   items: {
     href: string;
     title: string;
   }[];
-}
+};
 
 export function AccountSidebar({
   className,

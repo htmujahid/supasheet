@@ -1,7 +1,11 @@
-import { withI18n } from "@/lib/i18n/with-i18n";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Supasheet - Complete CMS Platform",
+};
 
 function Home() {
   return null;
 }
 
-export default withI18n(Home);
+export default Home;

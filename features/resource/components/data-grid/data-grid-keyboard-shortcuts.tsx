@@ -27,17 +27,17 @@ import { Separator } from "@/components/ui/separator";
 
 const SHORTCUT_KEY = "/";
 
-interface ShortcutGroup {
+type ShortcutGroup = {
   title: string;
   shortcuts: Array<{
     keys: string[];
     description: string;
   }>;
-}
+};
 
-interface DataGridKeyboardShortcutsProps {
+type DataGridKeyboardShortcutsProps = {
   enableSearch?: boolean;
-}
+};
 
 export const DataGridKeyboardShortcuts = memo(
   DataGridKeyboardShortcutsImpl,

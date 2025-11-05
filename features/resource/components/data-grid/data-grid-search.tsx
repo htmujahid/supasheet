@@ -10,7 +10,7 @@ import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 
 import type { SearchState } from "../../lib/types/data-grid";
 
-interface DataGridSearchProps extends SearchState {}
+type DataGridSearchProps = SearchState;
 
 export const DataGridSearch = memo(DataGridSearchImpl, (prev, next) => {
   if (prev.searchOpen !== next.searchOpen) return false;

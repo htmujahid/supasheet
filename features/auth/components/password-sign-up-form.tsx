@@ -3,10 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { PasswordSignUpSchema } from "../schemas/password-sign-up.schema";
+import { PasswordSignUpSchema } from "../lib/schemas/password-sign-up.schema";
 import { TermsAndConditionsFormField } from "./terms-and-conditions-form-field";
 
 export function PasswordSignUpForm({
@@ -36,8 +34,6 @@ export function PasswordSignUpForm({
   onSubmit: (params: { email: string; password: string }) => unknown;
   loading: boolean;
 }) {
-  const { t } = useTranslation();
-
   const form = useForm({
     resolver: zodResolver(PasswordSignUpSchema),
     defaultValues: {
@@ -57,16 +53,14 @@ export function PasswordSignUpForm({
           name={"email"}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                <Trans i18nKey={"common:emailAddress"} />
-              </FormLabel>
+              <FormLabel>Email Address</FormLabel>
 
               <FormControl>
                 <Input
                   data-test={"email-input"}
                   required
                   type="email"
-                  placeholder={t("emailPlaceholder")}
+                  placeholder={"your@email.com"}
                   {...field}
                 />
               </FormControl>
@@ -81,9 +75,7 @@ export function PasswordSignUpForm({
           name={"password"}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                <Trans i18nKey={"common:password"} />
-              </FormLabel>
+              <FormLabel>Password</FormLabel>
 
               <FormControl>
                 <Input
@@ -114,8 +106,7 @@ export function PasswordSignUpForm({
             condition={loading}
             fallback={
               <>
-                <Trans i18nKey={"auth:signUpWithEmail"} />
-
+                Sign up with Email
                 <ArrowRight
                   className={
                     "zoom-in animate-in slide-in-from-left-2 fill-mode-both h-4 delay-500 duration-500"
@@ -124,7 +115,7 @@ export function PasswordSignUpForm({
               </>
             }
           >
-            <Trans i18nKey={"auth:signingUp"} />
+            Signing up...
           </If>
         </Button>
       </form>

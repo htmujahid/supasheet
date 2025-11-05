@@ -8,10 +8,9 @@ import { cn } from "@/lib/utils";
 
 import { DataTableViewOptions } from "./data-table-view-options";
 
-interface DataTableAdvancedToolbarProps<TData>
-  extends React.ComponentProps<"div"> {
+type DataTableAdvancedToolbarProps<TData> = React.ComponentProps<"div"> & {
   table: Table<TData>;
-}
+};
 
 export function DataTableAdvancedToolbar<TData>({
   table,

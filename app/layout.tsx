@@ -3,24 +3,19 @@ import { cookies } from "next/headers";
 import { RootProviders } from "@/components/providers/root-providers";
 import { Toaster } from "@/components/ui/sonner";
 import { heading, mono, sans } from "@/lib/fonts";
-import { createI18nServerInstance } from "@/lib/i18n/i18n.server";
-import { withI18n } from "@/lib/i18n/with-i18n";
 import { generateRootMetadata } from "@/lib/root-metadata";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
 
-async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { language } = await createI18nServerInstance();
+async function RootLayout({ children }: React.PropsWithChildren) {
   const theme = await getTheme();
   const className = getClassName(theme);
 
   return (
-    <html lang={language} className={className}>
+    <html lang={"en"} className={className}>
       <body>
-        <RootProviders theme={theme} lang={language}>
-          {children}
-        </RootProviders>
+        <RootProviders theme={theme}>{children}</RootProviders>
 
         <Toaster richColors={true} theme={theme} position="top-center" />
       </body>
@@ -57,4 +52,4 @@ async function getTheme() {
 
 export const generateMetadata = generateRootMetadata;
 
-export default withI18n(RootLayout);
+export default RootLayout;

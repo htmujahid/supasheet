@@ -6,10 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 
-export function AuthLinkRedirect(props: { redirectPath?: string }) {
+export function AuthLinkRedirect({
+  redirectPath: redirectPathProp,
+}: {
+  redirectPath?: string;
+}) {
   const params = useSearchParams();
 
-  const redirectPath = params?.get("redirectPath") ?? props.redirectPath ?? "/";
+  const redirectPath = params?.get("redirectPath") ?? redirectPathProp ?? "/";
 
   useRedirectOnSignIn(redirectPath);
 

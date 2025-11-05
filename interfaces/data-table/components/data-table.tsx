@@ -16,11 +16,11 @@ import { cn } from "@/lib/utils";
 import { getCommonPinningStyles } from "../lib/data-table";
 import { DataTablePagination } from "./data-table-pagination";
 
-interface DataTableProps<TData> extends React.ComponentProps<"div"> {
+type DataTableProps<TData> = React.ComponentProps<"div"> & {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
   isPagination?: boolean;
-}
+};
 
 export function DataTable<TData>({
   table,

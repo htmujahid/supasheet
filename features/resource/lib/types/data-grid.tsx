@@ -6,18 +6,18 @@ import { ColumnMetadata } from "../../components/fields/types";
 
 export type RowHeightValue = "short" | "medium" | "tall" | "extra-tall";
 
-export interface CellSelectOption {
+export type CellSelectOption = {
   label: string;
   value: string;
-}
+};
 
 export type Cell = ColumnMetadata;
 
-export interface UpdateCell {
+export type UpdateCell = {
   rowIndex: number;
   columnId: string;
   value: unknown;
-}
+};
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,27 +95,27 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export interface CellPosition {
+export type CellPosition = {
   rowIndex: number;
   columnId: string;
-}
+};
 
-export interface CellRange {
+export type CellRange = {
   start: CellPosition;
   end: CellPosition;
-}
+};
 
-export interface SelectionState {
+export type SelectionState = {
   selectedCells: Set<string>;
   selectionRange: CellRange | null;
   isSelecting: boolean;
-}
+};
 
-export interface ContextMenuState {
+export type ContextMenuState = {
   open: boolean;
   x: number;
   y: number;
-}
+};
 
 export type NavigationDirection =
   | "up"
@@ -129,7 +129,7 @@ export type NavigationDirection =
   | "pageup"
   | "pagedown";
 
-export interface SearchState {
+export type SearchState = {
   searchMatches: CellPosition[];
   matchIndex: number;
   searchOpen: boolean;
@@ -139,4 +139,4 @@ export interface SearchState {
   onSearch: (query: string) => void;
   onNavigateToNextMatch: () => void;
   onNavigateToPrevMatch: () => void;
-}
+};

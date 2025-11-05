@@ -1,10 +1,12 @@
-import { cache } from "react";
+import { Metadata } from "next";
 
 import { notFound } from "next/navigation";
 
+import { SearchParams } from "nuqs";
+
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { If } from "@/components/makerkit/if";
-import { TCalendarView, TEventColor } from "@/components/ui/event-calendar";
+import { TCalendarView } from "@/components/ui/event-calendar";
 import { ResourceCalendarView } from "@/features/resource/components/resource-calendar";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import { ResourceSheet } from "@/features/resource/components/resource-sheet";
@@ -15,62 +17,48 @@ import {
   loadTableSchema,
   loadViewSchema,
 } from "@/features/resource/lib/loaders";
+import { stringToColor } from "@/features/resource/lib/utils/colors";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import {
   DatabaseSchemas,
   DatabaseTables,
+  DatabaseViews,
   TableMetadata,
   ViewMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-const colorMap = new Map<string, string>();
-let colorIndex = 0;
-const colors = [
-  "red",
-  "blue",
-  "green",
-  "yellow",
-  "purple",
-  "orange",
-  "teal",
-  "pink",
-  "cyan",
-  "lime",
-];
-
-const stringToColor = cache((str: string) => {
-  if (colorMap.has(str)) {
-    return colorMap.get(str)! as TEventColor;
-  }
-
-  const color = colors[colorIndex % colors.length];
-  colorMap.set(str, color);
-  colorIndex += 1;
-  return color as TEventColor;
-});
-
-async function Page(props: {
+type ResourceCalendarPageProps = {
   params: Promise<{
     schema: DatabaseSchemas;
-    resource: DatabaseTables<DatabaseSchemas>;
+    resource: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>;
     id: string;
   }>;
-  searchParams: Promise<{
-    page: string;
-    perPage: string;
-    view: TCalendarView;
-  }>;
-}) {
-  const { resource, schema, id } = await props.params;
+  searchParams: Promise<SearchParams & { view?: TCalendarView }>;
+};
+
+export async function generateMetadata({
+  params,
+}: ResourceCalendarPageProps): Promise<Metadata> {
+  const { schema, resource } = await params;
+
+  return {
+    title: `${formatTitle(resource)} Calendar - ${schema}`,
+  };
+}
+
+async function ResourceCalendarPage({
+  params,
+  searchParams,
+}: ResourceCalendarPageProps) {
+  const { resource, schema, id } = await params;
 
   const {
     page = "1",
     perPage = "1000",
     view = "day",
     ...rest
-  } = await props.searchParams;
+  } = await searchParams;
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
@@ -162,4 +150,4 @@ async function Page(props: {
   );
 }
 
-export default withI18n(Page);
+export default ResourceCalendarPage;

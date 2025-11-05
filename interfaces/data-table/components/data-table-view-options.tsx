@@ -21,9 +21,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-interface DataTableViewOptionsProps<TData> {
+type DataTableViewOptionsProps<TData> = {
   table: Table<TData>;
-}
+};
 
 export function DataTableViewOptions<TData>({
   table,

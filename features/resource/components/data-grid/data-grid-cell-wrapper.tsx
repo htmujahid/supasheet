@@ -6,7 +6,7 @@ import type { Cell, Table } from "@tanstack/react-table";
 
 import { cn } from "@/lib/utils";
 
-interface DataGridCellWrapperProps<TData> extends React.ComponentProps<"div"> {
+type DataGridCellWrapperProps<TData> = React.ComponentProps<"div"> & {
   cell: Cell<TData, unknown>;
   table: Table<TData>;
   rowIndex: number;
@@ -14,7 +14,7 @@ interface DataGridCellWrapperProps<TData> extends React.ComponentProps<"div"> {
   isEditing: boolean;
   isFocused: boolean;
   isSelected: boolean;
-}
+};
 
 export function DataGridCellWrapper<TData>({
   table,

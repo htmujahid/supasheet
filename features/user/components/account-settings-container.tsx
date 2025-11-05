@@ -1,11 +1,7 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
-
 import { If } from "@/components/makerkit/if";
-import { LanguageSelector } from "@/components/makerkit/language-selector";
 import { LoadingOverlay } from "@/components/makerkit/loading-overlay";
-import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
   CardContent,
@@ -36,7 +32,6 @@ export function PersonalAccountSettingsContainer(
     };
   }>,
 ) {
-  const supportsLanguageSelection = useSupportMultiLanguage();
   const user = usePersonalAccountData(props.userId);
 
   if (!user.data || user.isPending) {
@@ -47,12 +42,10 @@ export function PersonalAccountSettingsContainer(
     <div className={"flex w-full flex-col space-y-4 pb-32"}>
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:accountImage"} />
-          </CardTitle>
+          <CardTitle>Your Profile Picture</CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={"account:accountImageDescription"} />
+            Please choose a photo to upload as your profile picture.
           </CardDescription>
         </CardHeader>
 
@@ -68,12 +61,10 @@ export function PersonalAccountSettingsContainer(
 
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:name"} />
-          </CardTitle>
+          <CardTitle>Your Name</CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={"account:nameDescription"} />
+            Update your name to be displayed on your profile
           </CardDescription>
         </CardHeader>
 
@@ -82,32 +73,12 @@ export function PersonalAccountSettingsContainer(
         </CardContent>
       </Card>
 
-      <If condition={supportsLanguageSelection}>
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:language"} />
-            </CardTitle>
-
-            <CardDescription>
-              <Trans i18nKey={"account:languageDescription"} />
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <LanguageSelector />
-          </CardContent>
-        </Card>
-      </If>
-
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:updateEmailCardTitle"} />
-          </CardTitle>
+          <CardTitle>Update your Email</CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={"account:updateEmailCardDescription"} />
+            Update your email address you use to login to your account
           </CardDescription>
         </CardHeader>
 
@@ -119,12 +90,10 @@ export function PersonalAccountSettingsContainer(
       <If condition={props.features.enablePasswordUpdate}>
         <Card>
           <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:updatePasswordCardTitle"} />
-            </CardTitle>
+            <CardTitle>Update your Password</CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:updatePasswordCardDescription"} />
+              Update your password to keep your account secure.
             </CardDescription>
           </CardHeader>
 
@@ -136,12 +105,11 @@ export function PersonalAccountSettingsContainer(
 
       <Card>
         <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:multiFactorAuth"} />
-          </CardTitle>
+          <CardTitle>Multi-Factor Authentication</CardTitle>
 
           <CardDescription>
-            <Trans i18nKey={"account:multiFactorAuthDescription"} />
+            Set up Multi-Factor Authentication method to further secure your
+            account
           </CardDescription>
         </CardHeader>
 
@@ -153,12 +121,10 @@ export function PersonalAccountSettingsContainer(
       <If condition={props.features.enableAccountDeletion}>
         <Card className={"border-destructive"}>
           <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:dangerZone"} />
-            </CardTitle>
+            <CardTitle>Danger Zone</CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:dangerZoneDescription"} />
+              Some actions cannot be undone. Please be careful.
             </CardDescription>
           </CardHeader>
 
@@ -169,13 +135,4 @@ export function PersonalAccountSettingsContainer(
       </If>
     </div>
   );
-}
-
-function useSupportMultiLanguage() {
-  const { i18n } = useTranslation();
-  const langs = (i18n?.options?.supportedLngs as string[]) ?? [];
-
-  const supportedLangs = langs.filter((lang) => lang !== "cimode");
-
-  return supportedLangs.length > 1;
 }

@@ -4,11 +4,11 @@ import { ChevronRight, Home } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-interface StorageBreadcrumbProps {
+type StorageBreadcrumbProps = {
   bucketName: string;
   currentPath: string;
   onNavigate: (path: string) => void;
-}
+};
 
 export function StorageBreadcrumb({
   bucketName,

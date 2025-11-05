@@ -1,12 +1,27 @@
+import { Metadata } from "next";
+
 import { notFound, redirect } from "next/navigation";
 
+import { DatabaseSchemas } from "@/lib/database-meta.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-export default async function Page({
+type SchemaPageProps = {
+  params: Promise<{
+    schema: DatabaseSchemas;
+  }>;
+};
+
+export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ schema: string }>;
-}) {
+}: SchemaPageProps): Promise<Metadata> {
+  const { schema } = await params;
+
+  return {
+    title: schema,
+  };
+}
+
+export default async function SchemaPage({ params }: SchemaPageProps) {
   const { schema } = await params;
 
   const client = await getSupabaseServerClient();

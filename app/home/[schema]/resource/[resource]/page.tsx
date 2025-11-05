@@ -1,4 +1,8 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
+
+import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { If } from "@/components/makerkit/if";
@@ -12,27 +16,35 @@ import {
   loadTableSchema,
 } from "@/features/resource/lib/loaders";
 import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
-import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
+import {
+  DatabaseSchemas,
+  DatabaseTables,
+  DatabaseViews,
+} from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function HomeResourcePage(props: {
+type ResourcePageProps = {
   params: Promise<{
     schema: DatabaseSchemas;
-    resource: DatabaseTables<DatabaseSchemas>;
+    resource: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>;
   }>;
-  searchParams: Promise<{
-    page: string;
-    perPage: string;
-    filters: string;
-    sort: string;
-    joinOperator: string;
-  }>;
-}) {
-  const { resource, schema } = await props.params;
+  searchParams: Promise<SearchParams>;
+};
 
-  const searchParams = await props.searchParams;
-  const search = resourceSearchParamsCache.parse(searchParams);
+export async function generateMetadata({
+  params,
+}: ResourcePageProps): Promise<Metadata> {
+  const { schema, resource } = await params;
+
+  return {
+    title: `${formatTitle(resource)} - ${schema}`,
+  };
+}
+
+async function ResourcePage({ params, searchParams }: ResourcePageProps) {
+  const { resource, schema } = await params;
+
+  const search = resourceSearchParamsCache.parse(await searchParams);
 
   const [tableSchema, columnsSchema, data, permissions] = await Promise.all([
     loadTableSchema(schema, resource),
@@ -75,4 +87,4 @@ async function HomeResourcePage(props: {
   );
 }
 
-export default withI18n(HomeResourcePage);
+export default ResourcePage;

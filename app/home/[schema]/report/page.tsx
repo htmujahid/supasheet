@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -13,13 +15,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { loadReports } from "@/features/report/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
+import { DatabaseSchemas } from "@/lib/database-meta.types";
 
-async function ReportsPage({
+type ReportsPageProps = {
+  params: Promise<{ schema: DatabaseSchemas }>;
+};
+
+export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ schema: string }>;
-}) {
+}: ReportsPageProps): Promise<Metadata> {
+  const { schema } = await params;
+
+  return {
+    title: `Reports - ${schema}`,
+  };
+}
+
+async function ReportsPage({ params }: ReportsPageProps) {
   const { schema } = await params;
   const reports = await loadReports(schema);
 
@@ -62,4 +74,4 @@ async function ReportsPage({
   );
 }
 
-export default withI18n(ReportsPage);
+export default ReportsPage;

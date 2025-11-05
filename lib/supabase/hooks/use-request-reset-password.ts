@@ -2,11 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 
 import { useSupabase } from "./use-supabase";
 
-interface RequestPasswordResetMutationParams {
+type RequestPasswordResetMutationParams = {
   email: string;
   redirectTo: string;
   captchaToken?: string;
-}
+};
 
 /**
  * @name useRequestResetPassword

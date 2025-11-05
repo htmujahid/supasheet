@@ -29,12 +29,12 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client"
 
 import type { StorageFile } from "../types";
 
-interface FileDetailsDrawerProps {
+type FileDetailsDrawerProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   file: StorageFile | null;
   bucketId: string;
-}
+};
 
 export function FileDetailsDrawer({
   open,

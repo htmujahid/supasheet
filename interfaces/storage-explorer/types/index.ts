@@ -1,4 +1,4 @@
-export interface StorageFile {
+export type StorageFile = {
   id: string;
   name: string;
   size?: number;
@@ -6,9 +6,9 @@ export interface StorageFile {
   lastModified?: Date;
   isFolder?: boolean;
   path?: string;
-}
+};
 
-export interface StorageBucket {
+export type StorageBucket = {
   id: string;
   name: string;
   public: boolean;
@@ -17,14 +17,14 @@ export interface StorageBucket {
   owner?: string;
   file_size_limit?: number | null;
   allowed_mime_types?: string[] | null;
-}
+};
 
-export interface BreadcrumbItem {
+export type BreadcrumbItem = {
   name: string;
   path: string;
-}
+};
 
-export interface StorageExplorerContextType {
+export type StorageExplorerContextType = {
   currentBucket: string;
   currentPath: string;
   files: StorageFile[];
@@ -44,4 +44,4 @@ export interface StorageExplorerContextType {
   selectAllFiles: () => void;
   clearSelection: () => void;
   refreshFiles: () => Promise<void>;
-}
+};

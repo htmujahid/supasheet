@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { ResourceDataSchema } from "@/lib/database-meta.types";
 import { exportTableToCSV } from "@/lib/export";
 
-interface ReportTableToolbarActionsProps {
+type ReportTableToolbarActionsProps = {
   table: Table<ResourceDataSchema>;
-}
+};
 
 export function ReportTableToolbarActions({
   table,

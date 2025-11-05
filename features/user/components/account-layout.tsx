@@ -36,9 +36,9 @@ const sidebarNavItems = [
   },
 ];
 
-interface SettingsLayoutProps {
+type SettingsLayoutProps = {
   children: React.ReactNode;
-}
+};
 
 export function AccountLayout({ children }: SettingsLayoutProps) {
   return (

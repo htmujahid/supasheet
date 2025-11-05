@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-import { deleteAccountAction } from "../../lib/server/server-actions";
+import { deleteAccountAction } from "../../lib/actions";
 
 type DeleteAccountDialogProps = {
   user: User;

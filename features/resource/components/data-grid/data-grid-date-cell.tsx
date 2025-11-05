@@ -15,7 +15,7 @@ import {
 import { updateResourceDataAction } from "../../lib/actions";
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
-interface CellVariantProps<TData> {
+type CellVariantProps<TData> = {
   cell: Cell<TData, unknown>;
   table: Table<TData>;
   rowIndex: number;
@@ -23,7 +23,7 @@ interface CellVariantProps<TData> {
   isEditing: boolean;
   isFocused: boolean;
   isSelected: boolean;
-}
+};
 
 function formatDateForDisplay(dateStr: string) {
   if (!dateStr) return "";

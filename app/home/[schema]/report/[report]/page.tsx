@@ -1,6 +1,8 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
-import type { SearchParams } from "nuqs/server";
+import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { ReportTable } from "@/features/report/components/report-table";
@@ -9,21 +11,31 @@ import {
   loadReportData,
 } from "@/features/report/lib/loaders";
 import { reportSearchParamsCache } from "@/features/report/lib/validations";
-import { DatabaseSchemas, DatabaseTables } from "@/lib/database-meta.types";
+import { DatabaseSchemas, DatabaseViews } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-async function HomeResourcePage(props: {
+type ReportPageProps = {
   params: Promise<{
     schema: DatabaseSchemas;
-    report: DatabaseTables<DatabaseSchemas>;
+    report: DatabaseViews<DatabaseSchemas>;
   }>;
   searchParams: Promise<SearchParams>;
-}) {
-  const { schema, report } = await props.params;
+};
 
-  const searchParams = await props.searchParams;
-  const search = reportSearchParamsCache.parse(searchParams);
+export async function generateMetadata({
+  params,
+}: ReportPageProps): Promise<Metadata> {
+  const { schema, report } = await params;
+
+  return {
+    title: `${formatTitle(report)} - ${schema}`,
+  };
+}
+
+async function ReportPage({ params, searchParams }: ReportPageProps) {
+  const { schema, report } = await params;
+
+  const search = await reportSearchParamsCache.parse(searchParams);
 
   const [columnsSchema, data] = await Promise.all([
     loadColumnsSchema(report),
@@ -49,4 +61,4 @@ async function HomeResourcePage(props: {
   );
 }
 
-export default withI18n(HomeResourcePage);
+export default ReportPage;

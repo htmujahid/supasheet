@@ -9,13 +9,13 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-interface StorageContextMenuProps {
+type StorageContextMenuProps = {
   children: React.ReactNode;
   onRename: () => void;
   onDelete: () => void;
   onDownload?: () => void;
   isFolder: boolean;
-}
+};
 
 export function StorageContextMenu({
   children,

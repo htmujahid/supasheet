@@ -7,27 +7,27 @@ import { User } from "@supabase/supabase-js";
 
 import { z } from "zod";
 
-import { verifyCaptchaToken } from "@/features/auth/captcha/server";
+import { verifyCaptchaToken } from "@/features/auth/lib/server/verify-captcha";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";
 
 import { zodParseFactory } from "../utils";
 
-interface Config<Schema> {
+type Config<Schema> = {
   auth?: boolean;
   captcha?: boolean;
   schema?: Schema;
-}
+};
 
-interface HandlerParams<
+type HandlerParams<
   Schema extends z.ZodType | undefined,
   RequireAuth extends boolean | undefined,
-> {
+> = {
   request: NextRequest;
   user: RequireAuth extends false ? undefined : User;
   body: Schema extends z.ZodType ? z.infer<Schema> : undefined;
   params: Record<string, string>;
-}
+};
 
 /**
  * Enhanced route handler function.

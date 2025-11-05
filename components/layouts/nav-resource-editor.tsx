@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
-interface EditorItemProps {
+type EditorItemProps = {
   item: { name: string; id: string };
   isActive: boolean;
   onUpdateItems: (updatedItems: { name: string; id: string }[]) => void;
@@ -41,7 +41,7 @@ interface EditorItemProps {
   activeItem: { name: string; id: string } | undefined;
   activeSchema?: string;
   isMobile: boolean;
-}
+};
 
 function EditorItem({
   item,

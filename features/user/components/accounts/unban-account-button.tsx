@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 
-import { unbanAccountAction } from "../../lib/server/server-actions";
+import { unbanAccountAction } from "../../lib/actions";
 
 type UnbanAccountButtonProps = {
   user: User;

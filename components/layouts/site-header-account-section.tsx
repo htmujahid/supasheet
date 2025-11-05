@@ -6,7 +6,6 @@ import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Button } from "@/components/ui/button";
 import featuresFlagConfig from "@/config/feature-flags.config";
 import pathsConfig from "@/config/paths.config";
@@ -41,10 +40,14 @@ export function SiteHeaderAccountSection({
   return <SuspendedPersonalAccountDropdown user={user} />;
 }
 
-function SuspendedPersonalAccountDropdown(props: { user: User | null }) {
+function SuspendedPersonalAccountDropdown({
+  user: userProp,
+}: {
+  user: User | null;
+}) {
   const signOut = useSignOut();
-  const user = useUser(props.user);
-  const userData = user.data ?? props.user ?? null;
+  const user = useUser(userProp);
+  const userData = user.data ?? userProp ?? null;
 
   if (userData) {
     return (
@@ -69,16 +72,12 @@ function AuthButtons() {
         </If>
 
         <Button asChild variant={"ghost"}>
-          <Link href={pathsConfig.auth.signIn}>
-            <Trans i18nKey={"auth:signIn"} />
-          </Link>
+          <Link href={pathsConfig.auth.signIn}>Sign In</Link>
         </Button>
       </div>
 
       <Button asChild className="group" variant={"default"}>
-        <Link href={pathsConfig.auth.signUp}>
-          <Trans i18nKey={"auth:signUp"} />
-        </Link>
+        <Link href={pathsConfig.auth.signUp}>Sign Up</Link>
       </Button>
     </div>
   );

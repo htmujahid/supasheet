@@ -1,4 +1,8 @@
+import { Metadata } from "next";
+
 import { notFound } from "next/navigation";
+
+import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { If } from "@/components/makerkit/if";
@@ -17,31 +21,48 @@ import { resourceSearchParamsCache } from "@/features/resource/lib/validations";
 import {
   DatabaseSchemas,
   DatabaseTables,
+  DatabaseViews,
   TableMetadata,
   ViewMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
-export default async function Page(props: {
+type ResourceKanbanPageProps = {
   params: Promise<{
     schema: DatabaseSchemas;
-    resource: DatabaseTables<DatabaseSchemas>;
+    resource: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>;
     id: string;
   }>;
-  searchParams: Promise<{
-    layout: "list" | "board";
-    page: string;
-    perPage: string;
-  }>;
-}) {
-  const { resource, schema, id } = await props.params;
+  searchParams: Promise<
+    SearchParams & {
+      layout?: "list" | "board";
+    }
+  >;
+};
+
+export async function generateMetadata({
+  params,
+}: ResourceKanbanPageProps): Promise<Metadata> {
+  const { schema, resource } = await params;
+
+  return {
+    title: `${formatTitle(resource)} Kanban - ${schema}`,
+  };
+}
+
+async function ResourceKanbanPage({
+  params,
+  searchParams,
+}: ResourceKanbanPageProps) {
+  const { resource, schema, id } = await params;
 
   const {
     page = "1",
     perPage = "1000",
     layout = "board",
     ...rest
-  } = await props.searchParams;
+  } = await searchParams;
+
   const search = resourceSearchParamsCache.parse({ page, perPage, ...rest });
 
   const tableSchema = await loadTableSchema(schema, resource);
@@ -137,3 +158,5 @@ export default async function Page(props: {
     </div>
   );
 }
+
+export default ResourceKanbanPage;

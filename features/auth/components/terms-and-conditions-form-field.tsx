@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { Trans } from "@/components/makerkit/trans";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
@@ -25,29 +24,22 @@ export function TermsAndConditionsFormField(
                 <Checkbox required name={field.name} />
 
                 <div className={"text-xs"}>
-                  <Trans
-                    i18nKey={"auth:acceptTermsAndConditions"}
-                    components={{
-                      TermsOfServiceLink: (
-                        <Link
-                          target={"_blank"}
-                          className={"underline"}
-                          href={"/terms-of-service"}
-                        >
-                          <Trans i18nKey={"auth:termsOfService"} />
-                        </Link>
-                      ),
-                      PrivacyPolicyLink: (
-                        <Link
-                          target={"_blank"}
-                          className={"underline"}
-                          href={"/privacy-policy"}
-                        >
-                          <Trans i18nKey={"auth:privacyPolicy"} />
-                        </Link>
-                      ),
-                    }}
-                  />
+                  I accept the{" "}
+                  <Link
+                    target={"_blank"}
+                    className={"underline"}
+                    href={"/terms-of-service"}
+                  >
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    target={"_blank"}
+                    className={"underline"}
+                    href={"/privacy-policy"}
+                  >
+                    Privacy Policy
+                  </Link>
                 </div>
               </label>
             </FormControl>

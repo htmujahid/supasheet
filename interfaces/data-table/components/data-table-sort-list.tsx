@@ -46,10 +46,11 @@ import { dataTableConfig } from "../config/data-table.config";
 // const OPEN_MENU_SHORTCUT = "s";
 const REMOVE_SORT_SHORTCUTS = ["backspace", "delete"];
 
-interface DataTableSortListProps<TData>
-  extends React.ComponentProps<typeof PopoverContent> {
+type DataTableSortListProps<TData> = React.ComponentProps<
+  typeof PopoverContent
+> & {
   table: Table<TData>;
-}
+};
 
 export function DataTableSortList<TData>({
   table,
@@ -266,14 +267,14 @@ export function DataTableSortList<TData>({
   );
 }
 
-interface DataTableSortItemProps {
+type DataTableSortItemProps = {
   sort: ColumnSort;
   sortItemId: string;
   columns: { id: string; label: string }[];
   columnLabels: Map<string, string>;
   onSortUpdate: (sortId: string, updates: Partial<ColumnSort>) => void;
   onSortRemove: (sortId: string) => void;
-}
+};
 
 function DataTableSortItem({
   sort,

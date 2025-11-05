@@ -1,13 +1,24 @@
+import { Metadata } from "next";
+
 import { AuditLogDetailContainer } from "@/features/audit-log/components/audit-log-detail-container";
 import { loadSingleAuditLog } from "@/features/audit-log/lib/loaders";
-import { withI18n } from "@/lib/i18n/with-i18n";
 
-interface AuditLogDetailPageProps {
+type AuditLogDetailPageProps = {
   params: Promise<{ id: string }>;
+};
+
+export async function generateMetadata({
+  params,
+}: AuditLogDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  return {
+    title: `Audit Log ${id}`,
+  };
 }
 
-async function AuditLogDetailPage(props: AuditLogDetailPageProps) {
-  const { id } = await props.params;
+async function AuditLogDetailPage({ params }: AuditLogDetailPageProps) {
+  const { id } = await params;
   const auditLog = await loadSingleAuditLog(id);
 
   return (
@@ -17,4 +28,4 @@ async function AuditLogDetailPage(props: AuditLogDetailPageProps) {
   );
 }
 
-export default withI18n(AuditLogDetailPage);
+export default AuditLogDetailPage;

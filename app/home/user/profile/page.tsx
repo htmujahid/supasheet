@@ -1,9 +1,14 @@
+import { Metadata } from "next";
+
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { ProfileContainer } from "@/features/user/components/profile-container";
-import { withI18n } from "@/lib/i18n/with-i18n";
 import { requireUserInServerComponent } from "@/lib/server/require-user-in-server-component";
 
-async function AccountsPage() {
+export const metadata: Metadata = {
+  title: "Profile",
+};
+
+async function ProfilePage() {
   const user = await requireUserInServerComponent();
 
   return (
@@ -16,4 +21,4 @@ async function AccountsPage() {
   );
 }
 
-export default withI18n(AccountsPage);
+export default ProfilePage;

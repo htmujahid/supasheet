@@ -10,7 +10,6 @@ import { ChevronsUpDown, Home, LogOut, UserIcon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
 import { SubMenuModeToggle } from "@/components/makerkit/mode-toggle";
-import { Trans } from "@/components/makerkit/trans";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -149,7 +148,7 @@ export function PersonalAccountDropdown({
               <DropdownMenuItem asChild>
                 <Link href={paths.home}>
                   <Home />
-                  <Trans i18nKey="common:routes.home" />
+                  Home
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -158,7 +157,7 @@ export function PersonalAccountDropdown({
               <DropdownMenuItem asChild>
                 <Link href={paths.account}>
                   <UserIcon />
-                  <Trans i18nKey="common:routes.account" />
+                  Account
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -172,7 +171,7 @@ export function PersonalAccountDropdown({
               onClick={signOutRequested}
             >
               <LogOut />
-              <Trans i18nKey="auth:signOut" />
+              Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

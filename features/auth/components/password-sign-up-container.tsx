@@ -5,15 +5,14 @@ import { useCallback, useRef, useState } from "react";
 import { CheckCircleIcon } from "lucide-react";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSignUpWithEmailAndPassword } from "@/lib/supabase/hooks/use-sign-up-with-email-password";
 
-import { useCaptchaToken } from "../captcha/client";
+import { useCaptchaToken } from "../lib/hooks/use-captcha-token";
 import { AuthErrorAlert } from "./auth-error-alert";
 import { PasswordSignUpForm } from "./password-sign-up-form";
 
-interface EmailPasswordSignUpContainerProps {
+type EmailPasswordSignUpContainerProps = {
   displayTermsCheckbox?: boolean;
   defaultValues?: {
     email: string;
@@ -21,7 +20,7 @@ interface EmailPasswordSignUpContainerProps {
 
   onSignUp?: (userId?: string) => unknown;
   emailRedirectTo: string;
-}
+};
 
 export function EmailPasswordSignUpContainer({
   defaultValues,
@@ -96,12 +95,11 @@ function SuccessAlert() {
     <Alert variant={"success"}>
       <CheckCircleIcon className={"w-4"} />
 
-      <AlertTitle>
-        <Trans i18nKey={"auth:emailConfirmationAlertHeading"} />
-      </AlertTitle>
+      <AlertTitle>We sent you a confirmation email.</AlertTitle>
 
       <AlertDescription data-test={"email-confirmation-alert"}>
-        <Trans i18nKey={"auth:emailConfirmationAlertBody"} />
+        Please check your inbox and follow the instructions to confirm your
+        email address.
       </AlertDescription>
     </Alert>
   );

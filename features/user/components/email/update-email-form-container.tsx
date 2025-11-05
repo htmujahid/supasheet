@@ -5,7 +5,11 @@ import { useUser } from "@/lib/supabase/hooks/use-user";
 
 import { UpdateEmailForm } from "./update-email-form";
 
-export function UpdateEmailFormContainer(props: { callbackPath: string }) {
+export function UpdateEmailFormContainer({
+  callbackPath,
+}: {
+  callbackPath: string;
+}) {
   const { data: user, isPending } = useUser();
 
   if (isPending) {
@@ -16,5 +20,5 @@ export function UpdateEmailFormContainer(props: { callbackPath: string }) {
     return null;
   }
 
-  return <UpdateEmailForm callbackPath={props.callbackPath} user={user} />;
+  return <UpdateEmailForm callbackPath={callbackPath} user={user} />;
 }

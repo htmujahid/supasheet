@@ -3,9 +3,9 @@
 import { loadSingleAuditLog } from "../lib/loaders";
 import { AuditLogDetailView } from "./audit-log-detail-view";
 
-interface AuditLogDetailContainerProps {
+type AuditLogDetailContainerProps = {
   auditLog: Awaited<ReturnType<typeof loadSingleAuditLog>>;
-}
+};
 
 export function AuditLogDetailContainer({
   auditLog,

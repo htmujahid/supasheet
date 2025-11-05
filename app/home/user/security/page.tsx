@@ -1,5 +1,6 @@
+import { Metadata } from "next";
+
 import { DefaultHeader } from "@/components/layouts/default-header";
-import { Trans } from "@/components/makerkit/trans";
 import {
   Card,
   CardContent,
@@ -10,9 +11,12 @@ import {
 import pathsConfig from "@/config/paths.config";
 import { MultiFactorAuthFactorsList } from "@/features/user/components/mfa/multi-factor-auth-list";
 import { UpdatePasswordFormContainer } from "@/features/user/components/password/update-password-container";
-import { withI18n } from "@/lib/i18n/with-i18n";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";
+
+export const metadata: Metadata = {
+  title: "Security",
+};
 
 async function SecurityPage() {
   const client = await getSupabaseServerClient();
@@ -24,12 +28,10 @@ async function SecurityPage() {
       <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
         <Card>
           <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:updatePasswordCardTitle"} />
-            </CardTitle>
+            <CardTitle>Update your Password</CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:updatePasswordCardDescription"} />
+              Update your password to keep your account secure.
             </CardDescription>
           </CardHeader>
 
@@ -42,12 +44,11 @@ async function SecurityPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>
-              <Trans i18nKey={"account:multiFactorAuth"} />
-            </CardTitle>
+            <CardTitle>Multi-Factor Authentication</CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:multiFactorAuthDescription"} />
+              Set up Multi-Factor Authentication method to further secure your
+              account
             </CardDescription>
           </CardHeader>
 
@@ -60,4 +61,4 @@ async function SecurityPage() {
   );
 }
 
-export default withI18n(SecurityPage);
+export default SecurityPage;

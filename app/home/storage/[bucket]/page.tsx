@@ -1,15 +1,34 @@
+import { Metadata } from "next";
+
+import { notFound } from "next/navigation";
+
 import { StorageExplorer } from "@/interfaces/storage-explorer/components/storage-explorer";
 import type { StorageFile } from "@/interfaces/storage-explorer/types";
-import { withI18n } from "@/lib/i18n/with-i18n";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
-async function StoragePage({
+type StorageBucketPageProps = {
+  params: Promise<{
+    bucket: string;
+  }>;
+  searchParams: Promise<{
+    path?: string;
+  }>;
+};
+
+export async function generateMetadata({
+  params,
+}: StorageBucketPageProps): Promise<Metadata> {
+  const { bucket } = await params;
+
+  return {
+    title: `${bucket} - Storage`,
+  };
+}
+
+async function StorageBucketPage({
   params,
   searchParams,
-}: {
-  params: Promise<{ bucket: string }>;
-  searchParams: Promise<{ path?: string }>;
-}) {
+}: StorageBucketPageProps) {
   const { bucket: bucketId } = await params;
   const { path = "" } = await searchParams;
 
@@ -23,7 +42,7 @@ async function StoragePage({
     });
 
   if (error) {
-    console.error("Error loading files:", error);
+    notFound();
   }
 
   const files: StorageFile[] = (data || []).map((file) => ({
@@ -43,4 +62,4 @@ async function StoragePage({
   );
 }
 
-export default withI18n(StoragePage);
+export default StorageBucketPage;

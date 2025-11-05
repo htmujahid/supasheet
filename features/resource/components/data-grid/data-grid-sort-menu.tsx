@@ -56,10 +56,11 @@ const SORT_ORDERS = [
   { label: "Desc", value: "desc" },
 ];
 
-interface DataGridSortMenuProps<TData>
-  extends React.ComponentProps<typeof PopoverContent> {
+type DataGridSortMenuProps<TData> = React.ComponentProps<
+  typeof PopoverContent
+> & {
   table: Table<TData>;
-}
+};
 
 export function DataGridSortMenu<TData>({
   table,
@@ -270,14 +271,14 @@ export function DataGridSortMenu<TData>({
   );
 }
 
-interface DataTableSortItemProps {
+type DataTableSortItemProps = {
   sort: ColumnSort;
   sortItemId: string;
   columns: { id: string; label: string }[];
   columnLabels: Map<string, string>;
   onSortUpdate: (sortId: string, updates: Partial<ColumnSort>) => void;
   onSortRemove: (sortId: string) => void;
-}
+};
 
 function DataTableSortItem({
   sort,

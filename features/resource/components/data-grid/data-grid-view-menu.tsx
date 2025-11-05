@@ -21,10 +21,11 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-interface DataGridViewMenuProps<TData>
-  extends React.ComponentProps<typeof PopoverContent> {
+type DataGridViewMenuProps<TData> = React.ComponentProps<
+  typeof PopoverContent
+> & {
   table: Table<TData>;
-}
+};
 
 export function DataGridViewMenu<TData>({
   table,

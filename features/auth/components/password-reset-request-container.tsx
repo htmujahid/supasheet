@@ -2,11 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { If } from "@/components/makerkit/if";
-import { Trans } from "@/components/makerkit/trans";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRequestResetPassword } from "@/lib/supabase/hooks/use-request-reset-password";
 
-import { useCaptchaToken } from "../captcha/client";
+import { useCaptchaToken } from "../lib/hooks/use-captcha-token";
 import { AuthErrorAlert } from "./auth-error-alert";
 
 const PasswordResetSchema = z.object({
@@ -30,7 +28,6 @@ const PasswordResetSchema = z.object({
 export function PasswordResetRequestContainer(params: {
   redirectPath: string;
 }) {
-  const { t } = useTranslation("auth");
   const resetPasswordMutation = useRequestResetPassword();
   const { captchaToken, resetCaptchaToken } = useCaptchaToken();
 
@@ -49,7 +46,7 @@ export function PasswordResetRequestContainer(params: {
       <If condition={success}>
         <Alert variant={"success"}>
           <AlertDescription>
-            <Trans i18nKey={"auth:passwordResetSuccessMessage"} />
+            Check your Inbox! We emailed you a link for resetting your Password.
           </AlertDescription>
         </Alert>
       </If>
@@ -82,15 +79,13 @@ export function PasswordResetRequestContainer(params: {
                 name={"email"}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      <Trans i18nKey={"common:emailAddress"} />
-                    </FormLabel>
+                    <FormLabel>Email Address</FormLabel>
 
                     <FormControl>
                       <Input
                         required
                         type="email"
-                        placeholder={t("emailPlaceholder")}
+                        placeholder={"emailPlaceholder"}
                         {...field}
                       />
                     </FormControl>
@@ -101,7 +96,7 @@ export function PasswordResetRequestContainer(params: {
               />
 
               <Button disabled={resetPasswordMutation.isPending} type="submit">
-                <Trans i18nKey={"auth:passwordResetLabel"} />
+                Reset Password
               </Button>
             </div>
           </form>

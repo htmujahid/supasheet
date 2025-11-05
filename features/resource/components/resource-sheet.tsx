@@ -40,13 +40,13 @@ import { READONLY_COLUMNS } from "../lib/constants";
 import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
 
-interface ResourceSheetProps extends React.ComponentPropsWithRef<typeof Sheet> {
+type ResourceSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
   showTrigger?: boolean;
   tableSchema: TableSchema | null;
   columnsSchema: ColumnSchema[];
   data: ResourceDataSchema | null;
   create: boolean;
-}
+};
 
 export function ResourceSheet({
   showTrigger,
