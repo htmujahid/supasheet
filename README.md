@@ -22,7 +22,6 @@
 - [x] Resource (CRUD)
 - [x] Data Views (Sheet, Kanban, Calendar, Gallery)
 - [x] Customizable UI
-- [x] Internationalization (i18n)
 - [x] SQL Editor
 - [x] Dashboard
 - [x] Analytics
