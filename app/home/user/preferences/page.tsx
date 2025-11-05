@@ -21,40 +21,40 @@ function PreferencesPage() {
   return (
     <div>
       <DefaultHeader breadcrumbs={[{ title: "Preferences" }]} />
-      <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:dangerZone"} />
-          </CardTitle>
-
-          <CardDescription>
-            <Trans i18nKey={"account:dangerZoneDescription"} />
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          <AppearanceForm />
-        </CardContent>
-      </Card>
-
-      <If condition={supportsLanguageSelection}>
+      <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
         <Card>
           <CardHeader>
             <CardTitle>
-              <Trans i18nKey={"account:language"} />
+              <Trans i18nKey={"account:dangerZone"} />
             </CardTitle>
 
             <CardDescription>
-              <Trans i18nKey={"account:languageDescription"} />
+              <Trans i18nKey={"account:dangerZoneDescription"} />
             </CardDescription>
           </CardHeader>
 
           <CardContent>
-            <LanguageSelector />
+            <AppearanceForm />
           </CardContent>
         </Card>
-      </If>
+
+        <If condition={supportsLanguageSelection}>
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <Trans i18nKey={"account:language"} />
+              </CardTitle>
+
+              <CardDescription>
+                <Trans i18nKey={"account:languageDescription"} />
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent>
+              <LanguageSelector />
+            </CardContent>
+          </Card>
+        </If>
       </div>
     </div>
   );

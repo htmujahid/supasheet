@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
+import { Button } from "@/components/ui/button";
 import { AccountsTable } from "@/features/user/components/accounts/accounts-table";
 import {
   loadAccountPermissions,
@@ -8,14 +10,12 @@ import {
 } from "@/features/user/lib/loaders";
 import { usersSearchParamsCache } from "@/features/user/lib/validations";
 import { withI18n } from "@/lib/i18n/with-i18n";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 async function UsersPage(props: {
   searchParams: Promise<{
     page?: string;
     per_page?: string;
-  }>
+  }>;
 }) {
   const permissions = await loadAccountPermissions();
 
@@ -36,9 +36,7 @@ async function UsersPage(props: {
     <div>
       <DefaultHeader breadcrumbs={[{ title: "Accounts" }]}>
         <Button variant={"outline"} asChild>
-          <Link href={"/home/user/accounts/create"}>
-            Create Account
-          </Link>
+          <Link href={"/home/user/accounts/create"}>Create Account</Link>
         </Button>
       </DefaultHeader>
       <div className="flex flex-col gap-4 px-4">

@@ -21,40 +21,40 @@ async function SecurityPage() {
   return (
     <div>
       <DefaultHeader breadcrumbs={[{ title: "Security" }]} />
-      <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:updatePasswordCardTitle"} />
-          </CardTitle>
+      <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans i18nKey={"account:updatePasswordCardTitle"} />
+            </CardTitle>
 
-          <CardDescription>
-            <Trans i18nKey={"account:updatePasswordCardDescription"} />
-          </CardDescription>
-        </CardHeader>
+            <CardDescription>
+              <Trans i18nKey={"account:updatePasswordCardDescription"} />
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <UpdatePasswordFormContainer
-            callbackPath={pathsConfig.auth.callback}
-          />
-        </CardContent>
-      </Card>
+          <CardContent>
+            <UpdatePasswordFormContainer
+              callbackPath={pathsConfig.auth.callback}
+            />
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:multiFactorAuth"} />
-          </CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans i18nKey={"account:multiFactorAuth"} />
+            </CardTitle>
 
-          <CardDescription>
-            <Trans i18nKey={"account:multiFactorAuthDescription"} />
-          </CardDescription>
-        </CardHeader>
+            <CardDescription>
+              <Trans i18nKey={"account:multiFactorAuthDescription"} />
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <MultiFactorAuthFactorsList userId={user?.id ?? ""} />
-        </CardContent>
-      </Card>
+          <CardContent>
+            <MultiFactorAuthFactorsList userId={user?.id ?? ""} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

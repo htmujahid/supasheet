@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+
+import { User } from "@supabase/supabase-js";
+
 import { Trash } from "lucide-react";
 import { toast } from "sonner";
 
@@ -16,7 +19,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { User } from "@supabase/supabase-js";
 
 import { deleteAccountAction } from "../../lib/server/server-actions";
 
@@ -25,7 +27,10 @@ type DeleteAccountDialogProps = {
   disabled?: boolean;
 };
 
-export function DeleteAccountDialog({ user, disabled }: DeleteAccountDialogProps) {
+export function DeleteAccountDialog({
+  user,
+  disabled,
+}: DeleteAccountDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -60,8 +65,8 @@ export function DeleteAccountDialog({ user, disabled }: DeleteAccountDialogProps
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the
-            account for <strong>{user.email || user.id}</strong> and remove
-            all associated data.
+            account for <strong>{user.email || user.id}</strong> and remove all
+            associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

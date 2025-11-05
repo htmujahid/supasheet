@@ -22,7 +22,7 @@ export function ProfileContainer({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
+    <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
       <Card>
         <CardHeader>
           <CardTitle>

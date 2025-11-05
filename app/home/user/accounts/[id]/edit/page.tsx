@@ -37,13 +37,23 @@ async function UpdateAccountPage(props: UpdateAccountPageProps) {
 
   return (
     <div>
-      <DefaultHeader breadcrumbs={[{ title: "Accounts", url: "/home/user/accounts" }, { title: account.email || account.phone || account.id, url: `/home/user/accounts/${id}` }, { title: "Edit" }]} />
+      <DefaultHeader
+        breadcrumbs={[
+          { title: "Accounts", url: "/home/user/accounts" },
+          {
+            title: account.email || account.phone || account.id,
+            url: `/home/user/accounts/${id}`,
+          },
+          { title: "Edit" },
+        ]}
+      />
       <div className="mx-auto max-w-2xl p-4">
         <Card>
           <CardHeader>
             <CardTitle>Update Account</CardTitle>
             <CardDescription>
-              Update account authentication details for {account.email || account.phone}
+              Update account authentication details for{" "}
+              {account.email || account.phone}
             </CardDescription>
           </CardHeader>
           <CardContent>

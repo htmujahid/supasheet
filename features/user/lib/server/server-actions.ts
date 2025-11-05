@@ -139,16 +139,18 @@ export const createAccountAction = enhanceAction(
     }
 
     // Create the account
-    const { data: newAccount, error } = await adminClient.auth.admin.createUser(
-      createAccountParams,
-    );
+    const { data: newAccount, error } =
+      await adminClient.auth.admin.createUser(createAccountParams);
 
     if (error) {
       logger.error({ ...ctx, error }, "Failed to create account");
       throw new Error(error.message || "Failed to create account");
     }
 
-    logger.info({ ...ctx, newAccountId: newAccount.user.id }, "Account created successfully");
+    logger.info(
+      { ...ctx, newAccountId: newAccount.user.id },
+      "Account created successfully",
+    );
 
     // Revalidate the accounts page
     revalidatePath("/home/user/accounts");
@@ -234,7 +236,10 @@ export const updateAccountAction = enhanceAction(
 
     // Update the account
     const { data: updatedAccount, error } =
-      await adminClient.auth.admin.updateUserById(accountId, updateAccountParams);
+      await adminClient.auth.admin.updateUserById(
+        accountId,
+        updateAccountParams,
+      );
 
     if (error) {
       logger.error({ ...ctx, error }, "Failed to update account");

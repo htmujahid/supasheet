@@ -10,7 +10,6 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { UserSidebar } from "@/features/user/components/user-sidebar";
 import { loadAccountPermissions } from "@/features/user/lib/loaders";
 
-
 export default async function HomeUsersLayout({
   children,
 }: {

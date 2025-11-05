@@ -96,7 +96,9 @@ export const getAccountsTableColumns = (): ColumnDef<Account>[] => [
               <Avatar>
                 <AvatarImage src={pictureUrl ?? ""} alt="User avatar" />
                 <AvatarFallback>
-                  {name?.charAt(0)?.toUpperCase() || email?.charAt(0)?.toUpperCase() || "?"}
+                  {name?.charAt(0)?.toUpperCase() ||
+                    email?.charAt(0)?.toUpperCase() ||
+                    "?"}
                 </AvatarFallback>
               </Avatar>
             </TooltipTrigger>
@@ -156,9 +158,7 @@ export const getAccountsTableColumns = (): ColumnDef<Account>[] => [
     maxSize: 250,
     cell: ({ row }) => {
       const createdBy = row.getValue("created_by") as string | null;
-      return (
-        <span className="truncate font-mono text-sm">{createdBy}</span>
-      );
+      return <span className="truncate font-mono text-sm">{createdBy}</span>;
     },
     meta: {
       label: "Created By",
@@ -174,9 +174,7 @@ export const getAccountsTableColumns = (): ColumnDef<Account>[] => [
     maxSize: 250,
     cell: ({ row }) => {
       const updatedBy = row.getValue("updated_by") as string | null;
-      return (
-        <span className="truncate font-mono text-sm">{updatedBy}</span>
-      );
+      return <span className="truncate font-mono text-sm">{updatedBy}</span>;
     },
     meta: {
       label: "Updated By",
@@ -192,7 +190,10 @@ export const getAccountsTableColumns = (): ColumnDef<Account>[] => [
     maxSize: 200,
     cell: ({ row }) => {
       const publicData = row.getValue("public_data");
-      if (!publicData || (typeof publicData === 'object' && Object.keys(publicData).length === 0)) {
+      if (
+        !publicData ||
+        (typeof publicData === "object" && Object.keys(publicData).length === 0)
+      ) {
         return null;
       }
 
@@ -201,9 +202,9 @@ export const getAccountsTableColumns = (): ColumnDef<Account>[] => [
           <Tooltip>
             <TooltipTrigger>
               <Badge variant="outline">
-                {typeof publicData === 'object'
+                {typeof publicData === "object"
                   ? `${Object.keys(publicData).length} fields`
-                  : 'Data'}
+                  : "Data"}
               </Badge>
             </TooltipTrigger>
             <TooltipContent>

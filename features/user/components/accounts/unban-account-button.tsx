@@ -1,11 +1,13 @@
 "use client";
 
 import { useTransition } from "react";
+
+import { User } from "@supabase/supabase-js";
+
 import { UserCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { User } from "@supabase/supabase-js";
 
 import { unbanAccountAction } from "../../lib/server/server-actions";
 
@@ -14,7 +16,10 @@ type UnbanAccountButtonProps = {
   disabled?: boolean;
 };
 
-export function UnbanAccountButton({ user, disabled }: UnbanAccountButtonProps) {
+export function UnbanAccountButton({
+  user,
+  disabled,
+}: UnbanAccountButtonProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleUnban = () => {

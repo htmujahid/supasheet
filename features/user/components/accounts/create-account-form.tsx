@@ -1,7 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -112,7 +113,7 @@ export function CreateAccountForm() {
             name="email_confirm"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -178,7 +179,7 @@ export function CreateAccountForm() {
             name="phone_confirm"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4">
                 <FormControl>
                   <Checkbox
                     checked={field.value}

@@ -21,19 +21,24 @@ async function CreateAccountPage() {
 
   return (
     <div>
-      <DefaultHeader breadcrumbs={[{ title: "Accounts", url: "/home/user/accounts" }, { title: "Create" }]} />
+      <DefaultHeader
+        breadcrumbs={[
+          { title: "Accounts", url: "/home/user/accounts" },
+          { title: "Create" },
+        ]}
+      />
       <div className="mx-auto max-w-2xl p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Create New Account</CardTitle>
-          <CardDescription>
-            Create a new account with email or phone authentication
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CreateAccountForm />
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Create New Account</CardTitle>
+            <CardDescription>
+              Create a new account with email or phone authentication
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CreateAccountForm />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

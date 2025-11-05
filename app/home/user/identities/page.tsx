@@ -17,38 +17,40 @@ function IdentitiesPage() {
   return (
     <div>
       <DefaultHeader breadcrumbs={[{ title: "Identities" }]} />
-      <div className="flex flex-col gap-4 mx-auto max-w-3xl px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:updateEmailCardTitle"} />
-          </CardTitle>
+      <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans i18nKey={"account:updateEmailCardTitle"} />
+            </CardTitle>
 
-          <CardDescription>
-            <Trans i18nKey={"account:updateEmailCardDescription"} />
-          </CardDescription>
-        </CardHeader>
+            <CardDescription>
+              <Trans i18nKey={"account:updateEmailCardDescription"} />
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <UpdateEmailFormContainer callbackPath={pathsConfig.auth.callback} />
-        </CardContent>
-      </Card>
+          <CardContent>
+            <UpdateEmailFormContainer
+              callbackPath={pathsConfig.auth.callback}
+            />
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <Trans i18nKey={"account:linkedAccounts"} />
-          </CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans i18nKey={"account:linkedAccounts"} />
+            </CardTitle>
 
-          <CardDescription>
-            <Trans i18nKey={"account:linkedAccountsDescription"} />
-          </CardDescription>
-        </CardHeader>
+            <CardDescription>
+              <Trans i18nKey={"account:linkedAccountsDescription"} />
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <LinkAccountsList providers={authConfig.providers.oAuth} />
-        </CardContent>
-      </Card>
+          <CardContent>
+            <LinkAccountsList providers={authConfig.providers.oAuth} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

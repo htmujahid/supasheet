@@ -1,5 +1,9 @@
 "use client";
 
+import Link from "next/link";
+
+import { Maximize2 } from "lucide-react";
+
 import { Editor } from "@/components/blocks/editor-md/editor";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,8 +29,6 @@ import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../lib/columns";
 import { AllCells } from "./cells/all-cells";
-import Link from "next/link";
-import { Maximize2 } from "lucide-react";
 
 interface ResourceDetailSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {

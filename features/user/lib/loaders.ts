@@ -186,10 +186,10 @@ export async function loadAccountPermissions() {
     .from("role_permissions")
     .select()
     .in("permission", [
-      'supasheet.accounts:select',
-      'supasheet.accounts:insert',
-      'supasheet.accounts:update',
-      'supasheet.accounts:delete',
+      "supasheet.accounts:select",
+      "supasheet.accounts:insert",
+      "supasheet.accounts:update",
+      "supasheet.accounts:delete",
     ]);
 
   if (response.error) {

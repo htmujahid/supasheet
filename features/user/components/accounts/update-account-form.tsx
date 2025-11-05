@@ -1,7 +1,10 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
+
+import { User } from "@supabase/supabase-js";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -17,7 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { User } from "@supabase/supabase-js";
 
 import {
   UpdateAccountFormData,
@@ -103,7 +105,7 @@ export function UpdateAccountForm({ account }: UpdateAccountFormProps) {
             name="email_confirm"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
@@ -146,7 +148,7 @@ export function UpdateAccountForm({ account }: UpdateAccountFormProps) {
             name="phone_confirm"
             control={form.control}
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
