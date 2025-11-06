@@ -21,6 +21,8 @@ VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'b73eb03e-fb7a-424d-84ff-18e2791
         'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
         '9bb58bad-24a4-41a8-9742-1b5b4e2d8ab1');
 
+INSERT INTO supasheet.user_roles(account_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'user');
+
 INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encrypted_password", "email_confirmed_at",
                             "invited_at", "confirmation_token", "confirmation_sent_at", "recovery_token",
                             "recovery_sent_at", "email_change_token_new", "email_change", "email_change_sent_at",
@@ -43,6 +45,9 @@ VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b1', 'b73eb03e-fb7a-424d-84ff-18e2791
         '{"sub": "b73eb03e-fb7a-424d-84ff-18e2791ce0b1", "email": "user1@supasheet.dev", "email_verified": false, "phone_verified": false}',
         'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
         '9bb58bad-24a4-41a8-9742-1b5b4e2d8abd');
+
+INSERT INTO supasheet.user_roles(account_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b1', 'user');
+
 -- Auth records for all 106 users from user_details
 
 DO $$
@@ -76,6 +81,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "john.doe@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -109,6 +117,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "jane.smith@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -142,6 +153,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "bob.johnson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -175,6 +189,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "alice.williams@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -208,6 +225,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "charlie.brown@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -241,6 +261,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "diana.prince@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -274,6 +297,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "ethan.hunt@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -307,6 +333,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "fiona.gallagher@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -340,6 +369,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "george.lucas@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -373,6 +405,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "hannah.montana@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -406,6 +441,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "isaac.newton@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -439,6 +477,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "julia.roberts@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -472,6 +513,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "kevin.hart@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -505,6 +549,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "laura.palmer@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -538,6 +585,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "michael.scott@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -571,6 +621,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "nancy.drew@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -604,6 +657,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "oscar.wilde@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -637,6 +693,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "patricia.lee@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -670,6 +729,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "quincy.jones@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -703,6 +765,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "rachel.green@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -736,6 +801,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "sam.wilson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -769,6 +837,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "tina.fey@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -802,6 +873,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "uma.thurman@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -835,6 +909,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "victor.hugo@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -868,6 +945,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "wendy.williams@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -901,6 +981,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "xavier.martinez@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -934,6 +1017,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "yolanda.garcia@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -967,6 +1053,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "zachary.taylor@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1000,6 +1089,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "amy.adams@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1033,6 +1125,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "brian.cox@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1066,6 +1161,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "catherine.zeta@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1099,6 +1197,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "david.lee@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1132,6 +1233,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "emma.watson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1165,6 +1269,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "frank.miller@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1198,6 +1305,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "grace.hopper@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1231,6 +1341,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "henry.ford@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1264,6 +1377,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "iris.west@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1297,6 +1413,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "jack.ryan@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1330,6 +1449,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "karen.page@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1363,6 +1485,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "leo.valdez@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1396,6 +1521,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "maria.hill@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1429,6 +1557,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "nathan.drake@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1462,6 +1593,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "olivia.pope@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1495,6 +1629,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "peter.parker@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1528,6 +1665,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "quinn.fabray@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1561,6 +1701,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "ryan.reynolds@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1594,6 +1737,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "sarah.connor@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1627,6 +1773,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "tony.stark@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1660,6 +1809,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "ursula.vernon@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1693,6 +1845,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "violet.baudelaire@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1726,6 +1881,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "wade.wilson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1759,6 +1917,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "xena.warrior@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1792,6 +1953,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "yvonne.strahovski@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1825,6 +1989,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "zoe.saldana@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1858,6 +2025,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "aaron.burr@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1891,6 +2061,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "beatrice.prior@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1924,6 +2097,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "connor.kenway@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1957,6 +2133,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "daenerys.targaryen@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -1990,6 +2169,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "elliot.alderson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2023,6 +2205,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "felicity.smoak@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2056,6 +2241,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "geralt.rivia@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2089,6 +2277,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "hermione.granger@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2122,6 +2313,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "inigo.montoya@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2155,6 +2349,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "jessica.jones@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2188,6 +2385,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "katniss.everdeen@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2221,6 +2421,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "luke.skywalker@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2254,6 +2457,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "moana.waialiki@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2287,6 +2493,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "naruto.uzumaki@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2320,6 +2529,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "optimus.prime@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2353,6 +2565,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "phoebe.buffay@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2386,6 +2601,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "quasimodo.bell@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2419,6 +2637,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "rey.skywalker@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2452,6 +2673,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "samwise.gamgee@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2485,6 +2709,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "thanos.titan@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2518,6 +2745,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "uriah.heep@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2551,6 +2781,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "veronica.mars@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2584,6 +2817,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "william.wallace@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2617,6 +2853,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "xander.harris@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2650,6 +2889,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "ygritte.snow@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2683,6 +2925,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "zelda.hyrule@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2716,6 +2961,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "adrian.monk@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2749,6 +2997,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "buffy.summers@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2782,6 +3033,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "clark.kent@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2815,6 +3069,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "donna.noble@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2848,6 +3105,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "ezio.auditore@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2881,6 +3141,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "frodo.baggins@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2914,6 +3177,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "gandalf.grey@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2947,6 +3213,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "harry.potter@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -2980,6 +3249,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "indiana.jones@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3013,6 +3285,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "jon.snow@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3046,6 +3321,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "kara.danvers@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3079,6 +3357,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "lara.croft@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3112,6 +3393,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "max.rockatansky@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3145,6 +3429,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "neo.anderson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3178,6 +3465,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "obiwan.kenobi@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3211,6 +3501,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "percy.jackson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3244,6 +3537,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "quorra.flynn@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3277,6 +3573,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "rick.grimes@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3310,6 +3609,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "sherlock.holmes@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3343,6 +3645,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "thor.odinson@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3376,6 +3681,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "usagi.tsukino@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3409,6 +3717,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "vincent.vega@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3442,6 +3753,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "wanda.maximoff@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3475,6 +3789,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "xavier.charles@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3508,6 +3825,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "yoda.master@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -3541,6 +3861,9 @@ BEGIN
             ('{"sub": "' || new_user_id::text || '", "email": "zuko.prince@example.com", "email_verified": true, "phone_verified": false}')::jsonb,
             'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
             extensions.uuid_generate_v4());
+
+    -- Insert into user_roles
+    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 

@@ -25,7 +25,13 @@ import {
   CreateAccountSchema,
 } from "../../lib/schema/create-account.schema";
 
-export function CreateAccountForm() {
+type CreateAccountFormProps = {
+  userRoles: { id: number; account_id: string; role: string }[];
+};
+
+export function CreateAccountForm({
+  userRoles,
+}: CreateAccountFormProps) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<CreateAccountFormData>({
@@ -47,6 +53,9 @@ export function CreateAccountForm() {
         if (data.phone) formData.append("phone", data.phone);
         formData.append("email_confirm", String(data.email_confirm ?? false));
         formData.append("phone_confirm", String(data.phone_confirm ?? false));
+        if (data.user_roles && data.user_roles.length > 0) {
+          formData.append("user_roles", JSON.stringify(data.user_roles));
+        }
 
         toast.promise(createAccountAction(formData), {
           loading: "Creating account...",
@@ -192,6 +201,62 @@ export function CreateAccountForm() {
                     If unchecked, account will need to verify their phone number
                   </FormDescription>
                 </div>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="user_roles"
+            control={form.control}
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">User Roles</FormLabel>
+                  <FormDescription>
+                    Select one or more roles to assign to this user
+                  </FormDescription>
+                </div>
+                <div className="space-y-2">
+                  {Array.from(
+                    new Set(userRoles.map((ur) => ur.role)),
+                  ).map((role) => (
+                    <FormField
+                      key={role}
+                      control={form.control}
+                      name="user_roles"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={role}
+                            className="flex flex-row items-start space-y-0 space-x-3"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(role)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([
+                                        ...(field.value || []),
+                                        role,
+                                      ])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== role,
+                                        ),
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {role}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+                <FormMessage />
               </FormItem>
             )}
           />

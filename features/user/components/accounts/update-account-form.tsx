@@ -28,20 +28,25 @@ import {
 } from "../../lib/schema/update-account.schema";
 
 type UpdateAccountFormProps = {
-  account: User;
+  user: User & { roles: { id: number; account_id: string; role: string }[] };
+  userRoles: { id: number; account_id: string; role: string }[];
 };
 
-export function UpdateAccountForm({ account }: UpdateAccountFormProps) {
+export function UpdateAccountForm({
+  user,
+  userRoles,
+}: UpdateAccountFormProps) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<UpdateAccountFormData>({
     resolver: zodResolver(UpdateAccountSchema),
     defaultValues: {
-      email: account.email || "",
-      email_confirm: !!account.email_confirmed_at,
-      phone: account.phone || "",
-      phone_confirm: !!account.phone,
+      email: user.email || "",
+      email_confirm: !!user.email_confirmed_at,
+      phone: user.phone || "",
+      phone_confirm: !!user.phone_confirmed_at,
       password: "",
+      user_roles: user.roles.map((r) => r.role),
     },
   });
 
@@ -49,7 +54,7 @@ export function UpdateAccountForm({ account }: UpdateAccountFormProps) {
     startTransition(async () => {
       try {
         const formData = new FormData();
-        formData.append("accountId", account.id);
+        formData.append("accountId", user.id);
 
         if (data.email) formData.append("email", data.email);
         if (data.phone) formData.append("phone", data.phone);
@@ -59,6 +64,9 @@ export function UpdateAccountForm({ account }: UpdateAccountFormProps) {
         }
         if (data.phone_confirm !== undefined) {
           formData.append("phone_confirm", String(data.phone_confirm));
+        }
+        if (data.user_roles !== undefined) {
+          formData.append("user_roles", JSON.stringify(data.user_roles));
         }
 
         toast.promise(updateAccountAction(formData), {
@@ -183,6 +191,62 @@ export function UpdateAccountForm({ account }: UpdateAccountFormProps) {
                   Enter a new password only if you want to change it (min 6
                   characters)
                 </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="user_roles"
+            control={form.control}
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">User Roles</FormLabel>
+                  <FormDescription>
+                    Select one or more roles to assign to this user
+                  </FormDescription>
+                </div>
+                <div className="space-y-2">
+                  {Array.from(
+                    new Set(userRoles.map((ur) => ur.role)),
+                  ).map((role) => (
+                    <FormField
+                      key={role}
+                      control={form.control}
+                      name="user_roles"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={role}
+                            className="flex flex-row items-start space-y-0 space-x-3"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(role)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([
+                                      ...(field.value || []),
+                                      role,
+                                    ])
+                                    : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== role,
+                                      ),
+                                    );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {role}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
                 <FormMessage />
               </FormItem>
             )}

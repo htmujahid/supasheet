@@ -133,7 +133,7 @@ export async function loadAccounts(input: UsersSearchParams) {
   };
 }
 
-export async function loadSingleUser(id: string) {
+export async function loadUser(id: string) {
   const client = getSupabaseServerAdminClient();
 
   const response = await client.auth.admin.getUserById(id);
@@ -145,16 +145,61 @@ export async function loadSingleUser(id: string) {
   return response.data.user;
 }
 
+export async function loadUserWithRoles(id: string) {
+  const client = getSupabaseServerAdminClient();
+
+  const userResponse = await client.auth.admin.getUserById(id);
+
+  if (userResponse.error) {
+    return null;
+  }
+
+  const { data: rolesData, error: rolesError } = await client
+    .schema("supasheet")
+    .from("user_roles")
+    .select("*")
+    .eq("account_id", id);
+
+  if (rolesError) {
+    console.error("Error loading user roles:", rolesError);
+    return {
+      ...userResponse.data.user,
+      roles: [],
+    };
+  }
+
+  return {
+    ...userResponse.data.user,
+    roles: rolesData || [],
+  };
+}
+
+export async function loadCurrentUserRoles() {
+  const client = await getSupabaseServerClient();
+
+  const { data, error } = await client
+    .schema("supasheet")
+    .from("user_roles")
+    .select("*");
+
+  if (error) {
+    console.error("Error loading user roles:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
 export async function loadRolesPermissions() {
   const client = await getSupabaseServerClient();
 
   const { data, error } = await client
     .schema("supasheet")
-    .from(`user_roles`)
+    .from("user_roles")
     .select("*");
 
   const { data: rolePermissionsData, error: rolePermissionsError } =
-    await client.schema("supasheet").from(`role_permissions`).select("*");
+    await client.schema("supasheet").from("role_permissions").select("*");
 
   if (rolePermissionsError) {
     console.error("Error loading role permissions:", rolePermissionsError);

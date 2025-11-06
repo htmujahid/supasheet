@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CreateAccountForm } from "@/features/user/components/accounts/create-account-form";
-import { loadAccountPermissions } from "@/features/user/lib/loaders";
+import { loadAccountPermissions, loadCurrentUserRoles } from "@/features/user/lib/loaders";
 
 export const metadata: Metadata = {
   title: "Create Account",
@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 async function AccountCreatePage() {
   const permissions = await loadAccountPermissions();
+  const userRoles = await loadCurrentUserRoles();
 
   if (!permissions.canInsert) {
     notFound();
@@ -41,7 +42,7 @@ async function AccountCreatePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <CreateAccountForm />
+            <CreateAccountForm userRoles={userRoles} />
           </CardContent>
         </Card>
       </div>

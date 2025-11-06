@@ -1,10 +1,10 @@
 "use client";
 
-import { loadSingleUser } from "../../lib/loaders";
+import { loadUser } from "../../lib/loaders";
 import { AccountsDetailView } from "./accounts-detail-view";
 
 type AccountsDetailContainerProps = {
-  user: Awaited<ReturnType<typeof loadSingleUser>>;
+  user: Awaited<ReturnType<typeof loadUser>>;
   permissions: {
     canUpdate: boolean;
     canDelete: boolean;

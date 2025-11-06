@@ -40,9 +40,13 @@ async function AccountsPage({ searchParams }: AccountsPageProps) {
   return (
     <div>
       <DefaultHeader breadcrumbs={[{ title: "Accounts" }]}>
-        <Button variant={"outline"} asChild>
-          <Link href={"/home/user/accounts/create"}>Create Account</Link>
-        </Button>
+        {
+          permissions.canInsert && (
+            <Button variant={"outline"} asChild>
+              <Link href={"/home/user/accounts/create"}>Create Account</Link>
+            </Button>
+          )
+        }
       </DefaultHeader>
       <div className="flex flex-col gap-4 px-4">
         <AccountsTable data={data} />

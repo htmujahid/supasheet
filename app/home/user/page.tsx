@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 async function HomeUsersPage() {
-  permanentRedirect("/home/user/accounts");
+  permanentRedirect("/home/user/profile");
 }
 
 export default HomeUsersPage;

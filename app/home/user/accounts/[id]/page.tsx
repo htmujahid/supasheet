@@ -6,7 +6,7 @@ import { DefaultHeader } from "@/components/layouts/default-header";
 import { AccountsDetailContainer } from "@/features/user/components/accounts/accounts-detail-container";
 import {
   loadAccountPermissions,
-  loadSingleUser,
+  loadUser,
 } from "@/features/user/lib/loaders";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";
@@ -19,7 +19,7 @@ export async function generateMetadata({
   params,
 }: AccountDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const user = await loadSingleUser(id);
+  const user = await loadUser(id);
 
   return {
     title: user?.email || user?.phone || id,
@@ -34,7 +34,7 @@ async function AccountDetailPage({ params }: AccountDetailPageProps) {
     notFound();
   }
 
-  const user = await loadSingleUser(id);
+  const user = await loadUser(id);
 
   if (!user) {
     notFound();

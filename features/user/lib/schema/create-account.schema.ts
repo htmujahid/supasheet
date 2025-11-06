@@ -8,6 +8,7 @@ export const CreateAccountSchema = z
     email_confirm: z.boolean().optional(),
     phone: z.string().optional(),
     phone_confirm: z.boolean().optional(),
+    user_roles: z.array(z.string()).optional(),
   })
   .refine(
     (data) => {

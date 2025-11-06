@@ -11,6 +11,7 @@ import { loadAccountPermissions } from "./loaders";
 import { CreateAccountSchema } from "./schema/create-account.schema";
 import { DeletePersonalAccountSchema } from "./schema/delete-personal-account.schema";
 import { UpdateAccountSchema } from "./schema/update-account.schema";
+import { Enums } from "@/lib/database.types";
 
 const enableAccountDeletion =
   process.env.NEXT_PUBLIC_ENABLE_PERSONAL_ACCOUNT_DELETION === "true";
@@ -103,6 +104,7 @@ export const createAccountAction = enhanceAction(
       email_confirm: data.email_confirm === "true",
       phone: data.phone ? String(data.phone) : undefined,
       phone_confirm: data.phone_confirm === "true",
+      user_roles: data.user_roles ? JSON.parse(String(data.user_roles)) : [],
     };
 
     // Validate the form data
@@ -158,6 +160,36 @@ export const createAccountAction = enhanceAction(
       "Account created successfully",
     );
 
+    // Insert user roles if provided
+    if (result.data.user_roles && result.data.user_roles.length > 0) {
+      const client = await getSupabaseServerClient();
+
+      const userRolesToInsert = result.data.user_roles.map((role) => ({
+        account_id: newAccount.user.id,
+        role: role as "user" | "x-admin",
+      }));
+
+      const { error: rolesError } = await client
+        .schema("supasheet")
+        .from("user_roles")
+        .insert(userRolesToInsert);
+
+      if (rolesError) {
+        logger.error(
+          { ...ctx, error: rolesError, newAccountId: newAccount.user.id },
+          "Failed to insert user roles",
+        );
+        throw new Error(
+          rolesError.message || "Failed to assign roles to account",
+        );
+      }
+
+      logger.info(
+        { ...ctx, newAccountId: newAccount.user.id, roles: result.data.user_roles },
+        "User roles assigned successfully",
+      );
+    }
+
     // Revalidate the accounts page
     revalidatePath("/home/user/accounts");
   },
@@ -196,6 +228,7 @@ export const updateAccountAction = enhanceAction(
       phone: data.phone ? String(data.phone) : undefined,
       phone_confirm: data.phone_confirm === "true",
       password: data.password ? String(data.password) : undefined,
+      user_roles: data.user_roles ? JSON.parse(String(data.user_roles)) : undefined,
     };
 
     // Validate the form data
@@ -256,6 +289,56 @@ export const updateAccountAction = enhanceAction(
       { ...ctx, updatedAccountId: updatedAccount.user.id },
       "Account updated successfully",
     );
+
+    // Update user roles if provided
+    if (result.data.user_roles !== undefined) {
+      const client = await getSupabaseServerClient();
+
+      // Delete existing roles for this account
+      const { data, error: deleteError } = await client
+        .schema("supasheet")
+        .from("user_roles")
+        .delete()
+        .eq("account_id", accountId);
+
+      if (deleteError) {
+        logger.error(
+          { ...ctx, error: deleteError },
+          "Failed to delete existing user roles",
+        );
+        throw new Error(
+          deleteError.message || "Failed to update user roles",
+        );
+      }
+
+      // Insert new roles if any
+      if (result.data.user_roles.length > 0) {
+        const userRolesToInsert = result.data.user_roles.map((role) => ({
+          account_id: accountId,
+          role: role as "user" | "x-admin",
+        }));
+
+        const { error: insertError } = await client
+          .schema("supasheet")
+          .from("user_roles")
+          .insert(userRolesToInsert);
+
+        if (insertError) {
+          logger.error(
+            { ...ctx, error: insertError },
+            "Failed to insert user roles",
+          );
+          throw new Error(
+            insertError.message || "Failed to update user roles",
+          );
+        }
+      }
+
+      logger.info(
+        { ...ctx, roles: result.data.user_roles },
+        "User roles updated successfully",
+      );
+    }
 
     // Revalidate the accounts page and detail page
     revalidatePath("/home/user/accounts");

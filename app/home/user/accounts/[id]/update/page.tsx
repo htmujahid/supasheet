@@ -13,7 +13,9 @@ import {
 import { UpdateAccountForm } from "@/features/user/components/accounts/update-account-form";
 import {
   loadAccountPermissions,
-  loadSingleUser,
+  loadUser,
+  loadCurrentUserRoles,
+  loadUserWithRoles,
 } from "@/features/user/lib/loaders";
 
 type AccountUpdatePageProps = {
@@ -24,7 +26,7 @@ export async function generateMetadata({
   params,
 }: AccountUpdatePageProps): Promise<Metadata> {
   const { id } = await params;
-  const account = await loadSingleUser(id);
+  const account = await loadUser(id);
 
   return {
     title: `Update ${account?.email || account?.phone || id}`,
@@ -34,16 +36,17 @@ export async function generateMetadata({
 async function AccountUpdatePage({ params }: AccountUpdatePageProps) {
   const { id } = await params;
 
-  const [permissions, account] = await Promise.all([
+  const [permissions, userRoles, user] = await Promise.all([
     loadAccountPermissions(),
-    loadSingleUser(id),
+    loadCurrentUserRoles(),
+    loadUserWithRoles(id),
   ]);
 
   if (!permissions.canUpdate) {
     notFound();
   }
 
-  if (!account) {
+  if (!user) {
     notFound();
   }
 
@@ -53,7 +56,7 @@ async function AccountUpdatePage({ params }: AccountUpdatePageProps) {
         breadcrumbs={[
           { title: "Accounts", url: "/home/user/accounts" },
           {
-            title: account.email || account.phone || account.id,
+            title: user.email || user.phone || user.id,
             url: `/home/user/accounts/${id}`,
           },
           { title: "Edit" },
@@ -65,11 +68,11 @@ async function AccountUpdatePage({ params }: AccountUpdatePageProps) {
             <CardTitle>Update Account</CardTitle>
             <CardDescription>
               Update account authentication details for{" "}
-              {account.email || account.phone}
+              {user.email || user.phone}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <UpdateAccountForm account={account} />
+            <UpdateAccountForm user={user} userRoles={userRoles} />
           </CardContent>
         </Card>
       </div>

@@ -63,9 +63,9 @@ export function AccountsDetailView({
                 <BanAccountDialog user={user} />
               )}
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/home/user/accounts/${user.id}/edit`}>
+                <Link href={`/home/user/accounts/${user.id}/update`}>
                   <Edit className="mr-2 h-4 w-4" />
-                  Edit
+                  Update
                 </Link>
               </Button>
             </>

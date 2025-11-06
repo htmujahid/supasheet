@@ -74,23 +74,33 @@ create policy "User can view their own role" on supasheet.user_roles for select 
   (select auth.uid()) = account_id
 );
 
+create policy "User can assign roles (they have) to other users" on supasheet.user_roles for insert with check (
+  supasheet.has_role(role)
+);
+
+create policy "User can update roles (they have) of other users" on supasheet.user_roles for update using (
+  supasheet.has_role(role)
+) with check (
+  supasheet.has_role(role)
+);
+
 create policy "User can view their own role permissions" on supasheet.role_permissions for select using (
   (select (supasheet.has_role(role)))
 );
 
-create or replace function supasheet.new_account_created_setup() 
-returns trigger 
-language plpgsql 
-as $$
-begin
-  insert into supasheet.user_roles (account_id, role) values (new.id, 'user');
-  return new;
-end;
-$$;
+-- create or replace function supasheet.new_account_created_setup() 
+-- returns trigger 
+-- language plpgsql 
+-- as $$
+-- begin
+--   insert into supasheet.user_roles (account_id, role) values (new.id, 'user');
+--   return new;
+-- end;
+-- $$;
 
--- trigger the function every time a user is created
-create trigger on_account_created
-    after insert
-    on supasheet.accounts
-    for each row
-execute procedure supasheet.new_account_created_setup();
+-- -- trigger the function every time a user is created
+-- create trigger on_account_created
+--     after insert
+--     on supasheet.accounts
+--     for each row
+-- execute procedure supasheet.new_account_created_setup();
