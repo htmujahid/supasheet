@@ -2,6 +2,7 @@ import { Metadata } from "next";
 
 import { notFound } from "next/navigation";
 
+import { get } from "lodash";
 import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -57,13 +58,10 @@ async function ResourceGalleryPage({
   const tableSchema = await loadTableSchema(schema, resource);
   const viewSchema = await loadViewSchema(schema, resource);
 
-  const meta = tableSchema
-    ? ((tableSchema?.comment
-        ? JSON.parse(tableSchema.comment)
-        : {}) as TableMetadata)
-    : ((viewSchema?.comment
-        ? JSON.parse(viewSchema.comment)
-        : {}) as ViewMetadata);
+  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata;
+  const viewMeta = JSON.parse(viewSchema?.comment ?? "{}") as ViewMetadata;
+
+  const meta = tableSchema ? tableMeta : viewMeta;
 
   const currentView = meta.items?.find(
     (item) => item.id === id && item.type === "gallery",
@@ -80,7 +78,7 @@ async function ResourceGalleryPage({
 
   const [columnsSchema, data, permissions] = await Promise.all([
     loadColumnsSchema(schema, resource),
-    loadResourceData(schema, resource, search),
+    loadResourceData(schema, resource, search, tableMeta.query),
     loadResourcePermissions(schema, resource),
   ]);
 
@@ -97,10 +95,10 @@ async function ResourceGalleryPage({
 
   const arrangedData = results.map((item) => {
     return {
-      title: item[titleFieldName] as string,
-      description: item[descriptionFieldName] as string,
-      badge: item[badgeFieldName] as string,
-      cover: item[coverFieldName][0] as string,
+      title: get(item, titleFieldName) as string,
+      description: get(item, descriptionFieldName) as string,
+      badge: get(item, badgeFieldName) as string,
+      cover: get(item, coverFieldName)[0] as string,
       data: item,
     };
   });

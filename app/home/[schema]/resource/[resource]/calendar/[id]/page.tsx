@@ -2,6 +2,7 @@ import { Metadata } from "next";
 
 import { notFound } from "next/navigation";
 
+import { get } from "lodash";
 import { SearchParams } from "nuqs";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
@@ -64,13 +65,10 @@ async function ResourceCalendarPage({
   const tableSchema = await loadTableSchema(schema, resource);
   const viewSchema = await loadViewSchema(schema, resource);
 
-  const meta = tableSchema
-    ? ((tableSchema?.comment
-        ? JSON.parse(tableSchema.comment)
-        : {}) as TableMetadata)
-    : ((viewSchema?.comment
-        ? JSON.parse(viewSchema.comment)
-        : {}) as ViewMetadata);
+  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata;
+  const viewMeta = JSON.parse(viewSchema?.comment ?? "{}") as ViewMetadata;
+
+  const meta = tableSchema ? tableMeta : viewMeta;
 
   const currentView = meta.items?.find(
     (item) => item.id === id && item.type === "calendar",
@@ -87,7 +85,7 @@ async function ResourceCalendarPage({
 
   const [columnsSchema, data, permissions] = await Promise.all([
     loadColumnsSchema(schema, resource),
-    loadResourceData(schema, resource, search),
+    loadResourceData(schema, resource, search, tableMeta.query),
     loadResourcePermissions(schema, resource),
   ]);
 
@@ -105,10 +103,12 @@ async function ResourceCalendarPage({
   const arrangedData = results.map((item, index) => {
     return {
       id: index.toString(),
-      title: item[titleFieldName] as string,
-      color: stringToColor(item[badgeFieldName] as string),
-      startDate: item[startDateFieldName] as string,
-      endDate: item[endDateFieldName] ?? (item[startDateFieldName] as string),
+      title: get(item, titleFieldName) as string,
+      color: stringToColor(get(item, badgeFieldName) as string),
+      startDate: get(item, startDateFieldName) as string,
+      endDate:
+        get(item, endDateFieldName) ??
+        (get(item, startDateFieldName) as string),
       data: item,
     };
   });

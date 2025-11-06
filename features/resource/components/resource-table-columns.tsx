@@ -1,4 +1,5 @@
 import { Column, ColumnDef, Row, Table } from "@tanstack/react-table";
+import { Link2Icon } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { ResourceColumnHeader } from "@/features/resource/components/resource-column-header";
@@ -8,8 +9,10 @@ import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
   ResourceDataSchema,
+  TableMetadata,
   TableSchema,
 } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 import { useResourceContext } from "./resource-context";
 import { ResourceTableRowActions } from "./resource-table-row-actions";
@@ -25,6 +28,14 @@ export function getResourceTableColumns({
     rowAction: DataTableRowAction<ResourceDataSchema> | null,
   ) => void;
 }) {
+  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata;
+
+  const joinedColumns: `${string}.${string}`[] = (
+    tableMeta.query?.join ?? []
+  ).flatMap((join) =>
+    join.columns.map((col) => `${join.table}.${col}` as const),
+  );
+
   return [
     ...(tableSchema
       ? [
@@ -57,6 +68,18 @@ export function getResourceTableColumns({
           },
         ]
       : []),
+    ...joinedColumns.map((col) => ({
+      id: col,
+      accessorKey: col,
+      header: () => (
+        <div className="flex items-center gap-2">
+          <Link2Icon className="text-muted-foreground inline-block size-4" />
+          <span className="">{formatTitle(col.replace(".", "_"))}</span>
+        </div>
+      ),
+      size: 170,
+      enableHiding: true,
+    })),
     ...(columnsSchema ?? []).map((c) => ({
       id: c.name,
       accessorKey: c.name as string,

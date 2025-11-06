@@ -13,7 +13,7 @@ export async function loadAuditLogs(input: AuditLogSearchParams) {
     .select(
       `
       *,
-      created_by:accounts!audit_logs_created_by_fkey(
+      created_by:accounts(
         name,
         email,
         picture_url

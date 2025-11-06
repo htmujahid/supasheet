@@ -37,6 +37,11 @@ comment on table public.tasks is
 '{
     "icon": "ListTodo", 
     "display": "block",
+    "query": {
+        "sort": [{"id":"title","desc":false}],
+        "filter": [{"id":"color","value":"#f59e0b","variant":"text","operator":"ilike"}],
+        "join": [{"table":"accounts","on":"account_id","columns":["name","email"]}]
+    },
     "items": [
         {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"created_at","badge":"priority"},
@@ -101,6 +106,9 @@ with (security_invoker = true) as
 select
     *
 from supasheet.accounts;
+
+revoke all on public.accounts from authenticated, service_role;
+grant select on public.accounts to authenticated;
 
 
 ----------------------------------------------------------------

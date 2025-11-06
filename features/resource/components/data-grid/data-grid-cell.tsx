@@ -60,6 +60,7 @@ export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
       isEditing &&
       !cellOpts?.isPrimaryKey &&
       !cellOpts?.isMetadata &&
+      !cellOpts?.disabled &&
       permissions.canUpdate,
     isFocused,
     isSelected,

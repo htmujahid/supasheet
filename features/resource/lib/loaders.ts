@@ -2,9 +2,11 @@ import type {
   DatabaseSchemas,
   DatabaseTables,
   DatabaseViews,
+  TableMetadata,
 } from "@/lib/database-meta.types";
 import type { Database } from "@/lib/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
+import { applyAndFilters, applyOrFilters } from "@/lib/supabase/filters";
 
 import type { ResourceSearchParams } from "./validations";
 
@@ -72,122 +74,39 @@ export async function loadResourceData<Schema extends DatabaseSchemas>(
   schema: Schema,
   id: DatabaseTables<Schema> | DatabaseViews<Schema>,
   input: ResourceSearchParams,
+  defaultQuery: TableMetadata["query"],
 ) {
   const client = await getSupabaseServerClient();
 
   const { page, perPage, sort, filters, joinOperator } = input;
 
+  const joins =
+    defaultQuery?.join?.map(
+      (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`,
+    ) || [];
+
   const query = client
     .schema(schema)
     .from(id)
-    .select("*", { count: "exact" })
+    .select("*" + joins.join(""), { count: "exact" })
     .range((page - 1) * perPage, page * perPage - 1);
 
-  sort.forEach((item) => {
+  // Apply sorting
+  const extendedSort = [...(defaultQuery?.sort ?? []), ...sort];
+  extendedSort.forEach((item) => {
     query.order(item.id, { ascending: item.desc });
   });
 
-  if (joinOperator === "or" && filters.length > 0) {
-    const orConditions: string[] = [];
+  // Apply default query filters (always AND)
+  if (defaultQuery?.filter) {
+    applyAndFilters(query, defaultQuery.filter);
+  }
 
-    filters.forEach((filter) => {
-      if (filter.operator === "empty") {
-        orConditions.push(`${filter.id}.is.null`);
-      } else if (filter.operator === "not.empty") {
-        orConditions.push(`${filter.id}.not.is.null`);
-      } else if (filter.variant === "date") {
-        if (filter.operator === "between") {
-          const startDate = new Date();
-          const endDate = new Date();
-          startDate.setTime(Number(filter.value[0]));
-          endDate.setTime(Number(filter.value[1]));
-          orConditions.push(
-            `${filter.id}.gte.${startDate.toISOString()},${filter.id}.lte.${endDate.toISOString()}`,
-          );
-        } else {
-          const date = new Date();
-          date.setTime(Number(filter.value));
-          orConditions.push(
-            `${filter.id}.${filter.operator}.${date.toISOString()}`,
-          );
-        }
-      } else if (filter.variant === "text") {
-        if (filter.operator === "ilike") {
-          orConditions.push(`${filter.id}.ilike.%${filter.value}%`);
-        } else if (filter.operator === "not.ilike") {
-          orConditions.push(`${filter.id}.not.ilike.%${filter.value}%`);
-        } else {
-          orConditions.push(`${filter.id}.${filter.operator}.${filter.value}`);
-        }
-      } else {
-        if (filter.operator === "in") {
-          const values = (filter.value as string[]).join(",");
-          orConditions.push(`${filter.id}.in.(${values})`);
-        } else if (filter.operator === "not.in") {
-          const values = (filter.value as string[]).join(",");
-          orConditions.push(`${filter.id}.not.in.(${values})`);
-        } else if (filter.operator === "between") {
-          orConditions.push(
-            `${filter.id}.gte.${filter.value[0]},${filter.id}.lte.${filter.value[1]}`,
-          );
-        } else {
-          orConditions.push(`${filter.id}.${filter.operator}.${filter.value}`);
-        }
-      }
-    });
-
-    if (orConditions.length > 0) {
-      query.or(orConditions.join(","));
-    }
+  // Apply user filters based on join operator
+  if (joinOperator === "or") {
+    applyOrFilters(query, filters);
   } else {
-    filters.forEach((filter) => {
-      if (filter.operator === "empty") {
-        query.filter(filter.id, "is", null);
-        return;
-      } else if (filter.operator === "not.empty") {
-        query.filter(filter.id, "not.is", null);
-        return;
-      }
-
-      if (filter.variant === "date") {
-        if (filter.operator === "between") {
-          const startDate = new Date();
-          const endDate = new Date();
-
-          startDate.setTime(Number(filter.value[0]));
-          endDate.setTime(Number(filter.value[1]));
-
-          query
-            .gte(filter.id, startDate.toISOString())
-            .lte(filter.id, endDate.toISOString());
-        } else {
-          const date = new Date();
-          date.setTime(Number(filter.value));
-
-          query.filter(filter.id, filter.operator, date.toISOString());
-        }
-      } else if (filter.variant === "text") {
-        if (filter.operator === "ilike") {
-          query.ilike(filter.id, `%${filter.value}%`);
-        } else if (filter.operator === "not.ilike") {
-          query.not(filter.id, "ilike", `%${filter.value}%`);
-        } else {
-          query.filter(filter.id, filter.operator, filter.value);
-        }
-      } else {
-        if (filter.operator === "in") {
-          query.in(filter.id, filter.value as string[]);
-        } else if (filter.operator === "not.in") {
-          query.not("status", "in", filter.value as string[]);
-        } else if (filter.operator === "between") {
-          query
-            .gte(filter.id, filter.value[0] as string)
-            .lte(filter.id, filter.value[1] as string);
-        } else {
-          query.filter(filter.id, filter.operator, filter.value);
-        }
-      }
-    });
+    applyAndFilters(query, filters);
   }
 
   const response = await query;

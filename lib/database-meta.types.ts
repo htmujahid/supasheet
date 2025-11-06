@@ -45,24 +45,20 @@ export type PaginatedData<T> = {
   perPage: number;
 };
 
-export type SchemaKey = keyof Database;
-export type TablesForSchema<TSchema extends SchemaKey> =
-  Database[TSchema] extends { Tables: infer TTables }
-    ? TTables extends Record<string, unknown>
-      ? keyof TTables & string
-      : never
-    : never;
-export type ViewsForSchema<TSchema extends SchemaKey> =
-  Database[TSchema] extends { Views: infer TViews }
-    ? TViews extends Record<string, unknown>
-      ? keyof TViews & string
-      : never
-    : never;
-
 export type TableMetadata = {
   display?: "block" | "none";
   icon?: string;
   primaryItem?: string;
+  query?: {
+    sort?: { id: string; desc: boolean }[];
+    filter?: {
+      id: string;
+      value: string | string[];
+      variant: string;
+      operator: string;
+    }[];
+    join?: { table: string; on: string; columns: string[] }[];
+  };
   items?: {
     id: string;
     name: string;

@@ -20,6 +20,7 @@ import {
   DatabaseSchemas,
   DatabaseTables,
   DatabaseViews,
+  TableMetadata,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
@@ -46,10 +47,13 @@ async function ResourcePage({ params, searchParams }: ResourcePageProps) {
 
   const search = resourceSearchParamsCache.parse(await searchParams);
 
-  const [tableSchema, columnsSchema, data, permissions] = await Promise.all([
-    loadTableSchema(schema, resource),
+  const tableSchema = await loadTableSchema(schema, resource);
+
+  const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata;
+
+  const [columnsSchema, data, permissions] = await Promise.all([
     loadColumnsSchema(schema, resource),
-    loadResourceData(schema, resource, search),
+    loadResourceData(schema, resource, search, metaData.query),
     loadResourcePermissions(schema, resource),
   ]);
 

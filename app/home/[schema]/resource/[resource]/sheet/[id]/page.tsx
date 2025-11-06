@@ -57,13 +57,10 @@ async function ResourceSheetPage({
   const tableSchema = await loadTableSchema(schema, resource);
   const viewSchema = await loadViewSchema(schema, resource);
 
-  const meta = tableSchema
-    ? ((tableSchema?.comment
-        ? JSON.parse(tableSchema.comment)
-        : {}) as TableMetadata)
-    : ((viewSchema?.comment
-        ? JSON.parse(viewSchema.comment)
-        : {}) as ViewMetadata);
+  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata;
+  const viewMeta = JSON.parse(viewSchema?.comment ?? "{}") as ViewMetadata;
+
+  const meta = tableSchema ? tableMeta : viewMeta;
 
   const currentView = meta.items?.find(
     (item) => item.id === id && item.type === "sheet",
@@ -75,7 +72,7 @@ async function ResourceSheetPage({
 
   const [columnsSchema, data, permissions] = await Promise.all([
     loadColumnsSchema(schema, resource),
-    loadResourceData(schema, resource, search),
+    loadResourceData(schema, resource, search, tableMeta.query),
     loadResourcePermissions(schema, resource),
   ]);
 
