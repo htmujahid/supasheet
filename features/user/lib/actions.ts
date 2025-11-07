@@ -11,7 +11,6 @@ import { loadAccountPermissions } from "./loaders";
 import { CreateAccountSchema } from "./schema/create-account.schema";
 import { DeletePersonalAccountSchema } from "./schema/delete-personal-account.schema";
 import { UpdateAccountSchema } from "./schema/update-account.schema";
-import { Enums } from "@/lib/database.types";
 
 const enableAccountDeletion =
   process.env.NEXT_PUBLIC_ENABLE_PERSONAL_ACCOUNT_DELETION === "true";
@@ -295,7 +294,7 @@ export const updateAccountAction = enhanceAction(
       const client = await getSupabaseServerClient();
 
       // Delete existing roles for this account
-      const { data, error: deleteError } = await client
+      const { error: deleteError } = await client
         .schema("supasheet")
         .from("user_roles")
         .delete()
