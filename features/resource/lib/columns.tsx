@@ -338,7 +338,19 @@ export function getColumnMetadata(
 export function getColumnFilterData(
   columnSchema: ColumnSchema,
 ): ColumnFilterData {
-  switch (columnSchema.data_type) {
+  if (columnSchema.data_type === "USER-DEFINED") {
+    return {
+      label: columnSchema.name as string,
+      filterVariant: "multiSelect",
+      options:
+        (columnSchema.enums as string[])?.map((option) => ({
+          label: option,
+          value: option,
+        })) ?? [],
+    };
+  }
+
+  switch (columnSchema.format) {
     case "character":
     case "varchar":
     case "text":
@@ -389,16 +401,6 @@ export function getColumnFilterData(
         filterVariant: "boolean",
       };
 
-    case "USER-DEFINED":
-      return {
-        label: columnSchema.name as string,
-        filterVariant: "multiSelect",
-        options:
-          (columnSchema.enums as string[])?.map((option) => ({
-            label: option,
-            value: option,
-          })) ?? [],
-      };
     default:
       return {
         label: columnSchema.name as string,

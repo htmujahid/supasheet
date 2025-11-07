@@ -137,8 +137,8 @@ export function ResourceFilterList<TData>({
       {
         id: column.label as Extract<keyof TData, string>,
         value: "",
-        variant: column.variant ?? "text",
-        operator: getDefaultFilterOperator(column.variant ?? "text"),
+        variant: column.filterVariant ?? "text",
+        operator: getDefaultFilterOperator(column.filterVariant ?? "text"),
         filterId: generateId({ length: 8 }),
       },
     ]);
@@ -469,9 +469,9 @@ function DataTableFilterItem<TData>({
                       onSelect={(value) => {
                         onFilterUpdate(filter.filterId, {
                           id: value as Extract<keyof TData, string>,
-                          variant: column.variant ?? "text",
+                          variant: column.filterVariant ?? "text",
                           operator: getDefaultFilterOperator(
-                            column.variant ?? "text",
+                            column.filterVariant ?? "text",
                           ),
                           value: "",
                         });
