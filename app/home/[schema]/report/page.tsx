@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 import { FileTextIcon } from "lucide-react";
 
@@ -14,6 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { loadReports } from "@/features/report/lib/loaders";
 import { DatabaseSchemas } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
@@ -37,7 +43,24 @@ async function ReportsPage({ params }: ReportsPageProps) {
   const reports = await loadReports(schema);
 
   if (!reports || reports.length === 0) {
-    notFound();
+    return (
+      <div className="w-full flex-1">
+        <DefaultHeader breadcrumbs={[{ title: "Report" }]} />
+        <div className="flex min-h-[calc(100vh-183px)] items-center justify-center">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileTextIcon />
+              </EmptyMedia>
+              <EmptyTitle>No Reports Found</EmptyTitle>
+              <EmptyDescription>
+                There are no reports available for this schema yet.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </div>
+      </div>
+    );
   }
 
   return (
