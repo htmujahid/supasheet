@@ -12,6 +12,7 @@ import type {
   Relationship,
   ResourceDataSchema,
 } from "@/lib/database-meta.types";
+import { FilterVariant } from "@/interfaces/data-table/types/data-table";
 
 export type ColumnMetadata = {
   label: string;
@@ -58,7 +59,7 @@ export type ColumnMetadata = {
 
 export type ColumnFilterData = {
   label: string;
-  variant: "text" | "number" | "date" | "boolean" | "multiSelect" | "select";
+  filterVariant: FilterVariant;
   options?: { label: string; value: string }[];
 };
 

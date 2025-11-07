@@ -348,7 +348,7 @@ export function getColumnFilterData(
     case "bytea":
       return {
         label: columnSchema.name as string,
-        variant: "text",
+        filterVariant: "text",
       };
 
     case "double precision":
@@ -363,7 +363,7 @@ export function getColumnFilterData(
     case "money":
       return {
         label: columnSchema.name as string,
-        variant: "number",
+        filterVariant: "number",
       };
 
     case "date":
@@ -373,26 +373,26 @@ export function getColumnFilterData(
     case "timestamp":
       return {
         label: columnSchema.name as string,
-        variant: "date",
+        filterVariant: "date",
       };
 
     case "json":
     case "jsonb":
       return {
         label: columnSchema.name as string,
-        variant: "text",
+        filterVariant: "text",
       };
 
     case "boolean":
       return {
         label: columnSchema.name as string,
-        variant: "boolean",
+        filterVariant: "boolean",
       };
 
     case "USER-DEFINED":
       return {
         label: columnSchema.name as string,
-        variant: "multiSelect",
+        filterVariant: "multiSelect",
         options:
           (columnSchema.enums as string[])?.map((option) => ({
             label: option,
@@ -402,7 +402,7 @@ export function getColumnFilterData(
     default:
       return {
         label: columnSchema.name as string,
-        variant: "text",
+        filterVariant: "text",
       };
   }
 }
