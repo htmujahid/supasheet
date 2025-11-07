@@ -47,7 +47,7 @@ export async function generateMetadata({
   const { schema, resource } = await params;
 
   return {
-    title: `${formatTitle(resource)} Kanban - ${schema}`,
+    title: `${formatTitle(resource)} Kanban - ${formatTitle(schema)}`,
   };
 }
 

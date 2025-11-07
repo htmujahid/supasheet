@@ -28,7 +28,7 @@ export async function generateMetadata({
   const { schema, report } = await params;
 
   return {
-    title: `${formatTitle(report)} - ${schema}`,
+    title: `${formatTitle(report)} - ${formatTitle(schema)}`,
   };
 }
 

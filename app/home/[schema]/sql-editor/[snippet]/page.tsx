@@ -2,6 +2,7 @@ import { Metadata } from "next";
 
 import { SQL } from "@/features/sql/components/sql";
 import { DatabaseSchemas } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 type SqlPageProps = {
   params: Promise<{
@@ -16,7 +17,7 @@ export async function generateMetadata({
   const { schema } = await params;
 
   return {
-    title: `SQL Editor - ${schema}`,
+    title: `SQL Editor - ${formatTitle(schema)}`,
   };
 }
 

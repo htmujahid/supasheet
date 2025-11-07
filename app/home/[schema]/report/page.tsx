@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { loadReports } from "@/features/report/lib/loaders";
 import { DatabaseSchemas } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 type ReportsPageProps = {
   params: Promise<{ schema: DatabaseSchemas }>;
@@ -27,7 +28,7 @@ export async function generateMetadata({
   const { schema } = await params;
 
   return {
-    title: `Reports - ${schema}`,
+    title: `Reports - ${formatTitle(schema)}`,
   };
 }
 

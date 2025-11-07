@@ -32,7 +32,7 @@ export async function generateMetadata({
   const { schema, resource } = await params;
 
   return {
-    title: `Edit ${formatTitle(resource)} - ${schema}`,
+    title: `Edit ${formatTitle(resource)} - ${formatTitle(schema)}`,
   };
 }
 

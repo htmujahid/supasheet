@@ -6,6 +6,7 @@ import { DefaultHeader } from "@/components/layouts/default-header";
 import { ChartWidgets } from "@/features/chart/components/chart-widgets";
 import { loadCharts } from "@/features/chart/lib/loaders";
 import { DatabaseSchemas } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 type ChartPageProps = {
   params: Promise<{
@@ -19,7 +20,7 @@ export async function generateMetadata({
   const { schema } = await params;
 
   return {
-    title: `Charts - ${schema}`,
+    title: `Charts - ${formatTitle(schema)}`,
   };
 }
 

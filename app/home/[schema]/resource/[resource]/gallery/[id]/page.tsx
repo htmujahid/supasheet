@@ -42,7 +42,7 @@ export async function generateMetadata({
   const { schema, resource } = await params;
 
   return {
-    title: `${formatTitle(resource)} Gallery - ${schema}`,
+    title: `${formatTitle(resource)} Gallery - ${formatTitle(schema)}`,
   };
 }
 

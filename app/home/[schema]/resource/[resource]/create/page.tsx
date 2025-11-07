@@ -26,7 +26,7 @@ export async function generateMetadata({
   const { schema, resource } = await params;
 
   return {
-    title: `Create ${formatTitle(resource)} - ${schema}`,
+    title: `Create ${formatTitle(resource)} - ${formatTitle(schema)}`,
   };
 }
 

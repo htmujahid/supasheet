@@ -6,6 +6,7 @@ import { DefaultHeader } from "@/components/layouts/default-header";
 import { DashboardWidgets } from "@/features/dashboard/components/dashboard-widgets";
 import { loadDashboardWidgets } from "@/features/dashboard/lib/loaders";
 import { DatabaseSchemas } from "@/lib/database-meta.types";
+import { formatTitle } from "@/lib/format";
 
 type DashboardPageProps = {
   params: Promise<{
@@ -19,7 +20,7 @@ export async function generateMetadata({
   const { schema } = await params;
 
   return {
-    title: `Dashboard - ${schema}`,
+    title: `Dashboard - ${formatTitle(schema)}`,
   };
 }
 
