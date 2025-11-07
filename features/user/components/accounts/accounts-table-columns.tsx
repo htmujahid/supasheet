@@ -20,7 +20,7 @@ export const getAccountsTableColumns = (): ColumnDef<Account>[] => [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => {
-      const pictureUrl = row.getValue("picture_url") as string | null;
+      const pictureUrl = row.original.picture_url;
       const name = row.getValue("name") as string;
       const email = row.getValue("email") as string | null;
       return (
