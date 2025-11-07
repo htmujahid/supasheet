@@ -72,8 +72,8 @@ export function getResourceTableColumns({
       id: col,
       accessorKey: col,
       header: () => (
-        <div className="flex items-center gap-2">
-          <Link2Icon className="text-muted-foreground inline-block size-4" />
+        <div className="flex items-center gap-2 truncate">
+          <Link2Icon className="text-muted-foreground size-4 shrink-0" />
           <span className="">{formatTitle(col.replace(".", "_"))}</span>
         </div>
       ),

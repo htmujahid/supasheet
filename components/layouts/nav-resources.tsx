@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
-import { ChevronRight, type LucideIcon, PlusIcon } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
@@ -126,9 +126,6 @@ export function NavResources({ activeSchema }: { activeSchema: string }) {
                           <ChevronRight />
                         </SidebarMenuAction>
                       </CollapsibleTrigger>
-                      <SidebarMenuAction showOnHover>
-                        <PlusIcon />
-                      </SidebarMenuAction>
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {metaItems?.map((subItem) => (

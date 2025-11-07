@@ -99,6 +99,7 @@ export function DataTable<TData>({
                       style={{
                         ...getCommonPinningStyles({ column: cell.column }),
                       }}
+                      className="truncate"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
