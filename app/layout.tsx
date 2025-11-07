@@ -6,7 +6,7 @@ import { heading, mono, sans } from "@/lib/fonts";
 import { generateRootMetadata } from "@/lib/root-metadata";
 import { cn } from "@/lib/utils";
 
-import "./globals.css";
+import "../styles/globals.css";
 
 async function RootLayout({ children }: React.PropsWithChildren) {
   const theme = await getTheme();
