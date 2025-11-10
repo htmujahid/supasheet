@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
+import type { StorageFile } from "../lib/types";
 
 type MoveFileDialogProps = {
   open: boolean;

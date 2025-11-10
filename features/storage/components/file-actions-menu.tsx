@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
+import type { StorageFile } from "../lib/types";
 
 type FileActionsMenuProps = {
   file: StorageFile;

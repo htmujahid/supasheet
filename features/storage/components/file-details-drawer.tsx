@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/drawer";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
+import type { StorageFile } from "../lib/types";
 
 type FileDetailsDrawerProps = {
   open: boolean;

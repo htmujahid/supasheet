@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -19,95 +19,76 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
-
-type RenameDialogProps = {
+type CreateFolderDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  file: StorageFile | null;
   bucketId: string;
-  onClose?: () => void;
+  currentPath: string;
 };
 
-export function RenameDialog({
+export function CreateFolderDialog({
   open,
   onOpenChange,
-  file,
   bucketId,
-  onClose,
-}: RenameDialogProps) {
+  currentPath,
+}: CreateFolderDialogProps) {
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
-  const [newName, setNewName] = useState("");
+  const [folderName, setFolderName] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    if (file && open) {
-      setNewName(file.name);
-    }
-  }, [file, open]);
-
-  const handleRename = async () => {
-    if (!file || !newName.trim() || newName === file.name) return;
+  function handleNewFolder() {
+    if (!folderName.trim()) return;
 
     startTransition(async () => {
-      const oldPath = file.path || file.name;
-      const newPath = oldPath
-        .split("/")
-        .slice(0, -1)
-        .concat(newName.trim())
-        .join("/");
-
+      const folderPath = currentPath
+        ? `${currentPath}/${folderName.trim()}/.keep`
+        : `${folderName.trim()}/.keep`;
       const { error } = await supabase.storage
         .from(bucketId)
-        .move(oldPath, newPath);
+        .upload(folderPath, new Blob([""], { type: "text/plain" }), {
+          cacheControl: "3600",
+          upsert: false,
+        });
 
       if (error) {
-        console.error("Error renaming:", error);
-        toast.error(
-          `Failed to rename ${file.isFolder ? "folder" : "file"}: ${error.message}`,
-        );
+        console.error("Error creating folder:", error);
+        toast.error(`Failed to create folder: ${error.message}`);
       } else {
         router.refresh();
         handleClose();
-        toast.success(
-          `Successfully renamed ${file.isFolder ? "folder" : "file"} to "${newName.trim()}"`,
-        );
+        toast.success(`Successfully created folder "${folderName.trim()}"`);
       }
     });
-  };
+  }
 
   const handleClose = () => {
-    setNewName("");
+    setFolderName("");
     onOpenChange(false);
-    if (onClose) onClose();
   };
-
-  if (!file) return null;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Rename {file.isFolder ? "Folder" : "File"}</DialogTitle>
-          <DialogDescription>
-            Enter a new name for this {file.isFolder ? "folder" : "file"}
-          </DialogDescription>
+          <DialogTitle>New Folder</DialogTitle>
+          <DialogDescription>Enter a name for the new folder</DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="new-name" className="text-right">
+            <Label htmlFor="folder-name" className="text-right">
               Name
             </Label>
             <Input
-              id="new-name"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+              id="folder-name"
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
               className="col-span-3"
+              placeholder="New folder"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  handleRename();
+                  handleNewFolder();
                 }
               }}
             />
@@ -119,10 +100,10 @@ export function RenameDialog({
             Cancel
           </Button>
           <Button
-            onClick={handleRename}
-            disabled={!newName.trim() || newName === file.name || isPending}
+            onClick={handleNewFolder}
+            disabled={!folderName.trim() || isPending}
           >
-            {isPending ? "Renaming..." : "Rename"}
+            {isPending ? "Creating..." : "Create"}
           </Button>
         </DialogFooter>
       </DialogContent>

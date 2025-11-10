@@ -19,68 +19,66 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
+import type { StorageFile } from "../lib/types";
 
-type MoveFileDialogProps = {
+type RenameDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   file: StorageFile | null;
-  currentPath: string;
   bucketId: string;
   onClose?: () => void;
 };
 
-export function MoveFileDialog({
+export function RenameDialog({
   open,
   onOpenChange,
   file,
-  currentPath,
   bucketId,
   onClose,
-}: MoveFileDialogProps) {
+}: RenameDialogProps) {
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
-  const [newPath, setNewPath] = useState("");
+  const [newName, setNewName] = useState("");
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (file && open) {
-      // Initialize with current path or empty for root
-      setNewPath(currentPath || "");
+      setNewName(file.name);
     }
-  }, [file, currentPath, open]);
+  }, [file, open]);
 
-  const handleMove = async () => {
-    if (!file || newPath === currentPath) return;
+  const handleRename = async () => {
+    if (!file || !newName.trim() || newName === file.name) return;
 
     startTransition(async () => {
       const oldPath = file.path || file.name;
-      const fileName = oldPath.split("/").pop() || file.name;
-      const fullNewPath = newPath.trim()
-        ? `${newPath.trim()}/${fileName}`
-        : fileName;
+      const newPath = oldPath
+        .split("/")
+        .slice(0, -1)
+        .concat(newName.trim())
+        .join("/");
 
       const { error } = await supabase.storage
         .from(bucketId)
-        .move(oldPath, fullNewPath);
+        .move(oldPath, newPath);
 
       if (error) {
-        console.error("Error moving file:", error);
+        console.error("Error renaming:", error);
         toast.error(
-          `Failed to move ${file.isFolder ? "folder" : "file"}: ${error.message}`,
+          `Failed to rename ${file.isFolder ? "folder" : "file"}: ${error.message}`,
         );
       } else {
         router.refresh();
         handleClose();
         toast.success(
-          `Successfully moved ${file.isFolder ? "folder" : "file"} "${file.name}" to ${newPath.trim() || "root"}`,
+          `Successfully renamed ${file.isFolder ? "folder" : "file"} to "${newName.trim()}"`,
         );
       }
     });
   };
 
   const handleClose = () => {
-    setNewPath("");
+    setNewName("");
     onOpenChange(false);
     if (onClose) onClose();
   };
@@ -91,33 +89,28 @@ export function MoveFileDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Move {file.isFolder ? "Folder" : "File"}</DialogTitle>
+          <DialogTitle>Rename {file.isFolder ? "Folder" : "File"}</DialogTitle>
           <DialogDescription>
-            Move &quot;{file.name}&quot; to a new location. Enter the
-            destination path.
+            Enter a new name for this {file.isFolder ? "folder" : "file"}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="new-path" className="text-right">
-              Path
+            <Label htmlFor="new-name" className="text-right">
+              Name
             </Label>
             <Input
-              id="new-path"
-              value={newPath}
-              onChange={(e) => setNewPath(e.target.value)}
-              placeholder="folder/subfolder (empty for root)"
+              id="new-name"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
               className="col-span-3"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  handleMove();
+                  handleRename();
                 }
               }}
             />
-          </div>
-          <div className="text-muted-foreground col-span-4 text-xs">
-            Current location: {currentPath || "(root)"}
           </div>
         </div>
 
@@ -125,8 +118,11 @@ export function MoveFileDialog({
           <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleMove} disabled={isPending}>
-            {isPending ? "Moving..." : "Move"}
+          <Button
+            onClick={handleRename}
+            disabled={!newName.trim() || newName === file.name || isPending}
+          >
+            {isPending ? "Renaming..." : "Rename"}
           </Button>
         </DialogFooter>
       </DialogContent>

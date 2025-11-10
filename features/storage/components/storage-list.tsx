@@ -19,7 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 import { cn } from "@/lib/utils";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
+import type { StorageFile } from "../lib/types";
 import { CopyFileDialog } from "./copy-file-dialog";
 import { FileActionsMenu } from "./file-actions-menu";
 import { FileDetailsDrawer } from "./file-details-drawer";

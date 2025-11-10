@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { StorageExplorer } from "@/interfaces/storage-explorer/components/storage-explorer";
-import type { StorageFile } from "@/interfaces/storage-explorer/types";
+import type { StorageFile } from "@/features/storage/lib/types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 
 type StorageBucketPageProps = {

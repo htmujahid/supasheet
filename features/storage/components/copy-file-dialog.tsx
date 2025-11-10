@@ -19,9 +19,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
-import type { StorageFile } from "../../../features/storage/lib/types";
+import type { StorageFile } from "../lib/types";
 
-type MoveFileDialogProps = {
+type CopyFileDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   file: StorageFile | null;
@@ -30,50 +30,51 @@ type MoveFileDialogProps = {
   onClose?: () => void;
 };
 
-export function MoveFileDialog({
+export function CopyFileDialog({
   open,
   onOpenChange,
   file,
   currentPath,
   bucketId,
   onClose,
-}: MoveFileDialogProps) {
+}: CopyFileDialogProps) {
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
   const [newPath, setNewPath] = useState("");
+  const [newName, setNewName] = useState("");
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (file && open) {
-      // Initialize with current path or empty for root
       setNewPath(currentPath || "");
+      // Add "Copy of " prefix to the name
+      setNewName(`Copy of ${file.name}`);
     }
   }, [file, currentPath, open]);
 
-  const handleMove = async () => {
-    if (!file || newPath === currentPath) return;
+  const handleCopy = async () => {
+    if (!file || !newName.trim()) return;
 
     startTransition(async () => {
       const oldPath = file.path || file.name;
-      const fileName = oldPath.split("/").pop() || file.name;
       const fullNewPath = newPath.trim()
-        ? `${newPath.trim()}/${fileName}`
-        : fileName;
+        ? `${newPath.trim()}/${newName.trim()}`
+        : newName.trim();
 
       const { error } = await supabase.storage
         .from(bucketId)
-        .move(oldPath, fullNewPath);
+        .copy(oldPath, fullNewPath);
 
       if (error) {
-        console.error("Error moving file:", error);
+        console.error("Error copying file:", error);
         toast.error(
-          `Failed to move ${file.isFolder ? "folder" : "file"}: ${error.message}`,
+          `Failed to copy ${file.isFolder ? "folder" : "file"}: ${error.message}`,
         );
       } else {
         router.refresh();
         handleClose();
         toast.success(
-          `Successfully moved ${file.isFolder ? "folder" : "file"} "${file.name}" to ${newPath.trim() || "root"}`,
+          `Successfully copied ${file.isFolder ? "folder" : "file"} "${file.name}"`,
         );
       }
     });
@@ -81,6 +82,7 @@ export function MoveFileDialog({
 
   const handleClose = () => {
     setNewPath("");
+    setNewName("");
     onOpenChange(false);
     if (onClose) onClose();
   };
@@ -91,33 +93,43 @@ export function MoveFileDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Move {file.isFolder ? "Folder" : "File"}</DialogTitle>
+          <DialogTitle>Copy {file.isFolder ? "Folder" : "File"}</DialogTitle>
           <DialogDescription>
-            Move &quot;{file.name}&quot; to a new location. Enter the
-            destination path.
+            Create a copy of &quot;{file.name}&quot; with a new name and
+            location.
           </DialogDescription>
         </DialogHeader>
-
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="new-path" className="text-right">
+        <div className="flex flex-col gap-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="copy-path" className="text-right">
               Path
             </Label>
             <Input
-              id="new-path"
+              id="copy-path"
               value={newPath}
               onChange={(e) => setNewPath(e.target.value)}
               placeholder="folder/subfolder (empty for root)"
               className="col-span-3"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="copy-name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="copy-name"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="col-span-3"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  handleMove();
+                  handleCopy();
                 }
               }}
             />
           </div>
           <div className="text-muted-foreground col-span-4 text-xs">
-            Current location: {currentPath || "(root)"}
+            Original location: {currentPath || "(root)"}/{file.name}
           </div>
         </div>
 
@@ -125,8 +137,8 @@ export function MoveFileDialog({
           <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleMove} disabled={isPending}>
-            {isPending ? "Moving..." : "Move"}
+          <Button onClick={handleCopy} disabled={!newName.trim() || isPending}>
+            {isPending ? "Copying..." : "Copy"}
           </Button>
         </DialogFooter>
       </DialogContent>
