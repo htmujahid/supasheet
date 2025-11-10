@@ -118,7 +118,7 @@ export function ForeignTableSheet({
 
   return (
     <Sheet {...props}>
-      <SheetContent>
+      <SheetContent className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg">
         <SheetHeader>
           <SheetTitle>
             Select to reference from {relationship.target_table_name}

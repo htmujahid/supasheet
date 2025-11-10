@@ -17,6 +17,10 @@ import {
   PrimaryKey,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
+import { ResourceForiegnDataView } from "@/features/resource/components/view/resource-foriegn-data-view";
+import { ResourceMetadataView } from "@/features/resource/components/view/resource-metadata-view";
+import { DeleteResourceDialog } from "@/features/resource/components/delete-resource-dialog";
+import { METADATA_COLUMNS } from "@/config/database.config";
 
 type ResourceEditPageProps = {
   params: Promise<{
@@ -66,25 +70,64 @@ async function ResourceEditPage({ params }: ResourceEditPageProps) {
 
   const resourceUrl = `/home/${schema}/resource/${resource}`;
 
+  const MetaDataSection = (
+    <ResourceMetadataView
+      columnsSchema={columnsSchema ?? []}
+      tableSchema={tableSchema}
+      singleResourceData={singleResourceData ?? {}}
+    />
+  );
+
+  const ForeignDataSection = (
+    <ResourceForiegnDataView
+      tableSchema={tableSchema}
+      singleResourceData={singleResourceData ?? {}}
+    />
+  );
+
+  const hasSideBarContent = MetaDataSection || ForeignDataSection;
+
   return (
     <div className="w-full flex-1">
       <DefaultHeader
         breadcrumbs={[
           { title: formatTitle(resource), url: resourceUrl },
-          { title: "View" },
+          { title: "Edit" },
         ]}
-      />
+      >
+        {permissions.canDelete && (
+          <DeleteResourceDialog
+            resources={[singleResourceData]}
+            tableSchema={tableSchema}
+            columnSchema={columnsSchema}
+            showTrigger={true}
+          />
+        )}
+      </DefaultHeader>
       <ResourceContextProvider
         permissions={permissions}
         tableSchema={tableSchema}
         columnsSchema={columnsSchema}
       >
-        <div className="mx-auto max-w-3xl p-4">
-          <ResourceEditForm
-            tableSchema={tableSchema}
-            columnsSchema={columnsSchema ?? []}
-            data={singleResourceData}
-          />
+        <div className={`mx-auto ${hasSideBarContent ? "max-w-6xl" : "max-w-3xl"} p-4`}>
+          <div className="grid grid-cols-6 gap-4">
+            {/* Resource Edit */}
+            <div className={hasSideBarContent ? "col-span-4" : "col-span-6"}>
+              <ResourceEditForm
+                tableSchema={tableSchema}
+                columnsSchema={columnsSchema ?? []}
+                data={singleResourceData}
+              />
+            </div>
+            {
+              hasSideBarContent ? (
+                <div className="col-span-2 flex flex-col gap-4">
+                  {MetaDataSection}
+                  {ForeignDataSection}
+                </div>
+              ) : null
+            }
+          </div>
         </div>
       </ResourceContextProvider>
     </div>

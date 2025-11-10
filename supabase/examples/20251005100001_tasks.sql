@@ -14,7 +14,7 @@ create table tasks (
     completed_at timestamptz,
 
     -- Organization
-    tags text[],
+    tags varchar(500)[],
     is_important boolean default false,
 
     -- Progress tracking
@@ -54,7 +54,7 @@ comment on column public.tasks.status is
             "icon": "Archive"
         }
     }
-}'
+}';
 
 comment on column public.tasks.priority is 
 '{
@@ -77,7 +77,7 @@ comment on column public.tasks.priority is
             "icon": "Flame"
         }
     }
-}'
+}';
 
 comment on table public.tasks is 
 '{
@@ -97,7 +97,7 @@ comment on table public.tasks is
 }';
 
 comment on column tasks.cover is '{"accept":"image/*"}';
-comment on column tasks.attachments is '{"accept":"*"}';
+comment on column tasks.attachments is '{"accept":"*", "maxFiles": 999}';
 
 revoke all on table public.tasks from authenticated, service_role;
 

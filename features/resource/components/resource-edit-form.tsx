@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 
-import { Loader, Trash2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -29,7 +29,6 @@ import {
 import { updateResourceDataAction } from "../lib/actions";
 import { READONLY_COLUMNS } from "../lib/constants";
 import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
-import { DeleteResourceDialog } from "./delete-resource-dialog";
 import { ResourceFormField } from "./fields/resource-form-field";
 import { useResourceContext } from "./resource-context";
 
@@ -48,8 +47,6 @@ export function ResourceEditForm({
   const { schema } = useParams<{ schema: DatabaseSchemas }>();
   const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
   const router = useRouter();
-
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
     (key) => key.name,
@@ -114,7 +111,7 @@ export function ResourceEditForm({
 
       // Navigate back to view page
       const pkValues = primaryKeys.map((pk) => data[pk.name]).join("/");
-      router.push(`/home/${schema}/resource/${resource}/${pkValues}`);
+      router.push(`/home/${schema}/resource/${resource}/view/${pkValues}`);
     });
   }
 
@@ -129,17 +126,6 @@ export function ResourceEditForm({
                 Update the resource and save changes
               </CardDescription>
             </div>
-            {permissions.canDelete && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setIsDeleteDialogOpen(true)}
-                disabled={isPending}
-              >
-                <Trash2 className="mr-2 size-4" />
-                Delete
-              </Button>
-            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -186,17 +172,6 @@ export function ResourceEditForm({
           </Form>
         </CardContent>
       </Card>
-      {permissions.canDelete && (
-        <DeleteResourceDialog
-          open={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
-          resources={[data]}
-          tableSchema={tableSchema}
-          columnSchema={columnsSchema}
-          showTrigger={false}
-          onSuccess={() => router.push(`/home/${schema}/resource/${resource}`)}
-        />
-      )}
     </>
   );
 }

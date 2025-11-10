@@ -1,11 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
-import { PencilIcon } from "lucide-react";
-
 import { Editor } from "@/components/blocks/editor-md/editor";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -21,21 +16,16 @@ import { formatTitle } from "@/lib/format";
 
 import { getColumnMetadata } from "../../lib/columns";
 import { AllCells } from "../cells/all-cells";
-import { useResourceContext } from "../resource-context";
 
 export function ResourceDetailView({
   tableSchema,
   columnsSchema,
   singleResourceData,
-  editUrl,
 }: {
   tableSchema: TableSchema;
   columnsSchema: ColumnSchema[];
   singleResourceData: Record<string, unknown>;
-  editUrl?: string;
 }) {
-  const { permissions } = useResourceContext();
-
   // Separate columns into different categories
   const detailColumns =
     columnsSchema?.filter((column) => {
@@ -45,28 +35,18 @@ export function ResourceDetailView({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-1.5">
-            <CardTitle>Details</CardTitle>
-            <CardDescription>
-              View resource details and properties
-            </CardDescription>
-          </div>
-          {editUrl && permissions.canUpdate && (
-            <Button asChild size="sm">
-              <Link href={editUrl}>
-                <PencilIcon className="mr-2 size-4" />
-                Edit
-              </Link>
-            </Button>
-          )}
+        <div className="space-y-1.5">
+          <CardTitle>Details</CardTitle>
+          <CardDescription>
+            View resource details and properties
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="space-y-0">
         {detailColumns.map((column, index) => {
           const value =
             singleResourceData?.[
-              column.name as keyof typeof singleResourceData
+            column.name as keyof typeof singleResourceData
             ];
 
           const columnMetadata = getColumnMetadata(tableSchema, column);

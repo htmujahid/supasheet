@@ -137,9 +137,9 @@ export function DeleteResourceDialog({
       <Dialog {...props}>
         {showTrigger ? (
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Trash className="mr-2 size-4" aria-hidden="true" />
-              Delete ({resources.length})
+            <Button variant={!showTrigger ? "outline" : "destructive"} size="sm">
+              <Trash className="size-4" aria-hidden="true" />
+              Delete {resources.length > 1 && `(${resources.length})`}
             </Button>
           </DialogTrigger>
         ) : null}

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ResourceEditLoading() {
   return (
     <div className="w-full flex-1">
-      <DefaultHeader breadcrumbs={[{ title: "..." }, { title: "View" }]} />
+      <DefaultHeader breadcrumbs={[{ title: "..." }, { title: "Edit" }]} />
       <div className="mx-auto max-w-3xl p-4">
         <div className="bg-card border-border rounded-lg border p-6">
           <div className="mb-6 flex items-center justify-between">

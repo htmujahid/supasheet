@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PencilIcon } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import { ResourceDetailView } from "@/features/resource/components/view/resource-detail-view";
@@ -71,6 +74,23 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
   const editUrl = `/home/${schema}/resource/${resource}/edit/${pkValues}`;
   const resourceUrl = `/home/${schema}/resource/${resource}`;
 
+  const MetaDataSection = (
+    <ResourceMetadataView
+      columnsSchema={columnsSchema ?? []}
+      tableSchema={tableSchema}
+      singleResourceData={singleResourceData ?? {}}
+    />
+  );
+
+  const ForeignDataSection = (
+    <ResourceForiegnDataView
+      tableSchema={tableSchema}
+      singleResourceData={singleResourceData ?? {}}
+    />
+  );
+
+  const hasSideBarContent = MetaDataSection || ForeignDataSection;
+
   return (
     <div className="w-full flex-1">
       <DefaultHeader
@@ -78,34 +98,39 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
           { title: formatTitle(resource), url: resourceUrl },
           { title: "View" },
         ]}
-      />
+      >
+        {editUrl && permissions.canUpdate && (
+          <Button asChild size="sm" variant={"outline"}>
+            <Link href={editUrl}>
+              <PencilIcon className="size-4" />
+              Edit {formatTitle(resource)}
+            </Link>
+          </Button>
+        )}
+      </DefaultHeader>
       <ResourceContextProvider
         permissions={permissions}
         tableSchema={tableSchema}
         columnsSchema={columnsSchema}
       >
-        <div className="mx-auto max-w-3xl p-4">
-          <div className="flex flex-col gap-4">
+        <div className={`mx-auto ${hasSideBarContent ? "max-w-6xl" : "max-w-3xl"} p-4`}>
+          <div className="grid grid-cols-6 gap-4">
             {/* Resource Details */}
-            <ResourceDetailView
-              editUrl={editUrl}
-              tableSchema={tableSchema}
-              columnsSchema={columnsSchema ?? []}
-              singleResourceData={singleResourceData ?? {}}
-            />
-
-            {/* Metadata */}
-            <ResourceMetadataView
-              columnsSchema={columnsSchema ?? []}
-              tableSchema={tableSchema}
-              singleResourceData={singleResourceData ?? {}}
-            />
-
-            {/* Foreign Key Data */}
-            <ResourceForiegnDataView
-              tableSchema={tableSchema}
-              singleResourceData={singleResourceData ?? {}}
-            />
+            <div className={hasSideBarContent ? "col-span-4" : "col-span-6"}>
+              <ResourceDetailView
+                tableSchema={tableSchema}
+                columnsSchema={columnsSchema ?? []}
+                singleResourceData={singleResourceData ?? {}}
+              />
+            </div>
+            {
+              hasSideBarContent ? (
+                <div className="col-span-2 flex flex-col gap-4">
+                  {MetaDataSection}
+                  {ForeignDataSection}
+                </div>
+              ) : null
+            }
           </div>
         </div>
       </ResourceContextProvider>
