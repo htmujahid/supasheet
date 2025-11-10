@@ -2,9 +2,9 @@ import { Metadata } from "next";
 
 import { notFound } from "next/navigation";
 
-import { StorageExplorer } from "@/interfaces/storage-explorer/components/storage-explorer";
 import type { StorageFile } from "@/features/storage/lib/types";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
+import { StorageExplorer } from "@/features/storage/components/storage-explorer";
 
 type StorageBucketPageProps = {
   params: Promise<{
