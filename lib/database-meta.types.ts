@@ -80,3 +80,13 @@ export type ViewMetadata = {
     type: "calendar" | "kanban" | "sheet" | "gallery";
   }[];
 };
+
+export type EnumMetadata = {
+  progress?: boolean;
+  enums?: {
+    [key: string]: {
+      icon?: string;
+      variant: "default" | "secondary" | "success" | "warning" | "destructive" | "info";
+    };
+  }
+}

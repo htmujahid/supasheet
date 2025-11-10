@@ -716,3 +716,60 @@ ON ddl_command_end
 WHEN TAG IN ('COMMENT')
 EXECUTE FUNCTION log_comment_changes();
 
+
+----------------------------------------------------------------
+-- Trigger Function for ALTER TYPE events (enum changes)
+----------------------------------------------------------------
+-- Create the event trigger function for handling ALTER TYPE operations on enums
+CREATE OR REPLACE FUNCTION log_enum_alteration()
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    schema_name TEXT;
+    type_name TEXT;
+    full_identity TEXT;
+    enum_values JSON;
+BEGIN
+    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
+    LOOP
+        -- Only process if it's a type alteration
+        IF obj.object_type = 'type' THEN
+            schema_name := obj.schema_name;
+            full_identity := obj.object_identity;
+
+            -- Extract just the type name (without schema prefix)
+            type_name := split_part(full_identity, '.', 2);
+
+            -- If there's no dot, the entire identity is the type name
+            IF type_name = '' THEN
+                type_name := full_identity;
+            END IF;
+
+            -- Get the updated enum values from pg_catalog.pg_enum
+            SELECT array_to_json(
+                array(
+                    SELECT enumlabel
+                    FROM pg_catalog.pg_enum
+                    WHERE enumtypid = (quote_ident(schema_name) || '.' || quote_ident(type_name))::regtype::oid
+                    ORDER BY enumsortorder
+                )
+            ) INTO enum_values;
+
+            -- Update all columns that use this enum type
+            -- This finds columns where data_type is 'USER-DEFINED' and actual_type matches the enum name
+            UPDATE supasheet.columns
+            SET enums = enum_values
+            WHERE schema = schema_name
+              AND data_type = 'USER-DEFINED'
+              AND actual_type = type_name;
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the event trigger for ALTER TYPE operations
+CREATE EVENT TRIGGER enum_alteration_trigger
+ON ddl_command_end
+WHEN TAG IN ('ALTER TYPE')
+EXECUTE FUNCTION log_enum_alteration();
+

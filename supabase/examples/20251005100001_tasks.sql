@@ -33,13 +33,58 @@ create table tasks (
     updated_at timestamptz default current_timestamp
 );
 
+comment on column public.tasks.status is 
+'{
+    "progress": true,
+    "enums": {
+        "pending": {
+            "variant": "warning",
+            "icon": "Clock"
+        },
+        "in_progress": {
+            "variant": "info",
+            "icon": "Loader"
+        },
+        "completed": {
+            "variant": "success",
+            "icon": "CircleCheck"
+        },
+        "archived": {
+            "variant": "outline",
+            "icon": "Archive"
+        }
+    }
+}'
+
+comment on column public.tasks.priority is 
+'{
+    "progress": false,
+    "enums": {
+        "low": {
+            "variant": "outline",
+            "icon": "CircleArrowDown"
+        },
+        "medium": {
+            "variant": "info",
+            "icon": "CircleMinus"
+        },
+        "high": {
+            "variant": "warning",
+            "icon": "CircleArrowUp"
+        },
+        "urgent": {
+            "variant": "destructive",
+            "icon": "Flame"
+        }
+    }
+}'
+
 comment on table public.tasks is 
 '{
     "icon": "ListTodo", 
     "display": "block",
     "query": {
         "sort": [{"id":"title","desc":false}],
-        "filter": [{"id":"color","value":"#f59e0b","variant":"text","operator":"ilike"}],
         "join": [{"table":"accounts","on":"account_id","columns":["name","email"]}]
     },
     "items": [
