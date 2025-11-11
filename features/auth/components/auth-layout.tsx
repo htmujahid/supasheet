@@ -25,12 +25,12 @@ export function AuthLayout({
       {isCoverImage && (
         <div className="bg-muted relative hidden lg:block">
           <div className="absolute inset-0 flex items-center justify-center p-10">
-            <div className="text-center space-y-6 max-w-2xl">
+            <div className="max-w-2xl space-y-6 text-center">
               <div className="space-y-4">
-                <h2 className="text-6xl font-bold tracking-tighter bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                <h2 className="from-foreground to-foreground/70 bg-gradient-to-r bg-clip-text text-6xl font-bold tracking-tighter text-transparent">
                   Your Complete CMS Solution
                 </h2>
-                <div className="h-1 w-24 mx-auto bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full" />
+                <div className="from-primary/60 via-primary to-primary/60 mx-auto h-1 w-24 rounded-full bg-gradient-to-r" />
               </div>
               <p className="text-muted-foreground text-xl font-light tracking-wide">
                 Open source platform with everything included

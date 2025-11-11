@@ -13,8 +13,8 @@ import {
 import { UpdateAccountForm } from "@/features/user/components/accounts/update-account-form";
 import {
   loadAccountPermissions,
-  loadUser,
   loadCurrentUserRoles,
+  loadUser,
   loadUserWithRoles,
 } from "@/features/user/lib/loaders";
 

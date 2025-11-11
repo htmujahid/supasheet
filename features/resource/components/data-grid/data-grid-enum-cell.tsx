@@ -14,8 +14,8 @@ import {
 
 import { updateResourceDataAction } from "../../lib/actions";
 import { EnumCell } from "../cells/enum-cell";
-import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 import { ColumnMetadata } from "../fields/types";
+import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
 type CellVariantProps<TData> = {
   cell: Cell<TData, unknown>;
@@ -167,7 +167,10 @@ export function DataGridEnumCell<TData>({
           </SelectContent>
         </Select>
       ) : (
-        <EnumCell value={displayLabel} columnMetadata={cellOpts as ColumnMetadata} />
+        <EnumCell
+          value={displayLabel}
+          columnMetadata={cellOpts as ColumnMetadata}
+        />
       )}
     </DataGridCellWrapper>
   );

@@ -3,8 +3,11 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
+import { DeleteResourceDialog } from "@/features/resource/components/delete-resource-dialog";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
 import { ResourceEditForm } from "@/features/resource/components/resource-edit-form";
+import { ResourceForiegnDataView } from "@/features/resource/components/view/resource-foriegn-data-view";
+import { ResourceMetadataView } from "@/features/resource/components/view/resource-metadata-view";
 import {
   loadColumnsSchema,
   loadResourcePermissions,
@@ -17,10 +20,6 @@ import {
   PrimaryKey,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { ResourceForiegnDataView } from "@/features/resource/components/view/resource-foriegn-data-view";
-import { ResourceMetadataView } from "@/features/resource/components/view/resource-metadata-view";
-import { DeleteResourceDialog } from "@/features/resource/components/delete-resource-dialog";
-import { METADATA_COLUMNS } from "@/config/database.config";
 
 type ResourceEditPageProps = {
   params: Promise<{
@@ -109,24 +108,28 @@ async function ResourceEditPage({ params }: ResourceEditPageProps) {
         tableSchema={tableSchema}
         columnsSchema={columnsSchema}
       >
-        <div className={`mx-auto ${hasSideBarContent ? "max-w-6xl" : "max-w-3xl"} p-4`}>
+        <div
+          className={`mx-auto ${hasSideBarContent ? "max-w-6xl" : "max-w-3xl"} p-4`}
+        >
           <div className="grid grid-cols-6 gap-4">
             {/* Resource Edit */}
-            <div className={hasSideBarContent ? "col-span-6 lg:col-span-4" : "col-span-6"}>
+            <div
+              className={
+                hasSideBarContent ? "col-span-6 lg:col-span-4" : "col-span-6"
+              }
+            >
               <ResourceEditForm
                 tableSchema={tableSchema}
                 columnsSchema={columnsSchema ?? []}
                 data={singleResourceData}
               />
             </div>
-            {
-              hasSideBarContent ? (
-                <div className="col-span-6 lg:col-span-2 flex flex-col gap-4">
-                  {MetaDataSection}
-                  {ForeignDataSection}
-                </div>
-              ) : null
-            }
+            {hasSideBarContent ? (
+              <div className="col-span-6 flex flex-col gap-4 lg:col-span-2">
+                {MetaDataSection}
+                {ForeignDataSection}
+              </div>
+            ) : null}
           </div>
         </div>
       </ResourceContextProvider>

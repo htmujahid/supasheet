@@ -33,7 +33,9 @@ export const AllCells = memo(function AllCells({
     case "rating":
       return <RatingCell value={value as number | null} />;
     case "select":
-      return <EnumCell value={value as string} columnMetadata={columnMetadata} />;
+      return (
+        <EnumCell value={value as string} columnMetadata={columnMetadata} />
+      );
     case "money":
       return value ? `${value}` : "";
     case "json":

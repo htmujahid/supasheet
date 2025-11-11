@@ -13,12 +13,12 @@ function LucideIconComponent({
 }) {
   const Icon = LucideIcons[iconName] as LucideIcon;
 
-  return <Icon className="size-4 shrink-0 me-1" />;
+  return <Icon className="me-1 size-4 shrink-0" />;
 }
 
 export function EnumCell({
   value,
-  columnMetadata
+  columnMetadata,
 }: {
   value: string | null;
   columnMetadata: ColumnMetadata;
@@ -33,7 +33,9 @@ export function EnumCell({
     const { icon, variant } = enumMeta.enums[value];
     return (
       <Badge variant={variant ?? "secondary"}>
-        {icon && <LucideIconComponent iconName={icon as keyof typeof LucideIcons} />}
+        {icon && (
+          <LucideIconComponent iconName={icon as keyof typeof LucideIcons} />
+        )}
         {value}
       </Badge>
     );

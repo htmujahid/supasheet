@@ -3,7 +3,6 @@
 import { useTransition } from "react";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
 import { Loader, Maximize2, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -25,18 +24,23 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DatabaseSchemas,
   DatabaseTables,
-  PrimaryKey,
   ResourceDataSchema,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
 import { createResourceDataAction } from "../lib/actions";
 import { READONLY_COLUMNS } from "../lib/constants";
+import {
+  useColumnsSchema,
+  useResourcePermissions,
+  useTableSchema,
+} from "../lib/data";
 import { getJsonColumns, parseJsonColumns } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
-import { useColumnsSchema, useResourcePermissions, useTableSchema } from "../lib/data";
 
-type CreateLazyResourceSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
+type CreateLazyResourceSheetProps = React.ComponentPropsWithRef<
+  typeof Sheet
+> & {
   showTrigger?: boolean;
   schema: DatabaseSchemas;
   resource: DatabaseTables<DatabaseSchemas>;
@@ -50,7 +54,10 @@ export function CreateLazyResourceSheet({
 }: CreateLazyResourceSheetProps) {
   const { data: tableSchema } = useTableSchema(schema, resource);
   const { data: columnsSchema } = useColumnsSchema(schema, resource);
-  const { data: resourcePermissions } = useResourcePermissions(schema, resource);
+  const { data: resourcePermissions } = useResourcePermissions(
+    schema,
+    resource,
+  );
 
   const isMobile = useIsMobile();
 
@@ -60,15 +67,13 @@ export function CreateLazyResourceSheet({
 
   const [isPending, startTransition] = useTransition();
 
-  if (
-    schema === "supasheet" && resource === "accounts"
-  ) {
+  if (schema === "supasheet" && resource === "accounts") {
     return null;
   }
 
   if (
-    !tableSchema || 
-    !columnsSchema || 
+    !tableSchema ||
+    !columnsSchema ||
     !columnsSchema?.length ||
     !resourcePermissions?.canInsert
   ) {
@@ -148,8 +153,7 @@ export function CreateLazyResourceSheet({
           >
             {columnsSchema
               .filter(
-                (column) =>
-                  !READONLY_COLUMNS.includes(column.name as string)
+                (column) => !READONLY_COLUMNS.includes(column.name as string),
               )
               .map((column) => (
                 <ResourceFormField

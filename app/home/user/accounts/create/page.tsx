@@ -11,7 +11,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CreateAccountForm } from "@/features/user/components/accounts/create-account-form";
-import { loadAccountPermissions, loadCurrentUserRoles } from "@/features/user/lib/loaders";
+import {
+  loadAccountPermissions,
+  loadCurrentUserRoles,
+} from "@/features/user/lib/loaders";
 
 export const metadata: Metadata = {
   title: "Create Account",

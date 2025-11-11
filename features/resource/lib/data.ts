@@ -9,11 +9,11 @@ import {
   TableMetadata,
   ViewMetadata,
 } from "@/lib/database-meta.types";
+import { Database } from "@/lib/database.types";
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
+import { applyAndFilters } from "@/lib/supabase/filters";
 
 import { ResourceSearchParams } from "./validations";
-import { applyAndFilters } from "@/lib/supabase/filters";
-import { Database } from "@/lib/database.types";
 
 export function useColumnsSchema(schema: string, id: string) {
   return useQuery({
@@ -264,7 +264,6 @@ export function useViewResources(schema: string) {
     },
   });
 }
-
 
 // export async function loadResourcePermissions<Schema extends DatabaseSchemas>(
 //   schema: Schema,

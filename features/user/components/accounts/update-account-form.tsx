@@ -32,10 +32,7 @@ type UpdateAccountFormProps = {
   userRoles: { id: number; account_id: string; role: string }[];
 };
 
-export function UpdateAccountForm({
-  user,
-  userRoles,
-}: UpdateAccountFormProps) {
+export function UpdateAccountForm({ user, userRoles }: UpdateAccountFormProps) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<UpdateAccountFormData>({
@@ -208,44 +205,44 @@ export function UpdateAccountForm({
                   </FormDescription>
                 </div>
                 <div className="space-y-2">
-                  {Array.from(
-                    new Set(userRoles.map((ur) => ur.role)),
-                  ).map((role) => (
-                    <FormField
-                      key={role}
-                      control={form.control}
-                      name="user_roles"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={role}
-                            className="flex flex-row items-start space-y-0 space-x-3"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(role)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                      ...(field.value || []),
-                                      role,
-                                    ])
-                                    : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== role,
-                                      ),
-                                    );
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {role}
-                            </FormLabel>
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  ))}
+                  {Array.from(new Set(userRoles.map((ur) => ur.role))).map(
+                    (role) => (
+                      <FormField
+                        key={role}
+                        control={form.control}
+                        name="user_roles"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={role}
+                              className="flex flex-row items-start space-y-0 space-x-3"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(role)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...(field.value || []),
+                                          role,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== role,
+                                          ),
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {role}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ),
+                  )}
                 </div>
                 <FormMessage />
               </FormItem>

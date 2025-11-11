@@ -4,10 +4,7 @@ import { notFound } from "next/navigation";
 
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { AccountsDetailContainer } from "@/features/user/components/accounts/accounts-detail-container";
-import {
-  loadAccountPermissions,
-  loadUser,
-} from "@/features/user/lib/loaders";
+import { loadAccountPermissions, loadUser } from "@/features/user/lib/loaders";
 import { getSupabaseServerClient } from "@/lib/supabase/clients/server-client";
 import { requireUser } from "@/lib/supabase/require-user";
 

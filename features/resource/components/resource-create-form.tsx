@@ -116,8 +116,7 @@ export function ResourceCreateForm({
           <form onSubmit={form.handleSubmit(onCreate)} className="space-y-6">
             {columnsSchema
               .filter(
-                (column) =>
-                  !READONLY_COLUMNS.includes(column.name as string)
+                (column) => !READONLY_COLUMNS.includes(column.name as string),
               )
               .map((column) => (
                 <ResourceFormField

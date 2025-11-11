@@ -86,7 +86,13 @@ export type EnumMetadata = {
   enums?: {
     [key: string]: {
       icon?: string;
-      variant: "default" | "secondary" | "success" | "warning" | "destructive" | "info";
+      variant:
+        | "default"
+        | "secondary"
+        | "success"
+        | "warning"
+        | "destructive"
+        | "info";
     };
-  }
-}
+  };
+};

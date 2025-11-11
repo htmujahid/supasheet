@@ -29,8 +29,8 @@ import type {
 } from "@/lib/database-meta.types";
 
 import { useColumnsSchema, useResourceData } from "../../lib/data";
-import { getSheetTableColumns } from "./sheet-table-columns";
 import { CreateLazyResourceSheet } from "../create-lazy-resource-sheet";
+import { getSheetTableColumns } from "./sheet-table-columns";
 
 type ForeignTableSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
   relationship: Relationship;
@@ -131,12 +131,15 @@ export function ForeignTableSheet({
         </SheetHeader>
         <div className="data-table-container px-4">
           {/* select 2nd child using tailwind */}
-          <DataTable table={table} className="[&>div:nth-child(2)]:h-[calc(100vh-194px)]">
+          <DataTable
+            table={table}
+            className="[&>div:nth-child(2)]:h-[calc(100vh-194px)]"
+          >
             <DataTableAdvancedToolbar table={table}>
               <DataTableClientFilterList table={table} />
               <DataTableSortList table={table} />
-              <CreateLazyResourceSheet 
-                schema={relationship.target_table_schema} 
+              <CreateLazyResourceSheet
+                schema={relationship.target_table_schema}
                 resource={relationship.target_table_name}
                 showTrigger
               />

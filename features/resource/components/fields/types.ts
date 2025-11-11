@@ -6,13 +6,13 @@ import type {
   UseFormReturn,
 } from "react-hook-form";
 
+import { FilterVariant } from "@/interfaces/data-table/types/data-table";
 import type {
   ColumnSchema,
   PrimaryKey,
   Relationship,
   ResourceDataSchema,
 } from "@/lib/database-meta.types";
-import { FilterVariant } from "@/interfaces/data-table/types/data-table";
 
 export type ColumnMetadata = {
   label: string;

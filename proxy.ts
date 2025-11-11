@@ -180,7 +180,7 @@ async function getPatterns() {
             return NextResponse.redirect(
               new URL(pathsConfig.app.account, origin).href,
             );
-          //   throw new Error("Failed to fetch user schemas");
+            //   throw new Error("Failed to fetch user schemas");
           }
 
           const defaultSchema = data?.[0].schema as string;

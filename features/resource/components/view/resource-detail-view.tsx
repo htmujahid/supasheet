@@ -46,7 +46,7 @@ export function ResourceDetailView({
         {detailColumns.map((column, index) => {
           const value =
             singleResourceData?.[
-            column.name as keyof typeof singleResourceData
+              column.name as keyof typeof singleResourceData
             ];
 
           const columnMetadata = getColumnMetadata(tableSchema, column);

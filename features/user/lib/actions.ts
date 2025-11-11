@@ -184,7 +184,11 @@ export const createAccountAction = enhanceAction(
       }
 
       logger.info(
-        { ...ctx, newAccountId: newAccount.user.id, roles: result.data.user_roles },
+        {
+          ...ctx,
+          newAccountId: newAccount.user.id,
+          roles: result.data.user_roles,
+        },
         "User roles assigned successfully",
       );
     }
@@ -227,7 +231,9 @@ export const updateAccountAction = enhanceAction(
       phone: data.phone ? String(data.phone) : undefined,
       phone_confirm: data.phone_confirm === "true",
       password: data.password ? String(data.password) : undefined,
-      user_roles: data.user_roles ? JSON.parse(String(data.user_roles)) : undefined,
+      user_roles: data.user_roles
+        ? JSON.parse(String(data.user_roles))
+        : undefined,
     };
 
     // Validate the form data
@@ -305,9 +311,7 @@ export const updateAccountAction = enhanceAction(
           { ...ctx, error: deleteError },
           "Failed to delete existing user roles",
         );
-        throw new Error(
-          deleteError.message || "Failed to update user roles",
-        );
+        throw new Error(deleteError.message || "Failed to update user roles");
       }
 
       // Insert new roles if any
@@ -327,9 +331,7 @@ export const updateAccountAction = enhanceAction(
             { ...ctx, error: insertError },
             "Failed to insert user roles",
           );
-          throw new Error(
-            insertError.message || "Failed to update user roles",
-          );
+          throw new Error(insertError.message || "Failed to update user roles");
         }
       }
 
