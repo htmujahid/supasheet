@@ -23,60 +23,61 @@ import {
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  ColumnSchema,
   DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
   ResourceDataSchema,
-  TableSchema,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
-import {
-  createResourceDataAction,
-  updateResourceDataAction,
-} from "../lib/actions";
+import { createResourceDataAction } from "../lib/actions";
 import { READONLY_COLUMNS } from "../lib/constants";
-import { getJsonColumns, parseJsonColumns, serializeData } from "../lib/utils";
+import { getJsonColumns, parseJsonColumns } from "../lib/utils";
 import { ResourceFormField } from "./fields/resource-form-field";
+import { useColumnsSchema, useResourcePermissions, useTableSchema } from "../lib/data";
 
-type ResourceSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
+type CreateLazyResourceSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
   showTrigger?: boolean;
-  tableSchema: TableSchema | null;
-  columnsSchema: ColumnSchema[];
-  data: ResourceDataSchema | null;
-  create: boolean;
+  schema: DatabaseSchemas;
+  resource: DatabaseTables<DatabaseSchemas>;
 };
 
-export function ResourceSheet({
+export function CreateLazyResourceSheet({
   showTrigger,
-  tableSchema,
-  columnsSchema,
-  data,
-  create,
+  schema,
+  resource,
   ...props
-}: ResourceSheetProps) {
-  const { schema } = useParams<{ schema: DatabaseSchemas }>();
-  const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
+}: CreateLazyResourceSheetProps) {
+  const { data: tableSchema } = useTableSchema(schema, resource);
+  const { data: columnsSchema } = useColumnsSchema(schema, resource);
+  const { data: resourcePermissions } = useResourcePermissions(schema, resource);
 
   const isMobile = useIsMobile();
 
-  const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
-    (key) => key.name,
-  );
-
   const form = useForm<ResourceDataSchema>({
-    defaultValues:
-      serializeData(data, columnsSchema) ??
-      columnsSchema.reduce((acc, column) => {
-        acc[column.name as keyof ResourceDataSchema] = "";
-        return acc;
-      }, {} as ResourceDataSchema),
+    defaultValues: {},
   });
 
   const [isPending, startTransition] = useTransition();
 
+  if (
+    schema === "supasheet" && resource === "accounts"
+  ) {
+    return null;
+  }
+
+  if (
+    !tableSchema || 
+    !columnsSchema || 
+    !columnsSchema?.length ||
+    !resourcePermissions?.canInsert
+  ) {
+    return null;
+  }
+
   function onCreate(input: ResourceDataSchema) {
+    if (!tableSchema || !columnsSchema) return;
+
     Object.entries(input).forEach(([key, value]) => {
       if (value === "") {
         delete input[key];
@@ -112,61 +113,6 @@ export function ResourceSheet({
     });
   }
 
-  function onUpdate(input: ResourceDataSchema) {
-    if (!tableSchema) {
-      toast.error("Table schema not found");
-      return;
-    }
-
-    // Object.entries(input).forEach(([key, value]) => {
-    //   if (value === "") {
-    //     delete input[key];
-    //   }
-    // });
-
-    startTransition(async () => {
-      if (!data) return;
-
-      const jsonInput = parseJsonColumns(input, getJsonColumns(columnsSchema));
-
-      const primaryKeys = tableSchema.primary_keys as PrimaryKey[];
-
-      const resourceIds = primaryKeys.reduce(
-        (acc, key) => {
-          acc[key.name] = data[key.name];
-          delete input[key.name];
-          return acc;
-        },
-        {} as Record<string, unknown>,
-      );
-
-      const { data: updatedData, error } = await updateResourceDataAction({
-        schema,
-        resourceName: resource,
-        resourceIds,
-        data: { ...input, ...jsonInput },
-      });
-
-      if (
-        (!updatedData?.length && !error) ||
-        error?.message.includes("row-level security policy")
-      ) {
-        toast.error("You don't have permission to update this resource");
-        return;
-      }
-
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      form.reset(input);
-
-      props.onOpenChange?.(false);
-      toast.success("Task updated");
-    });
-  }
-
   return (
     <Sheet {...props}>
       {showTrigger && (
@@ -184,32 +130,26 @@ export function ResourceSheet({
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2">
             <Link
-              href={`/home/${schema}/resource/${resource}/${
-                create
-                  ? "create"
-                  : "edit/" +
-                    primaryKeys.map((key) => `${data?.[key]}`).join("/")
-              }`}
+              href={`/home/${schema}/resource/${resource}/create`}
               title="Create New"
             >
               <Maximize2 className="size-4" />
             </Link>
-            {create ? "Create" : "Update"} {resource}
+            Create {resource}
           </SheetTitle>
           <SheetDescription>
-            {create ? "Create a new" : "Update the"} {resource} and save the
+            Create a new {resource} and save the
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(create ? onCreate : onUpdate)}
+            onSubmit={form.handleSubmit(onCreate)}
             className="flex flex-col gap-4 overflow-y-auto px-4"
           >
             {columnsSchema
               .filter(
                 (column) =>
-                  !READONLY_COLUMNS.includes(column.name as string) &&
-                  (!primaryKeys.includes(column.name as string) || create),
+                  !READONLY_COLUMNS.includes(column.name as string)
               )
               .map((column) => (
                 <ResourceFormField
@@ -232,7 +172,7 @@ export function ResourceSheet({
                     aria-hidden="true"
                   />
                 )}
-                {create ? "Create" : "Update"}
+                Create
               </Button>
             </SheetFooter>
           </form>

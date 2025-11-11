@@ -117,8 +117,7 @@ export function ResourceCreateForm({
             {columnsSchema
               .filter(
                 (column) =>
-                  !READONLY_COLUMNS.includes(column.name as string) &&
-                  !primaryKeys.includes(column.name as string),
+                  !READONLY_COLUMNS.includes(column.name as string)
               )
               .map((column) => (
                 <ResourceFormField

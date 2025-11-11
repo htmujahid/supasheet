@@ -11,6 +11,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -29,6 +30,7 @@ import type {
 
 import { useColumnsSchema, useResourceData } from "../../lib/data";
 import { getSheetTableColumns } from "./sheet-table-columns";
+import { CreateLazyResourceSheet } from "../create-lazy-resource-sheet";
 
 type ForeignTableSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
   relationship: Relationship;
@@ -118,17 +120,26 @@ export function ForeignTableSheet({
 
   return (
     <Sheet {...props}>
-      <SheetContent className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg">
+      <SheetContent className="flex h-full w-full flex-col overflow-hidden sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>
             Select to reference from {relationship.target_table_name}
           </SheetTitle>
+          <SheetDescription>
+            Select a record from the table to create a reference.
+          </SheetDescription>
         </SheetHeader>
         <div className="data-table-container px-4">
-          <DataTable table={table}>
+          {/* select 2nd child using tailwind */}
+          <DataTable table={table} className="[&>div:nth-child(2)]:h-[calc(100vh-194px)]">
             <DataTableAdvancedToolbar table={table}>
               <DataTableClientFilterList table={table} />
               <DataTableSortList table={table} />
+              <CreateLazyResourceSheet 
+                schema={relationship.target_table_schema} 
+                resource={relationship.target_table_name}
+                showTrigger
+              />
             </DataTableAdvancedToolbar>
           </DataTable>
         </div>

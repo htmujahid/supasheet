@@ -4,6 +4,7 @@ import { SYSTEM_SCHEMAS } from "@/config/database.config";
 import {
   DatabaseSchemas,
   DatabaseTables,
+  DatabaseViews,
   ResourceDataSchema,
   TableMetadata,
   ViewMetadata,
@@ -11,6 +12,8 @@ import {
 import { getSupabaseBrowserClient } from "@/lib/supabase/clients/browser-client";
 
 import { ResourceSearchParams } from "./validations";
+import { applyAndFilters } from "@/lib/supabase/filters";
+import { Database } from "@/lib/database.types";
 
 export function useColumnsSchema(schema: string, id: string) {
   return useQuery({
@@ -68,55 +71,8 @@ export function useResourceData(
       sort.forEach((item) => {
         query.order(item.id, { ascending: item.desc });
       });
-
-      filters.forEach((filter) => {
-        if (filter.operator === "empty") {
-          query.filter(filter.id, "is", null);
-          return;
-        } else if (filter.operator === "not.empty") {
-          query.filter(filter.id, "not.is", null);
-          return;
-        }
-
-        if (filter.variant === "date") {
-          if (filter.operator === "between") {
-            const startDate = new Date();
-            const endDate = new Date();
-
-            startDate.setTime(Number(filter.value[0]));
-            endDate.setTime(Number(filter.value[1]));
-
-            query
-              .gte(filter.id, startDate.toISOString())
-              .lte(filter.id, endDate.toISOString());
-          } else {
-            const date = new Date();
-            date.setTime(Number(filter.value));
-
-            query.filter(filter.id, filter.operator, date.toISOString());
-          }
-        } else if (filter.variant === "text") {
-          if (filter.operator === "ilike") {
-            query.ilike(filter.id, `%${filter.value}%`);
-          } else if (filter.operator === "not.ilike") {
-            query.not(filter.id, "ilike", `%${filter.value}%`);
-          } else {
-            query.filter(filter.id, filter.operator, filter.value);
-          }
-        } else {
-          if (filter.operator === "in") {
-            query.in(filter.id, filter.value as string[]);
-          } else if (filter.operator === "not.in") {
-            query.not("status", "in", filter.value as string[]);
-          } else if (filter.operator === "between") {
-            query
-              .gte(filter.id, filter.value[0] as string)
-              .lte(filter.id, filter.value[1] as string);
-          } else {
-            query.filter(filter.id, filter.operator, filter.value);
-          }
-        }
-      });
+      // Apply user filters based on join operator
+      applyAndFilters(query, filters);
 
       const response = await query;
       const total = response.count;
@@ -306,5 +262,108 @@ export function useViewResources(schema: string) {
 
       return [...viewResources, ...materializedViewResources];
     },
+  });
+}
+
+
+// export async function loadResourcePermissions<Schema extends DatabaseSchemas>(
+//   schema: Schema,
+//   id: DatabaseTables<Schema> | DatabaseViews<Schema>,
+// ) {
+//   const client = await getSupabaseServerClient();
+
+//   const response = await client
+//     .schema("supasheet")
+//     .from("role_permissions")
+//     .select()
+//     .in("permission", [
+//       `${schema}.${id}:select`,
+//       `${schema}.${id}:insert`,
+//       `${schema}.${id}:update`,
+//       `${schema}.${id}:delete`,
+//     ] as Database["supasheet"]["Enums"]["app_permission"][]);
+
+//   if (response.error) {
+//     return {
+//       canSelect: false,
+//       canInsert: false,
+//       canUpdate: false,
+//       canDelete: false,
+//     };
+//   }
+
+//   const permissions = {
+//     canSelect: false,
+//     canInsert: false,
+//     canUpdate: false,
+//     canDelete: false,
+//   };
+
+//   response.data?.forEach((perm) => {
+//     if (perm.permission === `${schema}.${id}:select`) {
+//       permissions.canSelect = true;
+//     } else if (perm.permission === `${schema}.${id}:insert`) {
+//       permissions.canInsert = true;
+//     } else if (perm.permission === `${schema}.${id}:update`) {
+//       permissions.canUpdate = true;
+//     } else if (perm.permission === `${schema}.${id}:delete`) {
+//       permissions.canDelete = true;
+//     }
+//   });
+
+//   return permissions;
+// }
+
+export function useResourcePermissions(
+  schema: DatabaseSchemas,
+  id: DatabaseTables<typeof schema> | DatabaseViews<typeof schema>,
+) {
+  return useQuery({
+    queryKey: ["resource-permissions", schema, id],
+    queryFn: async () => {
+      const client = getSupabaseBrowserClient();
+
+      const response = await client
+        .schema("supasheet")
+        .from("role_permissions")
+        .select()
+        .in("permission", [
+          `${schema}.${id}:select`,
+          `${schema}.${id}:insert`,
+          `${schema}.${id}:update`,
+          `${schema}.${id}:delete`,
+        ] as Database["supasheet"]["Enums"]["app_permission"][]);
+
+      if (response.error) {
+        return {
+          canSelect: false,
+          canInsert: false,
+          canUpdate: false,
+          canDelete: false,
+        };
+      }
+
+      const permissions = {
+        canSelect: false,
+        canInsert: false,
+        canUpdate: false,
+        canDelete: false,
+      };
+
+      response.data?.forEach((perm) => {
+        if (perm.permission === `${schema}.${id}:select`) {
+          permissions.canSelect = true;
+        } else if (perm.permission === `${schema}.${id}:insert`) {
+          permissions.canInsert = true;
+        } else if (perm.permission === `${schema}.${id}:update`) {
+          permissions.canUpdate = true;
+        } else if (perm.permission === `${schema}.${id}:delete`) {
+          permissions.canDelete = true;
+        }
+      });
+
+      return permissions;
+    },
+    enabled: !!id,
   });
 }

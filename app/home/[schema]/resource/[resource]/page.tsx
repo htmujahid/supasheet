@@ -43,7 +43,7 @@ export async function generateMetadata({
 }
 
 async function ResourcePage({ params, searchParams }: ResourcePageProps) {
-  const { resource, schema } = await params;
+  const { schema, resource } = await params;
 
   const search = resourceSearchParamsCache.parse(await searchParams);
 
