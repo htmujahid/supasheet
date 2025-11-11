@@ -112,7 +112,7 @@ async function ResourceEditPage({ params }: ResourceEditPageProps) {
         <div className={`mx-auto ${hasSideBarContent ? "max-w-6xl" : "max-w-3xl"} p-4`}>
           <div className="grid grid-cols-6 gap-4">
             {/* Resource Edit */}
-            <div className={hasSideBarContent ? "col-span-4" : "col-span-6"}>
+            <div className={hasSideBarContent ? "col-span-6 lg:col-span-4" : "col-span-6"}>
               <ResourceEditForm
                 tableSchema={tableSchema}
                 columnsSchema={columnsSchema ?? []}
@@ -121,7 +121,7 @@ async function ResourceEditPage({ params }: ResourceEditPageProps) {
             </div>
             {
               hasSideBarContent ? (
-                <div className="col-span-2 flex flex-col gap-4">
+                <div className="col-span-6 lg:col-span-2 flex flex-col gap-4">
                   {MetaDataSection}
                   {ForeignDataSection}
                 </div>
