@@ -20,6 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CreateAccountSheet } from "@/features/user/components/accounts/create-account-sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DatabaseSchemas,
@@ -67,16 +68,15 @@ export function CreateLazyResourceSheet({
 
   const [isPending, startTransition] = useTransition();
 
-  if (schema === "supasheet" && resource === "accounts") {
+  if (!resourcePermissions?.canSelect) {
     return null;
   }
 
-  if (
-    !tableSchema ||
-    !columnsSchema ||
-    !columnsSchema?.length ||
-    !resourcePermissions?.canInsert
-  ) {
+  if (schema === "supasheet" && resource === "accounts") {
+    return <CreateAccountSheet showTrigger={showTrigger} {...props} />;
+  }
+
+  if (!tableSchema || !columnsSchema || !columnsSchema?.length) {
     return null;
   }
 

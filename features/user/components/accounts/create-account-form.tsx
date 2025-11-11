@@ -225,7 +225,7 @@ export function CreateAccountForm({ userRoles }: CreateAccountFormProps) {
                           return (
                             <FormItem
                               key={role}
-                              className="flex flex-row items-start space-y-0 space-x-3"
+                              className="flex flex-row items-start space-y-0"
                             >
                               <FormControl>
                                 <Checkbox
@@ -260,7 +260,7 @@ export function CreateAccountForm({ userRoles }: CreateAccountFormProps) {
           />
 
           <div>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="w-full">
               {isPending ? "Creating..." : "Create Account"}
             </Button>
           </div>
