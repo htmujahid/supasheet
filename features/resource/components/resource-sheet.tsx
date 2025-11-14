@@ -56,8 +56,6 @@ export function ResourceSheet({
   children,
   ...props
 }: ResourceSheetProps) {
-  if (!tableSchema) return null;
-
   const isMobile = useIsMobile();
 
   const primaryKeys = ((tableSchema?.primary_keys as PrimaryKey[]) ?? [])?.map(
@@ -74,6 +72,7 @@ export function ResourceSheet({
   });
 
   const [isPending, startTransition] = useTransition();
+  if (!tableSchema) return null;
 
   function onCreate(input: ResourceDataSchema) {
     if (!tableSchema) {

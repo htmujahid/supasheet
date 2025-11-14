@@ -1,24 +1,15 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import {
-  ColumnFiltersState,
-  SortingState,
-  Updater,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
-import { DataTableClientFilterList } from "@/interfaces/data-table/components/data-table-client-filter-list";
-import { DataTableSortList } from "@/interfaces/data-table/components/data-table-sort-list";
-import {
-  DataTableRowAction,
-  ExtendedColumnFilter,
-  ExtendedColumnSort,
-} from "@/interfaces/data-table/types/data-table";
+import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import type {
   TableSchema,
   ColumnSchema,
@@ -58,7 +49,7 @@ export function ResourceForeignTable({
           }
         },
       }),
-    [relationship],
+    [relationship, data, setResourceAction],
   );
 
   const table = useReactTable({
