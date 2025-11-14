@@ -3,9 +3,8 @@
 import { useTransition } from "react";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
-import { Loader, Maximize2, Plus } from "lucide-react";
+import { Edit2, Loader, Maximize2, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -54,10 +53,10 @@ export function ResourceSheet({
   columnsSchema,
   data,
   create,
+  children,
   ...props
 }: ResourceSheetProps) {
-  const { schema } = useParams<{ schema: DatabaseSchemas }>();
-  const { resource } = useParams<{ resource: DatabaseTables<typeof schema> }>();
+  if (!tableSchema) return null;
 
   const isMobile = useIsMobile();
 
@@ -77,6 +76,10 @@ export function ResourceSheet({
   const [isPending, startTransition] = useTransition();
 
   function onCreate(input: ResourceDataSchema) {
+    if (!tableSchema) {
+      toast.error("Table schema not found");
+      return;
+    }
     Object.entries(input).forEach(([key, value]) => {
       if (value === "") {
         delete input[key];
@@ -87,8 +90,8 @@ export function ResourceSheet({
       const jsonInput = parseJsonColumns(input, getJsonColumns(columnsSchema));
 
       const { data, error } = await createResourceDataAction({
-        schema,
-        resourceName: resource,
+        schema: tableSchema.schema as DatabaseSchemas,
+        resourceName: tableSchema.name as DatabaseTables<DatabaseSchemas>,
         data: { ...input, ...jsonInput },
       });
 
@@ -141,8 +144,8 @@ export function ResourceSheet({
       );
 
       const { data: updatedData, error } = await updateResourceDataAction({
-        schema,
-        resourceName: resource,
+        schema: tableSchema.schema as DatabaseSchemas,
+        resourceName: tableSchema.name as DatabaseTables<DatabaseSchemas>,
         resourceIds,
         data: { ...input, ...jsonInput },
       });
@@ -169,11 +172,11 @@ export function ResourceSheet({
 
   return (
     <Sheet {...props}>
-      {showTrigger && (
+      {children ? children : showTrigger && (
         <SheetTrigger asChild>
           <Button variant={"outline"} size={"sm"}>
-            <Plus />
-            Create {formatTitle(tableSchema?.name as string) || "Resource"}
+            {create ? <Plus /> : <Edit2 />}
+            {create ? "Create": "Update"} {formatTitle(tableSchema?.name as string) || "Resource"}
           </Button>
         </SheetTrigger>
       )}
@@ -184,7 +187,7 @@ export function ResourceSheet({
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2">
             <Link
-              href={`/home/${schema}/resource/${resource}/${
+              href={`/home/${tableSchema?.schema}/resource/${tableSchema?.name}/${
                 create
                   ? "create"
                   : "edit/" +
@@ -194,10 +197,10 @@ export function ResourceSheet({
             >
               <Maximize2 className="size-4" />
             </Link>
-            {create ? "Create" : "Update"} {resource}
+            {create ? "Create" : "Update"} {formatTitle(tableSchema?.name as string) ?? "Resource"}
           </SheetTitle>
           <SheetDescription>
-            {create ? "Create a new" : "Update the"} {resource} and save the
+            {create ? "Create a new" : "Update the"} {formatTitle(tableSchema?.name as string) ?? "Resource"} and save the
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>

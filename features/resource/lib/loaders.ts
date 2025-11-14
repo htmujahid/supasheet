@@ -70,6 +70,26 @@ export async function loadViewSchema<Schema extends DatabaseSchemas>(
   return viewResponse.data?.[0] ?? null;
 }
 
+export async function loadRelatedTablesSchema<Schema extends DatabaseSchemas>(
+  schema: Schema,
+  id: DatabaseViews<Schema>,
+) {
+  const client = await getSupabaseServerClient<Database>();
+
+  const tableResponse = await client
+    .schema("supasheet")
+    .rpc("get_related_tables", {
+      schema_name: schema,
+      table_name: id,
+    });
+
+  if (tableResponse.error) {
+    return [];
+  }
+
+  return tableResponse.data ?? [];
+}
+
 export async function loadResourceData<Schema extends DatabaseSchemas>(
   schema: Schema,
   id: DatabaseTables<Schema> | DatabaseViews<Schema>,
@@ -125,10 +145,19 @@ export async function loadSingleResourceData<Schema extends DatabaseSchemas>(
   schema: Schema,
   id: DatabaseTables<Schema> | DatabaseViews<Schema>,
   pk: Record<string, unknown>,
+  defaultQuery?: TableMetadata["query"],
 ) {
   const client = await getSupabaseServerClient();
 
-  const query = client.schema(schema).from(id).select("*");
+  const joins =
+    defaultQuery?.join?.map(
+      (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`,
+    ) || [];
+
+  const query = client
+    .schema(schema)
+    .from(id)
+    .select("*" + joins.join(""));
 
   for (const [key, value] of Object.entries(pk)) {
     query.eq(key, value as any);

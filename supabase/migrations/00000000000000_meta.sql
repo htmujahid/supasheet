@@ -483,10 +483,16 @@ BEGIN
         -- Check if it's a table creation
         IF obj.object_type = 'table' THEN
             DELETE FROM supasheet.tables
-            WHERE schema = schema_name and name = object_name;
+            WHERE schema = schema_name;
 
             INSERT INTO supasheet.tables
-            SELECT * FROM supasheet.generate_tables(schema_name, schema_name || '.' || object_name);
+            SELECT * FROM supasheet.generate_tables(schema_name);
+
+            DELETE FROM supasheet.tables
+            WHERE schema = 'supasheet';
+
+            INSERT INTO supasheet.tables
+            SELECT * FROM supasheet.generate_tables('supasheet');
         
         -- Check if it's a view creation
         ELSIF obj.object_type = 'view' THEN
@@ -597,10 +603,16 @@ BEGIN
         -- Check if it's a table alteration
         IF obj.object_type = 'table' THEN
             DELETE FROM supasheet.tables
-            WHERE schema = schema_name AND name = object_name;
+            WHERE schema = schema_name;
 
             INSERT INTO supasheet.tables
-            SELECT * FROM supasheet.generate_tables(schema_name, schema_name || '.' || object_name);
+            SELECT * FROM supasheet.generate_tables(schema_name);
+
+            DELETE FROM supasheet.tables
+            WHERE schema = 'supasheet';
+
+            INSERT INTO supasheet.tables
+            SELECT * FROM supasheet.generate_tables('supasheet');
 
         -- Check if it's a view alteration
         ELSIF obj.object_type = 'view' THEN

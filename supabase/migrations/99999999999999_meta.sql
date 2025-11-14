@@ -136,3 +136,70 @@ $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_columns(text, text) FROM anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION supasheet.get_columns(text, text) TO authenticated;
+
+
+CREATE OR REPLACE FUNCTION supasheet.get_related_tables(schema_name text, table_name text)
+RETURNS TABLE(
+    id bigint,
+    schema text,
+    name text,
+    rls_enabled boolean,
+    rls_forced boolean,
+    replica_identity text,
+    bytes int8,
+    size text,
+    live_rows_estimate int8,
+    dead_rows_estimate int8,
+    comment text,
+    primary_keys jsonb,
+    relationships jsonb,
+    columns supasheet.columns[]
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        t.id,
+        t.schema,
+        t.name,
+        t.rls_enabled,
+        t.rls_forced,
+        t.replica_identity,
+        t.bytes,
+        t.size,
+        t.live_rows_estimate,
+        t.dead_rows_estimate,
+        t.comment,
+        t.primary_keys,
+        t.relationships,
+        ARRAY(
+            SELECT c
+            FROM supasheet.columns c
+            WHERE c.table_id = t.id
+            ORDER BY c.ordinal_position::int
+        ) AS columns
+    FROM supasheet.tables t
+    INNER JOIN supasheet.role_permissions rp
+        ON rp.permission::text = t.schema || '.' || t.name || ':select'
+    INNER JOIN supasheet.user_roles ur
+        ON ur.role = rp.role
+    WHERE ur.account_id = auth.uid()
+        -- Exclude the input table itself
+        AND NOT (t.schema = schema_name AND t.name = table_name)
+        -- Find tables that have relationships with the input table
+        AND EXISTS (
+            SELECT 1
+            FROM jsonb_array_elements(t.relationships) AS rel
+            WHERE (
+                (rel->>'source_table_name' = table_name AND rel->>'source_schema' = schema_name)
+                OR
+                (rel->>'target_table_name' = table_name AND rel->>'target_table_schema' = schema_name)
+            )
+        );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION supasheet.get_related_tables(text, text) FROM anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION supasheet.get_related_tables(text, text) TO authenticated;

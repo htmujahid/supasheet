@@ -1,10 +1,8 @@
 -- Custom types
+begin;
 create type supasheet.app_permission as enum ('supasheet.accounts:select', 'supasheet.accounts:update', 'supasheet.accounts:insert', 'supasheet.accounts:delete');
 create type supasheet.app_role as enum ('x-admin', 'user');
-
-create policy "accounts:select can select all user accounts" on supasheet.accounts for select using (
-  supasheet.has_permission('supasheet.accounts:select')
-);
+commit;
 
 -- USER ROLES
 create table supasheet.user_roles (
@@ -90,6 +88,10 @@ create policy "User can update roles (they have) of other users" on supasheet.us
 
 create policy "User can view their own role permissions" on supasheet.role_permissions for select using (
   (select (supasheet.has_role(role)))
+);
+
+create policy "accounts:select can select all user accounts" on supasheet.accounts for select using (
+  supasheet.has_permission('supasheet.accounts:select')
 );
 
 -- create or replace function supasheet.new_account_created_setup() 
