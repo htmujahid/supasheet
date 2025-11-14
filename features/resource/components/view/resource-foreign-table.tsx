@@ -2,24 +2,20 @@
 
 import { useMemo } from "react";
 
-import {
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 
 import { DataTable } from "@/interfaces/data-table/components/data-table";
 import { DataTableAdvancedToolbar } from "@/interfaces/data-table/components/data-table-advanced-toolbar";
 import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import type {
-  TableSchema,
   ColumnSchema,
   ResourceDataSchema,
+  TableSchema,
 } from "@/lib/database-meta.types";
 
-import { getResourceForeignDataColumns } from "./resource-foreign-data-columns";
-import { ResourceSheet } from "../resource-sheet";
 import { useResourceContext } from "../resource-context";
-
+import { ResourceSheet } from "../resource-sheet";
+import { getResourceForeignDataColumns } from "./resource-foreign-data-columns";
 
 type ResourceForeignTableProps = {
   relationship: TableSchema & { columns: ColumnSchema[] };
@@ -61,7 +57,11 @@ export function ResourceForeignTable({
 
   return (
     <div className="data-table-container">
-      <DataTable table={table} isPagination={false} className="[&>div>div]:h-auto">
+      <DataTable
+        table={table}
+        isPagination={false}
+        className="[&>div>div]:h-auto"
+      >
         <DataTableAdvancedToolbar table={table}>
           <ResourceSheet
             create

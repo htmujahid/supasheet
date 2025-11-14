@@ -89,9 +89,7 @@ async function ResourceEditPage({ params }: ResourceEditPageProps) {
         tableSchema={tableSchema}
         columnsSchema={columnsSchema}
       >
-        <div
-          className={`mx-auto max-w-3xl p-4`}
-        >
+        <div className={`mx-auto max-w-3xl p-4`}>
           {/* Resource Edit */}
           <ResourceEditForm
             tableSchema={tableSchema}

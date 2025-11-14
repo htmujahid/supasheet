@@ -2,13 +2,13 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 
 import { ResourceRowCell } from "@/features/resource/components/resource-row-cell";
 import { getColumnFilterData } from "@/features/resource/lib/columns";
+import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 import {
   ColumnSchema,
   ResourceDataSchema,
   TableSchema,
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { DataTableRowAction } from "@/interfaces/data-table/types/data-table";
 
 export function getResourceForeignDataColumns({
   columnsSchema,
@@ -28,7 +28,9 @@ export function getResourceForeignDataColumns({
       id: c.name,
       accessorKey: c.name as string,
       header: () => (
-        <div className="truncate select-none">{formatTitle(c.name as string)}</div>
+        <div className="truncate select-none">
+          {formatTitle(c.name as string)}
+        </div>
       ),
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
         <ResourceRowCell
@@ -44,9 +46,8 @@ export function getResourceForeignDataColumns({
       enableSorting: true,
       enableHiding: true,
     })),
-    ...(
-      data.length > 0
-        ? Object.keys(data[0]).map((key) => {
+    ...(data.length > 0
+      ? Object.keys(data[0]).map((key) => {
           const existingColumn = columnsSchema.find((c) => c.name === key);
           if (existingColumn) {
             return null;
@@ -60,7 +61,7 @@ export function getResourceForeignDataColumns({
             cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
               <ResourceRowCell
                 row={row}
-                columnSchema={{ id: key, name: key} as ColumnSchema}
+                columnSchema={{ id: key, name: key } as ColumnSchema}
                 tableSchema={tableSchema ?? null}
                 setRowAction={() => {
                   // No-op for embedded view
@@ -73,7 +74,7 @@ export function getResourceForeignDataColumns({
             enableHiding: true,
           } as ColumnDef<ResourceDataSchema, unknown>;
         })
-        : []
-    ).filter((c) => c !== null)
+      : []
+    ).filter((c) => c !== null),
   ] as ColumnDef<ResourceDataSchema, unknown>[];
 }

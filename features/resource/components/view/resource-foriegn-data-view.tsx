@@ -1,13 +1,12 @@
 import type {
-  TableSchema,
   ColumnSchema,
   ResourceDataSchema,
+  TableSchema,
 } from "@/lib/database-meta.types";
 
+import { loadResourcePermissions } from "../../lib/loaders";
 import { ResourceContextProvider } from "../resource-context";
 import { ResourceForeignTable } from "./resource-foreign-table";
-import { loadResourcePermissions } from "../../lib/loaders";
-
 
 type ResourceForeignDataViewProps = {
   relationship: TableSchema & { columns: ColumnSchema[] };
@@ -28,10 +27,7 @@ export async function ResourceForeignDataView({
       tableSchema={relationship}
       columnsSchema={relationship.columns}
     >
-      <ResourceForeignTable
-        relationship={relationship}
-        data={data}
-      />
+      <ResourceForeignTable relationship={relationship} data={data} />
     </ResourceContextProvider>
   );
 }

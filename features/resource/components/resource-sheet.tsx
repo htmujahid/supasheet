@@ -171,14 +171,17 @@ export function ResourceSheet({
 
   return (
     <Sheet {...props}>
-      {children ? children : showTrigger && (
-        <SheetTrigger asChild>
-          <Button variant={"outline"} size={"sm"}>
-            {create ? <Plus /> : <Edit2 />}
-            {create ? "Create": "Update"} {formatTitle(tableSchema?.name as string) || "Resource"}
-          </Button>
-        </SheetTrigger>
-      )}
+      {children
+        ? children
+        : showTrigger && (
+            <SheetTrigger asChild>
+              <Button variant={"outline"} size={"sm"}>
+                {create ? <Plus /> : <Edit2 />}
+                {create ? "Create" : "Update"}{" "}
+                {formatTitle(tableSchema?.name as string) || "Resource"}
+              </Button>
+            </SheetTrigger>
+          )}
       <SheetContent
         side={isMobile ? "bottom" : "right"}
         className="flex h-full w-full flex-col gap-6 overflow-hidden md:max-w-lg"
@@ -196,10 +199,13 @@ export function ResourceSheet({
             >
               <Maximize2 className="size-4" />
             </Link>
-            {create ? "Create" : "Update"} {formatTitle(tableSchema?.name as string) ?? "Resource"}
+            {create ? "Create" : "Update"}{" "}
+            {formatTitle(tableSchema?.name as string) ?? "Resource"}
           </SheetTitle>
           <SheetDescription>
-            {create ? "Create a new" : "Update the"} {formatTitle(tableSchema?.name as string) ?? "Resource"} and save the
+            {create ? "Create a new" : "Update the"}{" "}
+            {formatTitle(tableSchema?.name as string) ?? "Resource"} and save
+            the
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>

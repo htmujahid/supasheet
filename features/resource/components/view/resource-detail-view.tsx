@@ -18,15 +18,15 @@ import {
 } from "@/components/ui/empty";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { SheetTrigger } from "@/components/ui/sheet";
 import { METADATA_COLUMNS } from "@/config/database.config";
 import { ColumnSchema, TableSchema } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
-import { SheetTrigger } from "@/components/ui/sheet";
 
 import { getColumnMetadata } from "../../lib/columns";
+import { loadResourcePermissions } from "../../lib/loaders";
 import { AllCells } from "../cells/all-cells";
 import { ResourceSheet } from "../resource-sheet";
-import { loadResourcePermissions } from "../../lib/loaders";
 
 export async function ResourceDetailView({
   tableSchema,
@@ -39,7 +39,10 @@ export async function ResourceDetailView({
   singleResourceData: Record<string, unknown> | null;
   foreignKeyData: Record<string, unknown>;
 }) {
-  const permissions = await loadResourcePermissions(tableSchema.schema as never, tableSchema.name as never);
+  const permissions = await loadResourcePermissions(
+    tableSchema.schema as never,
+    tableSchema.name as never,
+  );
 
   if (singleResourceData === null) {
     return (
@@ -52,7 +55,8 @@ export async function ResourceDetailView({
               </EmptyMedia>
               <EmptyTitle>No Data Available</EmptyTitle>
               <EmptyDescription>
-                The {formatTitle(tableSchema.name as string)} resource data does not exist.
+                The {formatTitle(tableSchema.name as string)} resource data does
+                not exist.
               </EmptyDescription>
             </EmptyHeader>
             {permissions.canInsert && (
@@ -64,8 +68,8 @@ export async function ResourceDetailView({
                   tableSchema={tableSchema}
                   columnsSchema={columnsSchema}
                 />
-              </EmptyContent>)
-            }
+              </EmptyContent>
+            )}
           </Empty>
         </CardContent>
       </Card>
@@ -105,7 +109,7 @@ export async function ResourceDetailView({
         {detailColumns.map((column, index) => {
           const value =
             singleResourceData?.[
-            column.name as keyof typeof singleResourceData
+              column.name as keyof typeof singleResourceData
             ];
 
           const columnMetadata = getColumnMetadata(tableSchema, column);
@@ -117,20 +121,29 @@ export async function ResourceDetailView({
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
                     {columnMetadata.icon} {formatTitle(column.name as string)}
                   </Label>
-                  <div className="text-muted-foreground text-sm ">
-                    {value ? columnMetadata.variant === "rich_text" ? (
-                      <Editor
-                        name={columnMetadata.label}
-                        value={value as string}
-                        disabled
-                      />
+                  <div className="text-muted-foreground text-sm">
+                    {value ? (
+                      columnMetadata.variant === "rich_text" ? (
+                        <Editor
+                          name={columnMetadata.label}
+                          value={value as string}
+                          disabled
+                        />
+                      ) : (
+                        <AllCells
+                          columnMetadata={columnMetadata}
+                          value={value}
+                        />
+                      )
                     ) : (
-                      <AllCells columnMetadata={columnMetadata} value={value} />
-                    ) : <div className="text-muted">N/A</div>}
+                      <div className="text-muted">N/A</div>
+                    )}
                   </div>
                 </div>
               </div>
-              {index < detailColumns.length - 1 && <Separator className="my-2" />}
+              {index < detailColumns.length - 1 && (
+                <Separator className="my-2" />
+              )}
             </div>
           );
         })}

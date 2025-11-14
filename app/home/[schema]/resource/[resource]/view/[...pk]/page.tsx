@@ -62,99 +62,90 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
 
   const primaryKeys = tableSchema?.primary_keys as PrimaryKey[];
 
-  const relatedTablesSchema = await loadRelatedTablesSchema(
-    schema,
-    resource,
-  );
+  const relatedTablesSchema = await loadRelatedTablesSchema(schema, resource);
 
   const pkValues = pk.join("/");
   const editUrl = `/home/${schema}/resource/${resource}/edit/${pkValues}`;
   const resourceUrl = `/home/${schema}/resource/${resource}`;
 
-  const joins: Required<TableMetadata>['query']['join'] = [];
+  const joins: Required<TableMetadata>["query"]["join"] = [];
 
   const oneToOneRelationships = relatedTablesSchema.filter((table) => {
-    return (
-      (table.relationships as Relationship[])?.some(
-        (rel) => {
-          if (
-            rel.source_schema === schema &&
-            rel.source_table_name === resource
-          ) {
-            joins.push({
-              table: rel.target_table_name,
-              on: rel.target_column_name,
-              columns: ["*"],
-            });
-            return true;
-          }
-          if (
-            rel.target_table_schema === schema &&
-            rel.target_table_name === resource &&
-            (
-              table.columns.filter((col) => col.is_unique).some(col => col.name === rel.source_column_name) ||
-              ((table.primary_keys as PrimaryKey[]).some(pk => pk.name === rel.source_column_name) && (table.primary_keys as PrimaryKey[])?.length === 1)
-            )
-          ) {
-            joins.push({
-              table: rel.source_table_name,
-              on: rel.source_column_name,
-              columns: ["*"],
-            });
-            return true;
-          }
-        }
-      )
-    );
+    return (table.relationships as Relationship[])?.some((rel) => {
+      if (rel.source_schema === schema && rel.source_table_name === resource) {
+        joins.push({
+          table: rel.target_table_name,
+          on: rel.target_column_name,
+          columns: ["*"],
+        });
+        return true;
+      }
+      if (
+        rel.target_table_schema === schema &&
+        rel.target_table_name === resource &&
+        (table.columns
+          .filter((col) => col.is_unique)
+          .some((col) => col.name === rel.source_column_name) ||
+          ((table.primary_keys as PrimaryKey[]).some(
+            (pk) => pk.name === rel.source_column_name,
+          ) &&
+            (table.primary_keys as PrimaryKey[])?.length === 1))
+      ) {
+        joins.push({
+          table: rel.source_table_name,
+          on: rel.source_column_name,
+          columns: ["*"],
+        });
+        return true;
+      }
+    });
   });
 
   const oneToManyRelationships = relatedTablesSchema.filter((table) => {
-    return (
-      (table.relationships as Relationship[]).some(
-        (rel) => {
-          if ((
-            rel.target_table_schema === schema &&
-            rel.target_table_name === resource &&
-            !(
-              table.columns.filter((col) => col.is_unique).some(col => col.name === rel.source_column_name) ||
-              (table.primary_keys as PrimaryKey[]).some(pk => pk.name === rel.source_column_name)
-            )
-          )) {
-            joins.push({
-              table: rel.source_table_name,
-              on: rel.source_column_name,
-              columns: ["*"],
-            });
-            return true;
-          }
-        }
-      )
-    );
+    return (table.relationships as Relationship[]).some((rel) => {
+      if (
+        rel.target_table_schema === schema &&
+        rel.target_table_name === resource &&
+        !(
+          table.columns
+            .filter((col) => col.is_unique)
+            .some((col) => col.name === rel.source_column_name) ||
+          (table.primary_keys as PrimaryKey[]).some(
+            (pk) => pk.name === rel.source_column_name,
+          )
+        )
+      ) {
+        joins.push({
+          table: rel.source_table_name,
+          on: rel.source_column_name,
+          columns: ["*"],
+        });
+        return true;
+      }
+    });
   });
 
   const manyToManyRelationships = relatedTablesSchema.filter((table) => {
-    return (
-      (table.relationships as Relationship[]).some(
-        (rel) => {
-          if ((
-            rel.target_table_schema === schema &&
-            rel.target_table_name === resource
-          ) &&
-            (table.relationships as Relationship[]).length >= 2 &&
-            (table.primary_keys as PrimaryKey[]).length >= 2 &&
-            (table.relationships as Relationship[]).filter(
-              (r) => (table.primary_keys as PrimaryKey[]).some(pk => pk.name === r.source_column_name)
-            )) {
-            joins.push({
-              table: rel.source_table_name,
-              on: rel.source_column_name,
-              columns: [`*, ...${rel.target_table_name}(*)`],
-            });
-            return true;
-          }
-        }
-      )
-    );
+    return (table.relationships as Relationship[]).some((rel) => {
+      if (
+        rel.target_table_schema === schema &&
+        rel.target_table_name === resource &&
+        (table.relationships as Relationship[]).length >= 2 &&
+        (table.primary_keys as PrimaryKey[]).length >= 2 &&
+        (table.relationships as Relationship[]).filter((r) =>
+          (table.primary_keys as PrimaryKey[]).some(
+            (pk) => pk.name === r.source_column_name,
+          ),
+        )
+      ) {
+        joins.push({
+          table: rel.source_table_name,
+          on: rel.source_column_name,
+          columns: [`*, ...${rel.target_table_name}(*)`],
+        });
+        return true;
+      }
+    });
   });
 
   const allManyRelationships = [
@@ -173,12 +164,11 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
       {} as Record<string, unknown>,
     ),
     {
-      join: joins
+      join: joins,
     },
   );
 
   if (!singleResourceData) return notFound();
-
 
   return (
     <div className="w-full flex-1">
@@ -226,18 +216,18 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
 
             {/* Foreign Data Sections - One to One */}
             {oneToOneRelationships.map((relationship) => {
-              const foreignKeyData =
-                (tableSchema.relationships as Relationship[])
-                  .find((rel) => {
-                    if (
-                      rel.target_table_schema === schema &&
-                      rel.target_table_name === resource &&
-                      rel.source_table_name === relationship.name
-                    ) {
-                      return true;
-                    }
-                    return false;
-                  }) as Relationship;
+              const foreignKeyData = (
+                tableSchema.relationships as Relationship[]
+              ).find((rel) => {
+                if (
+                  rel.target_table_schema === schema &&
+                  rel.target_table_name === resource &&
+                  rel.source_table_name === relationship.name
+                ) {
+                  return true;
+                }
+                return false;
+              }) as Relationship;
 
               return (
                 <div key={relationship.id} className="mb-4 break-inside-avoid">
@@ -247,11 +237,19 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
                     foreignKeyData={
                       foreignKeyData
                         ? {
-                          [foreignKeyData.source_column_name]: singleResourceData[foreignKeyData.target_column_name],
-                        }
+                            [foreignKeyData.source_column_name]:
+                              singleResourceData[
+                                foreignKeyData.target_column_name
+                              ],
+                          }
                         : {}
                     }
-                    singleResourceData={singleResourceData[relationship.name] as Record<string, unknown>}
+                    singleResourceData={
+                      singleResourceData[relationship.name] as Record<
+                        string,
+                        unknown
+                      >
+                    }
                   />
                 </div>
               );
@@ -260,7 +258,9 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
 
           {/* Foreign Data Sections - One to Many */}
           {allManyRelationships.length > 0 && (
-            <Tabs defaultValue={allManyRelationships[0]?.name?.toString() ?? ""}>
+            <Tabs
+              defaultValue={allManyRelationships[0]?.name?.toString() ?? ""}
+            >
               <TabsList className="w-full">
                 {allManyRelationships.map((relationship) => (
                   <TabsTrigger
@@ -279,7 +279,11 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
                   >
                     <ResourceForeignDataView
                       relationship={relationship}
-                      data={singleResourceData[relationship.name as string] as Record<string, unknown>[] || null}
+                      data={
+                        (singleResourceData[
+                          relationship.name as string
+                        ] as Record<string, unknown>[]) || null
+                      }
                     />
                   </TabsContent>
                 );

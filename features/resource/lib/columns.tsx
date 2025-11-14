@@ -61,7 +61,8 @@ export function getColumnMetadata(
   }
 
   const label = columnSchema.name as string;
-  const required = columnSchema.is_nullable === false && !columnSchema.default_value;
+  const required =
+    columnSchema.is_nullable === false && !columnSchema.default_value;
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable;
   const isArray = columnSchema.data_type === "ARRAY";
   const isMetadata = METADATA_COLUMNS.includes(label);
