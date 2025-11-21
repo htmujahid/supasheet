@@ -16,7 +16,7 @@ function LucideIconComponent({
   return <Icon className="me-1 size-4 shrink-0" />;
 }
 
-export function EnumCell({
+export function SelectCell({
   value,
   columnMetadata,
 }: {

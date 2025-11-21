@@ -5,7 +5,7 @@ import { AvatarCell } from "./avatar-cell";
 import { BooleanCell } from "./boolean-cell";
 import { ColorCell } from "./color-cell";
 import { DurationCell } from "./duration-cell";
-import { EnumCell } from "./enum-cell";
+import { SelectCell } from "./select-cell";
 import { FileCell } from "./file-cell";
 import { PercentageCell } from "./percentage-cell";
 import { RatingCell } from "./rating-cell";
@@ -34,7 +34,7 @@ export const AllCells = memo(function AllCells({
       return <RatingCell value={value as number | null} />;
     case "select":
       return (
-        <EnumCell value={value as string} columnMetadata={columnMetadata} />
+        <SelectCell value={value as string} columnMetadata={columnMetadata} />
       );
     case "money":
       return value ? `${value}` : "";

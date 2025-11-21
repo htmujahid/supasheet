@@ -9,7 +9,7 @@ import { DataGridCheckboxCell } from "./data-grid-boolean-cell";
 import { DataGridDateCell } from "./data-grid-date-cell";
 import { DataGridDateTimeCell } from "./data-grid-datetime-cell";
 import { DataGridDurationCell } from "./data-grid-duration-cell";
-import { DataGridEnumCell } from "./data-grid-enum-cell";
+import { DataGridSelectCell } from "./data-grid-select-cell";
 import { DataGridFileCell } from "./data-grid-file-cell";
 import { DataGridForeignKeyCell } from "./data-grid-foreign-key-cell";
 import { DataGridJsonCell } from "./data-grid-json-cell";
@@ -122,7 +122,7 @@ export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
       return <DataGridDurationCell {...cellProps} />;
 
     case "select":
-      return <DataGridEnumCell {...cellProps} />;
+      return <DataGridSelectCell {...cellProps} />;
 
     case "rating":
       return <DataGridRatingCell {...cellProps} />;

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 
 import { updateResourceDataAction } from "../../lib/actions";
-import { EnumCell } from "../cells/enum-cell";
+import { SelectCell } from "../cells/select-cell";
 import { ColumnMetadata } from "../fields/types";
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
@@ -27,7 +27,7 @@ type CellVariantProps<TData> = {
   isSelected: boolean;
 };
 
-export function DataGridEnumCell<TData>({
+export function DataGridSelectCell<TData>({
   cell,
   table,
   rowIndex,
@@ -167,7 +167,7 @@ export function DataGridEnumCell<TData>({
           </SelectContent>
         </Select>
       ) : (
-        <EnumCell
+        <SelectCell
           value={displayLabel}
           columnMetadata={cellOpts as ColumnMetadata}
         />
