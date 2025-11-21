@@ -3,9 +3,6 @@
 import { useRef } from "react";
 
 import type { Cell, Table } from "@tanstack/react-table";
-import { UserIcon } from "lucide-react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
 
@@ -43,15 +40,9 @@ export function DataGridJsonCell<TData>({
       isSelected={isSelected}
       className="flex size-full items-center justify-start"
     >
-      <Avatar className="size-5.5">
-        <AvatarImage
-          alt="Avatar"
-          src={initialValue ? initialValue.toString() : undefined}
-        />
-        <AvatarFallback>
-          <UserIcon className="size-4" />
-        </AvatarFallback>
-      </Avatar>
+      <pre className="truncate">
+        {initialValue ? JSON.stringify(initialValue, null, 2) : ""}
+      </pre>
     </DataGridCellWrapper>
   );
 }

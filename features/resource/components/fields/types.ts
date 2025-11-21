@@ -92,3 +92,11 @@ export type FileFieldProps = {
   control: Control<ResourceDataSchema>;
   columnSchema: ColumnSchema;
 };
+
+export type FileObject = {
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+  last_modified: string;
+}

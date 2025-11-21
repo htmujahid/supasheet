@@ -1,5 +1,3 @@
-create domain FILE as text[];
-
 insert into storage.buckets (id, name, public) 
 values ('uploads', 'uploads', true);
 

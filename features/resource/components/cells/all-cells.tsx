@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { ColumnMetadata } from "../fields/types";
+import { ColumnMetadata, FileObject } from "../fields/types";
 import { AvatarCell } from "./avatar-cell";
 import { BooleanCell } from "./boolean-cell";
 import { ColorCell } from "./color-cell";
@@ -27,9 +27,9 @@ export const AllCells = memo(function AllCells({
     case "duration":
       return <DurationCell value={value as string} />;
     case "file":
-      return <FileCell value={value as string[]} />;
+      return <FileCell value={value as FileObject[]} />;
     case "avatar":
-      return <AvatarCell value={value as string | null} />;
+      return <AvatarCell value={value as FileObject | null} />;
     case "rating":
       return <RatingCell value={value as number | null} />;
     case "select":

@@ -2,7 +2,11 @@
 
 import { useCallback, useState } from "react";
 
-import { AlertCircleIcon, Trash2Icon, UploadIcon } from "lucide-react";
+import {
+  AlertCircleIcon,
+  FileUpIcon,
+  XIcon
+} from "lucide-react";
 import { type FieldPath, useFieldArray } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -13,14 +17,14 @@ import {
 } from "@/hooks/use-file-upload";
 import { ResourceDataSchema } from "@/lib/database-meta.types";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
+import { cn } from "@/lib/utils";
 
-import { FileFieldEmptyState } from "./file-field-empty-state";
-import { FileFieldItem } from "./file-field-item";
 import {
   deleteFileFromStorage,
   uploadFileToStorage,
 } from "./file-field-storage";
-import type { FileFieldConfig, FileFieldProps, UploadProgress } from "./types";
+import type { FileFieldConfig, FileFieldProps, FileObject, UploadProgress } from "./types";
+import { formatFileSize, getFileIcon } from "../../lib/utils/files";
 
 export function FileField({
   form,
@@ -36,7 +40,6 @@ export function FileField({
   const maxSize = config.maxSize ?? 5 * 1024 * 1024;
   const maxFiles = config.maxFiles ?? 1;
   const accept = config.accept ?? "*";
-  const maxSizeMB = Math.floor(maxSize / (1024 * 1024));
 
   // Form field array for managing file URLs
   const fieldArray = useFieldArray({
@@ -45,7 +48,7 @@ export function FileField({
   });
 
   // Upload progress tracking
-  const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([]);
+  const [_, setUploadProgress] = useState<UploadProgress[]>([]);
 
   // Storage path pattern: {schema}/{table}/{column}
   const storagePath = `${columnSchema.schema}/${columnSchema.table}/${columnSchema.name}`;
@@ -56,17 +59,16 @@ export function FileField({
 
     return fieldArray.fields
       .map((_item, index) => {
-        const url = form.getValues(`${field.name}.${index}` as any) as string;
-        if (!url || typeof url !== "string") return null;
+        const file = form.getValues(`${field.name}.${index}` as any) as FileObject;
+        if (!file || typeof file !== "object") return null;
 
-        const fileName = url.split("/").pop()?.split("?")[0] || "file";
         return {
-          name: fileName,
-          size: 0,
-          type: "",
-          url,
-          id: url,
-        } as FileMetadata;
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: file.url,
+          id: file.url,
+        }
       })
       .filter((item): item is FileMetadata => item !== null);
   }, [fieldArray.fields, form, field.name]);
@@ -103,7 +105,14 @@ export function FileField({
           );
 
           // Add URL to field array
-          fieldArray.append(url as any);
+          // fieldArray.append(url as any);
+          fieldArray.append({
+            name: fileWithPreview.file.name,
+            type: fileWithPreview.file.type,
+            size: fileWithPreview.file.size,
+            url,
+            last_modified: new Date(fileWithPreview.file.lastModified).toISOString(),
+          });
 
           // Mark as completed
           setUploadProgress((prev) =>
@@ -118,10 +127,10 @@ export function FileField({
             prev.map((item) =>
               item.fileId === fileWithPreview.id
                 ? {
-                    ...item,
-                    error:
-                      error instanceof Error ? error.message : "Upload failed",
-                  }
+                  ...item,
+                  error:
+                    error instanceof Error ? error.message : "Upload failed",
+                }
                 : item,
             ),
           );
@@ -208,98 +217,106 @@ export function FileField({
   });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-3 border border-border rounded-md">
       <div
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        onClick={openFileDialog}
         data-dragging={isDragging || undefined}
         data-files={files.length > 0 || undefined}
-        className="border-input data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center overflow-hidden rounded-xl border p-4 transition-colors not-data-[files]:justify-center has-[input:focus]:ring-[3px]"
-      >
-        <input
-          {...getInputProps()}
-          disabled={columnMetadata.disabled}
-          className="sr-only"
-          aria-label="Upload files"
-        />
-
-        {files.length > 0 ? (
-          <div className="flex w-full flex-col gap-3">
-            {/* Header with file count and actions */}
-            <div className="flex items-center justify-between gap-2">
-              <h3 className="truncate text-sm font-medium">
-                Files ({files.length})
-              </h3>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={openFileDialog}
-                  disabled={files.length >= maxFiles}
-                >
-                  <UploadIcon
-                    className="-ms-0.5 size-3.5 opacity-60"
-                    aria-hidden="true"
-                  />
-                  Add files
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={files.length === 0}
-                  onClick={handleRemoveAll}
-                >
-                  <Trash2Icon
-                    className="-ms-0.5 size-3.5 opacity-60"
-                    aria-hidden="true"
-                  />
-                  Remove all
-                </Button>
-              </div>
-            </div>
-
-            {/* File list */}
-            <div className="w-full space-y-2">
-              {files.map((file) => {
-                const fileProgress = uploadProgress.find(
-                  (p) => p.fileId === file.id,
-                );
-
-                return (
-                  <FileFieldItem
-                    key={file.id}
-                    file={file}
-                    progress={fileProgress}
-                    onRemove={(fileId, fileUrl) => {
-                      handleFileRemoved(fileId, fileUrl);
-                      removeFile(fileId);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          <FileFieldEmptyState
-            maxFiles={maxFiles}
-            maxSizeMB={maxSizeMB}
-            onSelectFiles={openFileDialog}
-          />
+        className={cn(
+          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed border-input p-6 outline-none transition-colors hover:bg-accent/30 focus-visible:border-ring/50",
+          isDragging
+            ? "border-primary bg-primary/5"
+            : "border-muted-foreground/25",
         )}
+      >
+        <div className="flex flex-col items-center justify-center text-center">
+          <div
+            className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border bg-background"
+            aria-hidden="true"
+          >
+            <FileUpIcon className="size-4 opacity-60" />
+          </div>
+          <p className="mb-1.5 text-sm font-medium">Upload files</p>
+          <p className="mb-2 text-xs text-muted-foreground">
+            Drag & drop or click to browse
+          </p>
+          <div className="flex flex-wrap justify-center gap-1 text-xs text-muted-foreground/70">
+            <span>All files</span>
+            <span>∙</span>
+            <span>Max {maxFiles} files</span>
+            <span>∙</span>
+            <span>Up to {formatFileSize(maxSize)}</span>
+          </div>
+        </div>
       </div>
+      <input
+        {...getInputProps()}
+        disabled={columnMetadata.disabled}
+        className="sr-only"
+        aria-label="Upload files"
+      />
 
       {/* Error messages */}
       {errors.length > 0 && (
         <div
-          className="text-destructive flex items-center gap-1 text-xs"
+          className="rounded-md bg-destructive/10 px-3 py-2 text-destructive text-xs"
           role="alert"
         >
           <AlertCircleIcon className="size-3 shrink-0" />
           <span>{errors[0]}</span>
+        </div>
+      )}
+      {files.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <p className="font-medium text-muted-foreground text-xs">
+              {files.length} {files.length === 1 ? "file" : "files"}
+            </p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-6 text-muted-foreground text-xs"
+              onClick={handleRemoveAll}
+            >
+              Clear all
+            </Button>
+          </div>
+          <div className="max-h-[200px] space-y-1 overflow-y-auto">
+            {files.map((file) => {
+              const FileIcon = getFileIcon(file.file.type);
+
+              return (
+                <div
+                  key={file.id}
+                  className="flex items-center gap-2 rounded-md border bg-muted/50 px-2 py-1.5"
+                >
+                  {FileIcon && (
+                    <FileIcon className="size-4 shrink-0 text-muted-foreground" />
+                  )}
+                  <div className="flex-1 overflow-hidden">
+                    <p className="truncate text-sm">{file.file.name}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {formatFileSize(file.file.size)}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-5 rounded-sm"
+                    onClick={() => { removeFile(file.id); handleFileRemoved(file.id, typeof file.file === 'object' ? undefined : (file.file as FileMetadata).url); }}
+                  >
+                    <XIcon className="size-3" />
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

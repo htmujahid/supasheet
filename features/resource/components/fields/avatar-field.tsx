@@ -18,7 +18,7 @@ import {
   deleteFileFromStorage,
   uploadFileToStorage,
 } from "./file-field-storage";
-import type { FileFieldConfig, FileFieldProps, UploadProgress } from "./types";
+import type { FileFieldConfig, FileFieldProps, FileObject, UploadProgress } from "./types";
 
 export function AvatarField({
   form,
@@ -41,21 +41,20 @@ export function AvatarField({
   const storagePath = `${columnSchema.schema}/${columnSchema.table}/${columnSchema.name}`;
 
   // Get current avatar URL from form
-  const currentValue = form.watch(field.name as any) as string | null;
+  const currentValue = form.watch(field.name as any) as FileObject | null;
 
   // Load initial file from form value
   const loadInitialFile = useCallback((): FileMetadata[] => {
-    if (!currentValue || typeof currentValue !== "string") return [];
+    if (!currentValue || typeof currentValue !== "object") return [];
 
-    const fileName = currentValue.split("/").pop()?.split("?")[0] || "avatar";
     return [
       {
-        name: fileName,
-        size: 0,
-        type: "image",
-        url: currentValue,
-        id: currentValue,
-      } as FileMetadata,
+        name: currentValue.name,
+        size: currentValue.size,
+        type: currentValue.type,
+        url: currentValue.url,
+        id: currentValue.url,
+      },
     ];
   }, [currentValue]);
 
@@ -93,7 +92,13 @@ export function AvatarField({
           );
 
           // Update form value with new URL
-          form.setValue(field.name as FieldPath<ResourceDataSchema>, url);
+          form.setValue(field.name as FieldPath<ResourceDataSchema>, {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            url,
+            last_modified: new Date(file.lastModified).toISOString(),
+          });
 
           // Mark as completed
           setUploadProgress({
@@ -159,7 +164,7 @@ export function AvatarField({
     onFilesAdded: handleFileAdded,
   });
 
-  const previewUrl = files[0]?.preview || currentValue || null;
+  const previewUrl = files[0]?.preview || currentValue?.url || null;
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -211,7 +216,7 @@ export function AvatarField({
               const fileUrl =
                 file && !(file.file instanceof File)
                   ? (file.file as FileMetadata).url
-                  : currentValue;
+                  : currentValue?.url;
               handleFileRemoved(fileUrl || undefined);
               if (file) removeFile(file.id);
             }}

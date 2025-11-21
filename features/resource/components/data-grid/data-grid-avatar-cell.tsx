@@ -8,6 +8,7 @@ import { UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
+import { FileObject } from "../fields/types";
 
 type CellVariantProps<TData> = {
   cell: Cell<TData, unknown>;
@@ -28,7 +29,7 @@ export function DataGridAvatarCell<TData>({
   isEditing,
   isSelected,
 }: CellVariantProps<TData>) {
-  const initialValue = cell.getValue() as string;
+  const initialValue = cell.getValue() as FileObject | null;
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -46,7 +47,7 @@ export function DataGridAvatarCell<TData>({
       <Avatar className="size-5.5">
         <AvatarImage
           alt="Avatar"
-          src={initialValue ? initialValue.toString() : undefined}
+          src={initialValue ? initialValue.url : undefined}
         />
         <AvatarFallback>
           <UserIcon className="size-4" />

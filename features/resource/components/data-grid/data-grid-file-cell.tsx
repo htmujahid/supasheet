@@ -6,6 +6,7 @@ import type { Cell, Table } from "@tanstack/react-table";
 
 import { FileCell } from "../cells/file-cell";
 import { DataGridCellWrapper } from "./data-grid-cell-wrapper";
+import { FileObject } from "../fields/types";
 
 type CellVariantProps<TData> = {
   cell: Cell<TData, unknown>;
@@ -26,7 +27,7 @@ export function DataGridFileCell<TData>({
   isEditing,
   isSelected,
 }: CellVariantProps<TData>) {
-  const initialValue = cell.getValue() as string | string[];
+  const initialValue = cell.getValue() as FileObject[];
   const containerRef = useRef<HTMLDivElement>(null);
   return (
     <DataGridCellWrapper
@@ -39,7 +40,7 @@ export function DataGridFileCell<TData>({
       isFocused={isFocused}
       isSelected={isSelected}
     >
-      <FileCell value={initialValue as string[]} />
+      <FileCell value={initialValue} />
     </DataGridCellWrapper>
   );
 }
