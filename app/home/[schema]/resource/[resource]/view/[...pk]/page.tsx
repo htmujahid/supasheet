@@ -192,7 +192,7 @@ async function ResourceViewPage({ params }: ResourceViewPageProps) {
         tableSchema={tableSchema}
         columnsSchema={columnsSchema}
       >
-        <div className="mx-auto max-w-7xl p-4">
+        <div className="mx-auto max-w-7xl p-4 space-y-4">
           {/* Masonry Grid Layout - Pinterest Style */}
           <div className="columns-1 gap-4 lg:columns-2">
             {/* Main Resource Details */}
