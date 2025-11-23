@@ -29,6 +29,15 @@ alter type supasheet.app_permission add value 'blog.post_categories:update';
 alter type supasheet.app_permission add value 'blog.post_categories:delete';
 commit;
 
+create or replace view public.accounts
+with (security_invoker = true) as
+select
+    *
+from supasheet.accounts;
+
+revoke all on public.accounts from authenticated, service_role;
+grant select on public.accounts to authenticated;
+
 create table if not exists blog.authors (
     id uuid default gen_random_uuid() primary key,
     account_id uuid default auth.uid() references supasheet.accounts(id) on delete cascade,
