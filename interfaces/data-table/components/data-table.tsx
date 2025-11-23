@@ -36,7 +36,7 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className="overflow-hidden rounded-md border [&>div]:h-[calc(100vh-147px)]">
+      <div className="overflow-hidden rounded-md border [&>div]:h-[calc(100svh-147px)]">
         <Table
           className="table-fixed"
           style={{

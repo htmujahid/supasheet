@@ -906,7 +906,7 @@ export function EventCalendarContainer({
 }) {
   return (
     <DndProviderWrapper>
-      <ScrollArea className="h-[calc(100vh-180px)]">
+      <ScrollArea className="h-[calc(100svh-180px)]">
         {children}
         <ScrollBar orientation="vertical" className="relative z-30" />
       </ScrollArea>
@@ -2135,7 +2135,7 @@ export function EventCalendarWeekView() {
           </div>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-295px)]" type="always">
+        <ScrollArea className="h-[calc(100svh-295px)]" type="always">
           <div className="flex overflow-hidden">
             {/* Hours column */}
             <div className="relative w-18">
@@ -2507,7 +2507,7 @@ export function EventCalendarDayView() {
           </div>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-295px)]" type="always">
+        <ScrollArea className="h-[calc(100svh-295px)]" type="always">
           <div className="flex">
             {/* Hours column */}
             <div className="relative w-18">

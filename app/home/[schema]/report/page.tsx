@@ -46,7 +46,7 @@ async function ReportsPage({ params }: ReportsPageProps) {
     return (
       <div className="w-full flex-1">
         <DefaultHeader breadcrumbs={[{ title: "Report" }]} />
-        <div className="flex min-h-[calc(100vh-183px)] items-center justify-center">
+        <div className="flex min-h-[calc(100svh-183px)] items-center justify-center">
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">

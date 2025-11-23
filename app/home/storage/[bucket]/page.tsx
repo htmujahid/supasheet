@@ -56,7 +56,7 @@ async function StorageBucketPage({
   }));
 
   return (
-    <div className="flex h-[calc(100vh-3rem)] flex-grow p-4">
+    <div className="flex h-[calc(100svh-3rem)] flex-grow p-4">
       <StorageExplorer bucketId={bucketId} files={files} currentPath={path} />
     </div>
   );

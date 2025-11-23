@@ -133,7 +133,7 @@ export function ForeignTableSheet({
           {/* select 2nd child using tailwind */}
           <DataTable
             table={table}
-            className="[&>div:nth-child(2)]:h-[calc(100vh-194px)]"
+            className="[&>div:nth-child(2)]:h-[calc(100svh-194px)]"
           >
             <DataTableAdvancedToolbar table={table}>
               <DataTableClientFilterList table={table} />

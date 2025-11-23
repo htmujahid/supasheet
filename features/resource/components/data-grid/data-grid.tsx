@@ -146,7 +146,7 @@ export function DataGrid<TData>({
         <div
           role="rowgroup"
           data-slot="grid-body"
-          className="relative grid min-h-[calc(100vh-180px)]"
+          className="relative grid min-h-[calc(100svh-180px)]"
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`,
           }}

@@ -23,7 +23,7 @@ async function NotFoundPage() {
   return (
     <>
       <SidebarInset>
-        <div className="flex min-h-[calc(100vh-183px)] items-center justify-center">
+        <div className="flex min-h-[calc(100svh-183px)] items-center justify-center">
           <div
             className={
               "container m-auto flex w-full flex-1 flex-col items-center justify-center"

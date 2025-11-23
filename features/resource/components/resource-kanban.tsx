@@ -153,7 +153,7 @@ export function ResourceKanbanView({
         >
           <KanbanBoard
             className={cn("overflow-x-auto", {
-              "h-[calc(100vh-114px)]": layout === "board",
+              "h-[calc(100svh-114px)]": layout === "board",
             })}
           >
             {Object.entries(columns).map(([columnValue, tasks]) => (
