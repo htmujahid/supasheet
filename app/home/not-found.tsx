@@ -11,7 +11,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { SidebarInset } from "@/components/ui/sidebar";
 
 export const generateMetadata = async () => {
   return {
