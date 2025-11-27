@@ -176,11 +176,10 @@ async function getPatterns() {
             .schema("supasheet")
             .rpc("get_schemas");
 
+          console.log({data, error});
+
           if (!data?.length || error) {
-            return NextResponse.redirect(
-              new URL(pathsConfig.app.account, origin).href,
-            );
-            //   throw new Error("Failed to fetch user schemas");
+            return NextResponse.next();
           }
 
           const defaultSchema = data?.[0].schema as string;

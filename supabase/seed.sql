@@ -949,5 +949,3 @@ BEGIN
     -- Insert into user_roles
     INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
 END $$;
-
-INSERT INTO supasheet.role_permissions (role, permission) values ('user', 'supasheet.accounts:select');
