@@ -110,7 +110,7 @@
     "@types/react-dom": "19.2.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.38.0",
-    "eslint-config-next": "^16.0.1",
+    "eslint-config-next": "^16.0.10",
     "prettier": "^3.6.1",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "supabase": "^2.58.5",
