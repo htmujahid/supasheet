@@ -26,7 +26,7 @@ function getUrlHref(urlString: string): string {
   return `http://${trimmed}`;
 }
 
-export function UrlCell<TData>({
+export function DataGridUrlCell<TData>({
   cell,
   tableMeta,
   rowIndex,

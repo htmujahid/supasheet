@@ -21,7 +21,7 @@ import { DataGridRatingCell } from "./cells/data-grid-rating-cell";
 import { DataGridSelectCell } from "./cells/data-grid-select-cell";
 import { DataGridTextCell } from "./cells/data-grid-text-cell";
 import { DataGridTimeCell } from "./cells/data-grid-time-cell";
-import { UrlCell } from "./cells/data-grid-url-cell";
+import { DataGridUrlCell } from "./cells/data-grid-url-cell";
 
 export const DataGridCell = React.memo(DataGridCellImpl, (prev, next) => {
   // Fast path: check stable primitive props first
@@ -96,7 +96,7 @@ function DataGridCellImpl<TData>({
         Comp = DataGridNumberCell;
         break;
       case "url":
-        Comp = UrlCell;
+        Comp = DataGridUrlCell;
         break;
       case "boolean":
         Comp = DataGridBooleanCell;
