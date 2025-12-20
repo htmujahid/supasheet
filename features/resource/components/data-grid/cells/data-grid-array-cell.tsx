@@ -39,12 +39,11 @@ export function DataGridArrayCell<TData>({
 
   // Only open sheet when isEditing transitions from false to true
   React.useEffect(() => {
-    if (isEditing && !prevIsEditingRef.current) {
+    if (isEditing && !readOnly && !prevIsEditingRef.current) {
       setSheetOpen(true);
     }
     prevIsEditingRef.current = isEditing;
-  }, [isEditing]);
-
+  }, [isEditing, readOnly]);
   const onSheetOpenChange = React.useCallback(
     (open: boolean) => {
       setSheetOpen(open);
@@ -58,6 +57,7 @@ export function DataGridArrayCell<TData>({
   const onSave = React.useCallback(
     (value: unknown[] | null | "") => {
       if (!readOnly) {
+        setCurrentValue(value === "" ? null : value);
         tableMeta?.onDataUpdate?.({ rowIndex, columnId, value });
       }
       setSheetOpen(false);
@@ -111,9 +111,7 @@ export function DataGridArrayCell<TData>({
         onKeyDown={onWrapperKeyDown}
       >
         {/* Display mode */}
-        {currentValue === null ? (
-          <span className="text-muted-foreground italic">null</span>
-        ) : currentValue?.length === 0 ? (
+        {currentValue === null ? null : currentValue?.length === 0 ? (
           <span className="text-muted-foreground italic">[]</span>
         ) : (
           <div className="flex flex-wrap items-center gap-1 overflow-hidden">

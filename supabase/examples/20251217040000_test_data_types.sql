@@ -85,6 +85,7 @@ COMMENT ON TABLE data_type_samples IS
     "icon": "Database",
     "display": "block",
     "query": {
+        "join": [{"table":"accounts","on":"account_id","columns":["name","email"]}],
         "sort": [{"id":"created_at","desc":true}]
     }
 }';

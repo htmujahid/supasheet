@@ -120,6 +120,7 @@ export function DataGridMoneyCell<TData>({
           type="text"
           value={value}
           onBlur={onBlur}
+          disabled={readOnly}
           onChange={onChange}
           className="w-full border-none bg-transparent p-0 outline-none"
         />

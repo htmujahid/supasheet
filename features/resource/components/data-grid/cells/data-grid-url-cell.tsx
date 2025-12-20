@@ -224,7 +224,7 @@ export function DataGridUrlCell<TData>({
         <div
           role="textbox"
           data-slot="grid-cell-content"
-          contentEditable={isEditing}
+          contentEditable={isEditing && !readOnly ? "true" : "false"}
           tabIndex={-1}
           ref={cellRef}
           onBlur={onBlur}

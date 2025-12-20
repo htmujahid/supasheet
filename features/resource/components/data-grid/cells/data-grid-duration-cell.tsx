@@ -110,6 +110,7 @@ export function DataGridDurationCell<TData>({
           type="number"
           value={value}
           onBlur={onBlur}
+          disabled={readOnly}
           onChange={onChange}
           placeholder="Duration in ms"
           className="w-full border-none bg-transparent p-0 outline-none"

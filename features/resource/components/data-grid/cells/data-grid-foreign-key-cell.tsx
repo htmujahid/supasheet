@@ -41,12 +41,11 @@ export function DataGridForeignKeyCell<TData>({
 
   // Only open sheet when isEditing transitions from false to true
   React.useEffect(() => {
-    if (isEditing && !prevIsEditingRef.current) {
+    if (isEditing && !readOnly && !prevIsEditingRef.current) {
       setSheetOpen(true);
     }
     prevIsEditingRef.current = isEditing;
-  }, [isEditing]);
-
+  }, [isEditing, readOnly]);
   const onSheetOpenChange = React.useCallback(
     (open: boolean) => {
       setSheetOpen(open);

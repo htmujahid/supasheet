@@ -73,6 +73,7 @@ export function DataGridRatingCell<TData>({
         onValueChange={onValueChange}
         step={0.5}
         readOnly={readOnly}
+        disabled={readOnly}
         clearable
       >
         {Array.from({ length: 5 }, (_, i) => (

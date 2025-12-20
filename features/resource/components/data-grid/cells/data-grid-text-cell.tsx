@@ -103,6 +103,7 @@ export function DataGridTextCell<TData>({
           type="text"
           ref={inputRef}
           value={value}
+          disabled={readOnly}
           className="w-full border-none bg-transparent p-0 outline-none"
           onBlur={onBlur}
           onChange={onChange}

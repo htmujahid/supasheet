@@ -82,12 +82,12 @@ export function DataGridCellWrapper<TData>({
 
   const onDoubleClick = React.useCallback(
     (event: React.MouseEvent) => {
-      if (!isEditing) {
+      if (!isEditing && !readOnly) {
         event.preventDefault();
         tableMeta?.onCellDoubleClick?.(rowIndex, columnId);
       }
     },
-    [tableMeta, rowIndex, columnId, isEditing],
+    [tableMeta, rowIndex, columnId, isEditing, readOnly],
   );
 
   const onKeyDown = React.useCallback(

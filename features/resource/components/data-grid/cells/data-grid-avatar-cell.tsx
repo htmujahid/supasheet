@@ -135,6 +135,7 @@ export function DataGridAvatarCell<TData>({
         accept="image/*"
         className="sr-only"
         ref={fileInputRef}
+        disabled={readOnly}
         onClick={onInputClick}
         onChange={onFileInputChange}
       />
