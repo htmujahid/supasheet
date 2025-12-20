@@ -1,6 +1,12 @@
 "use client";
 
-import * as React from "react";
+import {
+  memo,
+  useCallback,
+  useMemo,
+  type ComponentProps,
+  type CSSProperties,
+} from "react";
 
 import type { Table, TableMeta } from "@tanstack/react-table";
 import {
@@ -63,7 +69,7 @@ interface ContextMenuProps<TData>
   tableMeta: TableMeta<TData>;
 }
 
-const ContextMenu = React.memo(ContextMenuImpl, (prev, next) => {
+const ContextMenu = memo(ContextMenuImpl, (prev, next) => {
   if (prev.contextMenu.open !== next.contextMenu.open) return false;
   if (!next.contextMenu.open) return true;
   if (prev.contextMenu.x !== next.contextMenu.x) return false;
@@ -86,7 +92,7 @@ function ContextMenuImpl<TData>({
 }: ContextMenuProps<TData>) {
   const { setResourceAction, permissions } = useResourceContext();
 
-  const triggerStyle = React.useMemo<React.CSSProperties>(
+  const triggerStyle = useMemo<CSSProperties>(
     () => ({
       position: "fixed",
       left: `${contextMenu.x}px`,
@@ -104,7 +110,7 @@ function ContextMenuImpl<TData>({
   );
 
   // Get selected row data
-  const selectedRowData = React.useMemo(() => {
+  const selectedRowData = useMemo(() => {
     if (
       !selectionState?.selectedCells ||
       selectionState.selectedCells.size === 0
@@ -123,7 +129,7 @@ function ContextMenuImpl<TData>({
   }, [selectionState, table]);
 
   // Check if only one row is selected
-  const isSingleRowSelected = React.useMemo(() => {
+  const isSingleRowSelected = useMemo(() => {
     if (
       !selectionState?.selectedCells ||
       selectionState.selectedCells.size === 0
@@ -140,8 +146,8 @@ function ContextMenuImpl<TData>({
   }, [selectionState]);
 
   const onCloseAutoFocus: NonNullable<
-    React.ComponentProps<typeof DropdownMenuContent>["onCloseAutoFocus"]
-  > = React.useCallback(
+    ComponentProps<typeof DropdownMenuContent>["onCloseAutoFocus"]
+  > = useCallback(
     (event) => {
       event.preventDefault();
       dataGridRef?.current?.focus();
@@ -149,14 +155,14 @@ function ContextMenuImpl<TData>({
     [dataGridRef],
   );
 
-  const onCopyRow = React.useCallback(() => {
+  const onCopyRow = useCallback(() => {
     if (!selectedRowData) return;
 
     navigator.clipboard.writeText(JSON.stringify(selectedRowData, null, 2));
     toast.success("Row copied to clipboard");
   }, [selectedRowData]);
 
-  const onCopyCell = React.useCallback(() => {
+  const onCopyCell = useCallback(() => {
     if (
       !selectionState?.selectedCells ||
       selectionState.selectedCells.size !== 1
@@ -174,7 +180,7 @@ function ContextMenuImpl<TData>({
     toast.success("Cell content copied to clipboard");
   }, [selectionState, table]);
 
-  const onView = React.useCallback(() => {
+  const onView = useCallback(() => {
     if (!selectedRowData) return;
 
     setResourceAction({
@@ -183,7 +189,7 @@ function ContextMenuImpl<TData>({
     });
   }, [selectedRowData, setResourceAction]);
 
-  const onEdit = React.useCallback(() => {
+  const onEdit = useCallback(() => {
     if (!selectedRowData) return;
 
     setResourceAction({
@@ -192,7 +198,7 @@ function ContextMenuImpl<TData>({
     });
   }, [selectedRowData, setResourceAction]);
 
-  const onDelete = React.useCallback(async () => {
+  const onDelete = useCallback(async () => {
     if (
       !selectionState?.selectedCells ||
       selectionState.selectedCells.size === 0 ||

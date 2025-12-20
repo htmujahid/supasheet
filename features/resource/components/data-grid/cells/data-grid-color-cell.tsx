@@ -1,4 +1,11 @@
-import React from "react";
+import {
+  useCallback,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 
 import { DataGridCellProps } from "@/features/resource/lib/types/data-grid";
 
@@ -18,18 +25,18 @@ export function DataGridColorCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "#000000");
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "#000000");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? "#000000");
   }
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       setValue(newValue);
       if (!readOnly) {
@@ -39,8 +46,8 @@ export function DataGridColorCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onInputClick = React.useCallback(
-    (event: React.MouseEvent<HTMLInputElement>) => {
+  const onInputClick = useCallback(
+    (event: MouseEvent<HTMLInputElement>) => {
       event.stopPropagation();
       if (!readOnly) {
         tableMeta?.onCellEditingStart?.(rowIndex, columnId);
@@ -49,12 +56,12 @@ export function DataGridColorCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onInputBlur = React.useCallback(() => {
+  const onInputBlur = useCallback(() => {
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta]);
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isFocused && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault();
         inputRef.current?.click();
@@ -68,7 +75,7 @@ export function DataGridColorCell<TData>({
     [isFocused, tableMeta],
   );
 
-  const onWrapperClick = React.useCallback(() => {
+  const onWrapperClick = useCallback(() => {
     if (isFocused && !readOnly) {
       inputRef.current?.click();
     }

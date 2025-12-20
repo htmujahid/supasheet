@@ -1,4 +1,11 @@
-import React from "react";
+import {
+  useCallback,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ComponentProps,
+  type KeyboardEvent,
+} from "react";
 
 import {
   Popover,
@@ -25,12 +32,12 @@ export function DataGridLongTextCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "");
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const sideOffset = -(containerRef.current?.clientHeight ?? 0);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? "");
@@ -42,7 +49,7 @@ export function DataGridLongTextCell<TData>({
     }
   }, 300);
 
-  const onSave = React.useCallback(() => {
+  const onSave = useCallback(() => {
     // Immediately save any pending changes and close the popover
     if (!readOnly && value !== initialValue) {
       tableMeta?.onDataUpdate?.({ rowIndex, columnId, value });
@@ -50,7 +57,7 @@ export function DataGridLongTextCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, value, initialValue, rowIndex, columnId, readOnly]);
 
-  const onCancel = React.useCallback(() => {
+  const onCancel = useCallback(() => {
     // Restore the original value
     setValue(initialValue ?? "");
     if (!readOnly) {
@@ -59,7 +66,7 @@ export function DataGridLongTextCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, initialValue, rowIndex, columnId, readOnly]);
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (open: boolean) => {
       if (open && !readOnly) {
         tableMeta?.onCellEditingStart?.(rowIndex, columnId);
@@ -75,8 +82,8 @@ export function DataGridLongTextCell<TData>({
   );
 
   const onOpenAutoFocus: NonNullable<
-    React.ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
-  > = React.useCallback((event) => {
+    ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
+  > = useCallback((event) => {
     event.preventDefault();
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -85,7 +92,7 @@ export function DataGridLongTextCell<TData>({
     }
   }, []);
 
-  const onBlur = React.useCallback(() => {
+  const onBlur = useCallback(() => {
     // Immediately save any pending changes on blur
     if (!readOnly && value !== initialValue) {
       tableMeta?.onDataUpdate?.({ rowIndex, columnId, value });
@@ -93,8 +100,8 @@ export function DataGridLongTextCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, value, initialValue, rowIndex, columnId, readOnly]);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = event.target.value;
       setValue(newValue);
       debouncedSave(newValue);
@@ -102,8 +109,8 @@ export function DataGridLongTextCell<TData>({
     [debouncedSave],
   );
 
-  const onKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === "Escape") {
         event.preventDefault();
         onCancel();

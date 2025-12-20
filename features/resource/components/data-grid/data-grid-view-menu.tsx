@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useMemo, type ComponentProps } from "react";
 
 import { useDirection } from "@radix-ui/react-direction";
 import type { Table } from "@tanstack/react-table";
@@ -23,7 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 
 interface DataGridViewMenuProps<TData>
-  extends React.ComponentProps<typeof PopoverContent> {
+  extends ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
   disabled?: boolean;
 }
@@ -36,7 +36,7 @@ export function DataGridViewMenu<TData>({
 }: DataGridViewMenuProps<TData>) {
   const dir = useDirection();
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () =>
       table
         .getAllColumns()

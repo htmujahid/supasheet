@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useRef, useState, type KeyboardEvent } from "react";
 
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -30,10 +30,10 @@ export function DataGridDateCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "");
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "");
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? "");
@@ -41,7 +41,7 @@ export function DataGridDateCell<TData>({
 
   const selectedDate = value ? new Date(value) : undefined;
 
-  const onDateSelect = React.useCallback(
+  const onDateSelect = useCallback(
     (date: Date | undefined) => {
       if (!date || readOnly) return;
 
@@ -53,7 +53,7 @@ export function DataGridDateCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       if (isOpen && !readOnly) {
         tableMeta?.onCellEditingStart?.(rowIndex, columnId);
@@ -64,8 +64,8 @@ export function DataGridDateCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isEditing && event.key === "Escape") {
         event.preventDefault();
         setValue(initialValue);

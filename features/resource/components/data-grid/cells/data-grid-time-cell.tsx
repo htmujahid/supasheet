@@ -1,4 +1,11 @@
-import React from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react";
 
 import { format } from "date-fns";
 
@@ -48,25 +55,25 @@ export function DataGridTimeCell<TData>({
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string;
   // Edit value: converted to user's local timezone for the time input
-  const [editValue, setEditValue] = React.useState(
+  const [editValue, setEditValue] = useState(
     convertDbTimeToUserTimezone(initialValue),
   );
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setEditValue(convertDbTimeToUserTimezone(initialValue));
   }
 
-  const getValueWithUserTimezone = React.useCallback((timeValue: string) => {
+  const getValueWithUserTimezone = useCallback((timeValue: string) => {
     // Append user's current timezone to the time value for storage
     if (!timeValue) return null;
     return `${timeValue}${getUserTimezoneOffset()}`;
   }, []);
 
-  const onBlur = React.useCallback(() => {
+  const onBlur = useCallback(() => {
     const originalEditValue = convertDbTimeToUserTimezone(initialValue);
     if (!readOnly && editValue !== originalEditValue) {
       tableMeta?.onDataUpdate?.({
@@ -86,15 +93,15 @@ export function DataGridTimeCell<TData>({
     getValueWithUserTimezone,
   ]);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
       setEditValue(event.target.value);
     },
     [],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       const originalEditValue = convertDbTimeToUserTimezone(initialValue);
       if (isEditing) {
         if (event.key === "Enter") {
@@ -143,7 +150,7 @@ export function DataGridTimeCell<TData>({
     ],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
     }

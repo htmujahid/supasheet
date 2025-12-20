@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { DataGridCellProps } from "@/features/resource/lib/types/data-grid";
@@ -23,14 +23,14 @@ export function DataGridArrayCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as unknown[] | null;
-  const [sheetOpen, setSheetOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const cellOpts = cell.column.columnDef.meta as ColumnMetadata;
-  const prevIsEditingRef = React.useRef(isEditing);
+  const prevIsEditingRef = useRef(isEditing);
 
   // Track the current value for syncing
-  const prevInitialValueRef = React.useRef(initialValue);
-  const [currentValue, setCurrentValue] = React.useState(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
+  const [currentValue, setCurrentValue] = useState(initialValue);
 
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
@@ -38,13 +38,13 @@ export function DataGridArrayCell<TData>({
   }
 
   // Only open sheet when isEditing transitions from false to true
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && !readOnly && !prevIsEditingRef.current) {
       setSheetOpen(true);
     }
     prevIsEditingRef.current = isEditing;
   }, [isEditing, readOnly]);
-  const onSheetOpenChange = React.useCallback(
+  const onSheetOpenChange = useCallback(
     (open: boolean) => {
       setSheetOpen(open);
       if (!open) {
@@ -54,7 +54,7 @@ export function DataGridArrayCell<TData>({
     [tableMeta],
   );
 
-  const onSave = React.useCallback(
+  const onSave = useCallback(
     (value: unknown[] | null | "") => {
       if (!readOnly) {
         setCurrentValue(value === "" ? null : value);
@@ -66,13 +66,13 @@ export function DataGridArrayCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onCancel = React.useCallback(() => {
+  const onCancel = useCallback(() => {
     setSheetOpen(false);
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta]);
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (!isEditing && isFocused && event.key === "Tab") {
         event.preventDefault();
         tableMeta?.onCellEditingStop?.({

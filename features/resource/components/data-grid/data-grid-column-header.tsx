@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo, useCallback, type ComponentProps, type PointerEvent } from "react";
 
 import type {
   ColumnSort,
@@ -34,7 +34,7 @@ import {
 import { cn } from "@/lib/utils";
 
 interface DataGridColumnHeaderProps<TData, TValue>
-  extends React.ComponentProps<typeof DropdownMenuTrigger> {
+  extends ComponentProps<typeof DropdownMenuTrigger> {
   header: Header<TData, TValue>;
   table: Table<TData>;
 }
@@ -63,7 +63,7 @@ export function DataGridColumnHeader<TData, TValue>({
   const isPinnedLeft = pinnedPosition === "left";
   const isPinnedRight = pinnedPosition === "right";
 
-  const onSortingChange = React.useCallback(
+  const onSortingChange = useCallback(
     (direction: SortDirection) => {
       table.setSorting((prev: SortingState) => {
         const existingSortIndex = prev.findIndex(
@@ -86,26 +86,26 @@ export function DataGridColumnHeader<TData, TValue>({
     [column.id, table],
   );
 
-  const onSortRemove = React.useCallback(() => {
+  const onSortRemove = useCallback(() => {
     table.setSorting((prev: SortingState) =>
       prev.filter((sort) => sort.id !== column.id),
     );
   }, [column.id, table]);
 
-  const onLeftPin = React.useCallback(() => {
+  const onLeftPin = useCallback(() => {
     column.pin("left");
   }, [column]);
 
-  const onRightPin = React.useCallback(() => {
+  const onRightPin = useCallback(() => {
     column.pin("right");
   }, [column]);
 
-  const onUnpin = React.useCallback(() => {
+  const onUnpin = useCallback(() => {
     column.pin(false);
   }, [column]);
 
-  const onTriggerPointerDown = React.useCallback(
-    (event: React.PointerEvent<HTMLButtonElement>) => {
+  const onTriggerPointerDown = useCallback(
+    (event: PointerEvent<HTMLButtonElement>) => {
       onPointerDown?.(event);
       if (event.defaultPrevented) return;
 
@@ -233,7 +233,7 @@ export function DataGridColumnHeader<TData, TValue>({
   );
 }
 
-const DataGridColumnResizer = React.memo(
+const DataGridColumnResizer = memo(
   DataGridColumnResizerImpl,
   (prev, next) => {
     const prevColumn = prev.header.column;
@@ -264,7 +264,7 @@ function DataGridColumnResizerImpl<TData, TValue>({
 }: DataGridColumnResizerProps<TData, TValue>) {
   const defaultColumnDef = table._getDefaultColumnDef();
 
-  const onDoubleClick = React.useCallback(() => {
+  const onDoubleClick = useCallback(() => {
     header.column.resetSize();
   }, [header.column]);
 

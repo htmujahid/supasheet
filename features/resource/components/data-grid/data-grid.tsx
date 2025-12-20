@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, type ComponentProps, type MouseEvent } from "react";
 
 import { DataTablePagination } from "@/interfaces/data-table/components/data-table-pagination";
 import { cn } from "@/lib/utils";
@@ -29,7 +29,7 @@ interface DataGridProps<TData>
       | "joinOperator"
       | "setJoinOperator"
     >,
-    Omit<React.ComponentProps<"div">, "contextMenu"> {
+    Omit<ComponentProps<"div">, "contextMenu"> {
   dir?: Direction;
   height?: number;
   stretchColumns?: boolean;
@@ -70,8 +70,8 @@ export function DataGrid<TData>({
   const columnVisibility = table.getState().columnVisibility;
   const columnPinning = table.getState().columnPinning;
 
-  const onDataGridContextMenu = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
+  const onDataGridContextMenu = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
     },
     [],

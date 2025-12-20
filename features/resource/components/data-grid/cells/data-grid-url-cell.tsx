@@ -1,4 +1,12 @@
-import React from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 
 import { toast } from "sonner";
 
@@ -40,11 +48,11 @@ export function DataGridUrlCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue ?? "");
-  const cellRef = React.useRef<HTMLDivElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? "");
+  const cellRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? "");
@@ -53,7 +61,7 @@ export function DataGridUrlCell<TData>({
     }
   }
 
-  const onBlur = React.useCallback(() => {
+  const onBlur = useCallback(() => {
     const currentValue = cellRef.current?.textContent?.trim() ?? "";
 
     if (!readOnly && currentValue !== initialValue) {
@@ -66,16 +74,16 @@ export function DataGridUrlCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, rowIndex, columnId, initialValue, readOnly]);
 
-  const onInput = React.useCallback(
-    (event: React.FormEvent<HTMLDivElement>) => {
+  const onInput = useCallback(
+    (event: FormEvent<HTMLDivElement>) => {
       const currentValue = event.currentTarget.textContent ?? "";
       setValue(currentValue);
     },
     [],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Enter") {
           event.preventDefault();
@@ -140,8 +148,8 @@ export function DataGridUrlCell<TData>({
     ],
   );
 
-  const onLinkClick = React.useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const onLinkClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
       if (isEditing) {
         event.preventDefault();
         return;
@@ -164,7 +172,7 @@ export function DataGridUrlCell<TData>({
     [isEditing, value],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && cellRef.current) {
       cellRef.current.focus();
 

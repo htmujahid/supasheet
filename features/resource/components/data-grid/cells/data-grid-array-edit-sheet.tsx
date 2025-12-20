@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { GripVertical, Plus, SquarePenIcon, XIcon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -69,11 +69,11 @@ export function DataGridArrayEditSheet({
     name: "items",
   });
 
-  const [isNull, setIsNull] = React.useState(initialValue === null);
-  const [isDefault, setIsDefault] = React.useState(false);
+  const [isNull, setIsNull] = useState(initialValue === null);
+  const [isDefault, setIsDefault] = useState(false);
 
   // Reset form when sheet opens with new initial value
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
       form.reset({
         items: initialValue?.map((v) => ({ value: v })) ?? [],
@@ -83,7 +83,7 @@ export function DataGridArrayEditSheet({
     }
   }, [open, initialValue, form]);
 
-  const handleSave = React.useCallback(() => {
+  const handleSave = useCallback(() => {
     let newValue: unknown[] | null | "";
     if (isNull) {
       newValue = null;
@@ -96,7 +96,7 @@ export function DataGridArrayEditSheet({
     onSave(newValue);
   }, [form, isNull, isDefault, onSave]);
 
-  const handleCancel = React.useCallback(() => {
+  const handleCancel = useCallback(() => {
     form.reset({
       items: initialValue?.map((v) => ({ value: v })) ?? [],
     });
@@ -105,32 +105,32 @@ export function DataGridArrayEditSheet({
     onCancel();
   }, [form, initialValue, onCancel]);
 
-  const handleSetNull = React.useCallback(() => {
+  const handleSetNull = useCallback(() => {
     fieldArray.remove();
     setIsNull(true);
     setIsDefault(false);
   }, [fieldArray]);
 
-  const handleSetEmptyArray = React.useCallback(() => {
+  const handleSetEmptyArray = useCallback(() => {
     fieldArray.remove();
     setIsNull(false);
     setIsDefault(false);
   }, [fieldArray]);
 
-  const handleSetDefault = React.useCallback(() => {
+  const handleSetDefault = useCallback(() => {
     fieldArray.remove();
     setIsNull(false);
     setIsDefault(true);
   }, [fieldArray]);
 
-  const handleAddItem = React.useCallback(() => {
+  const handleAddItem = useCallback(() => {
     fieldArray.append({ value: "" });
     setIsNull(false);
     setIsDefault(false);
   }, [fieldArray]);
 
   // Get inner column metadata for array items
-  const innerColumnMetadata: ColumnMetadata = React.useMemo(() => {
+  const innerColumnMetadata: ColumnMetadata = useMemo(() => {
     return {
       ...columnMetadata,
       required: true,

@@ -1,4 +1,4 @@
-import React from "react";
+import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 import { usePathname } from "next/navigation";
 
@@ -33,9 +33,9 @@ export function NavSecondary({
     title: string;
     url: string;
     icon: LucideIcon;
-    badge?: React.ReactNode;
+    badge?: ReactNode;
   }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+} & ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
   const { data: userData } = useUser();
   const signOut = useSignOut();

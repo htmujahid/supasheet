@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import Link from "next/link";
 
@@ -26,27 +26,27 @@ export function DataGridForeignKeyCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string | number | null;
-  const [value, setValue] = React.useState(initialValue);
-  const [sheetOpen, setSheetOpen] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const cellOpts = cell.column.columnDef.meta as ColumnMetadata;
   const relationship = cellOpts?.relationship;
-  const prevIsEditingRef = React.useRef(isEditing);
+  const prevIsEditingRef = useRef(isEditing);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue);
   }
 
   // Only open sheet when isEditing transitions from false to true
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && !readOnly && !prevIsEditingRef.current) {
       setSheetOpen(true);
     }
     prevIsEditingRef.current = isEditing;
   }, [isEditing, readOnly]);
-  const onSheetOpenChange = React.useCallback(
+  const onSheetOpenChange = useCallback(
     (open: boolean) => {
       setSheetOpen(open);
       if (!open) {
@@ -56,7 +56,7 @@ export function DataGridForeignKeyCell<TData>({
     [tableMeta],
   );
 
-  const setRecord = React.useCallback(
+  const setRecord = useCallback(
     (record: ResourceDataSchema) => {
       if (!relationship || readOnly) return;
       const newValue = record[relationship.target_column_name];
@@ -68,8 +68,8 @@ export function DataGridForeignKeyCell<TData>({
     [relationship, tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (!isEditing && isFocused && event.key === "Tab") {
         event.preventDefault();
         tableMeta?.onCellEditingStop?.({

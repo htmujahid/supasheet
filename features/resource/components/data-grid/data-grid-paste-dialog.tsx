@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo, useCallback, useRef, type ComponentProps } from "react";
 
 import type { TableMeta } from "@tanstack/react-table";
 
@@ -51,7 +51,7 @@ interface PasteDialogProps
     >,
     Required<Pick<TableMeta<unknown>, "pasteDialog">> {}
 
-const PasteDialog = React.memo(PasteDialogImpl, (prev, next) => {
+const PasteDialog = memo(PasteDialogImpl, (prev, next) => {
   if (prev.pasteDialog.open !== next.pasteDialog.open) return false;
   if (!next.pasteDialog.open) return true;
   if (prev.pasteDialog.rowsNeeded !== next.pasteDialog.rowsNeeded) return false;
@@ -65,13 +65,13 @@ function PasteDialogImpl({
   onPasteWithExpansion,
   onPasteWithoutExpansion,
 }: PasteDialogProps) {
-  const expandRadioRef = React.useRef<HTMLInputElement | null>(null);
+  const expandRadioRef = useRef<HTMLInputElement | null>(null);
 
-  const onCancel = React.useCallback(() => {
+  const onCancel = useCallback(() => {
     onPasteDialogOpenChange?.(false);
   }, [onPasteDialogOpenChange]);
 
-  const onContinue = React.useCallback(() => {
+  const onContinue = useCallback(() => {
     if (expandRadioRef.current?.checked) {
       onPasteWithExpansion?.();
     } else {
@@ -132,7 +132,7 @@ function PasteDialogImpl({
   );
 }
 
-function RadioItem({ className, ...props }: React.ComponentProps<"input">) {
+function RadioItem({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       type="radio"

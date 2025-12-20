@@ -1,4 +1,11 @@
-import React from "react";
+import {
+  useCallback,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ComponentProps,
+  type KeyboardEvent,
+} from "react";
 
 import {
   Popover,
@@ -28,13 +35,13 @@ export function DataGridJsonCell<TData>({
   const initialStringValue = initialValue
     ? JSON.stringify(initialValue, null, 2)
     : "";
-  const [value, setValue] = React.useState(initialStringValue);
-  const [error, setError] = React.useState<string | null>(null);
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialStringValue);
+  const [error, setError] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const sideOffset = -(containerRef.current?.clientHeight ?? 0);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     const newStringValue = initialValue
@@ -55,7 +62,7 @@ export function DataGridJsonCell<TData>({
     }
   }, 300);
 
-  const onSave = React.useCallback(() => {
+  const onSave = useCallback(() => {
     if (readOnly) {
       tableMeta?.onCellEditingStop?.();
       return;
@@ -70,13 +77,13 @@ export function DataGridJsonCell<TData>({
     }
   }, [tableMeta, value, rowIndex, columnId, readOnly]);
 
-  const onCancel = React.useCallback(() => {
+  const onCancel = useCallback(() => {
     setValue(initialStringValue);
     setError(null);
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, initialStringValue]);
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       if (isOpen && !readOnly) {
         tableMeta?.onCellEditingStart?.(rowIndex, columnId);
@@ -98,8 +105,8 @@ export function DataGridJsonCell<TData>({
   );
 
   const onOpenAutoFocus: NonNullable<
-    React.ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
-  > = React.useCallback((event) => {
+    ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
+  > = useCallback((event) => {
     event.preventDefault();
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -108,8 +115,8 @@ export function DataGridJsonCell<TData>({
     }
   }, []);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = event.target.value;
       setValue(newValue);
       debouncedSave(newValue);
@@ -117,8 +124,8 @@ export function DataGridJsonCell<TData>({
     [debouncedSave],
   );
 
-  const onKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLTextAreaElement>) => {
       if (event.key === "Escape") {
         event.preventDefault();
         onCancel();

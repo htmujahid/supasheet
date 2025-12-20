@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useRef, useState, type KeyboardEvent } from "react";
 
 import { Rating, RatingItem } from "@/components/ui/rating";
 import { DataGridCellProps } from "@/features/resource/lib/types/data-grid";
@@ -18,16 +18,16 @@ export function DataGridRatingCell<TData>({
   readOnly,
 }: Omit<DataGridCellProps<TData>, "isEditing">) {
   const initialValue = cell.getValue() as number | null;
-  const [value, setValue] = React.useState(initialValue ?? 0);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue ?? 0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue ?? 0);
   }
 
-  const onValueChange = React.useCallback(
+  const onValueChange = useCallback(
     (newValue: number) => {
       if (readOnly) return;
       setValue(newValue);
@@ -40,8 +40,8 @@ export function DataGridRatingCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isFocused && event.key === "Tab") {
         event.preventDefault();
         tableMeta?.onCellEditingStop?.({

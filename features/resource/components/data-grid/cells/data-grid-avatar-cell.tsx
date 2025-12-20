@@ -1,4 +1,12 @@
-import React from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 
 import { User } from "lucide-react";
 import { toast } from "sonner";
@@ -25,18 +33,18 @@ export function DataGridAvatarCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const cellValue = cell.getValue() as FileCellData | null;
-  const [value, setValue] = React.useState<FileCellData | null>(cellValue);
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState<FileCellData | null>(cellValue);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const prevCellValueRef = React.useRef(cellValue);
+  const prevCellValueRef = useRef(cellValue);
   if (cellValue !== prevCellValueRef.current) {
     prevCellValueRef.current = cellValue;
     setValue(cellValue);
   }
 
-  const onFileInputChange = React.useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileInputChange = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file || readOnly) return;
 
@@ -74,8 +82,8 @@ export function DataGridAvatarCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onInputClick = React.useCallback(
-    (event: React.MouseEvent<HTMLInputElement>) => {
+  const onInputClick = useCallback(
+    (event: MouseEvent<HTMLInputElement>) => {
       event.stopPropagation();
       if (!readOnly) {
         tableMeta?.onCellEditingStart?.(rowIndex, columnId);
@@ -84,8 +92,8 @@ export function DataGridAvatarCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isFocused && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault();
         fileInputRef.current?.click();
@@ -99,13 +107,13 @@ export function DataGridAvatarCell<TData>({
     [isFocused, tableMeta],
   );
 
-  const onWrapperClick = React.useCallback(() => {
+  const onWrapperClick = useCallback(() => {
     if (isFocused && !readOnly) {
       fileInputRef.current?.click();
     }
   }, [isFocused, readOnly]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (value?.url?.startsWith("blob:")) {
         URL.revokeObjectURL(value.url);

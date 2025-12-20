@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo, type ComponentType } from "react";
 
 import type { DataGridCellProps } from "../../lib/types/data-grid";
 import { DataGridArrayCell } from "./cells/data-grid-array-cell";
@@ -23,7 +23,7 @@ import { DataGridTextCell } from "./cells/data-grid-text-cell";
 import { DataGridTimeCell } from "./cells/data-grid-time-cell";
 import { DataGridUrlCell } from "./cells/data-grid-url-cell";
 
-export const DataGridCell = React.memo(DataGridCellImpl, (prev, next) => {
+export const DataGridCell = memo(DataGridCellImpl, (prev, next) => {
   // Fast path: check stable primitive props first
   if (prev.isFocused !== next.isFocused) return false;
   if (prev.isEditing !== next.isEditing) return false;
@@ -72,7 +72,7 @@ function DataGridCellImpl<TData>({
   const relationship = cellOpts?.relationship;
   const isArray = cellOpts?.isArray ?? false;
 
-  let Comp: React.ComponentType<DataGridCellProps<TData>>;
+  let Comp: ComponentType<DataGridCellProps<TData>>;
 
   // Handle foreign key cells (cells with relationships)
   if (relationship) {

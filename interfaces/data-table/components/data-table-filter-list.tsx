@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useId, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type KeyboardEvent,
+} from "react";
 
 import type { Column, ColumnMeta, Table } from "@tanstack/react-table";
 import {
@@ -80,7 +88,7 @@ const THROTTLE_MS = 50;
 // const OPEN_MENU_SHORTCUT = "f";
 const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
-type DataTableFilterListProps<TData> = React.ComponentProps<
+type DataTableFilterListProps<TData> = ComponentProps<
   typeof PopoverContent
 > & {
   table: Table<TData>;
@@ -219,7 +227,7 @@ export function DataTableFilterList<TData>({
   // }, [filters, onFilterRemove]);
 
   const onTriggerKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    (event: KeyboardEvent<HTMLButtonElement>) => {
       if (
         REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
         filters.length > 0
@@ -373,7 +381,7 @@ function DataTableFilterItem<TData>({
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const onItemKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (
         event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement

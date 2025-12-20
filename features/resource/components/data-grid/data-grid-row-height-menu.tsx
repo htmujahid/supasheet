@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useMemo, type ComponentProps } from "react";
 
 import type { Table } from "@tanstack/react-table";
 import {
@@ -42,7 +42,7 @@ const rowHeights = [
 ] as const;
 
 interface DataGridRowHeightMenuProps<TData>
-  extends React.ComponentProps<typeof SelectContent> {
+  extends ComponentProps<typeof SelectContent> {
   table: Table<TData>;
   disabled?: boolean;
 }
@@ -55,7 +55,7 @@ export function DataGridRowHeightMenu<TData>({
   const rowHeight = table.options.meta?.rowHeight;
   const onRowHeightChange = table.options.meta?.onRowHeightChange;
 
-  const selectedRowHeight = React.useMemo(() => {
+  const selectedRowHeight = useMemo(() => {
     return (
       rowHeights.find((opt) => opt.value === rowHeight) ?? {
         label: "Short",

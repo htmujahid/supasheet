@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useRef, useState, type KeyboardEvent } from "react";
 
 import {
   Select,
@@ -27,18 +27,18 @@ export function DataGridSelectCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as string;
-  const [value, setValue] = React.useState(initialValue);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(initialValue);
+  const containerRef = useRef<HTMLDivElement>(null);
   const cellOpts = cell.column.columnDef.meta as ColumnMetadata;
   const options = cellOpts?.variant === "select" ? cellOpts.options : [];
 
-  const prevInitialValueRef = React.useRef(initialValue);
+  const prevInitialValueRef = useRef(initialValue);
   if (initialValue !== prevInitialValueRef.current) {
     prevInitialValueRef.current = initialValue;
     setValue(initialValue);
   }
 
-  const onValueChange = React.useCallback(
+  const onValueChange = useCallback(
     (newValue: string) => {
       if (readOnly) return;
       setValue(newValue);
@@ -48,7 +48,7 @@ export function DataGridSelectCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       if (isOpen && !readOnly) {
         tableMeta?.onCellEditingStart?.(rowIndex, columnId);
@@ -59,8 +59,8 @@ export function DataGridSelectCell<TData>({
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isEditing && event.key === "Escape") {
         event.preventDefault();
         setValue(initialValue);

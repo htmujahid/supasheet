@@ -1,6 +1,12 @@
 "use client";
 
-import * as React from "react";
+import {
+  memo,
+  useCallback,
+  useMemo,
+  type ComponentProps,
+  type RefObject,
+} from "react";
 
 import type {
   ColumnPinningState,
@@ -26,12 +32,12 @@ import {
 } from "../../lib/utils/data-grid";
 import { DataGridCell } from "./data-grid-cell";
 
-interface DataGridRowProps<TData> extends React.ComponentProps<"div"> {
+interface DataGridRowProps<TData> extends ComponentProps<"div"> {
   row: Row<TData>;
   tableMeta: TableMeta<TData>;
   virtualItem: VirtualItem;
   measureElement: (node: Element | null) => void;
-  rowMapRef: React.RefObject<Map<number, HTMLDivElement>>;
+  rowMapRef: RefObject<Map<number, HTMLDivElement>>;
   rowHeight: RowHeightValue;
   columnVisibility: VisibilityState;
   columnPinning: ColumnPinningState;
@@ -45,7 +51,7 @@ interface DataGridRowProps<TData> extends React.ComponentProps<"div"> {
   stretchColumns: boolean;
 }
 
-export const DataGridRow = React.memo(DataGridRowImpl, (prev, next) => {
+export const DataGridRow = memo(DataGridRowImpl, (prev, next) => {
   const prevRowIndex = prev.virtualItem.index;
   const nextRowIndex = next.virtualItem.index;
 
@@ -158,7 +164,7 @@ function DataGridRowImpl<TData>({
 }: DataGridRowProps<TData>) {
   const virtualRowIndex = virtualItem.index;
 
-  const onRowChange = React.useCallback(
+  const onRowChange = useCallback(
     (node: HTMLDivElement | null) => {
       if (typeof virtualRowIndex === "undefined") return;
 
@@ -178,7 +184,7 @@ function DataGridRowImpl<TData>({
 
   // Memoize visible cells to avoid recreating cell array on every render
   // Though TanStack returns new Cell wrappers, memoizing the array helps React's reconciliation
-  const visibleCells = React.useMemo(
+  const visibleCells = useMemo(
     () => row.getVisibleCells(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [row, columnVisibility, columnPinning],

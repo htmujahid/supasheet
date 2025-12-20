@@ -1,4 +1,16 @@
-import React from "react";
+import {
+  createElement,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ComponentProps,
+  type DragEvent,
+  type KeyboardEvent,
+} from "react";
 
 import { Upload, X } from "lucide-react";
 import { toast } from "sonner";
@@ -42,34 +54,34 @@ export function DataGridFileCell<TData>({
   isActiveSearchMatch,
   readOnly,
 }: DataGridCellProps<TData>) {
-  const cellValue = React.useMemo(
+  const cellValue = useMemo(
     () => (cell.getValue() as FileCellData[]) ?? [],
     [cell],
   );
 
   const cellKey = getCellKey(rowIndex, columnId);
-  const prevCellKeyRef = React.useRef(cellKey);
+  const prevCellKeyRef = useRef(cellKey);
 
-  const labelId = React.useId();
-  const descriptionId = React.useId();
+  const labelId = useId();
+  const descriptionId = useId();
 
-  const [files, setFiles] = React.useState<FileCellData[]>(cellValue);
-  const [uploadingFiles, setUploadingFiles] = React.useState<Set<string>>(
+  const [files, setFiles] = useState<FileCellData[]>(cellValue);
+  const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(
     new Set(),
   );
-  const [deletingFiles, setDeletingFiles] = React.useState<Set<string>>(
+  const [deletingFiles, setDeletingFiles] = useState<Set<string>>(
     new Set(),
   );
-  const [isDraggingOver, setIsDraggingOver] = React.useState(false);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const isUploading = uploadingFiles.size > 0;
   const isDeleting = deletingFiles.size > 0;
   const isPending = isUploading || isDeleting;
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const dropzoneRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropzoneRef = useRef<HTMLDivElement>(null);
   const sideOffset = -(containerRef.current?.clientHeight ?? 0);
 
   const fileCellOpts = cell.column.columnDef?.meta;
@@ -79,12 +91,12 @@ export function DataGridFileCell<TData>({
   const accept = config.accept ?? "*";
   const multiple = maxFiles > 1;
 
-  const acceptedTypes = React.useMemo(
+  const acceptedTypes = useMemo(
     () => (accept ? accept.split(",").map((t) => t.trim()) : null),
     [accept],
   );
 
-  const prevCellValueRef = React.useRef(cellValue);
+  const prevCellValueRef = useRef(cellValue);
   if (cellValue !== prevCellValueRef.current) {
     prevCellValueRef.current = cellValue;
     for (const file of files) {
@@ -101,7 +113,7 @@ export function DataGridFileCell<TData>({
     setError(null);
   }
 
-  const validateFile = React.useCallback(
+  const validateFile = useCallback(
     (file: File): string | null => {
       if (maxFileSize && file.size > maxFileSize) {
         return `File size exceeds ${formatFileSize(maxFileSize)}`;
@@ -127,7 +139,7 @@ export function DataGridFileCell<TData>({
     [maxFileSize, acceptedTypes],
   );
 
-  const addFiles = React.useCallback(
+  const addFiles = useCallback(
     async (newFiles: File[], skipUpload = false) => {
       if (readOnly || isPending) return;
       setError(null);
@@ -266,7 +278,7 @@ export function DataGridFileCell<TData>({
     ],
   );
 
-  const removeFile = React.useCallback(
+  const removeFile = useCallback(
     async (fileUrl: string) => {
       if (readOnly || isPending) return;
       setError(null);
@@ -314,7 +326,7 @@ export function DataGridFileCell<TData>({
     [files, tableMeta, rowIndex, columnId, readOnly, isPending],
   );
 
-  const clearAll = React.useCallback(async () => {
+  const clearAll = useCallback(async () => {
     if (readOnly || isPending) return;
     setError(null);
 
@@ -347,7 +359,7 @@ export function DataGridFileCell<TData>({
     tableMeta?.onDataUpdate?.({ rowIndex, columnId, value: [] });
   }, [files, tableMeta, rowIndex, columnId, readOnly, isPending]);
 
-  const onCellDragEnter = React.useCallback((event: React.DragEvent) => {
+  const onCellDragEnter = useCallback((event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (event.dataTransfer.types.includes("Files")) {
@@ -355,7 +367,7 @@ export function DataGridFileCell<TData>({
     }
   }, []);
 
-  const onCellDragLeave = React.useCallback((event: React.DragEvent) => {
+  const onCellDragLeave = useCallback((event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const rect = event.currentTarget.getBoundingClientRect();
@@ -372,13 +384,13 @@ export function DataGridFileCell<TData>({
     }
   }, []);
 
-  const onCellDragOver = React.useCallback((event: React.DragEvent) => {
+  const onCellDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
   }, []);
 
-  const onCellDrop = React.useCallback(
-    (event: React.DragEvent) => {
+  const onCellDrop = useCallback(
+    (event: DragEvent) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDraggingOver(false);
@@ -391,13 +403,13 @@ export function DataGridFileCell<TData>({
     [addFiles],
   );
 
-  const onDropzoneDragEnter = React.useCallback((event: React.DragEvent) => {
+  const onDropzoneDragEnter = useCallback((event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     setIsDragging(true);
   }, []);
 
-  const onDropzoneDragLeave = React.useCallback((event: React.DragEvent) => {
+  const onDropzoneDragLeave = useCallback((event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const rect = event.currentTarget.getBoundingClientRect();
@@ -414,13 +426,13 @@ export function DataGridFileCell<TData>({
     }
   }, []);
 
-  const onDropzoneDragOver = React.useCallback((event: React.DragEvent) => {
+  const onDropzoneDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
   }, []);
 
-  const onDropzoneDrop = React.useCallback(
-    (event: React.DragEvent) => {
+  const onDropzoneDrop = useCallback(
+    (event: DragEvent) => {
       event.preventDefault();
       event.stopPropagation();
       setIsDragging(false);
@@ -431,12 +443,12 @@ export function DataGridFileCell<TData>({
     [addFiles],
   );
 
-  const onDropzoneClick = React.useCallback(() => {
+  const onDropzoneClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
 
-  const onDropzoneKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onDropzoneKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         onDropzoneClick();
@@ -445,8 +457,8 @@ export function DataGridFileCell<TData>({
     [onDropzoneClick],
   );
 
-  const onFileInputChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
       const selectedFiles = Array.from(event.target.files ?? []);
       addFiles(selectedFiles, false);
       event.target.value = "";
@@ -454,7 +466,7 @@ export function DataGridFileCell<TData>({
     [addFiles],
   );
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (isOpen: boolean) => {
       if (isOpen && !readOnly) {
         setError(null);
@@ -468,24 +480,24 @@ export function DataGridFileCell<TData>({
   );
 
   const onEscapeKeyDown: NonNullable<
-    React.ComponentProps<typeof PopoverContent>["onEscapeKeyDown"]
-  > = React.useCallback((event) => {
+    ComponentProps<typeof PopoverContent>["onEscapeKeyDown"]
+  > = useCallback((event) => {
     // Prevent the escape key from propagating to the data grid's keyboard handler
     // which would call blurCell() and remove focus from the cell
     event.stopPropagation();
   }, []);
 
   const onOpenAutoFocus: NonNullable<
-    React.ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
-  > = React.useCallback((event) => {
+    ComponentProps<typeof PopoverContent>["onOpenAutoFocus"]
+  > = useCallback((event) => {
     event.preventDefault();
     queueMicrotask(() => {
       dropzoneRef.current?.focus();
     });
   }, []);
 
-  const onWrapperKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onWrapperKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (isEditing) {
         if (event.key === "Escape") {
           event.preventDefault();
@@ -517,7 +529,7 @@ export function DataGridFileCell<TData>({
     ],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       for (const file of files) {
         if (file.url) {
@@ -718,7 +730,7 @@ export function DataGridFileCell<TData>({
                 variant="secondary"
                 className="shrink-0 gap-1 px-1.5 text-xs"
               >
-                {React.createElement(getFileIcon(file.type), {
+                {createElement(getFileIcon(file.type), {
                   className: "size-3 shrink-0",
                 })}
                 <span className="max-w-[100px] truncate">{file.name}</span>
