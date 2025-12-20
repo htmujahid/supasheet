@@ -1072,7 +1072,6 @@ comment on table health_fitness.body_measurements is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"measurement_date","startDate":"measurement_date","endDate":"measurement_date","badge":"weight_kg"}
     ]
 }';
@@ -1087,7 +1086,6 @@ comment on table health_fitness.health_metrics is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"measurement_date","startDate":"measurement_date","endDate":"measurement_date","badge":"resting_heart_rate"}
     ]
 }';
@@ -1102,7 +1100,6 @@ comment on table health_fitness.sleep_records is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"sleep_date","startDate":"sleep_date","endDate":"sleep_date","badge":"sleep_quality"}
     ]
 }';
@@ -1115,10 +1112,7 @@ comment on table health_fitness.exercise_categories is
         "sort": [{"id":"name","desc":false}],
         "filter": [],
         "join": []
-    },
-    "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"}
-    ]
+    }
 }';
 
 comment on table health_fitness.exercises is
@@ -1133,7 +1127,6 @@ comment on table health_fitness.exercises is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"category","name":"Exercises By Category","type":"kanban","group":"category_id","title":"name","description":"description","badge":"difficulty_level"}
     ]
 }';
@@ -1146,10 +1139,7 @@ comment on table health_fitness.workout_plans is
         "sort": [{"id":"created_at","desc":true}],
         "filter": [],
         "join": []
-    },
-    "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"}
-    ]
+    }
 }';
 
 comment on table health_fitness.workout_sessions is
@@ -1164,7 +1154,6 @@ comment on table health_fitness.workout_sessions is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"session_type","startDate":"session_date","endDate":"session_date","badge":"intensity_level"},
         {"id":"type","name":"Workouts By Type","type":"kanban","group":"session_type","title":"session_date","description":"notes","date":"session_date","badge":"intensity_level"}
     ]
@@ -1183,7 +1172,6 @@ comment on table health_fitness.exercise_sets is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"Sets By Type","type":"kanban","group":"set_type","title":"exercise_id","description":"notes","badge":"completed"}
     ]
 }';
@@ -1198,7 +1186,6 @@ comment on table health_fitness.cardio_activities is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"activity_type","startDate":"activity_date","endDate":"activity_date","badge":"avg_heart_rate"},
         {"id":"type","name":"Activities By Type","type":"kanban","group":"activity_type","title":"activity_date","date":"activity_date","badge":"distance_km"}
     ]
@@ -1214,7 +1201,6 @@ comment on table health_fitness.foods is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"category","name":"Foods By Category","type":"kanban","group":"food_category","title":"name","description":"serving_size_g","badge":"calories_per_100g"}
     ]
 }';
@@ -1229,7 +1215,6 @@ comment on table health_fitness.meals is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"meal_type","startDate":"meal_date","endDate":"meal_date","badge":"meal_type"},
         {"id":"type","name":"Meals By Type","type":"kanban","group":"meal_type","title":"meal_date","date":"meal_date","badge":"meal_time"}
     ]
@@ -1246,10 +1231,7 @@ comment on table health_fitness.meal_foods is
             {"table":"meals","on":"meal_id","columns":["meal_date","meal_type"]},
             {"table":"foods","on":"food_id","columns":["name","food_category"]}
         ]
-    },
-    "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"}
-    ]
+    }
 }';
 
 comment on table health_fitness.water_intake is
@@ -1262,7 +1244,6 @@ comment on table health_fitness.water_intake is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"amount_ml","startDate":"intake_date","endDate":"intake_date","badge":"amount_ml"}
     ]
 }';
@@ -1277,7 +1258,6 @@ comment on table health_fitness.supplements is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"Supplements By Type","type":"kanban","group":"supplement_type","title":"name","description":"serving_size","badge":"serving_unit"}
     ]
 }';
@@ -1294,7 +1274,6 @@ comment on table health_fitness.supplement_intake is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"supplement_id","startDate":"intake_date","endDate":"intake_date","badge":"amount"}
     ]
 }';
@@ -1309,7 +1288,6 @@ comment on table health_fitness.health_goals is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Goals By Status","type":"kanban","group":"status","title":"title","description":"description","date":"target_date","badge":"priority"},
         {"id":"priority","name":"Goals By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"target_date","badge":"status"}
     ]
@@ -1325,7 +1303,6 @@ comment on table health_fitness.medical_conditions is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Conditions By Status","type":"kanban","group":"status","title":"condition_name","description":"description","date":"diagnosis_date","badge":"severity"},
         {"id":"severity","name":"Conditions By Severity","type":"kanban","group":"severity","title":"condition_name","description":"description","date":"diagnosis_date","badge":"status"}
     ]
@@ -1339,10 +1316,7 @@ comment on table health_fitness.medications is
         "sort": [{"id":"start_date","desc":true}],
         "filter": [],
         "join": []
-    },
-    "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"}
-    ]
+    }
 }';
 
 comment on table health_fitness.injuries is
@@ -1355,7 +1329,6 @@ comment on table health_fitness.injuries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Injuries By Status","type":"kanban","group":"status","title":"injury_type","description":"description","date":"injury_date","badge":"severity"},
         {"id":"severity","name":"Injuries By Severity","type":"kanban","group":"severity","title":"injury_type","description":"description","date":"injury_date","badge":"status"}
     ]
@@ -1371,7 +1344,6 @@ comment on table health_fitness.wellness_logs is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"log_date","startDate":"log_date","endDate":"log_date","badge":"overall_wellness"}
     ]
 }';
@@ -1386,7 +1358,6 @@ comment on table health_fitness.daily_summaries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"summary_date","startDate":"summary_date","endDate":"summary_date","badge":"steps_count"}
     ]
 }';

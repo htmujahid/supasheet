@@ -923,7 +923,6 @@ comment on table finance.transactions is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"Transactions By Type","type":"kanban","group":"type","title":"description","description":"notes","date":"transaction_date","badge":"amount"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"description","startDate":"transaction_date","endDate":"transaction_date","badge":"type"}
     ]
@@ -938,7 +937,6 @@ comment on table finance.budgets is
         "filter": [{"id":"is_active","value":"true","variant":"boolean","operator":"eq"}]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"period","name":"Budgets By Period","type":"kanban","group":"period","title":"name","description":"amount","badge":"category_id"}
     ]
 }';
@@ -968,7 +966,6 @@ comment on table finance.recurring_transactions is
         "filter": [{"id":"is_active","value":"true","variant":"boolean","operator":"eq"}]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"frequency","name":"By Frequency","type":"kanban","group":"frequency","title":"description","description":"amount","date":"next_due_date"}
     ]
 }';

@@ -2,11 +2,7 @@
 
 import { useCallback, useState } from "react";
 
-import {
-  AlertCircleIcon,
-  FileUpIcon,
-  XIcon
-} from "lucide-react";
+import { AlertCircleIcon, FileUpIcon, XIcon } from "lucide-react";
 import { type FieldPath, useFieldArray } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -19,12 +15,17 @@ import { ResourceDataSchema } from "@/lib/database-meta.types";
 import { useSupabase } from "@/lib/supabase/hooks/use-supabase";
 import { cn } from "@/lib/utils";
 
+import { formatFileSize, getFileIcon } from "../../lib/utils/files";
 import {
   deleteFileFromStorage,
   uploadFileToStorage,
 } from "./file-field-storage";
-import type { FileFieldConfig, FileFieldProps, FileObject, UploadProgress } from "./types";
-import { formatFileSize, getFileIcon } from "../../lib/utils/files";
+import type {
+  FileFieldConfig,
+  FileFieldProps,
+  FileObject,
+  UploadProgress,
+} from "./types";
 
 export function FileField({
   form,
@@ -59,7 +60,9 @@ export function FileField({
 
     return fieldArray.fields
       .map((_item, index) => {
-        const file = form.getValues(`${field.name}.${index}` as any) as FileObject;
+        const file = form.getValues(
+          `${field.name}.${index}` as any,
+        ) as FileObject;
         if (!file || typeof file !== "object") return null;
 
         return {
@@ -68,7 +71,7 @@ export function FileField({
           type: file.type,
           url: file.url,
           id: file.url,
-        }
+        };
       })
       .filter((item): item is FileMetadata => item !== null);
   }, [fieldArray.fields, form, field.name]);
@@ -111,7 +114,9 @@ export function FileField({
             type: fileWithPreview.file.type,
             size: fileWithPreview.file.size,
             url,
-            last_modified: new Date(fileWithPreview.file.lastModified).toISOString(),
+            last_modified: new Date(
+              fileWithPreview.file.lastModified,
+            ).toISOString(),
           });
 
           // Mark as completed
@@ -127,10 +132,10 @@ export function FileField({
             prev.map((item) =>
               item.fileId === fileWithPreview.id
                 ? {
-                  ...item,
-                  error:
-                    error instanceof Error ? error.message : "Upload failed",
-                }
+                    ...item,
+                    error:
+                      error instanceof Error ? error.message : "Upload failed",
+                  }
                 : item,
             ),
           );
@@ -154,8 +159,8 @@ export function FileField({
 
         // Find and remove from field array
         const index = fieldArray.fields.findIndex((_item, idx) => {
-          const url = form.getValues(`${field.name}.${idx}` as any);
-          return url === fileUrl;
+          const file = form.getValues(`${field.name}.${idx}` as any) as FileObject | undefined;
+          return file?.url === fileUrl;
         });
 
         if (index !== -1) {
@@ -217,7 +222,7 @@ export function FileField({
   });
 
   return (
-    <div className="flex flex-col gap-2 p-3 border border-border rounded-md">
+    <div className="border-border flex flex-col gap-2 rounded-md border p-3">
       <div
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -227,7 +232,7 @@ export function FileField({
         data-dragging={isDragging || undefined}
         data-files={files.length > 0 || undefined}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed border-input p-6 outline-none transition-colors hover:bg-accent/30 focus-visible:border-ring/50",
+          "border-input hover:bg-accent/30 focus-visible:border-ring/50 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed p-6 transition-colors outline-none",
           isDragging
             ? "border-primary bg-primary/5"
             : "border-muted-foreground/25",
@@ -235,16 +240,16 @@ export function FileField({
       >
         <div className="flex flex-col items-center justify-center text-center">
           <div
-            className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border bg-background"
+            className="bg-background mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border"
             aria-hidden="true"
           >
             <FileUpIcon className="size-4 opacity-60" />
           </div>
           <p className="mb-1.5 text-sm font-medium">Upload files</p>
-          <p className="mb-2 text-xs text-muted-foreground">
+          <p className="text-muted-foreground mb-2 text-xs">
             Drag & drop or click to browse
           </p>
-          <div className="flex flex-wrap justify-center gap-1 text-xs text-muted-foreground/70">
+          <div className="text-muted-foreground/70 flex flex-wrap justify-center gap-1 text-xs">
             <span>All files</span>
             <span>∙</span>
             <span>Max {maxFiles} files</span>
@@ -263,7 +268,7 @@ export function FileField({
       {/* Error messages */}
       {errors.length > 0 && (
         <div
-          className="rounded-md bg-destructive/10 px-3 py-2 text-destructive text-xs"
+          className="bg-destructive/10 text-destructive rounded-md px-3 py-2 text-xs"
           role="alert"
         >
           <AlertCircleIcon className="size-3 shrink-0" />
@@ -273,14 +278,14 @@ export function FileField({
       {files.length > 0 && (
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <p className="font-medium text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-xs font-medium">
               {files.length} {files.length === 1 ? "file" : "files"}
             </p>
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-6 text-muted-foreground text-xs"
+              className="text-muted-foreground h-6 text-xs"
               onClick={handleRemoveAll}
             >
               Clear all
@@ -293,10 +298,10 @@ export function FileField({
               return (
                 <div
                   key={file.id}
-                  className="flex items-center gap-2 rounded-md border bg-muted/50 px-2 py-1.5"
+                  className="bg-muted/50 flex items-center gap-2 rounded-md border px-2 py-1.5"
                 >
                   {FileIcon && (
-                    <FileIcon className="size-4 shrink-0 text-muted-foreground" />
+                    <FileIcon className="text-muted-foreground size-4 shrink-0" />
                   )}
                   <div className="flex-1 overflow-hidden">
                     <p className="truncate text-sm">{file.file.name}</p>
@@ -309,7 +314,15 @@ export function FileField({
                     variant="ghost"
                     size="icon"
                     className="size-5 rounded-sm"
-                    onClick={() => { removeFile(file.id); handleFileRemoved(file.id, typeof file.file === 'object' ? undefined : (file.file as FileMetadata).url); }}
+                    onClick={() => {
+                      removeFile(file.id);
+                      handleFileRemoved(
+                        file.id,
+                        typeof file.file === "object"
+                          ? undefined
+                          : (file.file as FileMetadata).url,
+                      );
+                    }}
                   >
                     <XIcon className="size-3" />
                   </Button>

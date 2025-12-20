@@ -7,8 +7,8 @@ import { SearchParams } from "nuqs";
 import { DefaultHeader } from "@/components/layouts/default-header";
 import { If } from "@/components/makerkit/if";
 import { ResourceContextProvider } from "@/features/resource/components/resource-context";
+import { ResourceGrid } from "@/features/resource/components/resource-gird";
 import { ResourceSheet } from "@/features/resource/components/resource-sheet";
-import { ResourceTable } from "@/features/resource/components/resource-table";
 import {
   loadColumnsSchema,
   loadResourceData,
@@ -24,17 +24,18 @@ import {
 } from "@/lib/database-meta.types";
 import { formatTitle } from "@/lib/format";
 
-type ResourcePageProps = {
+type ResourceSheetPageProps = {
   params: Promise<{
     schema: DatabaseSchemas;
     resource: DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>;
+    id: string;
   }>;
   searchParams: Promise<SearchParams>;
 };
 
 export async function generateMetadata({
   params,
-}: ResourcePageProps): Promise<Metadata> {
+}: ResourceSheetPageProps): Promise<Metadata> {
   const { schema, resource } = await params;
 
   return {
@@ -42,7 +43,10 @@ export async function generateMetadata({
   };
 }
 
-async function ResourcePage({ params, searchParams }: ResourcePageProps) {
+async function ResourceSheetPage({
+  params,
+  searchParams,
+}: ResourceSheetPageProps) {
   const { schema, resource } = await params;
 
   const search = resourceSearchParamsCache.parse(await searchParams);
@@ -80,7 +84,7 @@ async function ResourcePage({ params, searchParams }: ResourcePageProps) {
           tableSchema={tableSchema}
           columnsSchema={columnsSchema}
         >
-          <ResourceTable
+          <ResourceGrid
             tableSchema={tableSchema}
             columnsSchema={columnsSchema}
             data={data}
@@ -91,4 +95,4 @@ async function ResourcePage({ params, searchParams }: ResourcePageProps) {
   );
 }
 
-export default ResourcePage;
+export default ResourceSheetPage;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import * as React from "react";
 
 import type { Table } from "@tanstack/react-table";
 import {
@@ -41,20 +41,21 @@ const rowHeights = [
   },
 ] as const;
 
-type DataGridRowHeightMenuProps<TData> = React.ComponentProps<
-  typeof SelectContent
-> & {
+interface DataGridRowHeightMenuProps<TData>
+  extends React.ComponentProps<typeof SelectContent> {
   table: Table<TData>;
-};
+  disabled?: boolean;
+}
 
 export function DataGridRowHeightMenu<TData>({
   table,
+  disabled,
   ...props
 }: DataGridRowHeightMenuProps<TData>) {
   const rowHeight = table.options.meta?.rowHeight;
   const onRowHeightChange = table.options.meta?.onRowHeightChange;
 
-  const selectedRowHeight = useMemo(() => {
+  const selectedRowHeight = React.useMemo(() => {
     return (
       rowHeights.find((opt) => opt.value === rowHeight) ?? {
         label: "Short",
@@ -65,7 +66,11 @@ export function DataGridRowHeightMenu<TData>({
   }, [rowHeight]);
 
   return (
-    <Select value={rowHeight} onValueChange={onRowHeightChange}>
+    <Select
+      value={rowHeight}
+      onValueChange={onRowHeightChange}
+      disabled={disabled}
+    >
       <SelectTrigger size="sm" className="[&_svg:nth-child(2)]:hidden">
         <SelectValue placeholder="Row height">
           <selectedRowHeight.icon />

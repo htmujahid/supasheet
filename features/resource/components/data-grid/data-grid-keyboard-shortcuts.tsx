@@ -1,15 +1,8 @@
 "use client";
 
-import {
-  Fragment,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import * as React from "react";
 
+import { useDirection } from "@radix-ui/react-direction";
 import { SearchIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -27,19 +20,19 @@ import { Separator } from "@/components/ui/separator";
 
 const SHORTCUT_KEY = "/";
 
-type ShortcutGroup = {
+interface ShortcutGroup {
   title: string;
   shortcuts: Array<{
     keys: string[];
     description: string;
   }>;
-};
+}
 
-type DataGridKeyboardShortcutsProps = {
+interface DataGridKeyboardShortcutsProps {
   enableSearch?: boolean;
-};
+}
 
-export const DataGridKeyboardShortcuts = memo(
+export const DataGridKeyboardShortcuts = React.memo(
   DataGridKeyboardShortcutsImpl,
   (prev, next) => {
     return prev.enableSearch === next.enableSearch;
@@ -49,9 +42,10 @@ export const DataGridKeyboardShortcuts = memo(
 function DataGridKeyboardShortcutsImpl({
   enableSearch = false,
 }: DataGridKeyboardShortcutsProps) {
-  const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const dir = useDirection();
+  const [open, setOpen] = React.useState(false);
+  const [input, setInput] = React.useState("");
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const isMac =
     typeof navigator !== "undefined"
@@ -60,26 +54,26 @@ function DataGridKeyboardShortcutsImpl({
 
   const modKey = isMac ? "⌘" : "Ctrl";
 
-  const onOpenChange = useCallback((isOpen: boolean) => {
+  const onOpenChange = React.useCallback((isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
       setInput("");
     }
   }, []);
 
-  const onOpenAutoFocus = useCallback((event: Event) => {
+  const onOpenAutoFocus = React.useCallback((event: Event) => {
     event.preventDefault();
     inputRef.current?.focus();
   }, []);
 
-  const onInputChange = useCallback(
+  const onInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setInput(event.target.value);
     },
     [],
   );
 
-  const shortcutGroups: ShortcutGroup[] = useMemo(
+  const shortcutGroups: ShortcutGroup[] = React.useMemo(
     () => [
       {
         title: "Navigation",
@@ -105,6 +99,22 @@ function DataGridKeyboardShortcutsImpl({
             description: "Move to last column",
           },
           {
+            keys: [modKey, "↑"],
+            description: "Move to first row (same column)",
+          },
+          {
+            keys: [modKey, "↓"],
+            description: "Move to last row (same column)",
+          },
+          {
+            keys: [modKey, "←"],
+            description: "Move to first column (same row)",
+          },
+          {
+            keys: [modKey, "→"],
+            description: "Move to last column (same row)",
+          },
+          {
             keys: [modKey, "Home"],
             description: "Move to first cell",
           },
@@ -120,6 +130,22 @@ function DataGridKeyboardShortcutsImpl({
             keys: ["PgDn"],
             description: "Move down one page",
           },
+          {
+            keys: ["⌥", "↑"],
+            description: "Scroll up one page",
+          },
+          {
+            keys: ["⌥", "↓"],
+            description: "Scroll down one page",
+          },
+          {
+            keys: ["⌥", "PgUp"],
+            description: "Scroll left one page of columns",
+          },
+          {
+            keys: ["⌥", "PgDn"],
+            description: "Scroll right one page of columns",
+          },
         ],
       },
       {
@@ -128,6 +154,22 @@ function DataGridKeyboardShortcutsImpl({
           {
             keys: ["Shift", "↑↓←→"],
             description: "Extend selection",
+          },
+          {
+            keys: [modKey, "Shift", "↑"],
+            description: "Select to top of table",
+          },
+          {
+            keys: [modKey, "Shift", "↓"],
+            description: "Select to bottom of table",
+          },
+          {
+            keys: [modKey, "Shift", "←"],
+            description: "Select to first column",
+          },
+          {
+            keys: [modKey, "Shift", "→"],
+            description: "Select to last column",
           },
           {
             keys: [modKey, "A"],
@@ -155,8 +197,28 @@ function DataGridKeyboardShortcutsImpl({
             description: "Start editing cell",
           },
           {
+            keys: ["F2"],
+            description: "Start editing cell",
+          },
+          {
             keys: ["Double Click"],
             description: "Start editing cell",
+          },
+          {
+            keys: ["Shift", "Enter"],
+            description: "Insert row below",
+          },
+          {
+            keys: [modKey, "C"],
+            description: "Copy selected cells",
+          },
+          {
+            keys: [modKey, "X"],
+            description: "Cut selected cells",
+          },
+          {
+            keys: [modKey, "V"],
+            description: "Paste cells",
           },
           {
             keys: ["Delete"],
@@ -165,6 +227,10 @@ function DataGridKeyboardShortcutsImpl({
           {
             keys: ["Backspace"],
             description: "Clear selected cells",
+          },
+          {
+            keys: [modKey, "Backspace"],
+            description: "Delete selected rows",
           },
         ],
       },
@@ -193,6 +259,23 @@ function DataGridKeyboardShortcutsImpl({
             },
           ]
         : []),
+      {
+        title: "Filtering",
+        shortcuts: [
+          {
+            keys: [modKey, "Shift", "F"],
+            description: "Toggle the filter menu",
+          },
+          {
+            keys: ["Backspace"],
+            description: "Remove filter (when focused)",
+          },
+          {
+            keys: ["Delete"],
+            description: "Remove filter (when focused)",
+          },
+        ],
+      },
       {
         title: "Sorting",
         shortcuts: [
@@ -223,7 +306,7 @@ function DataGridKeyboardShortcutsImpl({
     [modKey, enableSearch],
   );
 
-  const filteredGroups = useMemo(() => {
+  const filteredGroups = React.useMemo(() => {
     if (!input.trim()) return shortcutGroups;
 
     const query = input.toLowerCase();
@@ -239,7 +322,7 @@ function DataGridKeyboardShortcutsImpl({
       .filter((group) => group.shortcuts.length > 0);
   }, [shortcutGroups, input]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key === SHORTCUT_KEY) {
         event.preventDefault();
@@ -256,11 +339,12 @@ function DataGridKeyboardShortcutsImpl({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
+        dir={dir}
         className="max-w-2xl px-0"
         onOpenAutoFocus={onOpenAutoFocus}
         showCloseButton={false}
       >
-        <DialogClose className="absolute top-6 right-6" asChild>
+        <DialogClose className="absolute end-6 top-6" asChild>
           <Button variant="ghost" size="icon" className="size-6">
             <XIcon />
           </Button>
@@ -274,11 +358,11 @@ function DataGridKeyboardShortcutsImpl({
         </DialogHeader>
         <div className="px-6">
           <div className="relative">
-            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-3.5 -translate-y-1/2" />
+            <SearchIcon className="text-muted-foreground absolute start-3 top-1/2 size-3.5 -translate-y-1/2" />
             <Input
               ref={inputRef}
               placeholder="Search shortcuts..."
-              className="h-8 pl-8"
+              className="h-8 ps-8"
               value={input}
               onChange={onInputChange}
             />
@@ -335,12 +419,12 @@ function ShortcutCard({
       <span className="flex-1 text-sm">{description}</span>
       <KbdGroup className="shrink-0">
         {keys.map((key, index) => (
-          <Fragment key={key}>
+          <React.Fragment key={key}>
             {index > 0 && (
               <span className="text-muted-foreground text-xs">+</span>
             )}
             <Kbd>{key}</Kbd>
-          </Fragment>
+          </React.Fragment>
         ))}
       </KbdGroup>
     </div>

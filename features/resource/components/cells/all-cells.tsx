@@ -5,10 +5,10 @@ import { AvatarCell } from "./avatar-cell";
 import { BooleanCell } from "./boolean-cell";
 import { ColorCell } from "./color-cell";
 import { DurationCell } from "./duration-cell";
-import { SelectCell } from "./select-cell";
 import { FileCell } from "./file-cell";
 import { PercentageCell } from "./percentage-cell";
 import { RatingCell } from "./rating-cell";
+import { SelectCell } from "./select-cell";
 
 export const AllCells = memo(function AllCells({
   columnMetadata,
@@ -49,12 +49,7 @@ export const AllCells = memo(function AllCells({
     case "datetime":
       return value ? new Date(value as string).toLocaleString() : "";
     case "time":
-      return value
-        ? new Date(`1970-01-01T${value as string}Z`).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        : "";
+      return value?.toString();
     default:
       return value?.toString();
   }

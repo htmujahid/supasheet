@@ -42,8 +42,6 @@ function getSubItemsIcon({ type }: { type: string }) {
     case "kanban":
       return "SquareKanban";
     case "calendar":
-      return "CalendarDays";
-    case "sheet":
       return "Grid3X3";
     case "gallery":
       return "Image";

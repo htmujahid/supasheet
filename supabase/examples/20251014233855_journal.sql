@@ -1248,7 +1248,6 @@ comment on table journal.journal_entries is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"category","name":"By Category","type":"kanban","group":"category_id","title":"title","description":"content","date":"entry_date","badge":"mood_rating"},
         {"id":"mood","name":"By Mood","type":"kanban","group":"mood_rating","title":"title","description":"content","date":"entry_date","badge":"category_id"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"title","startDate":"entry_date","endDate":"entry_date","badge":"mood_rating"}
@@ -1265,7 +1264,6 @@ comment on table journal.mood_entries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"mood","name":"By Mood","type":"kanban","group":"primary_mood","title":"primary_mood","description":"notes","date":"entry_date","badge":"mood_intensity"}
     ]
 }';
@@ -1280,7 +1278,6 @@ comment on table journal.gratitude_entries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"category","name":"By Category","type":"kanban","group":"category","title":"gratitude_text","description":"gratitude_text","date":"entry_date","badge":"intensity"}
     ]
 }';
@@ -1295,7 +1292,6 @@ comment on table journal.dream_entries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"By Type","type":"kanban","group":"dream_type","title":"title","description":"content","date":"dream_date","badge":"vividness"}
     ]
 }';
@@ -1310,7 +1306,6 @@ comment on table journal.life_events is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"By Type","type":"kanban","group":"event_type","title":"title","description":"description","date":"event_date","badge":"significance"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"title","startDate":"event_date","endDate":"event_date","badge":"significance"}
     ]
@@ -1326,7 +1321,6 @@ comment on table journal.reflection_sessions is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"By Type","type":"kanban","group":"session_type","title":"session_type","description":"highlights","date":"session_date","badge":"overall_satisfaction"}
     ]
 }';
@@ -1341,7 +1335,6 @@ comment on table journal.reading_entries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"By Status","type":"kanban","group":"status","title":"book_title","description":"author","date":"start_date","badge":"rating"}
     ]
 }';
@@ -1356,7 +1349,6 @@ comment on table journal.travel_entries is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"By Type","type":"kanban","group":"trip_type","title":"destination","description":"favorite_moments","date":"trip_start_date","badge":"overall_rating"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"destination","startDate":"trip_start_date","endDate":"trip_end_date","badge":"overall_rating"}
     ]

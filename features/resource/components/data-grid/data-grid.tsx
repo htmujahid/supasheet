@@ -1,207 +1,223 @@
 "use client";
 
-import { useCallback } from "react";
-
-import { flexRender } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
-
-import { getCommonPinningStyles } from "@/interfaces/data-table/lib/data-table";
-import { cn } from "@/lib/utils";
-
-import { useDataGrid } from "../../lib/hooks/use-data-grid";
+import * as React from "react";
 import { DataGridColumnHeader } from "./data-grid-column-header";
 import { DataGridContextMenu } from "./data-grid-context-menu";
+import { DataGridPasteDialog } from "./data-grid-paste-dialog";
 import { DataGridRow } from "./data-grid-row";
 import { DataGridSearch } from "./data-grid-search";
+import type { useDataGrid } from "../../lib/hooks/use-data-grid";
+import { flexRender, getCommonPinningStyles } from "../../lib/utils/data-grid";
+import { cn } from "@/lib/utils";
+import type { Direction } from "../../lib/types/data-grid";
+import { DataTablePagination } from "@/interfaces/data-table/components/data-table-pagination";
 
-type DataGridProps<TData> = ReturnType<typeof useDataGrid<TData>> &
-  React.ComponentProps<"div"> & {
-    height?: number;
-  };
+const EMPTY_CELL_SELECTION_SET = new Set<string>();
+
+interface DataGridProps<TData>
+  extends Omit<
+    ReturnType<typeof useDataGrid<TData>>,
+    | "dir"
+    | "shallow"
+    | "debounceMs"
+    | "throttleMs"
+    | "pagination"
+    | "filters"
+    | "setFilters"
+    | "joinOperator"
+    | "setJoinOperator"
+  >,
+  Omit<React.ComponentProps<"div">, "contextMenu"> {
+  dir?: Direction;
+  height?: number;
+  stretchColumns?: boolean;
+  isPagination?: boolean;
+}
 
 export function DataGrid<TData>({
   dataGridRef,
   headerRef,
   rowMapRef,
   footerRef,
+  dir = "ltr",
   table,
-  rowVirtualizer,
-  height = 600,
-  searchState,
+  tableMeta,
+  virtualTotalSize,
+  virtualItems,
+  measureElement,
+  columns,
   columnSizeVars,
-  onRowAdd,
+  searchState,
+  searchMatchesByRow,
+  activeSearchMatch,
+  cellSelectionMap,
+  focusedCell,
+  editingCell,
+  rowHeight,
+  contextMenu,
+  pasteDialog,
+  onRowAdd: _,
+  height = 600,
+  stretchColumns = false,
+  isPagination = true,
   className,
   ...props
 }: DataGridProps<TData>) {
   const rows = table.getRowModel().rows;
-  const columns = table.getAllColumns();
+  const readOnly = tableMeta?.readOnly ?? false;
+  const columnVisibility = table.getState().columnVisibility;
+  const columnPinning = table.getState().columnPinning;
 
-  const meta = table.options.meta;
-  const rowHeight = meta?.rowHeight ?? "short";
-  const focusedCell = meta?.focusedCell ?? null;
-
-  const onGridContextMenu = useCallback(
+  const onDataGridContextMenu = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
     },
     [],
   );
 
-  const onAddRowKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!onRowAdd) return;
-
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        onRowAdd();
-      }
-    },
-    [onRowAdd],
-  );
-
   return (
     <div
       data-slot="grid-wrapper"
-      className={cn("relative flex w-full flex-col", className)}
+      dir={dir}
       {...props}
+      className={cn("relative flex w-full flex-col", className)}
     >
       {searchState && <DataGridSearch {...searchState} />}
-      <DataGridContextMenu table={table} />
-      <div
-        role="grid"
-        aria-label="Data grid"
-        aria-rowcount={rows.length + (onRowAdd ? 1 : 0)}
-        aria-colcount={columns.length}
-        data-slot="grid"
-        tabIndex={0}
-        ref={dataGridRef}
-        className="relative grid overflow-auto rounded-md border select-none focus:outline-none"
-        style={{
-          ...columnSizeVars,
-          height: `${height}px`,
-        }}
-        onContextMenu={onGridContextMenu}
-      >
+      <DataGridContextMenu
+        table={table}
+        tableMeta={tableMeta}
+        contextMenu={contextMenu}
+      />
+      <DataGridPasteDialog tableMeta={tableMeta} pasteDialog={pasteDialog} />
+      <div className="overflow-hidden rounded-md border">
         <div
-          role="rowgroup"
-          data-slot="grid-header"
-          ref={headerRef}
-          className="bg-background sticky top-0 z-10 grid max-h-9 border-b"
-        >
-          {table.getHeaderGroups().map((headerGroup, rowIndex) => (
-            <div
-              key={headerGroup.id}
-              role="row"
-              aria-rowindex={rowIndex + 1}
-              data-slot="grid-header-row"
-              tabIndex={-1}
-              className="flex w-full"
-            >
-              {headerGroup.headers.map((header, colIndex) => {
-                const sorting = table.getState().sorting;
-                const currentSort = sorting.find(
-                  (sort) => sort.id === header.column.id,
-                );
-                const isSortable = header.column.getCanSort();
-
-                return (
-                  <div
-                    key={header.id}
-                    role="columnheader"
-                    aria-colindex={colIndex + 1}
-                    aria-sort={
-                      currentSort?.desc === false
-                        ? "ascending"
-                        : currentSort?.desc === true
-                          ? "descending"
-                          : isSortable
-                            ? "none"
-                            : undefined
-                    }
-                    data-slot="grid-header-cell"
-                    tabIndex={-1}
-                    className={"relative border-r"}
-                    style={{
-                      ...getCommonPinningStyles({ column: header.column }),
-                      width: `calc(var(--header-${header.id}-size) * 1px)`,
-                    }}
-                  >
-                    {header.isPlaceholder ? null : typeof header.column
-                        .columnDef.header === "function" ? (
-                      <div className="size-full px-3 py-1.5">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                      </div>
-                    ) : (
-                      <DataGridColumnHeader header={header} table={table} />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-        <div
-          role="rowgroup"
-          data-slot="grid-body"
-          className="relative grid min-h-[calc(100svh-180px)]"
+          role="grid"
+          aria-label="Data grid"
+          aria-rowcount={rows.length}
+          aria-colcount={columns.length}
+          data-slot="grid"
+          tabIndex={0}
+          ref={dataGridRef}
+          className="relative grid grid-rows-[auto_1fr] overflow-auto select-none focus:outline-none h-[calc(100svh-147px)]"
           style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
+            ...columnSizeVars,
+            maxHeight: `${height}px`,
           }}
+          onContextMenu={onDataGridContextMenu}
         >
-          {rowVirtualizer.getVirtualIndexes().map((virtualRowIndex) => {
-            const row = rows[virtualRowIndex];
-            if (!row) return null;
-
-            return (
-              <DataGridRow
-                key={row.id}
-                row={row}
-                rowMapRef={rowMapRef}
-                virtualRowIndex={virtualRowIndex}
-                rowVirtualizer={rowVirtualizer}
-                rowHeight={rowHeight}
-                focusedCell={focusedCell}
-              />
-            );
-          })}
-        </div>
-        {onRowAdd && (
           <div
             role="rowgroup"
-            data-slot="grid-footer"
-            ref={footerRef}
-            className="bg-background sticky bottom-0 z-10 grid border-t"
+            data-slot="grid-header"
+            ref={headerRef}
+            className="bg-background sticky top-0 z-10 border-b"
           >
-            <div
-              role="row"
-              aria-rowindex={rows.length + 2}
-              data-slot="grid-add-row"
-              tabIndex={-1}
-              className="flex w-full"
-            >
+            {table.getHeaderGroups().map((headerGroup, rowIndex) => (
               <div
-                role="gridcell"
-                tabIndex={0}
-                className="bg-muted/30 hover:bg-muted/50 focus:bg-muted/50 relative flex h-9 grow items-center transition-colors focus:outline-none"
-                style={{
-                  width: table.getTotalSize(),
-                  minWidth: table.getTotalSize(),
-                }}
-                onClick={onRowAdd}
-                onKeyDown={onAddRowKeyDown}
+                key={headerGroup.id}
+                role="row"
+                aria-rowindex={rowIndex + 1}
+                data-slot="grid-header-row"
+                tabIndex={-1}
+                className="flex w-full"
               >
-                <div className="text-muted-foreground sticky left-0 flex items-center gap-2 px-3">
-                  <Plus className="size-3.5" />
-                  <span className="text-sm">Add row</span>
-                </div>
+                {headerGroup.headers.map((header, colIndex) => {
+                  const sorting = table.getState().sorting;
+                  const currentSort = sorting.find(
+                    (sort) => sort.id === header.column.id,
+                  );
+                  const isSortable = header.column.getCanSort();
+
+                  return (
+                    <div
+                      key={header.id}
+                      role="columnheader"
+                      aria-colindex={colIndex + 1}
+                      aria-sort={
+                        currentSort?.desc === false
+                          ? "ascending"
+                          : currentSort?.desc === true
+                            ? "descending"
+                            : isSortable
+                              ? "none"
+                              : undefined
+                      }
+                      data-slot="grid-header-cell"
+                      tabIndex={-1}
+                      className={cn("relative", {
+                        grow: stretchColumns && header.column.id !== "select",
+                        "border-e": header.column.id !== "select",
+                      })}
+                      style={{
+                        ...getCommonPinningStyles({ column: header.column, dir }),
+                        width: `calc(var(--header-${header.id}-size) * 1px)`,
+                      }}
+                    >
+                      {header.isPlaceholder ? null : typeof header.column
+                        .columnDef.header === "function" ? (
+                        <div className="size-full px-3 py-1.5">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                        </div>
+                      ) : (
+                        <DataGridColumnHeader header={header} table={table} />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            ))}
           </div>
-        )}
+          <div
+            role="rowgroup"
+            data-slot="grid-body"
+            className="relative grid"
+            style={{
+              height: `${virtualTotalSize}px`,
+              contain: "strict",
+            }}
+          >
+            {virtualItems.map((virtualItem) => {
+              const row = rows[virtualItem.index];
+              if (!row) return null;
+
+              const cellSelectionKeys =
+                cellSelectionMap?.get(virtualItem.index) ??
+                EMPTY_CELL_SELECTION_SET;
+
+              const searchMatchColumns =
+                searchMatchesByRow?.get(virtualItem.index) ?? null;
+              const isActiveSearchRow =
+                activeSearchMatch?.rowIndex === virtualItem.index;
+
+              return (
+                <DataGridRow
+                  key={row.id}
+                  row={row}
+                  tableMeta={tableMeta}
+                  rowMapRef={rowMapRef}
+                  virtualItem={virtualItem}
+                  measureElement={measureElement}
+                  rowHeight={rowHeight}
+                  columnVisibility={columnVisibility}
+                  columnPinning={columnPinning}
+                  focusedCell={focusedCell}
+                  editingCell={editingCell}
+                  cellSelectionKeys={cellSelectionKeys}
+                  searchMatchColumns={searchMatchColumns}
+                  activeSearchMatch={isActiveSearchRow ? activeSearchMatch : null}
+                  dir={dir}
+                  readOnly={readOnly}
+                  stretchColumns={stretchColumns}
+                />
+              );
+            })}
+          </div>
+        </div>
+
       </div>
+      {isPagination && <DataTablePagination table={table} ref={footerRef} />}
     </div>
   );
 }

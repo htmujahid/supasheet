@@ -39,6 +39,7 @@ export type ColumnMetadata = {
     | "color"
     | "duration"
     | "array";
+  filterVariant: FilterVariant;
   icon: ReactElement | null;
   defaultValue: string | null;
   required: boolean;
@@ -99,4 +100,4 @@ export type FileObject = {
   size: number;
   url: string;
   last_modified: string;
-}
+};

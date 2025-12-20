@@ -1,5 +1,13 @@
-import { FileArchiveIcon, FileAudioIcon, FileIcon, FileImageIcon, FileSpreadsheetIcon, FileTextIcon, FileVideoIcon, PresentationIcon } from "lucide-react";
-
+import {
+  FileArchiveIcon,
+  FileAudioIcon,
+  FileIcon,
+  FileImageIcon,
+  FileSpreadsheetIcon,
+  FileTextIcon,
+  FileVideoIcon,
+  PresentationIcon,
+} from "lucide-react";
 
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 B";

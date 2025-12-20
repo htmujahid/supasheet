@@ -1,9 +1,15 @@
 "use client";
 
-import { memo, useCallback, useMemo } from "react";
+import * as React from "react";
 
 import type { Table, TableMeta } from "@tanstack/react-table";
-import { CopyIcon, Trash2Icon } from "lucide-react";
+import {
+  ClipboardIcon,
+  CopyIcon,
+  EditIcon,
+  EyeIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -14,46 +20,50 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import type { ContextMenuState } from "../../lib/types/data-grid";
 import { parseCellKey } from "../../lib/utils/data-grid";
 import { useResourceContext } from "../resource-context";
 
-type DataGridContextMenuProps<TData> = {
+interface DataGridContextMenuProps<TData> {
   table: Table<TData>;
-};
+  tableMeta: TableMeta<TData>;
+  contextMenu: ContextMenuState;
+}
 
 export function DataGridContextMenu<TData>({
   table,
+  tableMeta,
+  contextMenu,
 }: DataGridContextMenuProps<TData>) {
-  const meta = table.options.meta;
-  const contextMenu = meta?.contextMenu;
-  const onContextMenuOpenChange = meta?.onContextMenuOpenChange;
-  const selectionState = meta?.selectionState;
-  const dataGridRef = meta?.dataGridRef;
-  const onRowsDelete = meta?.onRowsDelete;
+  const onContextMenuOpenChange = tableMeta?.onContextMenuOpenChange;
+  const selectionState = tableMeta?.selectionState;
+  const dataGridRef = tableMeta?.dataGridRef;
 
-  if (!contextMenu) return null;
+  if (!contextMenu.open) return null;
 
   return (
     <ContextMenu
       table={table}
+      tableMeta={tableMeta}
       dataGridRef={dataGridRef}
       contextMenu={contextMenu}
       onContextMenuOpenChange={onContextMenuOpenChange}
       selectionState={selectionState}
-      onRowsDelete={onRowsDelete}
     />
   );
 }
 
-type ContextMenuProps<TData> = Pick<
-  TableMeta<TData>,
-  "dataGridRef" | "onContextMenuOpenChange" | "selectionState" | "onRowsDelete"
-> &
-  Required<Pick<TableMeta<TData>, "contextMenu">> & {
-    table: Table<TData>;
-  };
+interface ContextMenuProps<TData>
+  extends Pick<
+    TableMeta<TData>,
+    "dataGridRef" | "onContextMenuOpenChange" | "selectionState"
+  >,
+  Required<Pick<TableMeta<TData>, "contextMenu">> {
+  table: Table<TData>;
+  tableMeta: TableMeta<TData>;
+}
 
-const ContextMenu = memo(ContextMenuImpl, (prev, next) => {
+const ContextMenu = React.memo(ContextMenuImpl, (prev, next) => {
   if (prev.contextMenu.open !== next.contextMenu.open) return false;
   if (!next.contextMenu.open) return true;
   if (prev.contextMenu.x !== next.contextMenu.x) return false;
@@ -68,14 +78,15 @@ const ContextMenu = memo(ContextMenuImpl, (prev, next) => {
 
 function ContextMenuImpl<TData>({
   table,
+  tableMeta,
   dataGridRef,
   contextMenu,
   onContextMenuOpenChange,
   selectionState,
-  onRowsDelete,
 }: ContextMenuProps<TData>) {
-  const { permissions } = useResourceContext();
-  const triggerStyle = useMemo<React.CSSProperties>(
+  const { setResourceAction, permissions } = useResourceContext();
+
+  const triggerStyle = React.useMemo<React.CSSProperties>(
     () => ({
       position: "fixed",
       left: `${contextMenu.x}px`,
@@ -92,9 +103,45 @@ function ContextMenuImpl<TData>({
     [contextMenu.x, contextMenu.y],
   );
 
+  // Get selected row data
+  const selectedRowData = React.useMemo(() => {
+    if (
+      !selectionState?.selectedCells ||
+      selectionState.selectedCells.size === 0
+    )
+      return null;
+
+    // Get the first selected cell to determine the row
+    const firstCellKey = selectionState.selectedCells.values().next().value;
+    if (!firstCellKey) return null;
+
+    const { rowIndex } = parseCellKey(firstCellKey);
+    const rows = table.getRowModel().rows;
+    const row = rows[rowIndex];
+
+    return row?.original as Record<string, unknown> | null;
+  }, [selectionState, table]);
+
+  // Check if only one row is selected
+  const isSingleRowSelected = React.useMemo(() => {
+    if (
+      !selectionState?.selectedCells ||
+      selectionState.selectedCells.size === 0
+    )
+      return false;
+
+    const rowIndices = new Set<number>();
+    for (const cellKey of selectionState.selectedCells) {
+      const { rowIndex } = parseCellKey(cellKey);
+      rowIndices.add(rowIndex);
+    }
+
+    return rowIndices.size === 1;
+  }, [selectionState]);
+
   const onCloseAutoFocus: NonNullable<
     React.ComponentProps<typeof DropdownMenuContent>["onCloseAutoFocus"]
-  > = useCallback(
+  > = React.useCallback(
     (event) => {
       event.preventDefault();
       dataGridRef?.current?.focus();
@@ -102,119 +149,62 @@ function ContextMenuImpl<TData>({
     [dataGridRef],
   );
 
-  const onCopy = useCallback(() => {
+  const onCopyRow = React.useCallback(() => {
+    if (!selectedRowData) return;
+
+    navigator.clipboard.writeText(JSON.stringify(selectedRowData, null, 2));
+    toast.success("Row copied to clipboard");
+  }, [selectedRowData]);
+
+  const onCopyCell = React.useCallback(() => {
     if (
       !selectionState?.selectedCells ||
-      selectionState.selectedCells.size === 0
+      selectionState.selectedCells.size !== 1
     )
       return;
 
-    const rows = table.getRowModel().rows;
-    const columnIds: string[] = [];
+    const cellKey = selectionState.selectedCells.values().next().value;
+    if (!cellKey) return;
 
-    const selectedCellsArray = Array.from(selectionState.selectedCells);
-    for (const cellKey of selectedCellsArray) {
-      const { columnId } = parseCellKey(cellKey);
-      if (columnId && !columnIds.includes(columnId)) {
-        columnIds.push(columnId);
-      }
-    }
+    const { rowIndex, columnId } = parseCellKey(cellKey);
+    const row = table.getRowModel().rows[rowIndex];
+    const cellValue = row?.getValue(columnId);
 
-    const cellData = new Map<string, string>();
-    for (const cellKey of selectedCellsArray) {
-      const { rowIndex, columnId } = parseCellKey(cellKey);
-      const row = rows[rowIndex];
-      if (row) {
-        const cell = row
-          .getVisibleCells()
-          .find((c) => c.column.id === columnId);
-        if (cell) {
-          const value = cell.getValue();
-          cellData.set(cellKey, String(value ?? ""));
-        }
-      }
-    }
+    navigator.clipboard.writeText(String(cellValue));
+    toast.success("Cell content copied to clipboard");
+  }, [selectionState, table]);
 
-    const rowIndices = new Set<number>();
-    const colIndices = new Set<number>();
+  const onView = React.useCallback(() => {
+    if (!selectedRowData) return;
 
-    for (const cellKey of selectedCellsArray) {
-      const { rowIndex, columnId } = parseCellKey(cellKey);
-      rowIndices.add(rowIndex);
-      const colIndex = columnIds.indexOf(columnId);
-      if (colIndex >= 0) {
-        colIndices.add(colIndex);
-      }
-    }
+    setResourceAction({
+      variant: "view",
+      data: selectedRowData,
+    });
+  }, [selectedRowData, setResourceAction]);
 
-    const sortedRowIndices = Array.from(rowIndices).sort((a, b) => a - b);
-    const sortedColIndices = Array.from(colIndices).sort((a, b) => a - b);
-    const sortedColumnIds = sortedColIndices.map((i) => columnIds[i]);
+  const onEdit = React.useCallback(() => {
+    if (!selectedRowData) return;
 
-    const tsvData = sortedRowIndices
-      .map((rowIndex) =>
-        sortedColumnIds
-          .map((columnId) => {
-            const cellKey = `${rowIndex}:${columnId}`;
-            return cellData.get(cellKey) ?? "";
-          })
-          .join("\t"),
-      )
-      .join("\n");
+    setResourceAction({
+      variant: "update",
+      data: selectedRowData,
+    });
+  }, [selectedRowData, setResourceAction]);
 
-    navigator.clipboard.writeText(tsvData);
-    toast.success(
-      `${selectionState.selectedCells.size} cell${selectionState.selectedCells.size !== 1 ? "s" : ""} copied`,
-    );
-  }, [table, selectionState]);
-
-  const onCopyRow = useCallback(() => {
-    // copy row in json format
+  const onDelete = React.useCallback(async () => {
     if (
       !selectionState?.selectedCells ||
-      selectionState.selectedCells.size === 0
+      selectionState.selectedCells.size === 0 ||
+      !selectedRowData
     )
       return;
 
-    const rows = table.getRowModel().rows;
-    const rowIndices = new Set<number>();
-    for (const cellKey of selectionState.selectedCells) {
-      const { rowIndex } = parseCellKey(cellKey);
-      rowIndices.add(rowIndex);
-    }
-
-    const selectedRows = Array.from(rowIndices)
-      .sort((a, b) => a - b)
-      .map((rowIndex) => rows[rowIndex]?.original);
-
-    const jsonData = JSON.stringify(
-      selectedRows.length === 1 ? selectedRows[0] : selectedRows,
-      null,
-      2,
-    );
-
-    navigator.clipboard.writeText(jsonData);
-    toast.success(
-      `${rowIndices.size} row${rowIndices.size !== 1 ? "s" : ""} copied`,
-    );
-  }, [table, selectionState]);
-
-  const onDelete = useCallback(async () => {
-    if (
-      !selectionState?.selectedCells ||
-      selectionState.selectedCells.size === 0
-    )
-      return;
-
-    const rowIndices = new Set<number>();
-    for (const cellKey of selectionState.selectedCells) {
-      const { rowIndex } = parseCellKey(cellKey);
-      rowIndices.add(rowIndex);
-    }
-
-    const rowIndicesArray = Array.from(rowIndices).sort((a, b) => a - b);
-    await onRowsDelete?.(rowIndicesArray);
-  }, [onRowsDelete, selectionState]);
+    setResourceAction({
+      variant: "delete",
+      data: selectedRowData,
+    });
+  }, [selectionState, selectedRowData, setResourceAction]);
 
   return (
     <DropdownMenu
@@ -225,23 +215,43 @@ function ContextMenuImpl<TData>({
       <DropdownMenuContent
         data-grid-popover=""
         align="start"
-        className="w-48"
+        className="w-52"
         onCloseAutoFocus={onCloseAutoFocus}
       >
-        <DropdownMenuItem onSelect={onCopyRow}>
+        <DropdownMenuItem onSelect={onCopyRow} disabled={!isSingleRowSelected}>
           <CopyIcon />
           Copy Row
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={onCopy}>
-          <CopyIcon />
+        <DropdownMenuItem
+          onSelect={onCopyCell}
+          disabled={selectionState?.selectedCells?.size !== 1}
+        >
+          <ClipboardIcon />
           Copy Cell Content
         </DropdownMenuItem>
-        {onRowsDelete && permissions.canDelete && (
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onSelect={onView}
+          disabled={!isSingleRowSelected || !permissions.canSelect}
+        >
+          <EyeIcon />
+          View Details
+        </DropdownMenuItem>
+        {permissions.canUpdate && (
+          <DropdownMenuItem
+            onSelect={onEdit}
+            disabled={!isSingleRowSelected || tableMeta?.readOnly}
+          >
+            <EditIcon />
+            Edit Details
+          </DropdownMenuItem>
+        )}
+        {permissions.canDelete && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onSelect={onDelete}>
               <Trash2Icon />
-              Delete Row
+              Delete rows
             </DropdownMenuItem>
           </>
         )}

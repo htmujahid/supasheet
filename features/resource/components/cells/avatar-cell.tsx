@@ -1,6 +1,7 @@
 import { User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { FileObject } from "../fields/types";
 
 export function AvatarCell({ value }: { value: FileObject | null }) {

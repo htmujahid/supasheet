@@ -103,6 +103,7 @@ export function getColumnMetadata(
       ...baseOptions,
       isArray: false, // special case for file upload
       variant: "file",
+      filterVariant: "text",
       icon: <PaperclipIcon className="text-muted-foreground size-4 shrink-0" />,
     };
   }
@@ -111,6 +112,7 @@ export function getColumnMetadata(
     return {
       ...baseOptions,
       variant: "avatar",
+      filterVariant: "text",
       icon: <UserIcon className="text-muted-foreground size-4 shrink-0" />,
     };
   }
@@ -121,6 +123,7 @@ export function getColumnMetadata(
       icon: (
         <ChevronDownIcon className="text-muted-foreground size-4 shrink-0" />
       ),
+      filterVariant: "multiSelect",
       variant: "select",
     };
   }
@@ -130,6 +133,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "email",
+        filterVariant: "text",
         icon: <MailIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -137,6 +141,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "tel",
+        filterVariant: "text",
         icon: <PhoneIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -144,6 +149,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "url",
+        filterVariant: "text",
         icon: <LinkIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -151,6 +157,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "rating",
+        filterVariant: "number",
         icon: <StarIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -158,6 +165,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "percentage",
+        filterVariant: "number",
         icon: <PercentIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -165,6 +173,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "color",
+        filterVariant: "text",
         icon: <PaletteIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -172,6 +181,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "duration",
+        filterVariant: "number",
         icon: <TimerIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -179,6 +189,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "uuid",
+        filterVariant: "text",
         icon: <HashIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -186,6 +197,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "rich_text",
+        filterVariant: "text",
         icon: (
           <BaselineIcon className="text-muted-foreground size-4 shrink-0" />
         ),
@@ -193,9 +205,11 @@ export function getColumnMetadata(
 
     case "character":
     case "varchar":
+    case "bpchar":
       return {
         ...baseOptions,
         variant: "text",
+        filterVariant: "text",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">ab</code>
         ),
@@ -205,6 +219,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "long_text",
+        filterVariant: "text",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">AB</code>
         ),
@@ -214,14 +229,16 @@ export function getColumnMetadata(
     case "varbit":
       return {
         ...baseOptions,
-        variant: "number",
+        variant: "text",
+        filterVariant: "text",
         icon: <BinaryIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
     case "bytea":
       return {
         ...baseOptions,
-        variant: "number",
+        variant: "text",
+        filterVariant: "text",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">\x0</code>
         ),
@@ -231,9 +248,12 @@ export function getColumnMetadata(
     case "decimal":
     case "numeric":
     case "real":
+    case "float4":
+    case "float8":
       return {
         ...baseOptions,
         variant: "number",
+        filterVariant: "number",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">1.23</code>
         ),
@@ -245,6 +265,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "number",
+        filterVariant: "number",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">123</code>
         ),
@@ -256,6 +277,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "number",
+        filterVariant: "number",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">123</code>
         ),
@@ -267,6 +289,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "number",
+        filterVariant: "number",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">123</code>
         ),
@@ -276,6 +299,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "money",
+        filterVariant: "number",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">$</code>
         ),
@@ -285,6 +309,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "date",
+        filterVariant: "date",
         icon: (
           <CalendarDaysIcon className="text-muted-foreground size-4 shrink-0" />
         ),
@@ -295,6 +320,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "time",
+        filterVariant: "date",
         icon: <ClockIcon className="text-muted-foreground size-4 shrink-0" />,
       };
 
@@ -303,6 +329,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "datetime",
+        filterVariant: "date",
         icon: (
           <CalendarClockIcon className="text-muted-foreground size-4 shrink-0" />
         ),
@@ -313,6 +340,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "json",
+        filterVariant: "text",
         icon: (
           <code className="text-muted-foreground font-mono text-sm">{`{}`}</code>
         ),
@@ -322,6 +350,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "boolean",
+        filterVariant: "boolean",
         icon: (
           <ToggleLeftIcon className="text-muted-foreground size-4 shrink-0" />
         ),
@@ -331,6 +360,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "text",
+        filterVariant: "text",
         icon: null,
       };
   }
@@ -354,6 +384,7 @@ export function getColumnFilterData(
   switch (columnSchema.format) {
     case "character":
     case "varchar":
+    case "bpchar":
     case "text":
     case "uuid":
     case "bit":
@@ -366,6 +397,9 @@ export function getColumnFilterData(
 
     case "double precision":
     case "real":
+    case "float4":
+    case "float8":
+    case "decimal":
     case "bigint":
     case "bigserial":
     case "integer":

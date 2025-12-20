@@ -18,7 +18,12 @@ import {
   deleteFileFromStorage,
   uploadFileToStorage,
 } from "./file-field-storage";
-import type { FileFieldConfig, FileFieldProps, FileObject, UploadProgress } from "./types";
+import type {
+  FileFieldConfig,
+  FileFieldProps,
+  FileObject,
+  UploadProgress,
+} from "./types";
 
 export function AvatarField({
   form,

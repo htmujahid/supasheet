@@ -1,139 +1,160 @@
 "use client";
 
-import type { Cell, Table } from "@tanstack/react-table";
+import * as React from "react";
 
-import { useResourceContext } from "../resource-context";
-import { DataGridArrayCell } from "./data-grid-array-cell";
-import { DataGridAvatarCell } from "./data-grid-avatar-cell";
-import { DataGridCheckboxCell } from "./data-grid-boolean-cell";
-import { DataGridDateCell } from "./data-grid-date-cell";
-import { DataGridDateTimeCell } from "./data-grid-datetime-cell";
-import { DataGridDurationCell } from "./data-grid-duration-cell";
-import { DataGridSelectCell } from "./data-grid-select-cell";
-import { DataGridFileCell } from "./data-grid-file-cell";
-import { DataGridForeignKeyCell } from "./data-grid-foreign-key-cell";
-import { DataGridJsonCell } from "./data-grid-json-cell";
-import { DataGridLongTextCell } from "./data-grid-long-text-cell";
-import { DataGridMoneyCell } from "./data-grid-money-cell";
-import { DataGridNumberCell } from "./data-grid-number-cell";
-import { DataGridPercentageCell } from "./data-grid-percentage-cell";
-import { DataGridRatingCell } from "./data-grid-rating-cell";
-import { DataGridTextCell } from "./data-grid-text-cell";
-import { DataGridTimeCell } from "./data-grid-time-cell";
-import { DataGridUuidCell } from "./data-grid-uuid-cell";
+import type { DataGridCellProps } from "../../lib/types/data-grid";
+import { DataGridArrayCell } from "./cells/data-grid-array-cell";
+import { DataGridAvatarCell } from "./cells/data-grid-avatar-cell";
+import { DataGridBooleanCell } from "./cells/data-grid-boolean-cell";
+import { DataGridColorCell } from "./cells/data-grid-color-cell";
+import { DataGridDateCell } from "./cells/data-grid-date-cell";
+import { DataGridDateTimeCell } from "./cells/data-grid-datetime-cell";
+import { DataGridDurationCell } from "./cells/data-grid-duration-cell";
+import { DataGridFileCell } from "./cells/data-grid-file-cell";
+import { DataGridForeignKeyCell } from "./cells/data-grid-foreign-key-cell";
+import { DataGridJsonCell } from "./cells/data-grid-json-cell";
+import { DataGridLongTextCell } from "./cells/data-grid-long-text-cell";
+import { DataGridMoneyCell } from "./cells/data-grid-money-cell";
+import { DataGridNumberCell } from "./cells/data-grid-number-cell";
+import { DataGridPercentageCell } from "./cells/data-grid-percentage-cell";
+import { DataGridRatingCell } from "./cells/data-grid-rating-cell";
+import { DataGridSelectCell } from "./cells/data-grid-select-cell";
+import { DataGridTextCell } from "./cells/data-grid-text-cell";
+import { DataGridTimeCell } from "./cells/data-grid-time-cell";
+import { UrlCell } from "./cells/data-grid-url-cell";
 
-type DataGridCellProps<TData> = {
-  cell: Cell<TData, unknown>;
-  table: Table<TData>;
-};
+export const DataGridCell = React.memo(DataGridCellImpl, (prev, next) => {
+  // Fast path: check stable primitive props first
+  if (prev.isFocused !== next.isFocused) return false;
+  if (prev.isEditing !== next.isEditing) return false;
+  if (prev.isSelected !== next.isSelected) return false;
+  if (prev.isSearchMatch !== next.isSearchMatch) return false;
+  if (prev.isActiveSearchMatch !== next.isActiveSearchMatch) return false;
+  if (prev.readOnly !== next.readOnly) return false;
+  if (prev.rowIndex !== next.rowIndex) return false;
+  if (prev.columnId !== next.columnId) return false;
+  if (prev.rowHeight !== next.rowHeight) return false;
 
-export function DataGridCell<TData>({ cell, table }: DataGridCellProps<TData>) {
-  const { permissions } = useResourceContext();
-  const meta = table.options.meta;
-  const originalRowIndex = cell.row.index;
+  // Check cell value using row.original instead of getValue() for stability
+  // getValue() is unstable and recreates on every render, breaking memoization
+  const prevValue = (prev.cell.row.original as Record<string, unknown>)[
+    prev.columnId
+  ];
+  const nextValue = (next.cell.row.original as Record<string, unknown>)[
+    next.columnId
+  ];
+  if (prevValue !== nextValue) {
+    return false;
+  }
 
-  const rows = table.getRowModel().rows;
-  const displayRowIndex = rows.findIndex(
-    (row) => row.original === cell.row.original,
-  );
-  const rowIndex = displayRowIndex >= 0 ? displayRowIndex : originalRowIndex;
-  const columnId = cell.column.id;
+  // Check cell/row identity
+  if (prev.cell.row.id !== next.cell.row.id) return false;
 
-  const isFocused =
-    meta?.focusedCell?.rowIndex === rowIndex &&
-    meta?.focusedCell?.columnId === columnId;
-  const isEditing =
-    meta?.editingCell?.rowIndex === rowIndex &&
-    meta?.editingCell?.columnId === columnId;
-  const isSelected = meta?.getIsCellSelected?.(rowIndex, columnId) ?? false;
+  return true;
+}) as typeof DataGridCellImpl;
 
+function DataGridCellImpl<TData>({
+  cell,
+  tableMeta,
+  rowIndex,
+  columnId,
+  isFocused,
+  isEditing,
+  isSelected,
+  isSearchMatch,
+  isActiveSearchMatch,
+  readOnly,
+  rowHeight,
+}: DataGridCellProps<TData>) {
   const cellOpts = cell.column.columnDef.meta;
   const variant = cellOpts?.variant ?? "text";
+  const disabled = (cellOpts?.disabled || cellOpts?.isPrimaryKey) ?? false;
+  const relationship = cellOpts?.relationship;
+  const isArray = cellOpts?.isArray ?? false;
 
-  // Common props for all cells
-  const cellProps = {
-    cell,
-    table,
-    rowIndex,
-    columnId,
-    isEditing:
-      isEditing &&
-      !cellOpts?.isPrimaryKey &&
-      !cellOpts?.isMetadata &&
-      !cellOpts?.disabled &&
-      permissions.canUpdate,
-    isFocused,
-    isSelected,
-  };
+  let Comp: React.ComponentType<DataGridCellProps<TData>>;
 
-  if (cellOpts?.relationship) {
-    return <DataGridForeignKeyCell {...cellProps} />;
-  }
+  // Handle foreign key cells (cells with relationships)
+  if (relationship) {
+    Comp = DataGridForeignKeyCell;
+  } else if (isArray) {
+    // Handle array cells
+    Comp = DataGridArrayCell;
+  } else
+    switch (variant) {
+      case "text":
+      case "uuid":
+      case "email":
+      case "tel":
+        Comp = DataGridTextCell;
+        break;
+      case "rich_text":
+      case "long_text":
+        Comp = DataGridLongTextCell;
+        break;
+      case "number":
+        Comp = DataGridNumberCell;
+        break;
+      case "url":
+        Comp = UrlCell;
+        break;
+      case "boolean":
+        Comp = DataGridBooleanCell;
+        break;
+      case "select":
+        Comp = DataGridSelectCell;
+        break;
+      case "date":
+        Comp = DataGridDateCell;
+        break;
+      case "datetime":
+        Comp = DataGridDateTimeCell;
+        break;
+      case "time":
+        Comp = DataGridTimeCell;
+        break;
+      case "file":
+        Comp = DataGridFileCell;
+        break;
+      case "avatar":
+        Comp = DataGridAvatarCell;
+        break;
+      case "rating":
+        Comp = DataGridRatingCell;
+        break;
+      case "percentage":
+        Comp = DataGridPercentageCell;
+        break;
+      case "color":
+        Comp = DataGridColorCell;
+        break;
+      case "money":
+        Comp = DataGridMoneyCell;
+        break;
+      case "json":
+        Comp = DataGridJsonCell;
+        break;
+      case "duration":
+        Comp = DataGridDurationCell;
+        break;
+      default:
+        Comp = DataGridTextCell;
+        break;
+    }
 
-  // Handle special formats first
-  if (variant === "avatar") {
-    return <DataGridAvatarCell {...cellProps} />;
-  }
-
-  if (variant === "file") {
-    return <DataGridFileCell {...cellProps} />;
-  }
-
-  // Handle array types
-  if (cellOpts?.isArray) {
-    return <DataGridArrayCell {...cellProps} />;
-  }
-
-  // Handle all variants
-  switch (variant) {
-    case "text":
-    case "email":
-    case "url":
-    case "tel":
-    case "color":
-      return <DataGridTextCell {...cellProps} />;
-
-    case "long_text":
-    case "rich_text":
-      return <DataGridLongTextCell {...cellProps} />;
-
-    case "number":
-      return <DataGridNumberCell {...cellProps} />;
-
-    case "money":
-      return <DataGridMoneyCell {...cellProps} />;
-
-    case "percentage":
-      return <DataGridPercentageCell {...cellProps} />;
-
-    case "boolean":
-      return <DataGridCheckboxCell {...cellProps} />;
-
-    case "date":
-      return <DataGridDateCell {...cellProps} />;
-
-    case "datetime":
-      return <DataGridDateTimeCell {...cellProps} />;
-
-    case "time":
-      return <DataGridTimeCell {...cellProps} />;
-
-    case "duration":
-      return <DataGridDurationCell {...cellProps} />;
-
-    case "select":
-      return <DataGridSelectCell {...cellProps} />;
-
-    case "rating":
-      return <DataGridRatingCell {...cellProps} />;
-
-    case "uuid":
-      return <DataGridUuidCell {...cellProps} />;
-
-    case "json":
-      return <DataGridJsonCell {...cellProps} />;
-
-    default:
-      return <DataGridTextCell {...cellProps} />;
-  }
+  return (
+    <Comp
+      cell={cell}
+      tableMeta={tableMeta}
+      rowIndex={rowIndex}
+      columnId={columnId}
+      rowHeight={rowHeight}
+      isEditing={isEditing}
+      isFocused={isFocused}
+      isSelected={isSelected}
+      isSearchMatch={isSearchMatch}
+      isActiveSearchMatch={isActiveSearchMatch}
+      readOnly={readOnly || disabled}
+    />
+  );
 }

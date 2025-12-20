@@ -64,7 +64,7 @@ export type TableMetadata = {
     name: string;
     query?: { [key: string]: unknown };
     [key: string]: unknown;
-    type: "calendar" | "kanban" | "sheet" | "gallery";
+    type: "calendar" | "kanban" | "gallery";
   }[];
 };
 
@@ -77,7 +77,7 @@ export type ViewMetadata = {
     name: string;
     query?: { [key: string]: unknown };
     [key: string]: unknown;
-    type: "calendar" | "kanban" | "sheet" | "gallery";
+    type: "calendar" | "kanban" | "gallery";
   }[];
 };
 

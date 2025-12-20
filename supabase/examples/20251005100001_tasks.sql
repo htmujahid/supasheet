@@ -88,7 +88,6 @@ comment on table public.tasks is
         "join": [{"table":"accounts","on":"account_id","columns":["name","email"]}]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"created_at","badge":"priority"},
         {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"created_at","badge":"status"},
         {"id":"calendar","name":"Calendar View","type":"calendar", "title": "title", "startDate": "created_at", "endDate": "due_date", "badge": "status"},

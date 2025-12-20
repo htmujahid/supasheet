@@ -814,7 +814,6 @@ comment on table productivity.projects is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Projects By Status","type":"kanban","group":"is_active","title":"name","description":"description","date":"start_date","badge":"color"}
     ]
 }';
@@ -832,7 +831,6 @@ comment on table productivity.tasks is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"due_date","badge":"priority_id"},
         {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority_id","title":"title","description":"description","date":"due_date","badge":"status"},
         {"id":"project","name":"Tasks By Project","type":"kanban","group":"project_id","title":"title","description":"description","date":"due_date","badge":"status"},
@@ -850,7 +848,6 @@ comment on table productivity.habits is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"frequency","name":"Habits By Frequency","type":"kanban","group":"frequency_type","title":"name","description":"description","date":"start_date","badge":"streak_count"},
         {"id":"active","name":"Active Habits","type":"kanban","group":"is_active","title":"name","description":"description","date":"start_date","badge":"streak_count"}
     ]
@@ -866,7 +863,6 @@ comment on table productivity.goals is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"status","name":"Goals By Status","type":"kanban","group":"status","title":"title","description":"description","date":"target_date","badge":"progress_percentage"},
         {"id":"priority","name":"Goals By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"target_date","badge":"status"},
         {"id":"type","name":"Goals By Type","type":"kanban","group":"type","title":"title","description":"description","date":"target_date","badge":"status"}
@@ -883,7 +879,6 @@ comment on table productivity.calendar_events is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"title","startDate":"start_datetime","endDate":"end_datetime","badge":"event_type"},
         {"id":"type","name":"Events By Type","type":"kanban","group":"event_type","title":"title","description":"description","date":"start_datetime","badge":"status"}
     ]
@@ -902,7 +897,6 @@ comment on table productivity.time_blocks is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"title","startDate":"block_date","endDate":"block_date","badge":"activity_type"},
         {"id":"activity","name":"Blocks By Activity","type":"kanban","group":"activity_type","title":"title","description":"description","date":"block_date","badge":"energy_required"}
     ]
@@ -921,7 +915,6 @@ comment on table productivity.notes is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"Notes By Type","type":"kanban","group":"note_type","title":"title","description":"content","date":"created_date","badge":"mood"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"title","startDate":"created_date","endDate":"created_date","badge":"note_type"}
     ]
@@ -937,7 +930,6 @@ comment on table productivity.reviews is
         "join": []
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"Reviews By Type","type":"kanban","group":"review_type","title":"review_date","description":"achievements","date":"review_date","badge":"productivity_rating"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"review_type","startDate":"review_date","endDate":"review_date","badge":"productivity_rating"}
     ]
@@ -955,7 +947,6 @@ comment on table productivity.focus_sessions is
         ]
     },
     "items": [
-        {"id":"sheet","name":"Sheet View","type":"sheet"},
         {"id":"type","name":"Sessions By Type","type":"kanban","group":"session_type","title":"start_time","description":"notes","date":"start_time","badge":"productivity_rating"},
         {"id":"calendar","name":"Calendar View","type":"calendar","title":"session_type","startDate":"start_time","endDate":"end_time","badge":"completed"}
     ]

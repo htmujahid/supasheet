@@ -33,8 +33,8 @@ async function NotFoundPage() {
             </EmptyMedia>
             <EmptyTitle>404 - Page Not Found</EmptyTitle>
             <EmptyDescription>
-              The page you&apos;re looking for doesn&apos;t exist or has
-              been moved.
+              The page you&apos;re looking for doesn&apos;t exist or has been
+              moved.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>

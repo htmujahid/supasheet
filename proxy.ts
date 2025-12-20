@@ -176,8 +176,6 @@ async function getPatterns() {
             .schema("supasheet")
             .rpc("get_schemas");
 
-          console.log({data, error});
-
           if (!data?.length || error) {
             return NextResponse.next();
           }
