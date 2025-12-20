@@ -1,13 +1,11 @@
 "use client";
 
+import * as React from "react";
+
 import { useDirection } from "@radix-ui/react-direction";
 import {
   type ColumnDef,
   type ColumnFiltersState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   type PaginationState,
   type RowSelectionState,
   type SortingState,
@@ -15,20 +13,23 @@ import {
   type TableOptions,
   type TableState,
   type Updater,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useVirtualizer, type Virtualizer } from "@tanstack/react-virtual";
+import { type Virtualizer, useVirtualizer } from "@tanstack/react-virtual";
 import {
+  type UseQueryStateOptions,
   parseAsInteger,
   parseAsStringEnum,
   useQueryState,
-  type UseQueryStateOptions,
 } from "nuqs";
-import * as React from "react";
 import { toast } from "sonner";
 
-import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { useAsRef } from "@/hooks/use-as-ref";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { useIsomorphicLayoutEffect } from "@/hooks/use-isomorphic-layout-effect";
 import { useLazyRef } from "@/hooks/use-lazy-ref";
 import {
@@ -36,16 +37,7 @@ import {
   getSortingStateParser,
 } from "@/interfaces/data-table/lib/parsers";
 import type { ExtendedColumnSort } from "@/interfaces/data-table/types/data-table";
-import {
-  getCellKey,
-  getIsFileCellData,
-  getIsInPopover,
-  getRowHeightValue,
-  getScrollDirection,
-  matchSelectOption,
-  parseCellKey,
-  scrollCellIntoView,
-} from "../../lib/utils/data-grid";
+
 import type {
   CellPosition,
   ContextMenuState,
@@ -58,6 +50,16 @@ import type {
   SelectionState,
   UpdateCell,
 } from "../../lib/types/data-grid";
+import {
+  getCellKey,
+  getIsFileCellData,
+  getIsInPopover,
+  getRowHeightValue,
+  getScrollDirection,
+  matchSelectOption,
+  parseCellKey,
+  scrollCellIntoView,
+} from "../../lib/utils/data-grid";
 
 const DEFAULT_ROW_HEIGHT = "short";
 const OVERSCAN = 6;
@@ -467,7 +469,6 @@ function useDataGrid<TData>({
     prevCellSelectionMapRef.current = stableMap;
     return stableMap;
   }, [selectionState.selectedCells, prevCellSelectionMapRef]);
-
 
   const navigableColumnIds = React.useMemo(() => {
     return columnIds.filter((c) => !NON_NAVIGABLE_COLUMN_IDS.includes(c));
@@ -2038,9 +2039,7 @@ function useDataGrid<TData>({
   const onColumnFiltersChange = React.useCallback(
     (updater: Updater<ColumnFiltersState>) => {
       const newColumnFilters =
-        typeof updater === "function"
-          ? updater(columnFilters)
-          : updater;
+        typeof updater === "function" ? updater(columnFilters) : updater;
       // Convert ColumnFiltersState to ExtendedColumnFilter format for nuqs
       // Note: This is a simplified conversion - full filter data should come from the filter UI
       propsRef.current.onColumnFiltersChange?.(newColumnFilters);

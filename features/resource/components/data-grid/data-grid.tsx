@@ -1,33 +1,35 @@
 "use client";
 
 import * as React from "react";
+
+import { DataTablePagination } from "@/interfaces/data-table/components/data-table-pagination";
+import { cn } from "@/lib/utils";
+
+import type { useDataGrid } from "../../lib/hooks/use-data-grid";
+import type { Direction } from "../../lib/types/data-grid";
+import { flexRender, getCommonPinningStyles } from "../../lib/utils/data-grid";
 import { DataGridColumnHeader } from "./data-grid-column-header";
 import { DataGridContextMenu } from "./data-grid-context-menu";
 import { DataGridPasteDialog } from "./data-grid-paste-dialog";
 import { DataGridRow } from "./data-grid-row";
 import { DataGridSearch } from "./data-grid-search";
-import type { useDataGrid } from "../../lib/hooks/use-data-grid";
-import { flexRender, getCommonPinningStyles } from "../../lib/utils/data-grid";
-import { cn } from "@/lib/utils";
-import type { Direction } from "../../lib/types/data-grid";
-import { DataTablePagination } from "@/interfaces/data-table/components/data-table-pagination";
 
 const EMPTY_CELL_SELECTION_SET = new Set<string>();
 
 interface DataGridProps<TData>
   extends Omit<
-    ReturnType<typeof useDataGrid<TData>>,
-    | "dir"
-    | "shallow"
-    | "debounceMs"
-    | "throttleMs"
-    | "pagination"
-    | "filters"
-    | "setFilters"
-    | "joinOperator"
-    | "setJoinOperator"
-  >,
-  Omit<React.ComponentProps<"div">, "contextMenu"> {
+      ReturnType<typeof useDataGrid<TData>>,
+      | "dir"
+      | "shallow"
+      | "debounceMs"
+      | "throttleMs"
+      | "pagination"
+      | "filters"
+      | "setFilters"
+      | "joinOperator"
+      | "setJoinOperator"
+    >,
+    Omit<React.ComponentProps<"div">, "contextMenu"> {
   dir?: Direction;
   height?: number;
   stretchColumns?: boolean;
@@ -98,7 +100,7 @@ export function DataGrid<TData>({
           data-slot="grid"
           tabIndex={0}
           ref={dataGridRef}
-          className="relative grid grid-rows-[auto_1fr] overflow-auto select-none focus:outline-none h-[calc(100svh-147px)]"
+          className="relative grid h-[calc(100svh-147px)] grid-rows-[auto_1fr] overflow-auto select-none focus:outline-none"
           style={{
             ...columnSizeVars,
             maxHeight: `${height}px`,
@@ -148,12 +150,15 @@ export function DataGrid<TData>({
                         "border-e": header.column.id !== "select",
                       })}
                       style={{
-                        ...getCommonPinningStyles({ column: header.column, dir }),
+                        ...getCommonPinningStyles({
+                          column: header.column,
+                          dir,
+                        }),
                         width: `calc(var(--header-${header.id}-size) * 1px)`,
                       }}
                     >
                       {header.isPlaceholder ? null : typeof header.column
-                        .columnDef.header === "function" ? (
+                          .columnDef.header === "function" ? (
                         <div className="size-full px-3 py-1.5">
                           {flexRender(
                             header.column.columnDef.header,
@@ -206,7 +211,9 @@ export function DataGrid<TData>({
                   editingCell={editingCell}
                   cellSelectionKeys={cellSelectionKeys}
                   searchMatchColumns={searchMatchColumns}
-                  activeSearchMatch={isActiveSearchRow ? activeSearchMatch : null}
+                  activeSearchMatch={
+                    isActiveSearchRow ? activeSearchMatch : null
+                  }
                   dir={dir}
                   readOnly={readOnly}
                   stretchColumns={stretchColumns}
@@ -215,7 +222,6 @@ export function DataGrid<TData>({
             })}
           </div>
         </div>
-
       </div>
       {isPagination && <DataTablePagination table={table} ref={footerRef} />}
     </div>

@@ -201,36 +201,35 @@ export function ResourceGrid({
     [client],
   );
 
-  const { 
-    table, 
-    shallow, 
-    debounceMs, 
-    throttleMs, 
+  const {
+    table,
+    shallow,
+    debounceMs,
+    throttleMs,
     setFilters: _,
     joinOperator: __,
     setJoinOperator: ___,
-    ...dataGridProps 
-  } =
-    useDataGrid({
-      columns,
-      data: data?.results ?? [],
-      pageCount: data ? Math.ceil(data.total / data.perPage) : -1,
-      onDataChange: () => { },
-      onRowsDelete,
-      enableSearch: true,
-      shallow: false, // Trigger server-side refetch on URL change
-      clearOnDefault: true,
-      onCellUpdate,
-      onFilesUpload,
-      onFilesDelete,
-    });
+    ...dataGridProps
+  } = useDataGrid({
+    columns,
+    data: data?.results ?? [],
+    pageCount: data ? Math.ceil(data.total / data.perPage) : -1,
+    onDataChange: () => {},
+    onRowsDelete,
+    enableSearch: true,
+    shallow: false, // Trigger server-side refetch on URL change
+    clearOnDefault: true,
+    onCellUpdate,
+    onFilesUpload,
+    onFilesDelete,
+  });
 
   const height = Math.max(400, windowSize.height - 105);
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <div className="flex-1 gap-2 flex items-center">
+        <div className="flex flex-1 items-center gap-2">
           <DataTableFilterList
             table={table}
             shallow={shallow}
@@ -243,11 +242,7 @@ export function ResourceGrid({
         <DataGridViewMenu table={table} />
       </div>
       <DataGridKeyboardShortcuts enableSearch={!!dataGridProps.searchState} />
-      <DataGrid
-        {...dataGridProps}
-        table={table}
-        height={height}
-      />
+      <DataGrid {...dataGridProps} table={table} height={height} />
     </div>
   );
 }

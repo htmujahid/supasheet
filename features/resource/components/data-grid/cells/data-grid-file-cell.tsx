@@ -26,8 +26,8 @@ import {
 import { useBadgeOverflow } from "@/hooks/use-badge-overflow";
 import { cn } from "@/lib/utils";
 
-import { DataGridCellWrapper } from "../data-grid-cell-wrapper";
 import { FileFieldConfig } from "../../fields/types";
+import { DataGridCellWrapper } from "../data-grid-cell-wrapper";
 
 export function DataGridFileCell<TData>({
   cell,

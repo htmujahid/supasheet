@@ -106,7 +106,7 @@ export function DataGridNumberCell<TData>({
           type="number"
           ref={inputRef}
           value={value}
-          className="w-full border-none bg-transparent p-0 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          className="w-full [appearance:textfield] border-none bg-transparent p-0 outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           onBlur={onBlur}
           onChange={onChange}
         />

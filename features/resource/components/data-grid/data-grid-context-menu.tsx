@@ -55,10 +55,10 @@ export function DataGridContextMenu<TData>({
 
 interface ContextMenuProps<TData>
   extends Pick<
-    TableMeta<TData>,
-    "dataGridRef" | "onContextMenuOpenChange" | "selectionState"
-  >,
-  Required<Pick<TableMeta<TData>, "contextMenu">> {
+      TableMeta<TData>,
+      "dataGridRef" | "onContextMenuOpenChange" | "selectionState"
+    >,
+    Required<Pick<TableMeta<TData>, "contextMenu">> {
   table: Table<TData>;
   tableMeta: TableMeta<TData>;
 }

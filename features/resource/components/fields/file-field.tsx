@@ -159,7 +159,9 @@ export function FileField({
 
         // Find and remove from field array
         const index = fieldArray.fields.findIndex((_item, idx) => {
-          const file = form.getValues(`${field.name}.${idx}` as any) as FileObject | undefined;
+          const file = form.getValues(`${field.name}.${idx}` as any) as
+            | FileObject
+            | undefined;
           return file?.url === fileUrl;
         });
 
