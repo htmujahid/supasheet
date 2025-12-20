@@ -23,8 +23,10 @@ export function DataGridArrayCell<TData>({
   readOnly,
 }: DataGridCellProps<TData>) {
   const initialValue = cell.getValue() as unknown[] | null;
+  const [sheetOpen, setSheetOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const cellOpts = cell.column.columnDef.meta as ColumnMetadata;
+  const prevIsEditingRef = React.useRef(isEditing);
 
   // Track the current value for syncing
   const prevInitialValueRef = React.useRef(initialValue);
@@ -35,15 +37,22 @@ export function DataGridArrayCell<TData>({
     setCurrentValue(initialValue);
   }
 
-  const onOpenChange = React.useCallback(
+  // Only open sheet when isEditing transitions from false to true
+  React.useEffect(() => {
+    if (isEditing && !prevIsEditingRef.current) {
+      setSheetOpen(true);
+    }
+    prevIsEditingRef.current = isEditing;
+  }, [isEditing]);
+
+  const onSheetOpenChange = React.useCallback(
     (open: boolean) => {
-      if (open && !readOnly) {
-        tableMeta?.onCellEditingStart?.(rowIndex, columnId);
-      } else {
+      setSheetOpen(open);
+      if (!open) {
         tableMeta?.onCellEditingStop?.();
       }
     },
-    [tableMeta, rowIndex, columnId, readOnly],
+    [tableMeta],
   );
 
   const onSave = React.useCallback(
@@ -51,28 +60,27 @@ export function DataGridArrayCell<TData>({
       if (!readOnly) {
         tableMeta?.onDataUpdate?.({ rowIndex, columnId, value });
       }
+      setSheetOpen(false);
       tableMeta?.onCellEditingStop?.();
     },
     [tableMeta, rowIndex, columnId, readOnly],
   );
 
   const onCancel = React.useCallback(() => {
+    setSheetOpen(false);
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta]);
 
   const onWrapperKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (isEditing && event.key === "Escape") {
-        event.preventDefault();
-        onCancel();
-      } else if (!isEditing && isFocused && event.key === "Tab") {
+      if (!isEditing && isFocused && event.key === "Tab") {
         event.preventDefault();
         tableMeta?.onCellEditingStop?.({
           direction: event.shiftKey ? "left" : "right",
         });
       }
     },
-    [isEditing, isFocused, onCancel, tableMeta],
+    [isEditing, isFocused, tableMeta],
   );
 
   const lineCount = getLineCount(rowHeight);
@@ -86,52 +94,55 @@ export function DataGridArrayCell<TData>({
   });
 
   return (
-    <DataGridCellWrapper<TData>
-      ref={containerRef}
-      cell={cell}
-      tableMeta={tableMeta}
-      rowIndex={rowIndex}
-      columnId={columnId}
-      rowHeight={rowHeight}
-      isEditing={isEditing}
-      isFocused={isFocused}
-      isSelected={isSelected}
-      isSearchMatch={isSearchMatch}
-      isActiveSearchMatch={isActiveSearchMatch}
-      readOnly={readOnly}
-      onKeyDown={onWrapperKeyDown}
-    >
-      <DataGridArrayEditSheet
-        open={isEditing}
-        onOpenChange={onOpenChange}
-        initialValue={currentValue}
-        columnMetadata={cellOpts}
-        onSave={onSave}
-        onCancel={onCancel}
-      />
-
-      {/* Display mode */}
-      {currentValue === null ? (
-        <span className="text-muted-foreground italic">null</span>
-      ) : currentValue?.length === 0 ? (
-        <span className="text-muted-foreground italic">[]</span>
-      ) : (
-        <div className="flex flex-wrap items-center gap-1 overflow-hidden">
-          {visibleItems.map((v, i) => (
-            <Badge key={i} variant="outline" className="shrink-0 text-xs">
-              {String(v)}
-            </Badge>
-          ))}
-          {hiddenCount > 0 && (
-            <Badge
-              variant="outline"
-              className="text-muted-foreground shrink-0 px-1.5 text-xs"
-            >
-              +{hiddenCount}
-            </Badge>
-          )}
-        </div>
+    <>
+      <DataGridCellWrapper<TData>
+        ref={containerRef}
+        cell={cell}
+        tableMeta={tableMeta}
+        rowIndex={rowIndex}
+        columnId={columnId}
+        rowHeight={rowHeight}
+        isEditing={isEditing}
+        isFocused={isFocused}
+        isSelected={isSelected}
+        isSearchMatch={isSearchMatch}
+        isActiveSearchMatch={isActiveSearchMatch}
+        readOnly={readOnly}
+        onKeyDown={onWrapperKeyDown}
+      >
+        {/* Display mode */}
+        {currentValue === null ? (
+          <span className="text-muted-foreground italic">null</span>
+        ) : currentValue?.length === 0 ? (
+          <span className="text-muted-foreground italic">[]</span>
+        ) : (
+          <div className="flex flex-wrap items-center gap-1 overflow-hidden">
+            {visibleItems.map((v, i) => (
+              <Badge key={i} variant="outline" className="shrink-0 text-xs">
+                {String(v)}
+              </Badge>
+            ))}
+            {hiddenCount > 0 && (
+              <Badge
+                variant="outline"
+                className="text-muted-foreground shrink-0 px-1.5 text-xs"
+              >
+                +{hiddenCount}
+              </Badge>
+            )}
+          </div>
+        )}
+      </DataGridCellWrapper>
+      {sheetOpen && (
+        <DataGridArrayEditSheet
+          open={sheetOpen}
+          onOpenChange={onSheetOpenChange}
+          initialValue={currentValue}
+          columnMetadata={cellOpts}
+          onSave={onSave}
+          onCancel={onCancel}
+        />
       )}
-    </DataGridCellWrapper>
+    </>
   );
 }

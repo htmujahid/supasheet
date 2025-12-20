@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -155,133 +156,135 @@ export function DataGridArrayEditSheet({
           <SheetTitle>Edit Array</SheetTitle>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto py-4">
-          <Sortable
-            value={fieldArray.fields}
-            onDragEnd={(event) => {
-              const { active, over } = event;
+        <Form {...form}>
+          <div className="flex-1 overflow-y-auto py-4">
+            <Sortable
+              value={fieldArray.fields}
+              onDragEnd={(event) => {
+                const { active, over } = event;
 
-              if (over && active.id !== over.id) {
-                const oldIndex = fieldArray.fields?.findIndex(
-                  (field) => field.id === active.id,
-                );
-                const newIndex = fieldArray.fields?.findIndex(
-                  (field) => field.id === over.id,
-                );
+                if (over && active.id !== over.id) {
+                  const oldIndex = fieldArray.fields?.findIndex(
+                    (field) => field.id === active.id,
+                  );
+                  const newIndex = fieldArray.fields?.findIndex(
+                    (field) => field.id === over.id,
+                  );
 
-                fieldArray.move(oldIndex, newIndex);
-              }
-            }}
-            orientation="vertical"
-            getItemValue={(item) => item.id}
-          >
-            <div className="space-y-2 rounded-lg border p-2">
-              <If condition={isNull}>
-                <p className="text-muted-foreground py-2 text-center text-sm">
-                  Items set to null
-                </p>
-              </If>
-              <If
-                condition={
-                  fieldArray.fields?.length === 0 && !isNull && !isDefault
+                  fieldArray.move(oldIndex, newIndex);
                 }
-              >
-                <p className="text-muted-foreground py-2 text-center text-sm">
-                  Empty array []
-                </p>
-              </If>
-              <If condition={isDefault && columnMetadata?.defaultValue}>
-                <p className="text-muted-foreground py-2 text-center text-sm">
-                  DEFAULT VALUE
-                </p>
-              </If>
-              <SortableContent asChild>
-                <div className="space-y-2">
-                  {fieldArray.fields?.map((f, index) => (
-                    <SortableItem key={f.id} value={f.id}>
-                      <FormField
-                        key={f.id}
-                        control={form.control}
-                        name={`items.${index}.value`}
-                        render={({ field: inputField }) => (
-                          <FormItem>
-                            <ButtonGroup className="flex w-full gap-2">
-                              <SortableItemHandle asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="size-8"
-                                >
-                                  <GripVertical className="h-4 w-4" />
-                                </Button>
-                              </SortableItemHandle>
-                              <ButtonGroup className="flex-1">
-                                <FormControl className="w-full">
-                                  <AllFields
-                                    field={inputField as never}
-                                    columnMetadata={innerColumnMetadata}
-                                  />
-                                </FormControl>
+              }}
+              orientation="vertical"
+              getItemValue={(item) => item.id}
+            >
+              <div className="space-y-2 rounded-lg border p-2">
+                <If condition={isNull}>
+                  <p className="text-muted-foreground py-2 text-center text-sm">
+                    Items set to null
+                  </p>
+                </If>
+                <If
+                  condition={
+                    fieldArray.fields?.length === 0 && !isNull && !isDefault
+                  }
+                >
+                  <p className="text-muted-foreground py-2 text-center text-sm">
+                    Empty array []
+                  </p>
+                </If>
+                <If condition={isDefault && columnMetadata?.defaultValue}>
+                  <p className="text-muted-foreground py-2 text-center text-sm">
+                    DEFAULT VALUE
+                  </p>
+                </If>
+                <SortableContent asChild>
+                  <div className="space-y-2">
+                    {fieldArray.fields?.map((f, index) => (
+                      <SortableItem key={f.id} value={f.id}>
+                        <FormField
+                          key={f.id}
+                          control={form.control}
+                          name={`items.${index}.value`}
+                          render={({ field: inputField }) => (
+                            <FormItem>
+                              <ButtonGroup className="flex w-full gap-2">
+                                <SortableItemHandle asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8"
+                                  >
+                                    <GripVertical className="h-4 w-4" />
+                                  </Button>
+                                </SortableItemHandle>
+                                <ButtonGroup className="flex-1">
+                                  <FormControl className="w-full">
+                                    <AllFields
+                                      field={inputField as never}
+                                      columnMetadata={innerColumnMetadata}
+                                    />
+                                  </FormControl>
+                                </ButtonGroup>
+                                <ButtonGroup>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => fieldArray.remove(index)}
+                                  >
+                                    <XIcon className="size-4" />
+                                  </Button>
+                                </ButtonGroup>
                               </ButtonGroup>
-                              <ButtonGroup>
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="icon"
-                                  onClick={() => fieldArray.remove(index)}
-                                >
-                                  <XIcon className="size-4" />
-                                </Button>
-                              </ButtonGroup>
-                            </ButtonGroup>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </SortableItem>
-                  ))}
-                </div>
-              </SortableContent>
-              <ButtonGroup className="flex w-full gap-2">
-                <ButtonGroup className="flex-1">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleAddItem}
-                    className="flex-1"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Item
-                  </Button>
-                </ButtonGroup>
-                <ButtonGroup>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <SquarePenIcon size={16} aria-hidden="true" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <If condition={!columnMetadata?.required}>
-                        <DropdownMenuItem onClick={handleSetNull}>
-                          Set null
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </SortableItem>
+                    ))}
+                  </div>
+                </SortableContent>
+                <ButtonGroup className="flex w-full gap-2">
+                  <ButtonGroup className="flex-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleAddItem}
+                      className="flex-1"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Item
+                    </Button>
+                  </ButtonGroup>
+                  <ButtonGroup>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          <SquarePenIcon size={16} aria-hidden="true" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <If condition={!columnMetadata?.required}>
+                          <DropdownMenuItem onClick={handleSetNull}>
+                            Set null
+                          </DropdownMenuItem>
+                        </If>
+                        <DropdownMenuItem onClick={handleSetEmptyArray}>
+                          Set empty array
                         </DropdownMenuItem>
-                      </If>
-                      <DropdownMenuItem onClick={handleSetEmptyArray}>
-                        Set empty array
-                      </DropdownMenuItem>
-                      <If condition={columnMetadata?.defaultValue}>
-                        <DropdownMenuItem onClick={handleSetDefault}>
-                          Set default value
-                        </DropdownMenuItem>
-                      </If>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        <If condition={columnMetadata?.defaultValue}>
+                          <DropdownMenuItem onClick={handleSetDefault}>
+                            Set default value
+                          </DropdownMenuItem>
+                        </If>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </ButtonGroup>
                 </ButtonGroup>
-              </ButtonGroup>
-            </div>
-          </Sortable>
-        </div>
+              </div>
+            </Sortable>
+          </div>
+        </Form>
 
         <SheetFooter className="flex-row gap-2">
           <SheetClose asChild>
