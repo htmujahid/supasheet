@@ -74,6 +74,7 @@ export function SecurityPasswordCard() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                   aria-invalid={field.state.meta.errors.length > 0}
+                  disabled
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive">
@@ -106,6 +107,7 @@ export function SecurityPasswordCard() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                   aria-invalid={field.state.meta.errors.length > 0}
+                  disabled
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive">

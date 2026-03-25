@@ -28,7 +28,7 @@ export function SignInForm() {
   const queryClient = useQueryClient()
 
   const form = useForm({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "user@supasheet.dev", password: "12345678" },
     onSubmit: async ({ value }) => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: value.email,
