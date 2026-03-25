@@ -29,20 +29,19 @@ interface RouterContext {
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  head: () => ({
-    meta: [{ title: "Supasheet" }],
-  }),
   beforeLoad: async ({ context, location }) => {
-    const authUser =
-      await context.queryClient.ensureQueryData(authUserQueryOptions)
+    const cachedAuth = context.queryClient.getQueryData(authUserQueryOptions.queryKey)
+
+    const authUser = cachedAuth ?? await context.queryClient.ensureQueryData(authUserQueryOptions)
     if (!authUser && !location.pathname.startsWith("/auth")) {
       throw redirect({ to: "/auth/sign-in" })
     }
-    const user = authUser
-      ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id))
-      : null
+    const user = authUser ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id)) : null
     return { authUser, user }
   },
+  head: () => ({
+    meta: [{ title: "Supasheet" }],
+  }),
   pendingMs: 0,
   pendingComponent: LoadingScreen,
   component: RootComponent,
