@@ -1,0 +1,286 @@
+import { useNavigate } from "@tanstack/react-router"
+
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
+import { CalendarRange, Columns, Grid2x2, Grid3x3, List } from "lucide-react"
+import { toast } from "sonner"
+
+import { Button } from "#/components/ui/button"
+import { ButtonGroup } from "#/components/ui/button-group"
+import {
+  EventCalendarAgendaView,
+  EventCalendarContainer,
+  EventCalendarDayView,
+  EventCalendarHeader,
+  EventCalendarMonthView,
+  EventCalendarRoot,
+  EventCalendarWeekView,
+  EventCalendarYearView,
+} from "#/components/ui/event-calendar"
+import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
+import { useHasPermission } from "#/hooks/use-permissions"
+import type { PrimaryKey } from "#/lib/database-meta.types"
+import type { Database } from "#/lib/database.types"
+import { buildPkSplat } from "#/lib/fields"
+import type { AppPermission } from "#/lib/supabase/data/core"
+import {
+  deleteResourceMutationOptions,
+  updateResourceMutationOptions,
+} from "#/lib/supabase/data/resource"
+
+export type { IEvent, TCalendarView }
+
+type TableSchema =
+  | Database["supasheet"]["Functions"]["get_tables"]["Returns"][number]
+  | null
+
+type ColumnSchema =
+  Database["supasheet"]["Functions"]["get_columns"]["Returns"][number]
+
+export type CalendarView = {
+  id: string
+  type: string
+  title?: string
+  startDate?: string
+  endDate?: string
+  badge?: string
+}
+
+type TEventColor =
+  | "blue"
+  | "green"
+  | "red"
+  | "yellow"
+  | "purple"
+  | "orange"
+  | "gray"
+
+const COLORS: TEventColor[] = [
+  "blue",
+  "green",
+  "red",
+  "yellow",
+  "purple",
+  "orange",
+  "gray",
+]
+
+export function colorFromString(str: string | null | undefined): TEventColor {
+  if (!str) return "blue"
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return COLORS[Math.abs(hash) % COLORS.length]
+}
+
+export interface ResourceCalendarProps {
+  view?: TCalendarView
+  data: IEvent[]
+  tableSchema: TableSchema
+  columnsSchema: ColumnSchema[]
+  currentView: CalendarView
+}
+
+export function ResourceCalendar({
+  view = "month",
+  data,
+  tableSchema,
+  columnsSchema: _columnsSchema,
+  currentView,
+}: ResourceCalendarProps) {
+  const schema = tableSchema?.schema ?? ""
+  const resource = tableSchema?.name ?? ""
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const startDateField = currentView.startDate ?? ""
+  const endDateField = currentView.endDate ?? ""
+
+  const queryClient = useQueryClient()
+  const navigate = useNavigate({
+    from: "/$schema/resource/$resource/calendar/$calendarId",
+  })
+
+  const { mutate: updateResource } = useMutation(
+    updateResourceMutationOptions(schema, resource)
+  )
+  const { mutateAsync: deleteRow } = useMutation(
+    deleteResourceMutationOptions(schema, resource)
+  )
+
+  function getPk(event: IEvent): Record<string, unknown> {
+    return Object.fromEntries(
+      primaryKeys.map((pkField) => [pkField.name, event.data?.[pkField.name]])
+    )
+  }
+
+  function onDragEvent(event: IEvent) {
+    updateResource(
+      {
+        pk: getPk(event),
+        data: {
+          [startDateField]: event.startDate,
+          [endDateField]: event.endDate,
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["supasheet", "resource-data", schema, resource],
+          })
+        },
+      }
+    )
+  }
+
+  function onAddEvent({
+    startDate,
+    hour,
+    minute,
+  }: {
+    startDate: Date
+    hour: number
+    minute: number
+  }) {
+    const start = new Date(startDate)
+    start.setHours(hour, minute)
+    void navigate({
+      to: "/$schema/resource/$resource/new",
+      params: { schema, resource },
+    })
+  }
+
+  function onEventView(event: IEvent) {
+    const splat = buildPkSplat(event.data ?? {}, primaryKeys)
+    void navigate({
+      to: "/$schema/resource/$resource/view/$",
+      params: { schema, resource, _splat: splat },
+    })
+  }
+
+  function onEventUpdate(event: IEvent) {
+    const splat = buildPkSplat(event.data ?? {}, primaryKeys)
+    void navigate({
+      to: "/$schema/resource/$resource/update/$",
+      params: { schema, resource, _splat: splat },
+    })
+  }
+
+  async function onEventDelete(event: IEvent) {
+    try {
+      await deleteRow(getPk(event))
+      queryClient.invalidateQueries({
+        queryKey: ["supasheet", "resource-data", schema, resource],
+      })
+      toast.success("Record deleted")
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete record"
+      )
+    }
+  }
+
+  const hasPk = primaryKeys.length > 0
+  const canUpdate = useHasPermission(
+    `${schema}.${resource}:update` as AppPermission
+  )
+  const canDelete = useHasPermission(
+    `${schema}.${resource}:delete` as AppPermission
+  )
+
+  return (
+    <div className="flex h-full flex-col gap-2">
+      <EventCalendarRoot
+        view={view}
+        events={data}
+        onViewUpdate={(v) =>
+          void navigate({
+            search: (prev: Record<string, unknown>) => ({
+              ...prev,
+              view: v,
+            }),
+          })
+        }
+        onDragEvent={canUpdate ? onDragEvent : undefined}
+        onAddEvent={hasPk ? onAddEvent : undefined}
+        onEventView={hasPk ? onEventView : undefined}
+        onEventUpdate={hasPk && canUpdate ? onEventUpdate : undefined}
+        onEventDelete={hasPk && canDelete ? onEventDelete : undefined}
+      >
+        <EventCalendarHeader>
+          <EventCalendarNavigation view={view} />
+        </EventCalendarHeader>
+        <EventCalendarContainer>
+          <EventCalendarDayView />
+          <EventCalendarWeekView />
+          <EventCalendarMonthView />
+          <EventCalendarYearView />
+          <EventCalendarAgendaView />
+        </EventCalendarContainer>
+      </EventCalendarRoot>
+    </div>
+  )
+}
+
+function EventCalendarNavigation({ view }: { view: TCalendarView }) {
+  const navigate = useNavigate({
+    from: "/$schema/resource/$resource/calendar/$calendarId",
+  })
+
+  function goTo(v: TCalendarView) {
+    void navigate({
+      search: (prev: Record<string, unknown>) => ({
+        ...prev,
+        view: v,
+      }),
+    })
+  }
+
+  return (
+    <ButtonGroup>
+      <Button
+        aria-label="View by day"
+        size="icon-sm"
+        variant={view === "day" ? "default" : "outline"}
+        onClick={() => goTo("day")}
+      >
+        <List className="size-4" />
+      </Button>
+
+      <Button
+        aria-label="View by week"
+        size="icon-sm"
+        variant={view === "week" ? "default" : "outline"}
+        onClick={() => goTo("week")}
+      >
+        <Columns className="size-4" />
+      </Button>
+
+      <Button
+        aria-label="View by month"
+        size="icon-sm"
+        variant={view === "month" ? "default" : "outline"}
+        onClick={() => goTo("month")}
+      >
+        <Grid2x2 className="size-4" />
+      </Button>
+
+      <Button
+        aria-label="View by year"
+        size="icon-sm"
+        variant={view === "year" ? "default" : "outline"}
+        onClick={() => goTo("year")}
+      >
+        <Grid3x3 className="size-4" />
+      </Button>
+
+      <Button
+        aria-label="View by agenda"
+        size="icon-sm"
+        variant={view === "agenda" ? "default" : "outline"}
+        onClick={() => goTo("agenda")}
+      >
+        <CalendarRange className="size-4" />
+      </Button>
+    </ButtonGroup>
+  )
+}

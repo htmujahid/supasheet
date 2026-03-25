@@ -1,0 +1,112 @@
+import {
+  HeadContent,
+  Outlet,
+  createRootRouteWithContext,
+  redirect,
+  useRouter,
+} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+
+import type { QueryClient } from "@tanstack/react-query"
+
+import { TanStackDevtools } from "@tanstack/react-devtools"
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+
+import { ThemeProvider } from "#/components/theme-provider"
+import { Button } from "#/components/ui/button"
+import { Toaster } from "#/components/ui/sonner"
+import { Spinner } from "#/components/ui/spinner"
+import { TooltipProvider } from "#/components/ui/tooltip"
+import { authUserQueryOptions } from "#/lib/supabase/data/auth"
+import { userQueryOptions } from "#/lib/supabase/data/users"
+
+import TanStackQueryDevtools from "../integrations/tanstack-query/devtools"
+import TanStackQueryProvider from "../integrations/tanstack-query/root-provider"
+import "../styles.css"
+
+interface RouterContext {
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  head: () => ({
+    meta: [{ title: "Supasheet" }],
+  }),
+  beforeLoad: async ({ context, location }) => {
+    const authUser =
+      await context.queryClient.ensureQueryData(authUserQueryOptions)
+    if (!authUser && !location.pathname.startsWith("/auth")) {
+      throw redirect({ to: "/auth/sign-in" })
+    }
+    const user = authUser
+      ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id))
+      : null
+    return { authUser, user }
+  },
+  pendingMs: 0,
+  pendingComponent: LoadingScreen,
+  component: RootComponent,
+  errorComponent: ErrorScreen,
+})
+
+function ErrorScreen({ error, reset }: ErrorComponentProps) {
+  const router = useRouter()
+
+  return (
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
+      <p className="text-sm text-muted-foreground">
+        {error?.message ?? "An unexpected error occurred."}
+      </p>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          onClick={() => {
+            reset()
+            router.invalidate()
+          }}
+        >
+          Try again
+        </Button>
+        <Button variant="ghost" onClick={() => router.navigate({ to: "/" })}>
+          Go home
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function LoadingScreen() {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <Spinner className="size-6" />
+    </div>
+  )
+}
+
+function RootComponent() {
+  return (
+    <>
+      <HeadContent />
+      <TanStackQueryProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Outlet />
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+      </TanStackQueryProvider>
+      <TanStackDevtools
+        config={{
+          position: "bottom-right",
+        }}
+        plugins={[
+          {
+            name: "TanStack Router",
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+          TanStackQueryDevtools,
+        ]}
+      />
+    </>
+  )
+}

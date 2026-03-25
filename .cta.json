@@ -1,0 +1,15 @@
+{
+  "projectName": "supasheet",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "npm",
+  "includeExamples": false,
+  "tailwind": true,
+  "addOnOptions": {},
+  "envVarValues": {},
+  "git": true,
+  "routerOnly": true,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": ["eslint"]
+}

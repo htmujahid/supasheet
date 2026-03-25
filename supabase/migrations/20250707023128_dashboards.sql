@@ -25,7 +25,7 @@ begin
         ON rp.permission::text = v.schema || '.' || v.name || ':select'
     inner join supasheet.user_roles ur
         ON ur.role = rp.role
-    where ur.account_id = auth.uid()
+    where ur.user_id = auth.uid()
       and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'dashboard_widget');
 end;
 $$;

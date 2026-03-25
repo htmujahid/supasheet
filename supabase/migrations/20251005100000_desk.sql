@@ -1,0 +1,759 @@
+create schema if not exists desk;
+
+grant usage on schema desk to authenticated;
+
+begin;
+create type task_status as enum ('pending', 'in_progress', 'completed', 'archived');
+create type task_priority as enum ('low', 'medium', 'high', 'critical');
+create type project_status as enum ('planning', 'active', 'on_hold', 'completed', 'cancelled');
+create type project_priority as enum ('low', 'medium', 'high', 'critical');
+
+-- Task permissions
+alter type supasheet.app_permission add value 'desk.tasks:select';
+alter type supasheet.app_permission add value 'desk.tasks:insert';
+alter type supasheet.app_permission add value 'desk.tasks:update';
+alter type supasheet.app_permission add value 'desk.tasks:delete';
+
+alter type supasheet.app_permission add value 'desk.user_tasks:select';
+alter type supasheet.app_permission add value 'desk.task_report:select';
+
+alter type supasheet.app_permission add value 'desk.task_summary:select';
+alter type supasheet.app_permission add value 'desk.task_completion_rate:select';
+alter type supasheet.app_permission add value 'desk.tasks_by_status:select';
+alter type supasheet.app_permission add value 'desk.task_critical_count:select';
+
+alter type supasheet.app_permission add value if not exists 'desk.task_list_simple:select';
+alter type supasheet.app_permission add value if not exists 'desk.active_tasks_simple:select';
+
+alter type supasheet.app_permission add value 'desk.task_priority_bar:select';
+alter type supasheet.app_permission add value 'desk.task_completion_line:select';
+alter type supasheet.app_permission add value 'desk.task_status_pie:select';
+alter type supasheet.app_permission add value 'desk.task_metrics_radar:select';
+
+-- Project permissions
+alter type supasheet.app_permission add value 'desk.projects:select';
+alter type supasheet.app_permission add value 'desk.projects:insert';
+alter type supasheet.app_permission add value 'desk.projects:update';
+alter type supasheet.app_permission add value 'desk.projects:delete';
+
+alter type supasheet.app_permission add value 'desk.project_report:select';
+alter type supasheet.app_permission add value 'desk.project_summary:select';
+alter type supasheet.app_permission add value 'desk.project_completion_rate:select';
+alter type supasheet.app_permission add value 'desk.project_list_simple:select';
+alter type supasheet.app_permission add value 'desk.project_task_overview:select';
+alter type supasheet.app_permission add value 'desk.project_status_pie:select';
+alter type supasheet.app_permission add value 'desk.project_priority_bar:select';
+commit;
+
+
+----------------------------------------------------------------
+-- Projects table (created before tasks so tasks can FK to it)
+----------------------------------------------------------------
+
+create table desk.projects (
+    id uuid primary key default extensions.uuid_generate_v4(),
+    title varchar(500) not null,
+    description RICH_TEXT,
+    status project_status default 'planning',
+    priority project_priority default 'medium',
+
+    -- User association
+    user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
+
+    -- Dates
+    start_date timestamptz,
+    end_date timestamptz,
+
+    -- Organization
+    tags varchar(500)[],
+    color color,
+
+    -- Audit fields
+    created_at timestamptz default current_timestamp,
+    updated_at timestamptz default current_timestamp
+);
+
+comment on column desk.projects.status is
+'{
+    "progress": true,
+    "enums": {
+        "planning": {
+            "variant": "outline",
+            "icon": "Lightbulb"
+        },
+        "active": {
+            "variant": "info",
+            "icon": "Zap"
+        },
+        "on_hold": {
+            "variant": "warning",
+            "icon": "PauseCircle"
+        },
+        "completed": {
+            "variant": "success",
+            "icon": "CircleCheck"
+        },
+        "cancelled": {
+            "variant": "destructive",
+            "icon": "XCircle"
+        }
+    }
+}';
+
+comment on column desk.projects.priority is
+'{
+    "progress": false,
+    "enums": {
+        "low": {
+            "variant": "outline",
+            "icon": "CircleArrowDown"
+        },
+        "medium": {
+            "variant": "info",
+            "icon": "CircleMinus"
+        },
+        "high": {
+            "variant": "warning",
+            "icon": "CircleArrowUp"
+        },
+        "critical": {
+            "variant": "destructive",
+            "icon": "ShieldAlert"
+        }
+    }
+}';
+
+comment on table desk.projects is
+'{
+    "icon": "FolderKanban",
+    "display": "block",
+    "query": {
+        "sort": [{"id":"title","desc":false}],
+        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
+    }
+}';
+
+revoke all on table desk.projects from authenticated, service_role;
+
+grant select, insert, update, delete on table desk.projects to authenticated;
+
+create index idx_projects_user_id on desk.projects (user_id);
+create index idx_projects_status on desk.projects (status);
+
+alter table desk.projects enable row level security;
+
+create policy projects_select on desk.projects
+    for select
+    to authenticated
+    using (user_id = auth.uid() and supasheet.has_permission('desk.projects:select'));
+
+create policy projects_insert on desk.projects
+    for insert
+    to authenticated
+    with check (user_id = auth.uid() and supasheet.has_permission('desk.projects:insert'));
+
+create policy projects_update on desk.projects
+    for update
+    to authenticated
+    using (user_id = auth.uid() and supasheet.has_permission('desk.projects:update'))
+    with check (user_id = auth.uid() and supasheet.has_permission('desk.projects:update'));
+
+create policy projects_delete on desk.projects
+    for delete
+    to authenticated
+    using (user_id = auth.uid() and supasheet.has_permission('desk.projects:delete'));
+
+
+----------------------------------------------------------------
+-- Tasks table
+----------------------------------------------------------------
+
+create table desk.tasks (
+    id uuid primary key default extensions.uuid_generate_v4(),
+    title varchar(500) not null,
+    description RICH_TEXT,
+    status task_status default 'pending',
+    priority task_priority default 'medium',
+    cover file,
+
+    -- User association
+    user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
+
+    -- Project association
+    project_id uuid references desk.projects(id) on delete set null,
+
+    -- Dates
+    due_date timestamptz,
+    completed_at timestamptz,
+
+    -- Organization
+    tags varchar(500)[],
+    is_important boolean default false,
+
+    -- Progress tracking
+    completion percentage,
+    duration duration,
+
+    -- File tracking
+    attachments file,
+
+    -- Customization
+    color color,
+    notes text,
+
+    -- Audit fields
+    created_at timestamptz default current_timestamp,
+    updated_at timestamptz default current_timestamp
+);
+
+comment on column desk.tasks.status is
+'{
+    "progress": true,
+    "enums": {
+        "pending": {
+            "variant": "warning",
+            "icon": "Clock"
+        },
+        "in_progress": {
+            "variant": "info",
+            "icon": "Loader"
+        },
+        "completed": {
+            "variant": "success",
+            "icon": "CircleCheck"
+        },
+        "archived": {
+            "variant": "outline",
+            "icon": "Archive"
+        }
+    }
+}';
+
+comment on column desk.tasks.priority is
+'{
+    "progress": false,
+    "enums": {
+        "low": {
+            "variant": "outline",
+            "icon": "CircleArrowDown"
+        },
+        "medium": {
+            "variant": "info",
+            "icon": "CircleMinus"
+        },
+        "high": {
+            "variant": "warning",
+            "icon": "CircleArrowUp"
+        },
+        "critical": {
+            "variant": "destructive",
+            "icon": "Flame"
+        }
+    }
+}';
+
+comment on table desk.tasks is
+'{
+    "icon": "ListTodo",
+    "display": "block",
+    "query": {
+        "sort": [{"id":"title","desc":false}],
+        "join": [
+            {"table":"users","on":"user_id","columns":["name","email"]},
+            {"table":"projects","on":"project_id","columns":["title"]}
+        ]
+    },
+    "items": [
+        {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"created_at","badge":"priority"},
+        {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"created_at","badge":"status"},
+        {"id":"calendar","name":"Calendar View","type":"calendar", "title": "title", "startDate": "created_at", "endDate": "due_date", "badge": "status"},
+        {"id":"gallery","name":"Gallery View","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
+    ]
+}';
+
+comment on column desk.tasks.cover is '{"accept":"image/*"}';
+comment on column desk.tasks.attachments is '{"accept":"*", "maxFiles": 999}';
+
+revoke all on table desk.tasks from authenticated, service_role;
+
+grant select, insert, update, delete on table desk.tasks to authenticated;
+
+create index idx_tasks_user_id on desk.tasks (user_id);
+create index idx_tasks_status on desk.tasks (status);
+create index idx_tasks_priority on desk.tasks (priority);
+create index idx_tasks_project_id on desk.tasks (project_id);
+
+alter table desk.tasks enable row level security;
+
+create policy tasks_select on desk.tasks
+    for select
+    to authenticated
+    using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:select'));
+
+create policy tasks_insert on desk.tasks
+    for insert
+    to authenticated
+    with check (user_id = auth.uid() and supasheet.has_permission('desk.tasks:insert'));
+
+create policy tasks_update on desk.tasks
+    for update
+    to authenticated
+    using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:update'))
+    with check (user_id = auth.uid() and supasheet.has_permission('desk.tasks:update'));
+
+create policy tasks_delete on desk.tasks
+    for delete
+    to authenticated
+    using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:delete'));
+
+
+-- View of tasks joined with user name
+create or replace view desk.user_tasks
+with(security_invoker = true) as
+select
+    a.name as user_name,
+    t.*
+from desk.tasks t
+join supasheet.users a on t.user_id = a.id;
+
+comment on view desk.user_tasks is '{"icon": "UserCheck"}';
+
+revoke all on desk.user_tasks from authenticated, service_role;
+grant select on desk.user_tasks to authenticated;
+
+create or replace view desk.users
+with (security_invoker = true) as
+select
+    *
+from supasheet.users;
+
+revoke all on desk.users from authenticated, service_role;
+grant select on desk.users to authenticated;
+
+
+----------------------------------------------------------------
+-- Reports
+----------------------------------------------------------------
+
+create or replace view desk.task_report
+with(security_invoker = true) as
+select
+    a.name as user_name,
+    t.*
+from desk.tasks t
+join supasheet.users a on t.user_id = a.id;
+
+revoke all on desk.task_report from authenticated, service_role;
+grant select on desk.task_report to authenticated;
+
+comment on view desk.task_report is '{"type": "report", "name": "Task Report", "description": "Full task list with user details"}';
+
+create or replace view desk.project_report
+with(security_invoker = true) as
+select
+    u.name as user_name,
+    p.id,
+    p.title,
+    p.description,
+    p.status,
+    p.priority,
+    p.start_date,
+    p.end_date,
+    p.tags,
+    p.color,
+    count(t.id) as total_tasks,
+    count(t.id) filter (where t.status = 'completed') as completed_tasks,
+    count(t.id) filter (where t.status != 'completed') as open_tasks,
+    p.created_at,
+    p.updated_at
+from desk.projects p
+join supasheet.users u on p.user_id = u.id
+left join desk.tasks t on t.project_id = p.id
+group by p.id, u.name;
+
+revoke all on desk.project_report from authenticated, service_role;
+grant select on desk.project_report to authenticated;
+
+comment on view desk.project_report is '{"type": "report", "name": "Project Report", "description": "Projects with task completion summary"}';
+
+
+----------------------------------------------------------------
+-- Dashboard widget views for tasks
+----------------------------------------------------------------
+
+create or replace view desk.task_summary
+with(security_invoker = true) as
+select
+    count(*) as value,
+    'list-todo' as icon,
+    'active tasks' as label
+from desk.tasks t
+where t.status != 'completed';
+
+revoke all on desk.task_summary from authenticated, service_role;
+grant select on desk.task_summary to authenticated;
+
+-- View for task completion rate (Card2 - split layout)
+create or replace view desk.task_completion_rate
+with (security_invoker = true) as
+select
+    count(*) filter (where status = 'completed') as primary,
+    count(*) filter (where status != 'completed') as secondary,
+    'Completed' as primary_label,
+    'Active' as secondary_label
+from desk.tasks t;
+
+revoke all on desk.task_completion_rate from authenticated, service_role;
+grant select on desk.task_completion_rate to authenticated;
+
+-- View for completed tasks stats (Card3 - value and percent layout)
+create or replace view desk.tasks_by_status
+with (security_invoker = true) as
+select
+    count(*) filter (where status = 'completed') as value,
+    case
+        when count(*) > 0
+        then round((count(*) filter (where status = 'completed')::numeric / count(*)::numeric) * 100, 1)
+        else 0
+    end as percent
+from desk.tasks t;
+
+revoke all on desk.tasks_by_status from authenticated, service_role;
+grant select on desk.tasks_by_status to authenticated;
+
+-- View for task progress with breakdown (Card4 - progress layout)
+create or replace view desk.task_critical_count
+with (security_invoker = true) as
+select
+    count(*) filter (where status != 'completed' and priority in ('high', 'critical')) as current,
+    count(*) filter (where status != 'completed') as total,
+    json_build_array(
+        json_build_object('label', 'Critical', 'value', count(*) filter (where priority = 'critical' and status != 'completed')),
+        json_build_object('label', 'High', 'value', count(*) filter (where priority = 'high' and status != 'completed')),
+        json_build_object('label', 'Overdue', 'value', count(*) filter (where due_date < current_timestamp and status != 'completed'))
+    ) as segments
+from desk.tasks;
+
+revoke all on desk.task_critical_count from authenticated, service_role;
+grant select on desk.task_critical_count to authenticated;
+
+comment on view desk.task_summary is '{"type": "dashboard_widget", "name": "Task Summary", "description": "Summary of active tasks", "widget_type": "card_1"}';
+comment on view desk.task_completion_rate is '{"type": "dashboard_widget", "name": "Task Completion Rate", "description": "Completed vs Active tasks", "widget_type": "card_2"}';
+comment on view desk.tasks_by_status is '{"type": "dashboard_widget", "name": "Tasks by Status", "description": "Completed tasks stats", "widget_type": "card_3"}';
+comment on view desk.task_critical_count is '{"type": "dashboard_widget", "name": "Task Critical Count", "description": "High priority tasks", "widget_type": "card_4"}';
+
+-- Table widget: recent tasks (simple)
+create or replace view desk.task_list_simple
+with (security_invoker = true) as
+select
+    title,
+    status,
+    priority,
+    completion
+from desk.tasks
+order by created_at desc
+limit 10;
+
+revoke all on desk.task_list_simple from authenticated, service_role;
+grant select on desk.task_list_simple to authenticated;
+
+-- Table widget: active tasks by priority
+create or replace view desk.active_tasks_simple
+with (security_invoker = true) as
+select
+    title,
+    priority,
+    to_char(due_date, 'MM/DD') as due
+from desk.tasks
+where status != 'completed'
+order by
+    case priority
+        when 'critical' then 1
+        when 'high' then 2
+        when 'medium' then 3
+        when 'low' then 4
+    end,
+    due_date
+limit 10;
+
+revoke all on desk.active_tasks_simple from authenticated, service_role;
+grant select on desk.active_tasks_simple to authenticated;
+
+comment on view desk.task_list_simple is '{"type": "dashboard_widget", "name": "Recent Tasks", "description": "Latest tasks in the system", "widget_type": "table_1"}';
+comment on view desk.active_tasks_simple is '{"type": "dashboard_widget", "name": "Priority Queue", "description": "Active tasks by priority", "widget_type": "table_1"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'desk.task_completion_rate:select'),
+    ('x-admin', 'desk.tasks_by_status:select'),
+    ('x-admin', 'desk.task_critical_count:select'),
+    ('x-admin', 'desk.task_list_simple:select'),
+    ('x-admin', 'desk.active_tasks_simple:select');
+
+
+----------------------------------------------------------------
+-- Dashboard widget views for projects
+----------------------------------------------------------------
+
+-- Card1: count of active projects
+create or replace view desk.project_summary
+with (security_invoker = true) as
+select
+    count(*) as value,
+    'folder-kanban' as icon,
+    'active projects' as label
+from desk.projects
+where status = 'active';
+
+revoke all on desk.project_summary from authenticated, service_role;
+grant select on desk.project_summary to authenticated;
+
+-- Card2: completed vs in-progress projects
+create or replace view desk.project_completion_rate
+with (security_invoker = true) as
+select
+    count(*) filter (where status = 'completed') as primary,
+    count(*) filter (where status not in ('completed', 'cancelled')) as secondary,
+    'Completed' as primary_label,
+    'In Progress' as secondary_label
+from desk.projects;
+
+revoke all on desk.project_completion_rate from authenticated, service_role;
+grant select on desk.project_completion_rate to authenticated;
+
+-- Table1: recent projects (simple)
+create or replace view desk.project_list_simple
+with (security_invoker = true) as
+select
+    title,
+    status,
+    priority,
+    to_char(end_date, 'MM/DD') as deadline
+from desk.projects
+order by created_at desc
+limit 10;
+
+revoke all on desk.project_list_simple from authenticated, service_role;
+grant select on desk.project_list_simple to authenticated;
+
+-- Table2: projects with task breakdown
+create or replace view desk.project_task_overview
+with (security_invoker = true) as
+select
+    p.title as project,
+    p.status,
+    p.priority,
+    count(t.id) as total_tasks,
+    count(t.id) filter (where t.status = 'completed') as done,
+    round(
+        case when count(t.id) > 0
+        then (count(t.id) filter (where t.status = 'completed')::numeric / count(t.id)::numeric) * 100
+        else 0 end, 1
+    ) as pct,
+    to_char(p.end_date, 'MM/DD') as deadline
+from desk.projects p
+left join desk.tasks t on t.project_id = p.id
+group by p.id, p.title, p.status, p.priority, p.end_date
+order by p.created_at desc
+limit 10;
+
+revoke all on desk.project_task_overview from authenticated, service_role;
+grant select on desk.project_task_overview to authenticated;
+
+comment on view desk.project_summary is '{"type": "dashboard_widget", "name": "Active Projects", "description": "Count of active projects", "widget_type": "card_1"}';
+comment on view desk.project_completion_rate is '{"type": "dashboard_widget", "name": "Project Completion", "description": "Completed vs in-progress projects", "widget_type": "card_2"}';
+comment on view desk.project_list_simple is '{"type": "dashboard_widget", "name": "Recent Projects", "description": "Latest projects", "widget_type": "table_1"}';
+comment on view desk.project_task_overview is '{"type": "dashboard_widget", "name": "Project Task Breakdown", "description": "Projects with task completion stats", "widget_type": "table_2"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'desk.project_summary:select'),
+    ('x-admin', 'desk.project_completion_rate:select'),
+    ('x-admin', 'desk.project_list_simple:select'),
+    ('x-admin', 'desk.project_task_overview:select');
+
+
+----------------------------------------------------------------
+-- Chart views for tasks
+----------------------------------------------------------------
+
+-- Bar chart: tasks by priority
+create or replace view desk.task_priority_bar
+with (security_invoker = true) as
+select
+    priority as label,
+    count(*) as total,
+    count(*) filter (where status = 'completed') as completed
+from desk.tasks
+group by priority
+order by
+    case priority
+        when 'critical' then 1
+        when 'high' then 2
+        when 'medium' then 3
+        when 'low' then 4
+    end;
+
+revoke all on desk.task_priority_bar from authenticated, service_role;
+grant select on desk.task_priority_bar to authenticated;
+
+-- Line chart: daily task completion rate
+create or replace view desk.task_completion_line
+with (security_invoker = true) as
+select
+    to_char(date_trunc('day', created_at), 'Mon DD') as date,
+    count(*) as created,
+    count(*) filter (where status = 'completed') as completed
+from desk.tasks
+where created_at >= current_date - interval '14 days'
+group by date_trunc('day', created_at)
+order by date_trunc('day', created_at);
+
+revoke all on desk.task_completion_line from authenticated, service_role;
+grant select on desk.task_completion_line to authenticated;
+
+-- Pie chart: task status distribution
+create or replace view desk.task_status_pie
+with (security_invoker = true) as
+select
+    status as label,
+    count(*) as value
+from desk.tasks
+group by status;
+
+revoke all on desk.task_status_pie from authenticated, service_role;
+grant select on desk.task_status_pie to authenticated;
+
+-- Radar chart: task metrics by priority
+create or replace view desk.task_metrics_radar
+with (security_invoker = true) as
+select
+    priority as metric,
+    count(*) as total,
+    count(*) filter (where status = 'completed') as completed,
+    count(*) filter (where due_date < current_timestamp and status != 'completed') as overdue
+from desk.tasks
+group by priority;
+
+revoke all on desk.task_metrics_radar from authenticated, service_role;
+grant select on desk.task_metrics_radar to authenticated;
+
+comment on view desk.task_priority_bar is '{"type": "chart", "name": "Task Priority Bar", "description": "Tasks grouped by priority level", "chart_type": "bar"}';
+comment on view desk.task_completion_line is '{"type": "chart", "name": "Task Completion Line", "description": "Daily task completion over 2 weeks", "chart_type": "line"}';
+comment on view desk.task_status_pie is '{"type": "chart", "name": "Task Status Pie", "description": "Current task status breakdown", "chart_type": "pie"}';
+comment on view desk.task_metrics_radar is '{"type": "chart", "name": "Task Metrics Radar", "description": "Task metrics across priorities", "chart_type": "radar"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'desk.task_priority_bar:select'),
+    ('x-admin', 'desk.task_completion_line:select'),
+    ('x-admin', 'desk.task_status_pie:select'),
+    ('x-admin', 'desk.task_metrics_radar:select');
+
+
+----------------------------------------------------------------
+-- Chart views for projects
+----------------------------------------------------------------
+
+-- Pie chart: project status distribution
+create or replace view desk.project_status_pie
+with (security_invoker = true) as
+select
+    status as label,
+    count(*) as value
+from desk.projects
+group by status;
+
+revoke all on desk.project_status_pie from authenticated, service_role;
+grant select on desk.project_status_pie to authenticated;
+
+-- Bar chart: projects by priority
+create or replace view desk.project_priority_bar
+with (security_invoker = true) as
+select
+    priority as label,
+    count(*) as total,
+    count(*) filter (where status = 'completed') as completed
+from desk.projects
+group by priority
+order by
+    case priority
+        when 'critical' then 1
+        when 'high' then 2
+        when 'medium' then 3
+        when 'low' then 4
+    end;
+
+revoke all on desk.project_priority_bar from authenticated, service_role;
+grant select on desk.project_priority_bar to authenticated;
+
+comment on view desk.project_status_pie is '{"type": "chart", "name": "Project Status Pie", "description": "Projects grouped by current status", "chart_type": "pie"}';
+comment on view desk.project_priority_bar is '{"type": "chart", "name": "Project Priority Bar", "description": "Projects grouped by priority level", "chart_type": "bar"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'desk.project_status_pie:select'),
+    ('x-admin', 'desk.project_priority_bar:select');
+
+
+----------------------------------------------------------------
+-- Role permissions
+----------------------------------------------------------------
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.tasks:select');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.tasks:insert');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.tasks:update');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.tasks:delete');
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.user_tasks:select');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.task_report:select');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.task_summary:select');
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.projects:select');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.projects:insert');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.projects:update');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.projects:delete');
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.project_report:select');
+
+
+----------------------------------------------------------------
+-- Audit triggers for tasks
+----------------------------------------------------------------
+
+create trigger audit_tasks_insert
+    after insert
+    on desk.tasks
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_tasks_update
+    after update
+    on desk.tasks
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_tasks_delete
+    before delete
+    on desk.tasks
+    for each row
+execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Audit triggers for projects
+----------------------------------------------------------------
+
+create trigger audit_projects_insert
+    after insert
+    on desk.projects
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_projects_update
+    after update
+    on desk.projects
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_projects_delete
+    before delete
+    on desk.projects
+    for each row
+execute function supasheet.audit_trigger_function();

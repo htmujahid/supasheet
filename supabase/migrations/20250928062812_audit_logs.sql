@@ -1,3 +1,7 @@
+begin;
+alter type supasheet.app_permission add value 'supasheet.audit_logs:select';
+commit;
+
 CREATE TABLE IF NOT EXISTS supasheet.audit_logs (
     id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -5,7 +9,7 @@ CREATE TABLE IF NOT EXISTS supasheet.audit_logs (
     schema_name TEXT NOT NULL,
     table_name TEXT NOT NULL,
     record_id TEXT,
-    created_by UUID REFERENCES supasheet.accounts(id) ON DELETE SET NULL,
+    created_by UUID REFERENCES supasheet.users(id) ON DELETE SET NULL,
     role supasheet.app_role,
     user_type TEXT NOT NULL CHECK (user_type IN ('system', 'real_user')) DEFAULT 'real_user',
     metadata JSONB DEFAULT '{}'::JSONB,
@@ -16,6 +20,11 @@ CREATE TABLE IF NOT EXISTS supasheet.audit_logs (
     error_message TEXT,
     error_code TEXT
 );
+comment on table supasheet.audit_logs is 
+'{
+  "label": "Audit Logs",
+  "icon": "ScrollTextIcon"
+}';
 
 CREATE INDEX idx_audit_logs_created_at ON supasheet.audit_logs(created_at DESC);
 CREATE INDEX idx_audit_logs_created_by ON supasheet.audit_logs(created_by);
@@ -47,7 +56,7 @@ BEGIN
     
     SELECT ur.role INTO v_user_role
     FROM supasheet.user_roles ur
-    WHERE ur.account_id = v_user_id
+    WHERE ur.user_id = v_user_id
     LIMIT 1;
 
     
@@ -113,15 +122,15 @@ BEGIN
     IF TG_OP = 'DELETE' THEN
         v_old_data := to_jsonb(OLD);
         v_new_data := NULL;
-        v_record_id := OLD.id::TEXT;
+        v_record_id := v_old_data ->> 'id';
     ELSIF TG_OP = 'UPDATE' THEN
         v_old_data := to_jsonb(OLD);
         v_new_data := to_jsonb(NEW);
-        v_record_id := NEW.id::TEXT;
+        v_record_id := v_new_data ->> 'id';
     ELSIF TG_OP = 'INSERT' THEN
         v_old_data := NULL;
         v_new_data := to_jsonb(NEW);
-        v_record_id := NEW.id::TEXT;
+        v_record_id := v_new_data ->> 'id';
     END IF;
 
     
@@ -157,5 +166,7 @@ CREATE POLICY "Users can view their own audit logs" ON supasheet.audit_logs
     TO authenticated
     USING (created_by = auth.uid() OR EXISTS (
         SELECT 1 FROM supasheet.user_roles
-        WHERE account_id = auth.uid() AND role = 'x-admin'
+        WHERE user_id = auth.uid() AND supasheet.has_permission('supasheet.audit_logs:select')
     ));
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'supasheet.audit_logs:select');

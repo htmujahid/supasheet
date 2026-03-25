@@ -1,0 +1,117 @@
+import { Link } from "@tanstack/react-router"
+
+import type { Column, ColumnDef, Row } from "@tanstack/react-table"
+
+import { ArrowUpRightIcon } from "lucide-react"
+
+import { Checkbox } from "#/components/ui/checkbox"
+import { getColumnFilterData } from "#/lib/columns"
+import type {
+  ColumnSchema,
+  PrimaryKey,
+  ResourceDataSchema,
+  TableSchema,
+} from "#/lib/database-meta.types"
+
+import { ResourceColumnHeader } from "./resource-column-header"
+import { ResourceRowCell } from "./resource-row-cell"
+
+export function parsePkSplat(
+  splat: string,
+  primaryKeys: PrimaryKey[]
+): Record<string, unknown> {
+  const values = splat.split("/").map(decodeURIComponent)
+  return Object.fromEntries(primaryKeys.map((pk, i) => [pk.name, values[i]]))
+}
+
+export function getResourceTableColumns({
+  columnsSchema,
+  isTable,
+  tableSchema,
+}: {
+  columnsSchema: ColumnSchema[]
+  isTable: boolean
+  tableSchema: TableSchema | null
+}) {
+  const schema = tableSchema?.schema ?? ""
+  const resource = tableSchema?.name ?? ""
+
+  const cols: ColumnDef<Record<string, unknown>, unknown>[] = []
+
+  if (isTable) {
+    cols.push({
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          indeterminate={
+            table.getIsSomePageRowsSelected() &&
+            !table.getIsAllPageRowsSelected()
+          }
+          onCheckedChange={(checked) =>
+            table.toggleAllPageRowsSelected(!!checked)
+          }
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-1.5">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+            aria-label="Select row"
+          />
+          <Link
+            to="/$schema/resource/$resource/view/$"
+            params={{
+              schema,
+              resource,
+              _splat: row.id,
+            }}
+            className="rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ArrowUpRightIcon className="size-3" />
+          </Link>
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    })
+  }
+
+  for (const col of columnsSchema) {
+    const name = col.name ?? col.id
+
+    cols.push({
+      id: name,
+      accessorKey: name,
+      header: ({
+        column,
+      }: {
+        column: Column<Record<string, unknown>, unknown>
+      }) => (
+        <ResourceColumnHeader
+          column={column}
+          title={name}
+          tableSchema={tableSchema}
+          columnSchema={col}
+        />
+      ),
+      cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
+        <ResourceRowCell
+          row={row}
+          columnSchema={col}
+          tableSchema={tableSchema ?? null}
+        />
+      ),
+      size: 170,
+      enableSorting: true,
+      enableHiding: true,
+      enableColumnFilter: true,
+      meta: getColumnFilterData(col),
+    })
+  }
+
+  return cols
+}

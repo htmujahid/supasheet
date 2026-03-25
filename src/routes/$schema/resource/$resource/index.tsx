@@ -1,0 +1,254 @@
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router"
+import type {
+  ErrorComponentProps,
+  SearchSchemaInput,
+} from "@tanstack/react-router"
+
+import type {
+  ColumnFiltersState,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table"
+
+import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+
+import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
+import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceTable } from "#/components/resource/resource-table"
+import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
+import { Button } from "#/components/ui/button"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "#/components/ui/empty"
+import { useHasPermission } from "#/hooks/use-permissions"
+import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
+import { formatTitle } from "#/lib/format"
+import type { AppPermission } from "#/lib/supabase/data/core"
+import {
+  columnsSchemaQueryOptions,
+  resourceDataQueryOptions,
+  tableSchemaQueryOptions,
+} from "#/lib/supabase/data/resource"
+
+export const Route = createFileRoute("/$schema/resource/$resource/")({
+  beforeLoad: ({ context, params: { schema, resource } }) => {
+    if (
+      !context.permissions?.some(
+        (p) => p.permission === `${schema}.${resource}:select`
+      )
+    )
+      throw notFound()
+  },
+  validateSearch: (
+    search: {
+      sortId?: string
+      sortDesc?: boolean
+      page?: number
+      pageSize?: number
+      filters?: ColumnFiltersState
+    } & SearchSchemaInput
+  ) => {
+    let filters: ColumnFiltersState = []
+    try {
+      const f = search.filters
+      if (Array.isArray(f)) filters = f
+    } catch {}
+    return {
+      sortId: search.sortId,
+      sortDesc: search.sortDesc ?? false,
+      page: search.page ?? 1,
+      pageSize: search.pageSize ?? 10,
+      filters,
+    }
+  },
+  loaderDeps: ({ search: { sortId, sortDesc, page, pageSize, filters } }) => ({
+    sortId,
+    sortDesc,
+    page,
+    pageSize,
+    filters,
+  }),
+  loader: async ({
+    context,
+    params,
+    deps: { sortId, sortDesc, page, pageSize, filters },
+  }) => {
+    const { schema, resource } = params
+    const [columnsSchema, tableSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema as "supasheet", resource)
+      ),
+      context.queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema as "supasheet", resource)
+      ),
+    ])
+    if (!columnsSchema?.length) throw notFound()
+    const resourceData = await context.queryClient.ensureQueryData(
+      resourceDataQueryOptions(
+        schema,
+        resource,
+        page,
+        pageSize,
+        sortId,
+        sortDesc,
+        filters
+      )
+    )
+    return { columnsSchema, tableSchema, resourceData }
+  },
+  head: ({ params }) => ({
+    meta: [
+      {
+        title: `${formatTitle(params.resource)} | ${formatTitle(params.schema)} | Supasheet`,
+      },
+    ],
+  }),
+  pendingComponent: () => {
+    const { resource } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]} />
+        <div className="flex flex-1 flex-col">
+          <div className="flex flex-col gap-4 px-4 py-4">
+            <DataTableSkeleton columnCount={5} />
+          </div>
+        </div>
+      </>
+    )
+  },
+  component: RouteComponent,
+  errorComponent: ({ error }: ErrorComponentProps) => {
+    const { schema, resource } = Route.useParams()
+    const router = useRouter()
+    return (
+      <>
+        <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]} />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <AlertCircleIcon />
+              </EmptyMedia>
+              <EmptyTitle>Something went wrong</EmptyTitle>
+              <EmptyDescription>
+                {error?.message ?? "An unexpected error occurred."}
+              </EmptyDescription>
+            </EmptyHeader>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  router.navigate({ to: `/${schema}/resource/${resource}` })
+                }}
+              >
+                Go Back
+              </Button>
+            </div>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+  notFoundComponent: () => {
+    const { schema, resource } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]} />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileXIcon />
+              </EmptyMedia>
+              <EmptyTitle>Resource not found</EmptyTitle>
+              <EmptyDescription>
+                <Link to="/$schema" params={{ schema }}>
+                  Back to {formatTitle(schema)}
+                </Link>
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+})
+
+function RouteComponent() {
+  const { schema, resource } = Route.useParams()
+  const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
+  const {
+    tableSchema,
+    columnsSchema = [],
+    resourceData,
+  } = Route.useLoaderData()
+
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata
+  const metaItems = meta.items ?? []
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const isTable = !!tableSchema
+  const canInsert = useHasPermission(
+    `${schema}.${resource}:insert` as AppPermission
+  )
+
+  const sorting = (
+    sortId ? [{ id: sortId, desc: sortDesc }] : []
+  ) as SortingState
+  const pagination = { pageIndex: page - 1, pageSize } as PaginationState
+  const pageCount = Math.ceil((resourceData?.count ?? 0) / pageSize)
+
+  return (
+    <>
+      <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]}>
+        <ResourceViewSwitcher
+          schema={schema}
+          resource={resource}
+          metaItems={metaItems}
+          currentViewId="table"
+        />
+        {isTable && canInsert && (
+          <Button
+            size="sm"
+            nativeButton={false}
+            render={
+              <Link
+                to="/$schema/resource/$resource/new"
+                params={{ schema, resource }}
+              />
+            }
+          >
+            <PlusIcon className="mr-1.5 size-3.5" />
+            New record
+          </Button>
+        )}
+      </DefaultHeader>
+      <div className="p-4">
+        <ResourceTable
+          schema={schema}
+          resource={resource}
+          data={resourceData?.result ?? []}
+          columnsSchema={columnsSchema ?? []}
+          primaryKeys={primaryKeys}
+          isTable={isTable}
+          tableSchema={tableSchema ?? null}
+          sorting={sorting}
+          pagination={pagination}
+          columnFilters={filters}
+          pageCount={pageCount}
+        />
+      </div>
+    </>
+  )
+}

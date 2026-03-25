@@ -1,0 +1,211 @@
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router"
+import type {
+  ErrorComponentProps,
+  SearchSchemaInput,
+} from "@tanstack/react-router"
+
+import type {
+  ColumnFiltersState,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table"
+
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
+
+import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
+import { DefaultHeader } from "#/components/layouts/default-header"
+import { ReportTable } from "#/components/report/report-table"
+import { Button } from "#/components/ui/button"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "#/components/ui/empty"
+import { formatTitle } from "#/lib/format"
+import {
+  reportDataQueryOptions,
+  reportsQueryOptions,
+} from "#/lib/supabase/data/report"
+import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
+
+export const Route = createFileRoute("/$schema/report/$report/")({
+  validateSearch: (
+    search: {
+      sortId?: string
+      sortDesc?: boolean
+      page?: number
+      pageSize?: number
+      filters?: ColumnFiltersState
+    } & SearchSchemaInput
+  ) => ({
+    sortId: search.sortId,
+    sortDesc: search.sortDesc ?? false,
+    page: search.page ?? 1,
+    pageSize: search.pageSize ?? 10,
+    filters: search.filters ?? [],
+  }),
+  loaderDeps: ({ search: { sortId, sortDesc, page, pageSize, filters } }) => ({
+    sortId,
+    sortDesc,
+    page,
+    pageSize,
+    filters,
+  }),
+  loader: async ({
+    context,
+    params,
+    deps: { sortId, sortDesc, page, pageSize, filters },
+  }) => {
+    const [reports, columnsSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(reportsQueryOptions(params.schema)),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(params.schema as "supasheet", params.report)
+      ),
+    ])
+
+    const report = reports.find((r) => r.view_name === params.report)
+    if (!report || !columnsSchema?.length) throw notFound()
+
+    const reportData = await context.queryClient.ensureQueryData(
+      reportDataQueryOptions(
+        params.schema,
+        params.report,
+        page,
+        pageSize,
+        sortId,
+        sortDesc,
+        filters
+      )
+    )
+    return { reportData, columnsSchema }
+  },
+  head: ({ params }) => ({
+    meta: [{ title: `${formatTitle(params.report)} | Reports | Supasheet` }],
+  }),
+  pendingComponent: () => {
+    const { schema, report } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            { title: "Report", url: `/${schema}/report` },
+            { title: formatTitle(report) },
+          ]}
+        />
+        <div className="flex flex-1 flex-col">
+          <div className="flex flex-col gap-4 px-4 py-4">
+            <DataTableSkeleton columnCount={5} />
+          </div>
+        </div>
+      </>
+    )
+  },
+  component: RouteComponent,
+  errorComponent: ({ error }: ErrorComponentProps) => {
+    const { schema, report } = Route.useParams()
+    const router = useRouter()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            { title: "Report", url: `/${schema}/report` },
+            { title: formatTitle(report) },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <AlertCircleIcon />
+              </EmptyMedia>
+              <EmptyTitle>Something went wrong</EmptyTitle>
+              <EmptyDescription>
+                {error?.message ?? "An unexpected error occurred."}
+              </EmptyDescription>
+            </EmptyHeader>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => router.navigate({ to: `/${schema}/report` })}
+              >
+                Go Back
+              </Button>
+            </div>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+  notFoundComponent: () => {
+    const { schema, report } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            { title: "Report", url: `/${schema}/report` },
+            { title: formatTitle(report) },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileXIcon />
+              </EmptyMedia>
+              <EmptyTitle>Report not found</EmptyTitle>
+              <EmptyDescription>
+                <Link to="/$schema/report" params={{ schema }}>
+                  Back to reports
+                </Link>
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+})
+
+function RouteComponent() {
+  const params = Route.useParams()
+  const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
+
+  const { reportData, columnsSchema } = Route.useLoaderData()
+
+  const sorting = (
+    sortId ? [{ id: sortId, desc: sortDesc }] : []
+  ) as SortingState
+  const pagination = { pageIndex: page - 1, pageSize } as PaginationState
+  const pageCount = Math.ceil((reportData?.count ?? 0) / pageSize)
+
+  return (
+    <>
+      <DefaultHeader
+        breadcrumbs={[
+          { title: "Report", url: `/${params.schema}/report` },
+          { title: formatTitle(params.report) },
+        ]}
+      />
+      <div className="flex flex-1 flex-col">
+        <div className="flex flex-col gap-4 px-4 py-4">
+          <ReportTable
+            data={reportData?.result ?? []}
+            columnsSchema={columnsSchema ?? []}
+            sorting={sorting}
+            pagination={pagination}
+            columnFilters={filters}
+            pageCount={pageCount}
+          />
+        </div>
+      </div>
+    </>
+  )
+}

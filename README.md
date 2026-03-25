@@ -1,84 +1,65 @@
-<div align="center">
-  <h1 align="center">
-  Supasheet
-  </h1>
-  <h3 align="center"><strong>Complete CMS Platform built on Supabase</strong></h3>
-  <p>An opinionated, full-fledged open-source CMS with everything included. Go beyond basic admin panels with built-in authentication, dashboards, charts, reports, file management, and comprehensive data tools.</p>
-  <p>Try out Supasheet demo at <a href="https://supasheet.app">supasheet.app</a></p>
-</div>
+# Supasheet
 
-<h1 align="center">
-   <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="public/images/bg-dark.png">
-   <img alt="supasheet" width="100%" src="public/images/bg-light.png">
-   </picture>
-</h1>
+A complete, opinionated open-source CMS platform built on Supabase. Goes beyond basic admin panels — everything included out of the box.
 
 ## Features
 
-- [x] Authentication
-- [x] User management
-- [x] Authorization (RBAC)
-- [x] Resource (CRUD)
-- [x] Data Views (Sheet, Kanban, Calendar, Gallery)
-- [x] Customizable UI
-- [x] SQL Editor
-- [x] Dashboard
-- [x] Analytics
-- [x] Report
-- [x] Charts
-- [x] File Storage
-- [x] Chart
-- [x] Audit Logs
+- **Authentication** — Sign in, sign up, MFA, password reset, OAuth providers
+- **User Management** — Create, invite, edit, and delete users via Supabase Admin API
+- **Authorization (RBAC)** — Role-based access control with user roles and role permissions
+- **Resource (CRUD)** — Auto-generated CRUD views for any Supabase table
+- **Data Views** — Sheet (table), Kanban, Calendar, and Gallery views per resource
+- **Dashboard** — Configurable dashboard widgets
+- **Analytics & Charts** — Area, bar, line, pie, radar chart types
+- **Reports** — Tabular reports built from Supabase data
+- **File Storage** — Browse, upload, rename, move, and preview files across Supabase Storage buckets
+- **Audit Logs** — View and filter audit log entries
+
+## Tech Stack
+
+- **App:** React 19 + Vite
+- **Routing:** TanStack Router (file-based, type-safe)
+- **Data Fetching:** TanStack Query
+- **Forms:** TanStack Form
+- **Tables:** TanStack Table
+- **UI:** shadcn/ui (Base UI variant) + Tailwind CSS v4
+- **Rich Text:** Lexical
+- **Charts:** Recharts
+- **Backend:** Supabase (Auth, Database, Storage, Edge Functions)
 
 ## Getting Started
 
-To get started with Supasheet, follow these steps:
+1. Clone the repo and install dependencies:
 
-1. Clone the repository:
+```bash
+npm install
+```
 
-   ```bash
-   git clone https://github.com/htmujahid/supasheet.git
-   ```
+2. Copy `.env.example` and fill in your Supabase credentials:
 
-2. Navigate to the project directory:
+```bash
+cp .env.example .env
+```
 
-   ```bash
-   cd supasheet
-   ```
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
 
-3. Install the dependencies:
+3. Run the development server:
 
-   ```bash
-   npm install
-   ```
+```bash
+npm run dev
+```
 
-4. Place your Supabase URL and API key in the `.env.dev` file:
+## Scripts
 
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_api_key
-   ```
-
-5. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-6. Open your browser and navigate to `http://localhost:3000` to see the application in action.
-
-## Technology Stack
-
-1. **Frontend**: Next.js, React, Tailwind CSS, Shadcn UI
-2. **Backend**: Supabase (PostgreSQL, Auth, Storage)
-3. **Deployment**: Vercel (for frontend), Supabase (for backend)
-4. **MISC**: Diceui, React Query, TanStack Table, React Hook Form, Zod, i18next
-
-## Credits
-
-- **Makerkit**
-
-## Contributing
-
-We welcome contributions to Supasheet!
+```bash
+npx supabase start # Start local Supabase instance
+npm run dev        # Start dev server on port 3000
+npm run build      # Production build
+npm run typecheck  # TypeScript check
+npm run lint       # ESLint
+npm run check      # Format + lint fix
+npm run test       # Run tests
+```

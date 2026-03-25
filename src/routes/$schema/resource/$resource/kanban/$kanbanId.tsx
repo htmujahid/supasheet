@@ -1,0 +1,273 @@
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+
+import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+
+import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
+import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceKanban } from "#/components/resource/resource-kanban"
+import type {
+  KanbanLayout,
+  KanbanViewData,
+  KanbanViewReducedData,
+} from "#/components/resource/resource-kanban"
+import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
+import { Button } from "#/components/ui/button"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "#/components/ui/empty"
+import { useHasPermission } from "#/hooks/use-permissions"
+import type { TableMetadata } from "#/lib/database-meta.types"
+import { formatTitle } from "#/lib/format"
+import type { AppPermission } from "#/lib/supabase/data/core"
+import {
+  columnsSchemaQueryOptions,
+  resourceDataQueryOptions,
+  tableSchemaQueryOptions,
+} from "#/lib/supabase/data/resource"
+
+export const Route = createFileRoute(
+  "/$schema/resource/$resource/kanban/$kanbanId"
+)({
+  beforeLoad: ({ context, params: { schema, resource } }) => {
+    if (
+      !context.permissions?.some(
+        (p) => p.permission === `${schema}.${resource}:select`
+      )
+    )
+      throw notFound()
+  },
+  validateSearch: (search: { layout?: string }) => ({
+    layout: (["board", "list"].includes(search.layout as string)
+      ? search.layout
+      : "board") as KanbanLayout,
+  }),
+  loaderDeps: ({ search: { layout } }) => ({ layout }),
+  loader: async ({ context, params }) => {
+    const { schema, resource, kanbanId } = params
+
+    const [tableSchema, columnsSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema as "supasheet", resource)
+      ),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema as "supasheet", resource)
+      ),
+    ])
+
+    if (!columnsSchema?.length) throw notFound()
+
+    const meta = (
+      tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+    ) as TableMetadata
+    const kanbanView = meta.items?.find(
+      (item) => item.id === kanbanId && item.type === "kanban"
+    )
+    if (!kanbanView) throw notFound()
+
+    const resourceData = await context.queryClient.ensureQueryData(
+      resourceDataQueryOptions(schema, resource, 1, 1000)
+    )
+
+    return { kanbanView, tableSchema, columnsSchema, resourceData }
+  },
+  head: ({ params }) => ({
+    meta: [{ title: `Kanban | ${formatTitle(params.resource)} | Supasheet` }],
+  }),
+  pendingComponent: () => {
+    const { schema, resource } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Kanban" },
+          ]}
+        />
+        <div className="flex flex-1 flex-col px-4 py-4">
+          <DataTableSkeleton columnCount={4} rowCount={6} />
+        </div>
+      </>
+    )
+  },
+  component: RouteComponent,
+  errorComponent: ({ error }: ErrorComponentProps) => {
+    const { schema, resource } = Route.useParams()
+    const router = useRouter()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Kanban" },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <AlertCircleIcon />
+              </EmptyMedia>
+              <EmptyTitle>Something went wrong</EmptyTitle>
+              <EmptyDescription>
+                {error?.message ?? "An unexpected error occurred."}
+              </EmptyDescription>
+            </EmptyHeader>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  router.navigate({ to: `/${schema}/resource/${resource}` })
+                }
+              >
+                Go Back
+              </Button>
+            </div>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+  notFoundComponent: () => {
+    const { schema, resource } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Kanban" },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileXIcon />
+              </EmptyMedia>
+              <EmptyTitle>Kanban view not found</EmptyTitle>
+              <EmptyDescription>
+                <Link
+                  to="/$schema/resource/$resource"
+                  params={{ schema, resource }}
+                >
+                  Back to {formatTitle(resource)}
+                </Link>
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+})
+
+function RouteComponent() {
+  const { schema, resource } = Route.useParams()
+  const { layout } = Route.useSearch()
+  const { kanbanView, tableSchema, columnsSchema, resourceData } =
+    Route.useLoaderData()
+
+  const titleField = kanbanView.title as string
+  const groupByField = kanbanView.group as string
+  const descriptionField = kanbanView.description as string
+  const badgeField = kanbanView.badge as string
+  const dateField = kanbanView.date as string
+
+  const data: KanbanViewReducedData = {}
+  for (const row of resourceData?.result ?? []) {
+    const groupValue =
+      groupByField && row[groupByField] != null
+        ? String(row[groupByField])
+        : "Uncategorized"
+
+    if (!data[groupValue]) data[groupValue] = []
+
+    const item: KanbanViewData = {
+      title:
+        titleField && row[titleField] != null ? String(row[titleField]) : null,
+      description:
+        descriptionField && row[descriptionField] != null
+          ? String(row[descriptionField])
+          : null,
+      badge:
+        badgeField && row[badgeField] != null ? String(row[badgeField]) : null,
+      date: dateField && row[dateField] != null ? String(row[dateField]) : null,
+      data: row,
+    }
+
+    data[groupValue].push(item)
+  }
+
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata
+  const metaItems = meta.items ?? []
+  const isTable = !!tableSchema
+  const canInsert = useHasPermission(
+    `${schema}.${resource}:insert` as AppPermission
+  )
+
+  return (
+    <>
+      <DefaultHeader
+        breadcrumbs={[
+          {
+            title: formatTitle(resource),
+            url: `/${schema}/resource/${resource}`,
+          },
+          { title: formatTitle(kanbanView.id) },
+        ]}
+      >
+        <ResourceViewSwitcher
+          schema={schema}
+          resource={resource}
+          metaItems={metaItems}
+          currentViewId={kanbanView.id}
+        />
+        {isTable && canInsert && (
+          <Button
+            size="sm"
+            nativeButton={false}
+            render={
+              <Link
+                to="/$schema/resource/$resource/new"
+                params={{ schema, resource }}
+              />
+            }
+          >
+            <PlusIcon className="mr-1.5 size-3.5" />
+            New record
+          </Button>
+        )}
+      </DefaultHeader>
+      <div className="flex flex-1 flex-col px-4 py-4">
+        <ResourceKanban
+          data={data}
+          tableSchema={tableSchema}
+          columnsSchema={columnsSchema}
+          groupBy={groupByField ?? ""}
+          layout={layout}
+        />
+      </div>
+    </>
+  )
+}

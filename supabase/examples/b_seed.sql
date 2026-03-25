@@ -3,9 +3,9 @@
 
 DO $$
 DECLARE
-    -- Account IDs - using the specific UUIDs from seed.sql
-    account_1_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4';
-    account_2_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1';
+    -- User IDs - using the specific UUIDs from seed.sql
+    user_1_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4';
+    user_2_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1';
 
     -- Author IDs
     author_1_id UUID;
@@ -32,12 +32,12 @@ DECLARE
     post_10_id UUID;
 BEGIN
     -- Create Authors
-    INSERT INTO blog.authors (id, account_id, language, country, created_at, updated_at) VALUES
-    (gen_random_uuid(), account_1_id, 'en', 'US', current_date - interval '180 days', current_timestamp)
+    INSERT INTO blog.authors (id, user_id, language, country, created_at, updated_at) VALUES
+    (gen_random_uuid(), user_1_id, 'en', 'US', current_date - interval '180 days', current_timestamp)
     RETURNING id INTO author_1_id;
 
-    INSERT INTO blog.authors (id, account_id, language, country, created_at, updated_at) VALUES
-    (gen_random_uuid(), account_2_id, 'en', 'US', current_date - interval '120 days', current_timestamp)
+    INSERT INTO blog.authors (id, user_id, language, country, created_at, updated_at) VALUES
+    (gen_random_uuid(), user_2_id, 'en', 'US', current_date - interval '120 days', current_timestamp)
     RETURNING id INTO author_2_id;
 
     -- Create Social Links
@@ -46,27 +46,27 @@ BEGIN
     (author_2_id, 'https://github.com/janesmith', 'https://twitter.com/janesmith');
 
     -- Create Categories
-    INSERT INTO blog.categories (id, name, slug, description, account_id) VALUES
+    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
     (gen_random_uuid(), 'Technology', 'technology', 'All about the latest in tech and software development', NULL)
     RETURNING id INTO tech_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, account_id) VALUES
+    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
     (gen_random_uuid(), 'Travel', 'travel', 'Travel stories and destination guides', NULL)
     RETURNING id INTO travel_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, account_id) VALUES
+    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
     (gen_random_uuid(), 'Food & Recipes', 'food-recipes', 'Delicious recipes and culinary adventures', NULL)
     RETURNING id INTO food_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, account_id) VALUES
+    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
     (gen_random_uuid(), 'Lifestyle', 'lifestyle', 'Tips and insights for everyday living', NULL)
     RETURNING id INTO lifestyle_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, account_id) VALUES
-    (gen_random_uuid(), 'Tutorials', 'tutorials', 'Step-by-step guides and how-tos', account_1_id)
+    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
+    (gen_random_uuid(), 'Tutorials', 'tutorials', 'Step-by-step guides and how-tos', user_1_id)
     RETURNING id INTO tutorial_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, account_id) VALUES
+    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
     (gen_random_uuid(), 'News', 'news', 'Latest news and updates', NULL)
     RETURNING id INTO news_cat_id;
 
@@ -141,9 +141,9 @@ BEGIN
      E'4. Shape the dough and place in a banneton\n' ||
      E'5. Refrigerate overnight (cold fermentation)\n\n' ||
      E'### Day 2 - Morning\n' ||
-     E'6. Preheat Dutch oven to 500°F\n' ||
+     E'6. Preheat Dutch oven to 500Â°F\n' ||
      E'7. Score the dough and bake covered for 20 minutes\n' ||
-     E'8. Remove lid, reduce heat to 450°F, bake 25 more minutes\n\n' ||
+     E'8. Remove lid, reduce heat to 450Â°F, bake 25 more minutes\n\n' ||
      E'## Tips for Success\n\n' ||
      E'- Use a kitchen scale for accuracy\n- Room temperature affects fermentation time\n- A strong, active starter is crucial\n- Don''t skip the cold fermentation\n\n' ||
      E'The result is a crusty exterior with a chewy, tangy interior. Pure bliss!',
@@ -282,7 +282,7 @@ BEGIN
      E'## 1. Garlic Shrimp Pasta\n\n' ||
      E'**Ingredients:**\n' ||
      E'- 8oz spaghetti\n- 1lb shrimp\n- 4 cloves garlic\n- Olive oil, lemon, parsley\n\n' ||
-     E'**Method:** Cook pasta. Sauté garlic and shrimp. Toss together. Done!\n\n' ||
+     E'**Method:** Cook pasta. SautÃ© garlic and shrimp. Toss together. Done!\n\n' ||
      E'## 2. Sheet Pan Chicken Fajitas\n\n' ||
      E'**Ingredients:**\n' ||
      E'- 1lb chicken breast, sliced\n- Bell peppers and onions\n- Fajita seasoning\n- Tortillas\n\n' ||

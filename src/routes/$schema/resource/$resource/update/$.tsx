@@ -1,0 +1,213 @@
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
+
+import { DefaultHeader } from "#/components/layouts/default-header"
+import { parsePkSplat } from "#/components/resource/resource-table-columns"
+import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
+import { Button } from "#/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "#/components/ui/empty"
+import { Skeleton } from "#/components/ui/skeleton"
+import type { PrimaryKey } from "#/lib/database-meta.types"
+import { formatTitle } from "#/lib/format"
+import {
+  columnsSchemaQueryOptions,
+  singleResourceDataQueryOptions,
+  tableSchemaQueryOptions,
+} from "#/lib/supabase/data/resource"
+
+export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
+  beforeLoad: ({ context, params: { schema, resource } }) => {
+    if (
+      !context.permissions?.some(
+        (p) => p.permission === `${schema}.${resource}:update`
+      )
+    )
+      throw notFound()
+  },
+  loader: async ({ context, params }) => {
+    const { schema, resource, _splat } = params
+    const [tableSchema, columnsSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema as "supasheet", resource)
+      ),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema as "supasheet", resource)
+      ),
+    ])
+    if (!tableSchema || !columnsSchema?.length) throw notFound()
+    const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+    if (!primaryKeys.length) throw notFound()
+    const pk = parsePkSplat(_splat ?? "", primaryKeys)
+    const record = await context.queryClient.ensureQueryData(
+      singleResourceDataQueryOptions(schema, resource, pk)
+    )
+    if (!record) throw notFound()
+    return { tableSchema, columnsSchema, record }
+  },
+  head: ({ params }) => ({
+    meta: [
+      { title: `Edit Record | ${formatTitle(params.resource)} | Supasheet` },
+    ],
+  }),
+  pendingComponent: () => {
+    const { schema, resource } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Edit record" },
+          ]}
+        />
+        <div className="flex flex-1 flex-col">
+          <div className="mx-auto w-full max-w-2xl px-4 py-4">
+            <Card>
+              <CardHeader className="border-b">
+                <Skeleton className="h-5 w-24" />
+              </CardHeader>
+              <CardContent className="space-y-4 py-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="space-y-1.5">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-9 w-full" />
+                  </div>
+                ))}
+              </CardContent>
+              <CardFooter className="justify-end gap-2 border-t pt-4">
+                <Skeleton className="h-9 w-20" />
+                <Skeleton className="h-9 w-28" />
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+      </>
+    )
+  },
+  component: RouteComponent,
+  errorComponent: ({ error }: ErrorComponentProps) => {
+    const { schema, resource } = Route.useParams()
+    const router = useRouter()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Edit record" },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <AlertCircleIcon />
+              </EmptyMedia>
+              <EmptyTitle>Something went wrong</EmptyTitle>
+              <EmptyDescription>
+                {error?.message ?? "An unexpected error occurred."}
+              </EmptyDescription>
+            </EmptyHeader>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  router.navigate({ to: `/${schema}/resource/${resource}` })
+                }
+              >
+                Go Back
+              </Button>
+            </div>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+  notFoundComponent: () => {
+    const { schema, resource } = Route.useParams()
+    return (
+      <>
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Edit record" },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center p-8">
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <FileXIcon />
+              </EmptyMedia>
+              <EmptyTitle>Record not found</EmptyTitle>
+              <EmptyDescription>
+                <Link
+                  to="/$schema/resource/$resource"
+                  params={{ schema, resource }}
+                >
+                  Back to {formatTitle(resource)}
+                </Link>
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </div>
+      </>
+    )
+  },
+})
+
+function RouteComponent() {
+  const { schema, resource } = Route.useParams()
+
+  const { tableSchema, columnsSchema, record } = Route.useLoaderData()
+
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+
+  return (
+    <>
+      <DefaultHeader
+        breadcrumbs={[
+          {
+            title: formatTitle(resource),
+            url: `/${schema}/resource/${resource}`,
+          },
+          { title: "Edit record" },
+        ]}
+      />
+      <div className="flex flex-1 flex-col">
+        <div className="mx-auto w-full max-w-2xl px-4 py-4">
+          <ResourceUpdateForm
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+            primaryKeys={primaryKeys}
+            record={record}
+            tableSchema={tableSchema}
+          />
+        </div>
+      </div>
+    </>
+  )
+}

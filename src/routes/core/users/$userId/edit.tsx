@@ -1,0 +1,57 @@
+import { createFileRoute, notFound } from "@tanstack/react-router"
+
+import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
+import { Skeleton } from "#/components/ui/skeleton"
+import { UserEditForm } from "#/components/users/user-edit-form"
+import { adminGetUserQueryOptions } from "#/lib/supabase/data/admin-auth"
+
+export const Route = createFileRoute("/core/users/$userId/edit")({
+  head: () => ({ meta: [{ title: "Edit User | Supasheet" }] }),
+  beforeLoad: ({ context, params: { userId } }) => {
+    if (context.authUser?.id === userId) throw notFound()
+    if (
+      !context.permissions?.some(
+        (p) => p.permission === "supasheet.users:update"
+      )
+    )
+      throw notFound()
+  },
+  loader: async ({ context, params }) => {
+    const user = await context.queryClient.ensureQueryData(
+      adminGetUserQueryOptions(params.userId)
+    )
+    if (!user?.user) throw notFound()
+    return { data: user }
+  },
+  pendingComponent: () => (
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4">
+      <Card>
+        <CardHeader className="border-b">
+          <Skeleton className="h-6 w-28" />
+        </CardHeader>
+        <CardContent className="space-y-4 py-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="space-y-1.5">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ))}
+        </CardContent>
+        <CardFooter className="justify-end">
+          <Skeleton className="h-9 w-28" />
+        </CardFooter>
+      </Card>
+    </div>
+  ),
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const { data } = Route.useLoaderData()
+
+  return (
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4">
+      <UserEditForm user={data.user} />
+    </div>
+  )
+}

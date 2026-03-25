@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supasheet</title>
+    <script>
+      ;(function () {
+        var stored = localStorage.getItem("theme")
+        var mode =
+          stored === "light" || stored === "dark" || stored === "auto"
+            ? stored
+            : "auto"
+        var prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches
+        var resolved = mode === "auto" ? (prefersDark ? "dark" : "light") : mode
+        document.documentElement.classList.add(resolved)
+        document.documentElement.style.colorScheme = resolved
+        if (mode !== "auto")
+          document.documentElement.setAttribute("data-theme", mode)
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

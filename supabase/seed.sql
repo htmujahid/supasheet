@@ -6,6 +6,31 @@ INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encryp
                             "phone_change_token", "phone_change_sent_at", "email_change_token_current",
                             "email_change_confirm_status", "banned_until", "reauthentication_token",
                             "reauthentication_sent_at", "is_sso_user", "deleted_at", "is_anonymous")
+VALUES ('00000000-0000-0000-0000-000000000000', 'b73eb03e-fb7a-424d-84ff-18e2791ce0b8', 'authenticated',
+        'authenticated', 'superadmin@supasheet.dev', '$2a$10$/.78oHxqRLOcnyMeoqYulOcOWhyIeKoyaBYvZhQ0jhEFDtg1ddEPa',
+        '2024-04-20 08:38:00.860548+00', NULL, '', '2024-04-20 08:37:43.343769+00', '', NULL, '', '', NULL,
+        '2024-04-20 08:38:00.93864+00', '{"provider": "email", "providers": ["email"]}',
+        '{"sub": "b73eb03e-fb7a-424d-84ff-18e2791ce0b8", "email": "superadmin@supasheet.dev", "email_verified": false, "phone_verified": false}',
+        NULL, '2024-04-20 08:37:43.3385+00', '2024-04-20 08:38:00.942809+00', NULL, NULL, '', '', NULL, '', 0, NULL, '',
+        NULL, false, NULL, false);
+
+INSERT INTO "auth"."identities" ("provider_id", "user_id", "identity_data", "provider", "last_sign_in_at", "created_at",
+                                 "updated_at", "id")
+VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b8', 'b73eb03e-fb7a-424d-84ff-18e2791ce0b8',
+        '{"sub": "b73eb03e-fb7a-424d-84ff-18e2791ce0b8", "email": "superadmin@supasheet.dev", "email_verified": false, "phone_verified": false}',
+        'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
+        '9bb58bad-24a4-41a8-9742-1b5b4e2d8ab8');
+
+INSERT INTO supasheet.user_roles(user_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b8', 'x-admin');
+
+INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encrypted_password", "email_confirmed_at",
+                            "invited_at", "confirmation_token", "confirmation_sent_at", "recovery_token",
+                            "recovery_sent_at", "email_change_token_new", "email_change", "email_change_sent_at",
+                            "last_sign_in_at", "raw_app_meta_data", "raw_user_meta_data", "is_super_admin",
+                            "created_at", "updated_at", "phone", "phone_confirmed_at", "phone_change",
+                            "phone_change_token", "phone_change_sent_at", "email_change_token_current",
+                            "email_change_confirm_status", "banned_until", "reauthentication_token",
+                            "reauthentication_sent_at", "is_sso_user", "deleted_at", "is_anonymous")
 VALUES ('00000000-0000-0000-0000-000000000000', 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'authenticated',
         'authenticated', 'user@supasheet.dev', '$2a$10$/.78oHxqRLOcnyMeoqYulOcOWhyIeKoyaBYvZhQ0jhEFDtg1ddEPa',
         '2024-04-20 08:38:00.860548+00', NULL, '', '2024-04-20 08:37:43.343769+00', '', NULL, '', '', NULL,
@@ -21,7 +46,7 @@ VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'b73eb03e-fb7a-424d-84ff-18e2791
         'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
         '9bb58bad-24a4-41a8-9742-1b5b4e2d8ab1');
 
-INSERT INTO supasheet.user_roles(account_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'user');
+INSERT INTO supasheet.user_roles(user_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b4', 'user');
 
 INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encrypted_password", "email_confirmed_at",
                             "invited_at", "confirmation_token", "confirmation_sent_at", "recovery_token",
@@ -46,7 +71,7 @@ VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b1', 'b73eb03e-fb7a-424d-84ff-18e2791
         'email', '2024-04-20 08:20:34.46275+00', '2024-04-20 08:20:34.462773+00', '2024-04-20 08:20:34.462773+00',
         '9bb58bad-24a4-41a8-9742-1b5b4e2d8abd');
 
-INSERT INTO supasheet.user_roles(account_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b1', 'user');
+INSERT INTO supasheet.user_roles(user_id, role) VALUES ('b73eb03e-fb7a-424d-84ff-18e2791ce0b1', 'user');
 
 -- Auth records for all 106 users from user_details
 
@@ -83,7 +108,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -119,7 +144,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -155,7 +180,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -191,7 +216,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -227,7 +252,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -263,7 +288,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -299,7 +324,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -335,7 +360,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -371,7 +396,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -407,7 +432,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -443,7 +468,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -479,7 +504,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -515,7 +540,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -551,7 +576,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -587,7 +612,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -623,7 +648,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -659,7 +684,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -695,7 +720,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -731,7 +756,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -767,7 +792,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -803,7 +828,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -839,7 +864,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -875,7 +900,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -911,7 +936,7 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;
 
 DO $$
@@ -947,5 +972,5 @@ BEGIN
             extensions.uuid_generate_v4());
 
     -- Insert into user_roles
-    INSERT INTO supasheet.user_roles(account_id, role) VALUES (new_user_id, 'user');
+    INSERT INTO supasheet.user_roles(user_id, role) VALUES (new_user_id, 'user');
 END $$;

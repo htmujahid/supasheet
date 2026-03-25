@@ -1,0 +1,76 @@
+import { useQuery } from "@tanstack/react-query"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card"
+import { Skeleton } from "#/components/ui/skeleton"
+import { widgetDataQueryOptions } from "#/lib/supabase/data/dashboard"
+import type { DashboardWidgetSchema } from "#/lib/supabase/data/dashboard"
+
+function Card2Skeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-3 w-32" />
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-8 w-16" />
+          </div>
+          <div className="space-y-1 border-l pl-3">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-8 w-16" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export function Card2({ widget }: { widget: DashboardWidgetSchema }) {
+  const { data, isPending } = useQuery(
+    widgetDataQueryOptions(widget.schema, widget.view_name)
+  )
+
+  if (isPending) return <Card2Skeleton />
+
+  const widgetData = data?.[0]
+  if (!widgetData) return null
+
+  const primaryValue =
+    widgetData.primary ?? widgetData.value ?? widgetData.main ?? 0
+  const secondaryValue =
+    widgetData.secondary ?? widgetData.sub ?? widgetData.additional ?? 0
+  const primaryLabel = widgetData.primary_label ?? "Primary"
+  const secondaryLabel = widgetData.secondary_label ?? "Secondary"
+
+  return (
+    <Card>
+      <CardHeader>
+        <div>
+          <CardTitle className="text-sm font-medium">{widget.name}</CardTitle>
+          <CardDescription>{widget.description}</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">{primaryLabel}</p>
+            <p className="text-2xl font-bold">{primaryValue}</p>
+          </div>
+          <div className="space-y-1 border-l pl-3">
+            <p className="text-xs text-muted-foreground">{secondaryLabel}</p>
+            <p className="text-2xl font-bold">{secondaryValue}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
