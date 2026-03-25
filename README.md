@@ -4,7 +4,7 @@
   </h1>
   <h3 align="center"><strong>Complete CMS Platform built on Supabase</strong></h3>
   <p>An opinionated, full-fledged open-source CMS with everything included. Go beyond basic admin panels with built-in authentication, dashboards, charts, reports, file management, and comprehensive data tools.</p>
-  <p>Try out Supasheet demo at <a href="https://supasheet.netlify.app">supasheet.app</a></p>
+  <p>Try out Supasheet demo at <a href="https://supasheet.netlify.app">supasheet.netlify.app</a></p>
 </div>
 
 <h1 align="center">
