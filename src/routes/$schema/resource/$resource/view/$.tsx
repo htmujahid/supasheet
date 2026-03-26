@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-router"
 import type { ErrorComponentProps } from "@tanstack/react-router"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { AlertCircleIcon, FileXIcon, PencilIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
@@ -178,9 +180,9 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
     return {
       tableSchema,
       columnsSchema,
-      record,
       oneToOneRelationships,
       allManyRelationships,
+      joins,
     }
   },
   head: ({ params }) => ({
@@ -312,10 +314,16 @@ function RouteComponent() {
   const {
     tableSchema,
     columnsSchema,
-    record,
     oneToOneRelationships,
     allManyRelationships,
+    joins,
   } = Route.useLoaderData()
+
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const pk = parsePkSplat(_splat ?? "", primaryKeys)
+  const { data: record } = useSuspenseQuery(
+    singleResourceDataQueryOptions(schema, resource, pk, { join: joins })
+  )
 
   const canUpdate = useHasPermission(
     `${schema}.${resource}:update` as AppPermission

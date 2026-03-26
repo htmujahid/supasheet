@@ -75,6 +75,46 @@ The main data module, scoped to a Supabase schema:
 - `report/$report/` — report page
 - `sql-editor/$snippet/` — SQL editor page
 
+## Data Fetching Pattern
+
+Routes follow a two-layer pattern for data loading:
+
+**Loader** — prefetches data into the TanStack Query cache via `ensureQueryData`. Does **not** return mutable data. Only returns schema/metadata that never changes (e.g. `tableSchema`, `columnsSchema`, `kanbanView`).
+
+```ts
+loader: async ({ context, params, deps }) => {
+  // Guard: await and check, but don't return mutable data
+  const record = await context.queryClient.ensureQueryData(dataQueryOptions(...))
+  if (!record) throw notFound()
+
+  // Prefetch mutable data into cache (fire and forget)
+  context.queryClient.ensureQueryData(mutableDataQueryOptions(...))
+
+  // Only return immutable schema/metadata
+  return { tableSchema, columnsSchema }
+}
+```
+
+**Component** — reads schema/metadata from `Route.useLoaderData()` and subscribes to mutable data via `useSuspenseQuery`. This ensures the component re-renders automatically when `invalidateQueries` is called after mutations.
+
+```ts
+function RouteComponent() {
+  // Schema/metadata — static, from loader snapshot
+  const { tableSchema, columnsSchema } = Route.useLoaderData()
+
+  // Mutable data — live, subscribes to TanStack Query cache
+  const { data } = useSuspenseQuery(mutableDataQueryOptions(...))
+}
+```
+
+**Why:** `useLoaderData()` is a static snapshot that only updates when the route loader re-runs. `useSuspenseQuery` subscribes directly to the TanStack Query cache, so calling `queryClient.invalidateQueries(...)` after a mutation immediately refetches and re-renders the component.
+
+**Mutation invalidation** — after any mutation, invalidate by query key prefix:
+
+```ts
+queryClient.invalidateQueries({ queryKey: ["supasheet", "resource-data", schema, resource] })
+```
+
 ### `supabase/`
 
 - `migrations/` — ordered SQL migration files (meta, data types, users, roles, dashboards, reports, charts, audit logs, storage, examples)

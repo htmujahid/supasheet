@@ -1,5 +1,4 @@
-import type { User } from "@supabase/supabase-js"
-
+import { useSuspenseQuery } from "@tanstack/react-query"
 import {
   Outlet,
   createFileRoute,
@@ -25,15 +24,11 @@ export const Route = createFileRoute("/core/users/$userId")({
     )
       throw notFound()
   },
-  loader: async ({
-    context,
-    params: { userId },
-  }): Promise<{ data: { user: User } }> => {
+  loader: async ({ context, params: { userId } }) => {
     const data = await context.queryClient.ensureQueryData(
       adminGetUserQueryOptions(userId)
     )
     if (!data?.user) throw notFound()
-    return { data }
   },
   head: ({ params }) => ({
     meta: [{ title: `${params.userId} | Users | Supasheet` }],
@@ -80,8 +75,8 @@ export const Route = createFileRoute("/core/users/$userId")({
 
 function RouteComponent() {
   const { userId } = Route.useParams()
-  const { data } = Route.useLoaderData()
   const navigate = useNavigate()
+  const { data } = useSuspenseQuery(adminGetUserQueryOptions(userId))
 
   const authUser = useAuthUser()
   const isSelf = authUser?.id === userId

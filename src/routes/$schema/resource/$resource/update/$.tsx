@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-router"
 import type { ErrorComponentProps } from "@tanstack/react-router"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
@@ -56,7 +58,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
       singleResourceDataQueryOptions(schema, resource, pk)
     )
     if (!record) throw notFound()
-    return { tableSchema, columnsSchema, record }
+    return { tableSchema, columnsSchema }
   },
   head: ({ params }) => ({
     meta: [
@@ -179,11 +181,15 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
 })
 
 function RouteComponent() {
-  const { schema, resource } = Route.useParams()
+  const { schema, resource, _splat } = Route.useParams()
 
-  const { tableSchema, columnsSchema, record } = Route.useLoaderData()
+  const { tableSchema, columnsSchema } = Route.useLoaderData()
 
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const pk = parsePkSplat(_splat ?? "", primaryKeys)
+  const { data: record } = useSuspenseQuery(
+    singleResourceDataQueryOptions(schema, resource, pk)
+  )
 
   return (
     <>
@@ -203,7 +209,7 @@ function RouteComponent() {
             resource={resource}
             columnsSchema={columnsSchema}
             primaryKeys={primaryKeys}
-            record={record}
+            record={record!}
             tableSchema={tableSchema}
           />
         </div>

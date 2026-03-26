@@ -7,6 +7,8 @@ import type {
   SortingState,
 } from "@tanstack/react-table"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { AuditLogTable } from "#/components/audit-logs/audit-logs-table"
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
@@ -40,13 +42,9 @@ export const Route = createFileRoute("/core/audit_logs/")({
     context,
     deps: { sortId, sortDesc, page, pageSize, filters },
   }) => {
-    const auditLogs = await context.queryClient.ensureQueryData(
+    context.queryClient.ensureQueryData(
       auditLogsQueryOptions(page, pageSize, sortId, sortDesc, filters)
     )
-
-    return {
-      data: auditLogs,
-    }
   },
   pendingComponent: PendingComponent,
   component: RouteComponent,
@@ -71,7 +69,10 @@ function PendingComponent() {
 
 function RouteComponent() {
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
-  const { data } = Route.useLoaderData()
+
+  const { data } = useSuspenseQuery(
+    auditLogsQueryOptions(page, pageSize, sortId, sortDesc, filters)
+  )
 
   const sorting = (
     sortId ? [{ id: sortId, desc: sortDesc }] : []

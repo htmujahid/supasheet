@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-router"
 import type { ErrorComponentProps } from "@tanstack/react-router"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
@@ -79,12 +81,11 @@ export const Route = createFileRoute(
     if (!calendarView) throw notFound()
 
     const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-
-    const resourceData = await context.queryClient.ensureQueryData(
+    context.queryClient.ensureQueryData(
       resourceDataQueryOptions(schema, resource, metaData.query)
     )
 
-    return { calendarView, tableSchema, columnsSchema, resourceData }
+    return { calendarView, tableSchema, columnsSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Calendar | ${formatTitle(params.resource)} | Supasheet` }],
@@ -189,8 +190,14 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { view } = Route.useSearch()
-  const { calendarView, tableSchema, columnsSchema, resourceData } =
-    Route.useLoaderData()
+  const { calendarView, tableSchema, columnsSchema } = Route.useLoaderData()
+
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata
+  const { data: resourceData } = useSuspenseQuery(
+    resourceDataQueryOptions(schema, resource, meta.query)
+  )
 
   const titleField = calendarView.title as string
   const startDateField = calendarView.startDate as string
@@ -211,9 +218,6 @@ function RouteComponent() {
       data: row,
     }))
 
-  const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata
   const metaItems = meta.items ?? []
   const isTable = !!tableSchema
   const canInsert = useHasPermission(

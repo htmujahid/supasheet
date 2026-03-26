@@ -7,6 +7,8 @@ import type {
   SortingState,
 } from "@tanstack/react-table"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { MailPlusIcon, PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
@@ -44,12 +46,9 @@ export const Route = createFileRoute("/core/users/")({
     context,
     deps: { sortId, sortDesc, page, pageSize, filters },
   }) => {
-    const users = await context.queryClient.ensureQueryData(
+    context.queryClient.ensureQueryData(
       usersQueryOptions(page, pageSize, sortId, sortDesc, filters)
     )
-    return {
-      data: users,
-    }
   },
   pendingComponent: PendingComponent,
   component: RouteComponent,
@@ -104,7 +103,10 @@ function PendingComponent() {
 
 function RouteComponent() {
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
-  const { data } = Route.useLoaderData()
+
+  const { data } = useSuspenseQuery(
+    usersQueryOptions(page, pageSize, sortId, sortDesc, filters)
+  )
 
   const sorting = (
     sortId ? [{ id: sortId, desc: sortDesc }] : []

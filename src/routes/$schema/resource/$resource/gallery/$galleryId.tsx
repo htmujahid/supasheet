@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-router"
 import type { ErrorComponentProps } from "@tanstack/react-router"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
@@ -65,11 +67,11 @@ export const Route = createFileRoute(
     if (!galleryView) throw notFound()
 
     const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-    const resourceData = await context.queryClient.ensureQueryData(
+    context.queryClient.ensureQueryData(
       resourceDataQueryOptions(schema, resource, metaData.query)
     )
 
-    return { galleryView, tableSchema, columnsSchema, resourceData }
+    return { galleryView, tableSchema, columnsSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Gallery | ${formatTitle(params.resource)} | Supasheet` }],
@@ -173,8 +175,14 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
-  const { galleryView, tableSchema, columnsSchema, resourceData } =
-    Route.useLoaderData()
+  const { galleryView, tableSchema, columnsSchema } = Route.useLoaderData()
+
+  const meta = (
+    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+  ) as TableMetadata
+  const { data: resourceData } = useSuspenseQuery(
+    resourceDataQueryOptions(schema, resource, meta.query)
+  )
 
   const titleField = galleryView.title as string
   const coverField = galleryView.cover as string
@@ -195,9 +203,6 @@ function RouteComponent() {
     data: row,
   }))
 
-  const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata
   const metaItems = meta.items ?? []
   const isTable = !!tableSchema
   const canInsert = useHasPermission(

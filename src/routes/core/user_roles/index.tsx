@@ -7,6 +7,8 @@ import type {
   SortingState,
 } from "@tanstack/react-table"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
@@ -45,17 +47,14 @@ export const Route = createFileRoute("/core/user_roles/")({
     context,
     deps: { sortId, sortDesc, page, pageSize, filters },
   }) => {
-    const userRoles = await context.queryClient.ensureQueryData(
+    context.queryClient.ensureQueryData(
       userRolesQueryOptions(page, pageSize, sortId, sortDesc, filters)
     )
     const columnsSchema = await context.queryClient.ensureQueryData(
       columnsSchemaQueryOptions("supasheet", "user_roles")
     )
 
-    return {
-      data: userRoles,
-      columnsSchema,
-    }
+    return { columnsSchema }
   },
   pendingComponent: PendingComponent,
   component: RouteComponent,
@@ -80,7 +79,11 @@ function PendingComponent() {
 
 function RouteComponent() {
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
-  const { data, columnsSchema } = Route.useLoaderData()
+  const { columnsSchema } = Route.useLoaderData()
+
+  const { data } = useSuspenseQuery(
+    userRolesQueryOptions(page, pageSize, sortId, sortDesc, filters)
+  )
 
   const canInsert = useHasPermission("supasheet.user_roles:insert")
 

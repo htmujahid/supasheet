@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, notFound } from "@tanstack/react-router"
 
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
@@ -23,7 +24,6 @@ export const Route = createFileRoute("/core/users/$userId/security")({
       adminGetUserQueryOptions(params.userId)
     )
     if (!data?.user) throw notFound()
-    return { data }
   },
   pendingComponent: () => (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4">
@@ -65,7 +65,8 @@ export const Route = createFileRoute("/core/users/$userId/security")({
 })
 
 function RouteComponent() {
-  const { data } = Route.useLoaderData()
+  const { userId } = Route.useParams()
+  const { data } = useSuspenseQuery(adminGetUserQueryOptions(userId))
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4">

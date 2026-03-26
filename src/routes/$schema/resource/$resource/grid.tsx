@@ -15,6 +15,8 @@ import type {
   SortingState,
 } from "@tanstack/react-table"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
@@ -93,7 +95,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
     ])
     if (!columnsSchema?.length) throw notFound()
     const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-    const resourceData = await context.queryClient.ensureQueryData(
+    context.queryClient.ensureQueryData(
       resourceDataQueryOptions(
         schema,
         resource,
@@ -105,7 +107,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
         filters
       )
     )
-    return { columnsSchema, tableSchema, resourceData }
+    return { columnsSchema, tableSchema }
   },
   head: ({ params }) => ({
     meta: [
@@ -200,7 +202,6 @@ function RouteComponent() {
   const {
     tableSchema,
     columnsSchema = [],
-    resourceData,
   } = Route.useLoaderData()
 
   const meta = (
@@ -209,6 +210,19 @@ function RouteComponent() {
   const metaItems = meta.items ?? []
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
+  )
+
+  const { data: resourceData } = useSuspenseQuery(
+    resourceDataQueryOptions(
+      schema,
+      resource,
+      meta.query,
+      page,
+      pageSize,
+      sortId,
+      sortDesc,
+      filters
+    )
   )
 
   const sorting = (
