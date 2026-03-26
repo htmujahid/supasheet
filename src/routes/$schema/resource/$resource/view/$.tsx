@@ -325,6 +325,8 @@ function RouteComponent() {
     singleResourceDataQueryOptions(schema, resource, pk, { join: joins })
   )
 
+  if (!record) return null
+
   const canUpdate = useHasPermission(
     `${schema}.${resource}:update` as AppPermission
   )
