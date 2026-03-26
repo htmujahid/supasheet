@@ -9,6 +9,7 @@ import {
   TableIcon,
 } from "lucide-react"
 
+import { Button } from "#/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import { Button } from "#/components/ui/button"
 import type { TableMetadata } from "#/lib/database-meta.types"
 
 type MetaItem = NonNullable<TableMetadata["items"]>[number]
@@ -33,7 +33,11 @@ interface ResourceViewSwitcherProps {
 
 const builtInViews = [
   { id: "table", label: "Table View", icon: <TableIcon className="size-3" /> },
-  { id: "grid", label: "Grid View", icon: <LayoutGridIcon className="size-3" /> },
+  {
+    id: "grid",
+    label: "Grid View",
+    icon: <LayoutGridIcon className="size-3" />,
+  },
 ]
 
 function getMetaItemIcon(item: MetaItem) {
@@ -53,8 +57,10 @@ export function ResourceViewSwitcher({
 
   const currentBuiltIn = builtInViews.find((v) => v.id === currentViewId)
   const currentMeta = metaItems.find((i) => i.id === currentViewId)
-  const currentIcon = currentBuiltIn?.icon ?? (currentMeta ? getMetaItemIcon(currentMeta) : null)
-  const currentLabel = currentBuiltIn?.label ?? currentMeta?.name ?? currentMeta?.id ?? "View"
+  const currentIcon =
+    currentBuiltIn?.icon ?? (currentMeta ? getMetaItemIcon(currentMeta) : null)
+  const currentLabel =
+    currentBuiltIn?.label ?? currentMeta?.name ?? currentMeta?.id ?? "View"
 
   function handleViewChange(value: string) {
     if (value === "table") {
@@ -95,11 +101,7 @@ export function ResourceViewSwitcher({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button size="sm" variant="outline" />
-        }
-      >
+      <DropdownMenuTrigger render={<Button size="sm" variant="outline" />}>
         {currentIcon}
         <span className="truncate font-medium">{currentLabel}</span>
         <ChevronDownIcon className="size-3.5 opacity-50" />

@@ -78,8 +78,10 @@ export const Route = createFileRoute(
     )
     if (!calendarView) throw notFound()
 
+    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+
     const resourceData = await context.queryClient.ensureQueryData(
-      resourceDataQueryOptions(schema, resource, 1, 1000)
+      resourceDataQueryOptions(schema, resource, metaData.query)
     )
 
     return { calendarView, tableSchema, columnsSchema, resourceData }

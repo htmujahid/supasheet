@@ -1,5 +1,3 @@
-import { Fragment } from "react"
-
 import { Link } from "@tanstack/react-router"
 
 import {
@@ -40,20 +38,16 @@ export function DefaultHeader({
               <Breadcrumb>
                 <BreadcrumbList>
                   {items.map((item) => (
-                    <Fragment key={item.title}>
+                    <BreadcrumbItem key={item.title} className="hidden lg:flex">
                       {item.url ? (
-                        <BreadcrumbItem>
-                          <BreadcrumbLink render={<Link to={item.url} />}>
-                            {item.title}
-                          </BreadcrumbLink>
-                        </BreadcrumbItem>
-                      ) : (
-                        <BreadcrumbItem key={item.url}>
+                        <BreadcrumbLink render={<Link to={item.url} />}>
                           {item.title}
-                        </BreadcrumbItem>
+                        </BreadcrumbLink>
+                      ) : (
+                        item.title
                       )}
                       <BreadcrumbSeparator />
-                    </Fragment>
+                    </BreadcrumbItem>
                   ))}
                   <BreadcrumbItem>
                     <BreadcrumbPage>{lastItem.title}</BreadcrumbPage>

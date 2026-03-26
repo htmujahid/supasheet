@@ -49,6 +49,7 @@ export function ForeignTableSheet({
     resourceDataQueryOptions(
       relationship.target_table_schema,
       relationship.target_table_name,
+      {},
       pagination.pageIndex + 1,
       pagination.pageSize,
       sortCol?.id,

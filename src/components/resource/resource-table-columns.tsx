@@ -40,7 +40,7 @@ export function getResourceTableColumns({
   const joinedColumns: `${string}.${string}`[] = (
     tableMeta.query?.join ?? []
   ).flatMap((join) =>
-    join.columns.map((col) => `${join.table}.${col}` as const),
+    join.columns.map((col) => `${join.table}.${col}` as const)
   )
 
   const cols: ColumnDef<Record<string, unknown>, unknown>[] = []

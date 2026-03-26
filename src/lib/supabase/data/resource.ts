@@ -124,8 +124,8 @@ export const resourceDataQueryOptions = (
   schema: string,
   resource: string,
   defaultQuery: TableMetadata["query"],
-  page: number,
-  pageSize: number,
+  page?: number,
+  pageSize?: number,
   sortId?: string,
   sortDesc?: boolean,
   filters: ColumnFiltersState = []
@@ -145,14 +145,17 @@ export const resourceDataQueryOptions = (
     queryFn: async () => {
       const joins =
         defaultQuery?.join?.map(
-          (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`,
-        ) || [];
+          (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`
+        ) || []
 
       let query = (supabase as any)
         .schema(schema)
         .from(resource)
         .select("*" + joins.join(""), { count: "exact" })
-        .range((page - 1) * pageSize, page * pageSize - 1)
+
+      if (page && pageSize) {
+        query = query.range((page - 1) * pageSize, page * pageSize - 1)
+      }
 
       if (sortId) query = query.order(sortId, { ascending: !sortDesc })
 

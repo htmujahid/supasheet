@@ -64,8 +64,9 @@ export const Route = createFileRoute(
     )
     if (!galleryView) throw notFound()
 
+    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
     const resourceData = await context.queryClient.ensureQueryData(
-      resourceDataQueryOptions(schema, resource, 1, 1000)
+      resourceDataQueryOptions(schema, resource, metaData.query)
     )
 
     return { galleryView, tableSchema, columnsSchema, resourceData }
