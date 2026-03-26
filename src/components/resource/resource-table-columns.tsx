@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 
 import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
-import { ArrowUpRightIcon } from "lucide-react"
+import { ArrowUpRightIcon, Link2Icon } from "lucide-react"
 
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnFilterData } from "#/lib/columns"
@@ -10,8 +10,10 @@ import type {
   ColumnSchema,
   PrimaryKey,
   ResourceDataSchema,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
+import { formatTitle } from "#/lib/format"
 
 import { ResourceColumnHeader } from "./resource-column-header"
 import { ResourceRowCell } from "./resource-row-cell"
@@ -33,6 +35,13 @@ export function getResourceTableColumns({
 }) {
   const schema = tableSchema?.schema ?? ""
   const resource = tableSchema?.name ?? ""
+
+  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+  const joinedColumns: `${string}.${string}`[] = (
+    tableMeta.query?.join ?? []
+  ).flatMap((join) =>
+    join.columns.map((col) => `${join.table}.${col}` as const),
+  )
 
   const cols: ColumnDef<Record<string, unknown>, unknown>[] = []
 
@@ -108,6 +117,21 @@ export function getResourceTableColumns({
       enableHiding: true,
       enableColumnFilter: true,
       meta: getColumnFilterData(col),
+    })
+  }
+
+  for (const col of joinedColumns) {
+    cols.push({
+      id: col,
+      accessorKey: col,
+      header: () => (
+        <div className="flex items-center gap-2 truncate">
+          <Link2Icon className="text-muted-foreground size-4 shrink-0" />
+          <span>{formatTitle(col.replace(".", "_"))}</span>
+        </div>
+      ),
+      size: 170,
+      enableHiding: true,
     })
   }
 

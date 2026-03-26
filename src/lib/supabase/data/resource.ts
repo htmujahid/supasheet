@@ -123,6 +123,7 @@ export const viewSchemaQueryOptions = (schema: string, id: string) =>
 export const resourceDataQueryOptions = (
   schema: string,
   resource: string,
+  defaultQuery: TableMetadata["query"],
   page: number,
   pageSize: number,
   sortId?: string,
@@ -142,10 +143,15 @@ export const resourceDataQueryOptions = (
       filters,
     ],
     queryFn: async () => {
+      const joins =
+        defaultQuery?.join?.map(
+          (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`,
+        ) || [];
+
       let query = (supabase as any)
         .schema(schema)
         .from(resource)
-        .select("*", { count: "exact" })
+        .select("*" + joins.join(""), { count: "exact" })
         .range((page - 1) * pageSize, page * pageSize - 1)
 
       if (sortId) query = query.order(sortId, { ascending: !sortDesc })
