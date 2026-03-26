@@ -30,12 +30,15 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context, location }) => {
-    const authUser = await context.queryClient.ensureQueryData(authUserQueryOptions)
+    const authUser =
+      await context.queryClient.ensureQueryData(authUserQueryOptions)
     if (!authUser && !location.pathname.startsWith("/auth")) {
       window.location.href = "/auth/sign-in"
       throw redirect({ to: "/auth/sign-in" })
     }
-    const user = authUser ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id)) : null
+    const user = authUser
+      ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id))
+      : null
     return { authUser, user }
   },
   head: () => ({

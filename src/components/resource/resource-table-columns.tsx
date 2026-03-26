@@ -26,11 +26,9 @@ export function parsePkSplat(
 
 export function getResourceTableColumns({
   columnsSchema,
-  isTable,
   tableSchema,
 }: {
   columnsSchema: ColumnSchema[]
-  isTable: boolean
   tableSchema: TableSchema | null
 }) {
   const schema = tableSchema?.schema ?? ""
@@ -38,7 +36,7 @@ export function getResourceTableColumns({
 
   const cols: ColumnDef<Record<string, unknown>, unknown>[] = []
 
-  if (isTable) {
+  if (tableSchema?.primary_keys) {
     cols.push({
       id: "select",
       header: ({ table }) => (

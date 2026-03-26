@@ -24,12 +24,8 @@ import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 import { getResourceTableColumns } from "./resource-table-columns"
 
 interface ResourceTableProps {
-  schema: string
-  resource: string
   data: Record<string, unknown>[]
   columnsSchema: ColumnSchema[]
-  primaryKeys: PrimaryKey[]
-  isTable: boolean
   tableSchema: TableSchema | null
   sorting: SortingState
   pagination: PaginationState
@@ -38,12 +34,8 @@ interface ResourceTableProps {
 }
 
 export function ResourceTable({
-  schema,
-  resource,
   data,
   columnsSchema,
-  primaryKeys,
-  isTable,
   tableSchema,
   sorting,
   pagination,
@@ -51,6 +43,10 @@ export function ResourceTable({
   pageCount,
 }: ResourceTableProps) {
   const queryClient = useQueryClient()
+  const schema = tableSchema?.schema ?? ""
+  const resource = tableSchema?.name ?? ""
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+
   const canDelete = useHasPermission(
     `${schema}.${resource}:delete` as AppPermission
   )
@@ -83,8 +79,8 @@ export function ResourceTable({
   }
 
   const columns = useMemo(
-    () => getResourceTableColumns({ columnsSchema, isTable, tableSchema }),
-    [columnsSchema, isTable, tableSchema]
+    () => getResourceTableColumns({ columnsSchema, tableSchema }),
+    [columnsSchema, tableSchema]
   )
 
   const table = useDataTable({
@@ -96,9 +92,6 @@ export function ResourceTable({
   })
 
   return (
-    <DataTable
-      table={table}
-      onDelete={isTable && canDelete ? handleDelete : undefined}
-    />
+    <DataTable table={table} onDelete={canDelete ? handleDelete : undefined} />
   )
 }

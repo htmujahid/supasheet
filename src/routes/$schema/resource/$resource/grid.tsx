@@ -19,7 +19,7 @@ import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { ResourceTable } from "#/components/resource/resource-table"
+import { ResourceGrid } from "#/components/resource/grid/resource-grid"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { Button } from "#/components/ui/button"
 import {
@@ -39,7 +39,7 @@ import {
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-export const Route = createFileRoute("/$schema/resource/$resource/")({
+export const Route = createFileRoute("/$schema/resource/$resource/grid")({
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(
@@ -163,7 +163,15 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
     const { schema, resource } = Route.useParams()
     return (
       <>
-        <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]} />
+        <DefaultHeader
+          breadcrumbs={[
+            {
+              title: formatTitle(resource),
+              url: `/${schema}/resource/${resource}`,
+            },
+            { title: "Grid" },
+          ]}
+        />
         <div className="flex flex-1 items-center justify-center p-8">
           <Empty>
             <EmptyHeader>
@@ -197,7 +205,6 @@ function RouteComponent() {
     tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
   ) as TableMetadata
   const metaItems = meta.items ?? []
-  const isTable = !!tableSchema
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
   )
@@ -210,14 +217,22 @@ function RouteComponent() {
 
   return (
     <>
-      <DefaultHeader breadcrumbs={[{ title: formatTitle(resource) }]}>
+      <DefaultHeader
+        breadcrumbs={[
+          {
+            title: formatTitle(resource),
+            url: `/${schema}/resource/${resource}`,
+          },
+          { title: "Grid" },
+        ]}
+      >
         <ResourceViewSwitcher
           schema={schema}
           resource={resource}
           metaItems={metaItems}
-          currentViewId="table"
+          currentViewId="grid"
         />
-        {isTable && canInsert && (
+        {canInsert && (
           <Button
             size="sm"
             nativeButton={false}
@@ -234,7 +249,7 @@ function RouteComponent() {
         )}
       </DefaultHeader>
       <div className="p-4">
-        <ResourceTable
+        <ResourceGrid
           data={resourceData?.result ?? []}
           columnsSchema={columnsSchema ?? []}
           tableSchema={tableSchema ?? null}

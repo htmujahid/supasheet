@@ -48,9 +48,7 @@ export const Route = createFileRoute(
     )
       throw notFound()
   },
-  validateSearch: (search: {
-    view?: string
-  }) => ({
+  validateSearch: (search: { view?: string }) => ({
     view: (["month", "week", "day", "year", "agenda"].includes(
       search.view as string
     )

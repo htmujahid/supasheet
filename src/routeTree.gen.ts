@@ -51,8 +51,8 @@ import { Route as SchemaReportReportIndexRouteImport } from './routes/$schema/re
 import { Route as CoreUsersUserIdSecurityRouteImport } from './routes/core/users/$userId/security'
 import { Route as CoreUsersUserIdEditRouteImport } from './routes/core/users/$userId/edit'
 import { Route as CoreUsersUserIdDangerRouteImport } from './routes/core/users/$userId/danger'
-import { Route as SchemaResourceResourceReportRouteImport } from './routes/$schema/resource/$resource/report'
 import { Route as SchemaResourceResourceNewRouteImport } from './routes/$schema/resource/$resource/new'
+import { Route as SchemaResourceResourceGridRouteImport } from './routes/$schema/resource/$resource/grid'
 import { Route as SchemaResourceResourceViewSplatRouteImport } from './routes/$schema/resource/$resource/view/$'
 import { Route as SchemaResourceResourceUpdateSplatRouteImport } from './routes/$schema/resource/$resource/update/$'
 import { Route as SchemaResourceResourceKanbanKanbanIdRouteImport } from './routes/$schema/resource/$resource/kanban/$kanbanId'
@@ -273,16 +273,16 @@ const CoreUsersUserIdDangerRoute = CoreUsersUserIdDangerRouteImport.update({
   path: '/danger',
   getParentRoute: () => CoreUsersUserIdRouteRoute,
 } as any)
-const SchemaResourceResourceReportRoute =
-  SchemaResourceResourceReportRouteImport.update({
-    id: '/resource/$resource/report',
-    path: '/resource/$resource/report',
-    getParentRoute: () => SchemaRouteRoute,
-  } as any)
 const SchemaResourceResourceNewRoute =
   SchemaResourceResourceNewRouteImport.update({
     id: '/resource/$resource/new',
     path: '/resource/$resource/new',
+    getParentRoute: () => SchemaRouteRoute,
+  } as any)
+const SchemaResourceResourceGridRoute =
+  SchemaResourceResourceGridRouteImport.update({
+    id: '/resource/$resource/grid',
+    path: '/resource/$resource/grid',
     getParentRoute: () => SchemaRouteRoute,
   } as any)
 const SchemaResourceResourceViewSplatRoute =
@@ -352,8 +352,8 @@ export interface FileRoutesByFullPath {
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
+  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
-  '/$schema/resource/$resource/report': typeof SchemaResourceResourceReportRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -398,8 +398,8 @@ export interface FileRoutesByTo {
   '/core/user_roles': typeof CoreUser_rolesIndexRoute
   '/core/users': typeof CoreUsersIndexRoute
   '/storage/$bucketId': typeof StorageBucketIdIndexRoute
+  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
-  '/$schema/resource/$resource/report': typeof SchemaResourceResourceReportRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -450,8 +450,8 @@ export interface FileRoutesById {
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
+  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
-  '/$schema/resource/$resource/report': typeof SchemaResourceResourceReportRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -503,8 +503,8 @@ export interface FileRouteTypes {
     | '/core/user_roles/'
     | '/core/users/'
     | '/storage/$bucketId/'
+    | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
-    | '/$schema/resource/$resource/report'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
     | '/core/users/$userId/security'
@@ -549,8 +549,8 @@ export interface FileRouteTypes {
     | '/core/user_roles'
     | '/core/users'
     | '/storage/$bucketId'
+    | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
-    | '/$schema/resource/$resource/report'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
     | '/core/users/$userId/security'
@@ -600,8 +600,8 @@ export interface FileRouteTypes {
     | '/core/user_roles/'
     | '/core/users/'
     | '/storage/$bucketId/'
+    | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
-    | '/$schema/resource/$resource/report'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
     | '/core/users/$userId/security'
@@ -921,18 +921,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoreUsersUserIdDangerRouteImport
       parentRoute: typeof CoreUsersUserIdRouteRoute
     }
-    '/$schema/resource/$resource/report': {
-      id: '/$schema/resource/$resource/report'
-      path: '/resource/$resource/report'
-      fullPath: '/$schema/resource/$resource/report'
-      preLoaderRoute: typeof SchemaResourceResourceReportRouteImport
-      parentRoute: typeof SchemaRouteRoute
-    }
     '/$schema/resource/$resource/new': {
       id: '/$schema/resource/$resource/new'
       path: '/resource/$resource/new'
       fullPath: '/$schema/resource/$resource/new'
       preLoaderRoute: typeof SchemaResourceResourceNewRouteImport
+      parentRoute: typeof SchemaRouteRoute
+    }
+    '/$schema/resource/$resource/grid': {
+      id: '/$schema/resource/$resource/grid'
+      path: '/resource/$resource/grid'
+      fullPath: '/$schema/resource/$resource/grid'
+      preLoaderRoute: typeof SchemaResourceResourceGridRouteImport
       parentRoute: typeof SchemaRouteRoute
     }
     '/$schema/resource/$resource/view/$': {
@@ -978,8 +978,8 @@ interface SchemaRouteRouteChildren {
   SchemaChartIndexRoute: typeof SchemaChartIndexRoute
   SchemaDashboardIndexRoute: typeof SchemaDashboardIndexRoute
   SchemaReportIndexRoute: typeof SchemaReportIndexRoute
+  SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRoute
   SchemaResourceResourceNewRoute: typeof SchemaResourceResourceNewRoute
-  SchemaResourceResourceReportRoute: typeof SchemaResourceResourceReportRoute
   SchemaReportReportIndexRoute: typeof SchemaReportReportIndexRoute
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
   SchemaSqlEditorSnippetIndexRoute: typeof SchemaSqlEditorSnippetIndexRoute
@@ -995,8 +995,8 @@ const SchemaRouteRouteChildren: SchemaRouteRouteChildren = {
   SchemaChartIndexRoute: SchemaChartIndexRoute,
   SchemaDashboardIndexRoute: SchemaDashboardIndexRoute,
   SchemaReportIndexRoute: SchemaReportIndexRoute,
+  SchemaResourceResourceGridRoute: SchemaResourceResourceGridRoute,
   SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
-  SchemaResourceResourceReportRoute: SchemaResourceResourceReportRoute,
   SchemaReportReportIndexRoute: SchemaReportReportIndexRoute,
   SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
   SchemaSqlEditorSnippetIndexRoute: SchemaSqlEditorSnippetIndexRoute,

@@ -1,19 +1,25 @@
 import { useNavigate } from "@tanstack/react-router"
 
 import {
+  ChevronDownIcon,
   Grid3X3Icon,
   ImageIcon,
+  LayoutGridIcon,
   SquareKanbanIcon,
   TableIcon,
 } from "lucide-react"
 
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "#/components/ui/select"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "#/components/ui/dropdown-menu"
+import { Button } from "#/components/ui/button"
 import type { TableMetadata } from "#/lib/database-meta.types"
 
 type MetaItem = NonNullable<TableMetadata["items"]>[number]
@@ -25,6 +31,18 @@ interface ResourceViewSwitcherProps {
   currentViewId: string
 }
 
+const builtInViews = [
+  { id: "table", label: "Table View", icon: <TableIcon className="size-3" /> },
+  { id: "grid", label: "Grid View", icon: <LayoutGridIcon className="size-3" /> },
+]
+
+function getMetaItemIcon(item: MetaItem) {
+  if (item.type === "kanban") return <SquareKanbanIcon className="size-3" />
+  if (item.type === "calendar") return <Grid3X3Icon className="size-3" />
+  if (item.type === "gallery") return <ImageIcon className="size-3" />
+  return null
+}
+
 export function ResourceViewSwitcher({
   schema,
   resource,
@@ -33,12 +51,22 @@ export function ResourceViewSwitcher({
 }: ResourceViewSwitcherProps) {
   const navigate = useNavigate()
 
-  if (metaItems.length === 0) return null
+  const currentBuiltIn = builtInViews.find((v) => v.id === currentViewId)
+  const currentMeta = metaItems.find((i) => i.id === currentViewId)
+  const currentIcon = currentBuiltIn?.icon ?? (currentMeta ? getMetaItemIcon(currentMeta) : null)
+  const currentLabel = currentBuiltIn?.label ?? currentMeta?.name ?? currentMeta?.id ?? "View"
 
-  function handleViewChange(value: string | null) {
-    if (!value || value === "table") {
+  function handleViewChange(value: string) {
+    if (value === "table") {
       navigate({
         to: "/$schema/resource/$resource",
+        params: { schema, resource },
+      })
+      return
+    }
+    if (value === "grid") {
+      navigate({
+        to: "/$schema/resource/$resource/grid",
         params: { schema, resource },
       })
       return
@@ -66,28 +94,39 @@ export function ResourceViewSwitcher({
   }
 
   return (
-    <Select value={currentViewId} onValueChange={handleViewChange}>
-      <SelectTrigger size="sm">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="table">
-          <TableIcon />
-          Table
-        </SelectItem>
-        {metaItems.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
-            {item.type === "kanban" ? (
-              <SquareKanbanIcon />
-            ) : item.type === "calendar" ? (
-              <Grid3X3Icon />
-            ) : item.type === "gallery" ? (
-              <ImageIcon />
-            ) : null}
-            {item.name || item.id}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button size="sm" variant="outline" />
+        }
+      >
+        {currentIcon}
+        <span className="truncate font-medium">{currentLabel}</span>
+        <ChevronDownIcon className="size-3.5 opacity-50" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48 rounded-lg">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Views</DropdownMenuLabel>
+        </DropdownMenuGroup>
+        <DropdownMenuRadioGroup
+          value={currentViewId}
+          onValueChange={handleViewChange}
+        >
+          {builtInViews.map((view) => (
+            <DropdownMenuRadioItem key={view.id} value={view.id}>
+              {view.icon}
+              {view.label}
+            </DropdownMenuRadioItem>
+          ))}
+          {metaItems.length > 0 && <DropdownMenuSeparator />}
+          {metaItems.map((item) => (
+            <DropdownMenuRadioItem key={item.id} value={item.id}>
+              {getMetaItemIcon(item)}
+              {item.name || item.id}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
