@@ -123,7 +123,14 @@ export function ResourceUpdateForm({
         queryKey: ["supasheet", "resource-data", schema, resource],
       })
       queryClient.invalidateQueries({
-        queryKey: ["supasheet", "resource-data", schema, resource, "single", pk],
+        queryKey: [
+          "supasheet",
+          "resource-data",
+          schema,
+          resource,
+          "single",
+          pk,
+        ],
       })
       toast.success("Record updated")
       navigate({

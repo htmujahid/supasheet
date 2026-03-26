@@ -1,13 +1,13 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 import type { SearchSchemaInput } from "@tanstack/react-router"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import type {
   ColumnFiltersState,
   PaginationState,
   SortingState,
 } from "@tanstack/react-table"
-
-import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { MailPlusIcon, PlusIcon } from "lucide-react"
 

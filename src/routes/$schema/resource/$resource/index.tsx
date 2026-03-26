@@ -9,13 +9,13 @@ import type {
   SearchSchemaInput,
 } from "@tanstack/react-router"
 
+import { useSuspenseQuery } from "@tanstack/react-query"
+
 import type {
   ColumnFiltersState,
   PaginationState,
   SortingState,
 } from "@tanstack/react-table"
-
-import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
@@ -191,10 +191,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
-  const {
-    tableSchema,
-    columnsSchema = [],
-  } = Route.useLoaderData()
+  const { tableSchema, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = (
     tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}

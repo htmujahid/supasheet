@@ -112,7 +112,9 @@ function RouteComponent() {
 **Mutation invalidation** — after any mutation, invalidate by query key prefix:
 
 ```ts
-queryClient.invalidateQueries({ queryKey: ["supasheet", "resource-data", schema, resource] })
+queryClient.invalidateQueries({
+  queryKey: ["supasheet", "resource-data", schema, resource],
+})
 ```
 
 ### `supabase/`

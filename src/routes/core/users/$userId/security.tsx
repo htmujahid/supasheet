@@ -1,5 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, notFound } from "@tanstack/react-router"
+
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
 import { Separator } from "#/components/ui/separator"

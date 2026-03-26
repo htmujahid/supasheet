@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
 import {
   Outlet,
   createFileRoute,
@@ -6,6 +5,8 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/react-router"
+
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
