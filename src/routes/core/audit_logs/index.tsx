@@ -13,6 +13,7 @@ import { AuditLogTable } from "#/components/audit-logs/audit-logs-table"
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { auditLogsQueryOptions } from "#/lib/supabase/data/core"
+import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/audit_logs/")({
   head: () => ({ meta: [{ title: "Audit Logs | Supasheet" }] }),
@@ -45,6 +46,11 @@ export const Route = createFileRoute("/core/audit_logs/")({
     context.queryClient.ensureQueryData(
       auditLogsQueryOptions(page, pageSize, sortId, sortDesc, filters)
     )
+    const columnsSchema = await context.queryClient.ensureQueryData(
+      columnsSchemaQueryOptions("supasheet", "audit_logs")
+    )
+
+    return { columnsSchema }
   },
   pendingComponent: PendingComponent,
   component: RouteComponent,
@@ -69,6 +75,7 @@ function PendingComponent() {
 
 function RouteComponent() {
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
+  const { columnsSchema } = Route.useLoaderData()
 
   const { data } = useSuspenseQuery(
     auditLogsQueryOptions(page, pageSize, sortId, sortDesc, filters)
@@ -90,6 +97,7 @@ function RouteComponent() {
           <div className="flex flex-col gap-4 px-4 py-4">
             <AuditLogTable
               data={data.result}
+              columnsSchema={columnsSchema}
               sorting={sorting}
               pagination={pagination}
               columnFilters={filters}

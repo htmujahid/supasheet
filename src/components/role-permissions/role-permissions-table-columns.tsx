@@ -2,10 +2,9 @@ import type { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "#/components/data-table/data-table-column-header"
 import { Checkbox } from "#/components/ui/checkbox"
-import { getColumnFilterData } from "#/lib/columns"
+import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema } from "#/lib/database-meta.types"
 import type { Database } from "#/lib/database.types"
-import type { ColumnMeta } from "#/types/data-table"
 
 type RolePermission = Database["supasheet"]["Tables"]["role_permissions"]["Row"]
 
@@ -50,10 +49,10 @@ export function getRolePermissionsTableColumns({
           {row.getValue("id")}
         </span>
       ),
-      meta: {
-        label: "ID",
-        variant: "number",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "id") as ColumnSchema
+      ),
     },
     {
       accessorKey: "role",
@@ -63,7 +62,8 @@ export function getRolePermissionsTableColumns({
       cell: ({ row }) => (
         <span className="text-sm font-medium">{row.getValue("role")}</span>
       ),
-      meta: getColumnFilterData(
+      meta: getColumnMetadata(
+        null,
         columnsSchema.find((col) => col.name === "role") as ColumnSchema
       ),
     },
@@ -75,7 +75,8 @@ export function getRolePermissionsTableColumns({
       cell: ({ row }) => (
         <span className="font-mono text-xs">{row.getValue("permission")}</span>
       ),
-      meta: getColumnFilterData(
+      meta: getColumnMetadata(
+        null,
         columnsSchema.find((col) => col.name === "permission") as ColumnSchema
       ),
     },

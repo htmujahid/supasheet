@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table"
 
-import { getColumnCell, getColumnFilterData } from "#/lib/columns"
+import { getColumnCell, getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
   ResourceDataSchema,
@@ -52,7 +52,7 @@ export function foreignTableColumns({
     },
     size: 150,
     enableColumnFilter: true,
-    meta: getColumnFilterData(c),
+    meta: getColumnMetadata(null, c),
     enableSorting: true,
     enableHiding: true,
   })) as ColumnDef<ResourceDataSchema, unknown>[]

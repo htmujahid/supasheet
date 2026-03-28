@@ -2,19 +2,22 @@ import { Link } from "@tanstack/react-router"
 
 import type { ColumnDef } from "@tanstack/react-table"
 
-import { CalendarIcon, UserIcon } from "lucide-react"
+import { UserIcon } from "lucide-react"
 
 import { DataTableColumnHeader } from "#/components/data-table/data-table-column-header"
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
 import { Checkbox } from "#/components/ui/checkbox"
+import { getColumnMetadata } from "#/lib/columns"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 import type { Database } from "#/lib/database.types"
-import type { ColumnMeta } from "#/types/data-table"
-
-export type { ColumnMeta }
 
 export type User = Database["supasheet"]["Tables"]["users"]["Row"]
 
-export function getUsersTableColumns(): ColumnDef<User, unknown>[] {
+export function getUsersTableColumns({
+  columnsSchema,
+}: {
+  columnsSchema: ColumnSchema[]
+}): ColumnDef<User, unknown>[] {
   return [
     {
       id: "select",
@@ -55,11 +58,10 @@ export function getUsersTableColumns(): ColumnDef<User, unknown>[] {
           {row.original.id}
         </Link>
       ),
-      meta: {
-        label: "ID",
-        variant: "text",
-        placeholder: "Filter by ID...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "id") as ColumnSchema
+      ),
     },
     {
       accessorKey: "name",
@@ -83,11 +85,10 @@ export function getUsersTableColumns(): ColumnDef<User, unknown>[] {
           </div>
         )
       },
-      meta: {
-        label: "Name",
-        variant: "text",
-        placeholder: "Search by name...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "name") as ColumnSchema
+      ),
     },
     {
       accessorKey: "email",
@@ -99,11 +100,10 @@ export function getUsersTableColumns(): ColumnDef<User, unknown>[] {
           {row.getValue("email") ?? "—"}
         </span>
       ),
-      meta: {
-        label: "Email",
-        variant: "text",
-        placeholder: "Search by email...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "email") as ColumnSchema
+      ),
     },
     {
       accessorKey: "created_at",
@@ -122,11 +122,10 @@ export function getUsersTableColumns(): ColumnDef<User, unknown>[] {
           </span>
         )
       },
-      meta: {
-        label: "Created At",
-        variant: "timestamptz",
-        icon: CalendarIcon,
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "created_at") as ColumnSchema
+      ),
     },
     {
       accessorKey: "updated_at",
@@ -145,11 +144,10 @@ export function getUsersTableColumns(): ColumnDef<User, unknown>[] {
           </span>
         )
       },
-      meta: {
-        label: "Updated At",
-        variant: "timestamptz",
-        icon: CalendarIcon,
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "updated_at") as ColumnSchema
+      ),
     },
   ]
 }

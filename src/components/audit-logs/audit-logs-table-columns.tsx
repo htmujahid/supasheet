@@ -2,19 +2,22 @@ import { Link } from "@tanstack/react-router"
 
 import type { ColumnDef } from "@tanstack/react-table"
 
-import { AlertCircleIcon, CalendarIcon } from "lucide-react"
+import { AlertCircleIcon } from "lucide-react"
 
 import { DataTableColumnHeader } from "#/components/data-table/data-table-column-header"
 import { Badge } from "#/components/ui/badge"
 import { Checkbox } from "#/components/ui/checkbox"
+import { getColumnMetadata } from "#/lib/columns"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 import type { Database } from "#/lib/database.types"
-import type { ColumnMeta } from "#/types/data-table"
-
-export type { ColumnMeta }
 
 export type AuditLog = Database["supasheet"]["Tables"]["audit_logs"]["Row"]
 
-export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
+export function getAuditLogsTableColumns({
+  columnsSchema,
+}: {
+  columnsSchema: ColumnSchema[]
+}): ColumnDef<AuditLog, unknown>[] {
   return [
     {
       id: "select",
@@ -55,11 +58,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           {row.original.id.slice(0, 8)}…
         </Link>
       ),
-      meta: {
-        label: "ID",
-        variant: "text",
-        placeholder: "Filter by ID...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "id") as ColumnSchema
+      ),
     },
     {
       accessorKey: "created_at",
@@ -77,11 +79,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           </span>
         )
       },
-      meta: {
-        label: "Created At",
-        variant: "timestamptz",
-        icon: CalendarIcon,
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "created_at") as ColumnSchema
+      ),
     },
     {
       accessorKey: "operation",
@@ -100,15 +101,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
                 : "outline"
         return <Badge variant={variant}>{op}</Badge>
       },
-      meta: {
-        label: "Operation",
-        variant: "select",
-        options: [
-          { label: "INSERT", value: "INSERT" },
-          { label: "UPDATE", value: "UPDATE" },
-          { label: "DELETE", value: "DELETE" },
-        ],
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "operation") as ColumnSchema
+      ),
     },
     {
       accessorKey: "schema_name",
@@ -120,11 +116,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           {row.getValue("schema_name")}
         </span>
       ),
-      meta: {
-        label: "Schema",
-        variant: "text",
-        placeholder: "Filter by schema...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "schema_name") as ColumnSchema
+      ),
     },
     {
       accessorKey: "table_name",
@@ -134,11 +129,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
       cell: ({ row }) => (
         <span className="font-mono text-sm">{row.getValue("table_name")}</span>
       ),
-      meta: {
-        label: "Table",
-        variant: "text",
-        placeholder: "Filter by table...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "table_name") as ColumnSchema
+      ),
     },
     {
       accessorKey: "record_id",
@@ -153,11 +147,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           </span>
         )
       },
-      meta: {
-        label: "Record ID",
-        variant: "number",
-        placeholder: "Filter by record ID...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "record_id") as ColumnSchema
+      ),
     },
     {
       accessorKey: "role",
@@ -170,14 +163,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           return <span className="text-sm text-muted-foreground">—</span>
         return <Badge variant="outline">{value}</Badge>
       },
-      meta: {
-        label: "Role",
-        variant: "select",
-        options: [
-          { label: "x-admin", value: "x-admin" },
-          { label: "user", value: "user" },
-        ],
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "role") as ColumnSchema
+      ),
     },
     {
       accessorKey: "user_type",
@@ -192,14 +181,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           </Badge>
         )
       },
-      meta: {
-        label: "User Type",
-        variant: "select",
-        options: [
-          { label: "Real User", value: "real_user" },
-          { label: "System", value: "system" },
-        ],
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "user_type") as ColumnSchema
+      ),
     },
     {
       accessorKey: "is_error",
@@ -217,11 +202,10 @@ export function getAuditLogsTableColumns(): ColumnDef<AuditLog, unknown>[] {
           </div>
         )
       },
-      meta: {
-        label: "Error",
-        variant: "boolean",
-        icon: AlertCircleIcon,
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "is_error") as ColumnSchema
+      ),
     },
   ]
 }

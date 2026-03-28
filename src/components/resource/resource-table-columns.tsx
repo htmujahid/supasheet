@@ -5,7 +5,7 @@ import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 import { ArrowUpRightIcon, Link2Icon } from "lucide-react"
 
 import { Checkbox } from "#/components/ui/checkbox"
-import { getColumnFilterData } from "#/lib/columns"
+import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
   PrimaryKey,
@@ -116,7 +116,7 @@ export function getResourceTableColumns({
       enableSorting: true,
       enableHiding: true,
       enableColumnFilter: true,
-      meta: getColumnFilterData(col),
+      meta: getColumnMetadata(tableSchema, col),
     })
   }
 
@@ -132,6 +132,8 @@ export function getResourceTableColumns({
       ),
       size: 170,
       enableHiding: true,
+      enableColumnFilter: false,
+      enableSorting: false,
     })
   }
 

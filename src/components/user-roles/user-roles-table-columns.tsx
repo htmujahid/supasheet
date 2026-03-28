@@ -2,10 +2,9 @@ import type { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "#/components/data-table/data-table-column-header"
 import { Checkbox } from "#/components/ui/checkbox"
-import { getColumnFilterData } from "#/lib/columns"
+import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema } from "#/lib/database-meta.types"
 import type { Database } from "#/lib/database.types"
-import type { ColumnMeta } from "#/types/data-table"
 
 export type UserRole = Database["supasheet"]["Tables"]["user_roles"]["Row"]
 
@@ -50,10 +49,10 @@ export function getUserRolesTableColumns({
           {row.getValue("id")}
         </span>
       ),
-      meta: {
-        label: "ID",
-        variant: "number",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "id") as ColumnSchema
+      ),
     },
     {
       accessorKey: "user_id",
@@ -65,11 +64,10 @@ export function getUserRolesTableColumns({
           {row.getValue("user_id")}
         </span>
       ),
-      meta: {
-        label: "User ID",
-        variant: "text",
-        placeholder: "Filter by user ID...",
-      } satisfies ColumnMeta,
+      meta: getColumnMetadata(
+        null,
+        columnsSchema.find((col) => col.name === "user_id") as ColumnSchema
+      ),
     },
     {
       accessorKey: "role",
@@ -79,7 +77,8 @@ export function getUserRolesTableColumns({
       cell: ({ row }) => (
         <span className="text-sm font-medium">{row.getValue("role")}</span>
       ),
-      meta: getColumnFilterData(
+      meta: getColumnMetadata(
+        null,
         columnsSchema.find((col) => col.name === "role") as ColumnSchema
       ),
     },

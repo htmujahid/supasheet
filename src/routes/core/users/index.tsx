@@ -17,6 +17,7 @@ import { Button } from "#/components/ui/button"
 import { UsersTable } from "#/components/users/users-table"
 import { useHasPermission } from "#/hooks/use-permissions"
 import { usersQueryOptions } from "#/lib/supabase/data/core"
+import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/users/")({
   head: () => ({ meta: [{ title: "Users | Supasheet" }] }),
@@ -49,6 +50,11 @@ export const Route = createFileRoute("/core/users/")({
     context.queryClient.ensureQueryData(
       usersQueryOptions(page, pageSize, sortId, sortDesc, filters)
     )
+    const columnsSchema = await context.queryClient.ensureQueryData(
+      columnsSchemaQueryOptions("supasheet", "users")
+    )
+
+    return { columnsSchema }
   },
   pendingComponent: PendingComponent,
   component: RouteComponent,
@@ -103,6 +109,7 @@ function PendingComponent() {
 
 function RouteComponent() {
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
+  const { columnsSchema } = Route.useLoaderData()
 
   const { data } = useSuspenseQuery(
     usersQueryOptions(page, pageSize, sortId, sortDesc, filters)
@@ -124,6 +131,7 @@ function RouteComponent() {
           <div className="flex flex-col gap-4 px-4 py-4">
             <UsersTable
               data={data?.result ?? []}
+              columnsSchema={columnsSchema}
               sorting={sorting}
               pagination={pagination}
               columnFilters={filters}

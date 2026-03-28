@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import { DataTable } from "#/components/data-table/data-table"
 import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 import { adminDeleteUserMutationOptions } from "#/lib/supabase/data/admin-auth"
 
 import { getUsersTableColumns } from "./users-table-columns"
@@ -20,6 +21,7 @@ import type { User } from "./users-table-columns"
 
 interface UsersTableProps {
   data: User[]
+  columnsSchema: ColumnSchema[]
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState
@@ -28,6 +30,7 @@ interface UsersTableProps {
 
 export function UsersTable({
   data,
+  columnsSchema,
   sorting,
   pagination,
   columnFilters,
@@ -35,7 +38,10 @@ export function UsersTable({
 }: UsersTableProps) {
   const queryClient = useQueryClient()
   const canDelete = useHasPermission("supasheet.users:delete")
-  const columns = useMemo(() => getUsersTableColumns(), [])
+  const columns = useMemo(
+    () => getUsersTableColumns({ columnsSchema }),
+    [columnsSchema]
+  )
   const table = useDataTable({
     columns,
     data,

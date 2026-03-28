@@ -22,10 +22,8 @@ import { METADATA_COLUMNS } from "#/config/database.config"
 import type {
   ColumnSchema,
   PrimaryKey,
-  Relationship,
   TableSchema,
 } from "#/lib/database-meta.types"
-import type { ColumnMeta } from "#/types/data-table"
 import type { ColumnMetadata } from "#/types/fields"
 
 export function getColumnCell(columnSchema: ColumnSchema) {
@@ -67,11 +65,11 @@ export function getColumnMetadata(
   const isArray = columnSchema.data_type === "ARRAY"
   const isMetadata = METADATA_COLUMNS.includes(label)
 
-  const relationship = (tableSchema?.relationships as Relationship[])?.find(
-    (rel) =>
-      rel.source_column_name === columnSchema.name &&
-      rel.source_schema === columnSchema.schema
-  )
+  // const relationship = (tableSchema?.relationships as Relationship[])?.find(
+  //   (rel) =>
+  //     rel.source_column_name === columnSchema.name &&
+  //     rel.source_schema === columnSchema.schema
+  // )
 
   const isPrimaryKey = (tableSchema?.primary_keys as PrimaryKey[])?.some(
     (key) =>
@@ -86,9 +84,7 @@ export function getColumnMetadata(
     isArray,
     isMetadata,
     isPrimaryKey,
-    relationship,
     comment: columnSchema.comment,
-    primaryKeys: (tableSchema?.primary_keys as PrimaryKey[]) ?? [],
     table: columnSchema.table as string,
     schema: columnSchema.schema as string,
     options:
@@ -189,7 +185,7 @@ export function getColumnMetadata(
       return {
         ...baseOptions,
         variant: "uuid",
-        filterVariant: "text",
+        filterVariant: "uuid",
         icon: <HashIcon className="size-4 shrink-0 text-muted-foreground" />,
       }
 
@@ -316,20 +312,34 @@ export function getColumnMetadata(
       }
 
     case "time":
+      return {
+        ...baseOptions,
+        variant: "time",
+        filterVariant: "time",
+        icon: <ClockIcon className="size-4 shrink-0 text-muted-foreground" />,
+      }
     case "timetz":
       return {
         ...baseOptions,
         variant: "time",
-        filterVariant: "date",
+        filterVariant: "timetz",
         icon: <ClockIcon className="size-4 shrink-0 text-muted-foreground" />,
       }
 
     case "timestamptz":
+      return {
+        ...baseOptions,
+        variant: "datetime",
+        filterVariant: "timestamptz",
+        icon: (
+          <CalendarClockIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
+      }
     case "timestamp":
       return {
         ...baseOptions,
         variant: "datetime",
-        filterVariant: "date",
+        filterVariant: "timestamp",
         icon: (
           <CalendarClockIcon className="size-4 shrink-0 text-muted-foreground" />
         ),
@@ -366,98 +376,98 @@ export function getColumnMetadata(
   }
 }
 
-export function getColumnFilterData(columnSchema: ColumnSchema): ColumnMeta {
-  if (columnSchema.data_type === "USER-DEFINED") {
-    return {
-      label: columnSchema.name as string,
-      variant: "multiSelect",
-      options:
-        (columnSchema.enums as string[])?.map((option) => ({
-          label: option,
-          value: option,
-        })) ?? [],
-    }
-  }
+// export function getColumnFilterData(columnSchema: ColumnSchema): ColumnMeta {
+//   if (columnSchema.data_type === "USER-DEFINED") {
+//     return {
+//       label: columnSchema.name as string,
+//       variant: "multiSelect",
+//       options:
+//         (columnSchema.enums as string[])?.map((option) => ({
+//           label: option,
+//           value: option,
+//         })) ?? [],
+//     }
+//   }
 
-  switch (columnSchema.format) {
-    case "uuid":
-      return {
-        label: columnSchema.name as string,
-        variant: "uuid",
-      }
-    case "character":
-    case "varchar":
-    case "bpchar":
-    case "text":
-    case "bit":
-    case "varbit":
-    case "bytea":
-      return {
-        label: columnSchema.name as string,
-        variant: "text",
-      }
+//   switch (columnSchema.format) {
+//     case "uuid":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "uuid",
+//       }
+//     case "character":
+//     case "varchar":
+//     case "bpchar":
+//     case "text":
+//     case "bit":
+//     case "varbit":
+//     case "bytea":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "text",
+//       }
 
-    case "double precision":
-    case "real":
-    case "float4":
-    case "float8":
-    case "decimal":
-    case "bigint":
-    case "bigserial":
-    case "integer":
-    case "numeric":
-    case "smallint":
-    case "smallserial":
-    case "serial":
-    case "money":
-      return {
-        label: columnSchema.name as string,
-        variant: "number",
-      }
+//     case "double precision":
+//     case "real":
+//     case "float4":
+//     case "float8":
+//     case "decimal":
+//     case "bigint":
+//     case "bigserial":
+//     case "integer":
+//     case "numeric":
+//     case "smallint":
+//     case "smallserial":
+//     case "serial":
+//     case "money":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "number",
+//       }
 
-    case "date":
-      return {
-        label: columnSchema.name as string,
-        variant: "date",
-      }
-    case "timetz":
-      return {
-        label: columnSchema.name as string,
-        variant: "timetz",
-      }
-    case "time":
-      return {
-        label: columnSchema.name as string,
-        variant: "time",
-      }
-    case "timestamptz":
-      return {
-        label: columnSchema.name as string,
-        variant: "timestamptz",
-      }
-    case "timestamp":
-      return {
-        label: columnSchema.name as string,
-        variant: "timestamp",
-      }
+//     case "date":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "date",
+//       }
+//     case "timetz":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "timetz",
+//       }
+//     case "time":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "time",
+//       }
+//     case "timestamptz":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "timestamptz",
+//       }
+//     case "timestamp":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "timestamp",
+//       }
 
-    case "json":
-    case "jsonb":
-      return {
-        label: columnSchema.name as string,
-        variant: "text",
-      }
+//     case "json":
+//     case "jsonb":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "text",
+//       }
 
-    case "boolean":
-      return {
-        label: columnSchema.name as string,
-        variant: "boolean",
-      }
+//     case "boolean":
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "boolean",
+//       }
 
-    default:
-      return {
-        label: columnSchema.name as string,
-        variant: "text",
-      }
-  }
-}
+//     default:
+//       return {
+//         label: columnSchema.name as string,
+//         variant: "text",
+//       }
+//   }
+// }

@@ -1,6 +1,6 @@
 import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
-import { getColumnFilterData } from "#/lib/columns"
+import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
   PrimaryKey,
@@ -47,9 +47,16 @@ export function getResourceGridColumns({
           pinnedState={column.getIsPinned()}
         />
       ),
-      cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
+      cell: ({
+        row,
+        column,
+      }: {
+        row: Row<ResourceDataSchema>
+        column: Column<ResourceDataSchema, unknown>
+      }) => (
         <ResourceGridRowCell
           row={row}
+          column={column}
           columnSchema={col}
           tableSchema={tableSchema ?? null}
         />
@@ -58,7 +65,7 @@ export function getResourceGridColumns({
       enableSorting: true,
       enableHiding: true,
       enableColumnFilter: true,
-      meta: getColumnFilterData(col),
+      meta: getColumnMetadata(tableSchema, col),
     })
   }
 

@@ -8,12 +8,14 @@ import type {
 
 import { DataTable } from "#/components/data-table/data-table"
 import { useDataTable } from "#/hooks/use-data-table"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 
 import type { AuditLog } from "./audit-logs-table-columns"
 import { getAuditLogsTableColumns } from "./audit-logs-table-columns"
 
 interface AuditLogTableProps {
   data: AuditLog[]
+  columnsSchema: ColumnSchema[]
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState
@@ -22,12 +24,16 @@ interface AuditLogTableProps {
 
 export function AuditLogTable({
   data,
+  columnsSchema,
   sorting,
   pagination,
   columnFilters,
   pageCount,
 }: AuditLogTableProps) {
-  const columns = useMemo(() => getAuditLogsTableColumns(), [])
+  const columns = useMemo(
+    () => getAuditLogsTableColumns({ columnsSchema }),
+    [columnsSchema]
+  )
   const table = useDataTable({
     columns,
     data,

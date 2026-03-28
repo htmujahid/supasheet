@@ -59,7 +59,7 @@ export function DataTableFilter<TData>({ table }: DataTableFilterProps<TData>) {
       filterableColumns.find((c) => !used.has(c.id)) ??
       (filterableColumns[0] as (typeof filterableColumns)[0] | undefined)
     if (!col) return
-    const variant = col.columnDef.meta?.variant ?? "text"
+    const variant = col.columnDef.meta?.filterVariant ?? "text"
     const defaultOp = getDefaultFilterOperator(variant)
     table.setColumnFilters([
       ...columnFilters.filter((f) => f.id !== col.id),
@@ -76,7 +76,7 @@ export function DataTableFilter<TData>({ table }: DataTableFilterProps<TData>) {
   const onFilterFieldChange = (oldId: string, newColId: string) => {
     const newCol = filterableColumns.find((c) => c.id === newColId)
     if (!newCol) return
-    const variant = newCol.columnDef.meta?.variant ?? "text"
+    const variant = newCol.columnDef.meta?.filterVariant ?? "text"
     const defaultOp = getDefaultFilterOperator(variant)
     table.setColumnFilters([
       ...columnFilters.filter((f) => f.id !== oldId && f.id !== newColId),
@@ -186,7 +186,8 @@ function DataTableFilterItem<TData>({
 
   const column = filterableColumns.find((col) => col.id === filter.id)
   const columnMeta = column?.columnDef.meta
-  const variant = columnMeta?.variant ?? "text"
+  const variant = columnMeta?.filterVariant ?? "text"
+  console.log(columnMeta)
 
   const { operator, value: rawValue } = decodeFilterValue(
     String(filter.value ?? "")
@@ -329,7 +330,7 @@ function FilterValueInput({
       return (
         <Input
           type={variant === "text" ? "text" : "number"}
-          placeholder={columnMeta?.placeholder ?? "Enter a value..."}
+          placeholder={"Enter a value..."}
           value={textValue}
           onChange={(e) => setTextValue(e.target.value)}
           onBlur={() => onUpdate(textValue)}
@@ -406,8 +407,7 @@ function FilterValueInput({
               </div>
             ) : (
               <span className="text-muted-foreground">
-                {columnMeta?.placeholder ??
-                  `Select ${multiple ? "options" : "option"}...`}
+                Select {multiple ? "options" : "option"}...
               </span>
             )}
           </PopoverTrigger>
@@ -429,9 +429,9 @@ function FilterValueInput({
                         checked={selectedValues.includes(opt.value)}
                         className="pointer-events-none"
                       />
-                      {opt.icon && (
+                      {/* {opt.icon && (
                         <opt.icon className="size-4 text-muted-foreground" />
-                      )}
+                      )} */}
                       <span>{opt.label}</span>
                     </CommandItem>
                   ))}

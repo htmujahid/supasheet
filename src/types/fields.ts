@@ -1,10 +1,6 @@
 import type { ReactElement } from "react"
 
-import type {
-  ColumnSchema,
-  PrimaryKey,
-  Relationship,
-} from "#/lib/database-meta.types"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 
 import type { FilterVariant } from "./data-table"
 
@@ -41,9 +37,9 @@ export type ColumnMetadata = {
   isArray: boolean
   isMetadata: boolean
   isPrimaryKey: boolean
-  relationship: Relationship | undefined
+  // relationship: Relationship | undefined
   comment: string | null
-  primaryKeys: PrimaryKey[]
+  // primaryKeys: PrimaryKey[]
   table: string
   schema: string
   options?: {
