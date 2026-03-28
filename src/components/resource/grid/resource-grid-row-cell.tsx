@@ -11,7 +11,7 @@ import { cn } from "#/lib/utils"
 
 export const ResourceGridRowCell = memo(function ({
   row,
-  column,
+  // column,
   columnSchema,
   // tableSchema,
 }: {
@@ -21,8 +21,6 @@ export const ResourceGridRowCell = memo(function ({
   tableSchema: TableSchema | null
 }) {
   const value = row.original?.[columnSchema.name as keyof ResourceDataSchema]
-
-  console.log(column.columnDef.meta)
 
   return (
     <div className={cn("relative truncate select-none")}>
