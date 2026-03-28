@@ -187,7 +187,6 @@ function DataTableFilterItem<TData>({
   const column = filterableColumns.find((col) => col.id === filter.id)
   const columnMeta = column?.columnDef.meta
   const variant = columnMeta?.filterVariant ?? "text"
-  console.log(columnMeta)
 
   const { operator, value: rawValue } = decodeFilterValue(
     String(filter.value ?? "")
