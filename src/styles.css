@@ -128,3 +128,36 @@
     @apply font-sans;
   }
 }
+
+.rdg {
+    --rdg-font-size: 0.875rem;
+    font-family: var(--font-sans);
+    --rdg-color: var(--card-foreground);
+    --rdg-background-color: var(--card);
+    --rdg-header-background-color: var(--muted);
+    --rdg-header-draggable-background-color: var(--accent);
+    --rdg-row-hover-background-color: var(--accent);
+    --rdg-row-selected-background-color: color-mix(in oklch, var(--primary) 12%, var(--background));
+    --rdg-row-selected-hover-background-color: color-mix(in oklch, var(--primary) 18%, var(--background));
+    --rdg-border-width: 1px;
+    --rdg-border-color: var(--border);
+    --rdg-summary-border-color: var(--border);
+    --rdg-selection-color: var(--ring);
+    --rdg-selection-width: 2px;
+    --rdg-checkbox-focus-color: var(--ring);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.rdg-header-row .rdg-cell {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+}
+
+.rdg-cell {
+    line-height: 1.5;
+}

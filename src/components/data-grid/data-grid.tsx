@@ -1,5 +1,7 @@
 import type { Table } from "@tanstack/react-table"
 import { flexRender } from "@tanstack/react-table"
+import { DataGrid as ReactDataGrid } from "react-data-grid"
+import type { Column } from "react-data-grid"
 
 import {
   TableBody,
@@ -11,6 +13,7 @@ import {
 } from "#/components/ui/table"
 import { getCommonPinningStyles } from "#/lib/data-grid"
 import { cn } from "#/lib/utils"
+import { formatTitle } from "#/lib/format"
 
 import { DataTablePagination } from "../data-table/data-table-pagination"
 import { DataTableToolbar } from "../data-table/data-table-toolbar"
@@ -27,6 +30,26 @@ export function DataGrid<TData>({
   className,
 }: DataGridProps<TData>) {
   const colCount = table.getAllColumns().length
+
+  const gridColumns: Column<Record<string, unknown>>[] = table.getAllColumns().map((col) => ({
+    key: col.id as string,
+    name: formatTitle(col.id)
+  }))
+
+  const gridRows = table.getRowModel().rows.map((row) => row.original as Record<string, unknown>)
+
+  return (
+    <div className={cn("flex w-full flex-col gap-2", className)}>
+      <DataTableToolbar table={table} onDelete={onDelete} />
+      <ReactDataGrid
+        className="h-min! overflow-auto!"
+        columns={gridColumns}
+        rows={gridRows}
+        defaultColumnOptions={{ resizable: true }}
+      />
+      <DataTablePagination table={table} />
+    </div>
+  )
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
@@ -53,9 +76,9 @@ export function DataGrid<TData>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
 
                     {header.column.getCanResize() && (
                       <div
