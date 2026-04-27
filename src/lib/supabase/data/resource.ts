@@ -3,7 +3,7 @@ import { mutationOptions, queryOptions } from "@tanstack/react-query"
 import type { ColumnFiltersState } from "@tanstack/react-table"
 
 import { SYSTEM_SCHEMAS } from "#/config/database.config"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { DatabaseSchemas, TableMetadata } from "#/lib/database-meta.types"
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
 
@@ -121,7 +121,7 @@ export const viewSchemaQueryOptions = (schema: string, id: string) =>
   })
 
 export const resourceDataQueryOptions = (
-  schema: string,
+  schema: DatabaseSchemas,
   resource: string,
   defaultQuery: TableMetadata["query"],
   page?: number,
@@ -227,12 +227,21 @@ export const updateResourceMutationOptions = (
       pk: Record<string, unknown>
       data: Record<string, any>
     }) => {
-      let query = (supabase as any).schema(schema).from(resource).update(data)
+      let query = (supabase as any)
+        .schema(schema)
+        .from(resource)
+        .update(data)
+        .select()
       for (const [col, val] of Object.entries(pk)) {
         query = query.eq(col, val)
       }
-      const { error } = await query
+      const { data: updated, error } = await query
       if (error) throw error
+      if (!updated || updated.length === 0) {
+        throw new Error(
+          "Update failed: you may not have permission to modify this record"
+        )
+      }
     },
   })
 
@@ -242,12 +251,21 @@ export const deleteResourceMutationOptions = (
 ) =>
   mutationOptions({
     mutationFn: async (pk: Record<string, unknown>) => {
-      let query = (supabase as any).schema(schema).from(resource).delete()
+      let query = (supabase as any)
+        .schema(schema)
+        .from(resource)
+        .delete()
+        .select()
       for (const [col, val] of Object.entries(pk)) {
         query = query.eq(col, val)
       }
-      const { error } = await query
+      const { data: deleted, error } = await query
       if (error) throw error
+      if (!deleted || deleted.length === 0) {
+        throw new Error(
+          "Delete failed: you may not have permission to delete this record"
+        )
+      }
     },
   })
 
