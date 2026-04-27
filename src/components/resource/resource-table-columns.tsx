@@ -103,6 +103,7 @@ export function getResourceTableColumns({
           title={name}
           tableSchema={tableSchema}
           columnSchema={col}
+          isSorted={column.getIsSorted()}
         />
       ),
       cell: ({ row }: { row: Row<ResourceDataSchema> }) => (

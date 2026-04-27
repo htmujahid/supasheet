@@ -1,19 +1,9 @@
 import type { Table } from "@tanstack/react-table"
 import { flexRender } from "@tanstack/react-table"
-import { DataGrid as ReactDataGrid } from "react-data-grid"
 import type { Column } from "react-data-grid"
 
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  Table as TableRoot,
-  TableRow,
-} from "#/components/ui/table"
-import { getCommonPinningStyles } from "#/lib/data-grid"
+import { DataGrid as ReactDataGrid } from "#/components/ui/data-grid"
 import { cn } from "#/lib/utils"
-import { formatTitle } from "#/lib/format"
 
 import { DataTablePagination } from "../data-table/data-table-pagination"
 import { DataTableToolbar } from "../data-table/data-table-toolbar"
@@ -29,14 +19,22 @@ export function DataGrid<TData>({
   onDelete,
   className,
 }: DataGridProps<TData>) {
-  const colCount = table.getAllColumns().length
+  const gridRows = table
+    .getRowModel()
+    .rows.map((row) => row.original as Record<string, unknown>)
 
-  const gridColumns: Column<Record<string, unknown>>[] = table.getAllColumns().map((col) => ({
-    key: col.id as string,
-    name: formatTitle(col.id)
-  }))
-
-  const gridRows = table.getRowModel().rows.map((row) => row.original as Record<string, unknown>)
+  const gridColumns: Column<Record<string, unknown>>[] = table
+    .getHeaderGroups()
+    .flatMap((headerGroup) => {
+      return headerGroup.headers.map((header) => ({
+        key: header.id,
+        name: header.id,
+        renderHeaderCell: () =>
+          header.isPlaceholder
+            ? null
+            : flexRender(header.column.columnDef.header, header.getContext()),
+      } as Column<Record<string, unknown>>))
+    })
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
@@ -46,94 +44,12 @@ export function DataGrid<TData>({
         columns={gridColumns}
         rows={gridRows}
         defaultColumnOptions={{ resizable: true }}
+        renderers={{
+          noRowsFallback: (
+            <div className="py-12 text-center col-span-full">No Results.</div>
+          ),
+        }}
       />
-      <DataTablePagination table={table} />
-    </div>
-  )
-
-  return (
-    <div className={cn("flex w-full flex-col gap-2", className)}>
-      <DataTableToolbar table={table} onDelete={onDelete} />
-      <div className="overflow-auto rounded-md border">
-        <TableRoot
-          className="table-fixed"
-          style={{
-            width: table.getCenterTotalSize(),
-          }}
-        >
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    style={{
-                      ...getCommonPinningStyles({ column: header.column }),
-                      width: header.getSize(),
-                    }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-
-                    {header.column.getCanResize() && (
-                      <div
-                        {...{
-                          onDoubleClick: () => header.column.resetSize(),
-                          onMouseDown: header.getResizeHandler(),
-                          onTouchStart: header.getResizeHandler(),
-                          className:
-                            "absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-[0px]",
-                          style: {
-                            userSelect: "none",
-                            touchAction: "none",
-                          },
-                        }}
-                      />
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="group"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        ...getCommonPinningStyles({ column: cell.column }),
-                      }}
-                      className="border-r"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={colCount} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </TableRoot>
-      </div>
       <DataTablePagination table={table} />
     </div>
   )

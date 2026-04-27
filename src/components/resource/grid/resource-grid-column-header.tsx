@@ -2,22 +2,13 @@ import { memo } from "react"
 
 import type { Column } from "@tanstack/react-table"
 
-import {
-  ChevronDown,
-  ChevronUp,
-  ChevronsUpDown,
-  EyeOff,
-  Pin,
-  PinOff,
-  X,
-} from "lucide-react"
+import { ChevronDown, ChevronUp, ChevronsUpDown, EyeOff, X } from "lucide-react"
 
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
 import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
@@ -26,28 +17,22 @@ import { cn } from "#/lib/utils"
 
 import { getDataTypeIcon } from "../icons"
 
-const checkboxItemClassName =
-  "relative ltr:pr-8 ltr:pl-2 rtl:pr-2 rtl:pl-8 [&>span:first-child]:ltr:right-2 [&>span:first-child]:ltr:left-auto [&>span:first-child]:rtl:right-auto [&>span:first-child]:rtl:left-2 [&_svg]:text-muted-foreground"
-
 export const ResourceGridColumnHeader = memo(function <TData, TValue>({
   column,
   title,
   className,
   columnSchema,
   tableSchema,
-  pinnedState,
+  isSorted,
 }: {
   column: Column<TData, TValue>
   title: string
   className?: string
   tableSchema: TableSchema | null
   columnSchema: ColumnSchema
-  pinnedState?: false | "left" | "right"
+  isSorted: false | "asc" | "desc"
 }) {
-  const isPinnedLeft = (pinnedState ?? column.getIsPinned()) === "left"
-  const isPinnedRight = (pinnedState ?? column.getIsPinned()) === "right"
-
-  if (!column.getCanSort() && !column.getCanHide() && !column.getCanPin()) {
+  if (!column.getCanSort() && !column.getCanHide()) {
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
         {getDataTypeIcon(tableSchema, columnSchema)}
@@ -67,91 +52,47 @@ export const ResourceGridColumnHeader = memo(function <TData, TValue>({
         {getDataTypeIcon(tableSchema, columnSchema)}
         <span className="truncate">{formatTitle(title)}</span>
         {column.getCanSort() &&
-          (column.getIsSorted() === "desc" ? (
+          (isSorted === "desc" ? (
             <ChevronDown />
-          ) : column.getIsSorted() === "asc" ? (
+          ) : isSorted === "asc" ? (
             <ChevronUp />
           ) : (
             <ChevronsUpDown />
           ))}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" sideOffset={0} className="w-60">
+      <DropdownMenuContent align="start" className="w-28">
         {column.getCanSort() && (
           <>
             <DropdownMenuCheckboxItem
-              className={checkboxItemClassName}
-              checked={column.getIsSorted() === "asc"}
+              checked={isSorted === "asc"}
               onClick={() => column.toggleSorting(false)}
             >
               <ChevronUp />
-              Sort asc
+              Asc
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              className={checkboxItemClassName}
-              checked={column.getIsSorted() === "desc"}
+              checked={isSorted === "desc"}
               onClick={() => column.toggleSorting(true)}
             >
               <ChevronDown />
-              Sort desc
+              Desc
             </DropdownMenuCheckboxItem>
-            {column.getIsSorted() && (
+            {isSorted && (
               <DropdownMenuItem onClick={() => column.clearSorting()}>
                 <X />
-                Remove sort
-              </DropdownMenuItem>
-            )}
-          </>
-        )}
-        {column.getCanPin() && (
-          <>
-            {column.getCanSort() && <DropdownMenuSeparator />}
-            {isPinnedLeft ? (
-              <DropdownMenuItem
-                className="[&_svg]:text-muted-foreground"
-                onClick={() => column.pin(false)}
-              >
-                <PinOff />
-                Unpin from left
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                className="[&_svg]:text-muted-foreground"
-                onClick={() => column.pin("left")}
-              >
-                <Pin />
-                Pin to left
-              </DropdownMenuItem>
-            )}
-            {isPinnedRight ? (
-              <DropdownMenuItem
-                className="[&_svg]:text-muted-foreground"
-                onClick={() => column.pin(false)}
-              >
-                <PinOff />
-                Unpin from right
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                className="[&_svg]:text-muted-foreground"
-                onClick={() => column.pin("right")}
-              >
-                <Pin />
-                Pin to right
+                Reset
               </DropdownMenuItem>
             )}
           </>
         )}
         {column.getCanHide() && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="[&_svg]:text-muted-foreground"
-              onClick={() => column.toggleVisibility(false)}
-            >
-              <EyeOff />
-              Hide column
-            </DropdownMenuItem>
-          </>
+          <DropdownMenuCheckboxItem
+            checked={!column.getIsVisible()}
+            onClick={() => column.toggleVisibility(false)}
+          >
+            <EyeOff />
+            Hide
+          </DropdownMenuCheckboxItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
@@ -162,5 +103,5 @@ export const ResourceGridColumnHeader = memo(function <TData, TValue>({
   className?: string
   tableSchema: TableSchema | null
   columnSchema: ColumnSchema
-  pinnedState?: false | "left" | "right"
+  isSorted: false | "asc" | "desc"
 }) => React.ReactElement

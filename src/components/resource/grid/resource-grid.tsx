@@ -7,7 +7,7 @@ import type {
 } from "@tanstack/react-table"
 
 import { DataGrid } from "#/components/data-grid/data-grid"
-import { useDataGrid } from "#/hooks/use-data-grid"
+import { useDataTable } from "#/hooks/use-data-table"
 import type {
   ColumnSchema,
   PrimaryKey,
@@ -42,13 +42,14 @@ export function ResourceGrid({
     [columnsSchema, tableSchema]
   )
 
-  const table = useDataGrid({
+  const table = useDataTable({
     columns,
     data,
     pageCount,
     state: { sorting, pagination, columnFilters },
     getRowId: (row) => primaryKeys.map((key) => row[key.name]).join("/"),
   })
+  console.log(sorting)
 
   return <DataGrid table={table} onDelete={undefined} />
 }

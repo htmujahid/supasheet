@@ -23,12 +23,14 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
   className,
   columnSchema,
   tableSchema,
+  isSorted,
 }: {
   column: Column<TData, TValue>
   title: string
   className?: string
   tableSchema: TableSchema | null
   columnSchema: ColumnSchema
+  isSorted: false | "asc" | "desc"
 }) {
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
@@ -50,9 +52,9 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
         {getDataTypeIcon(tableSchema, columnSchema)}
         <span className="truncate">{formatTitle(title)}</span>
         {column.getCanSort() &&
-          (column.getIsSorted() === "desc" ? (
+          (isSorted === "desc" ? (
             <ChevronDown />
-          ) : column.getIsSorted() === "asc" ? (
+          ) : isSorted === "asc" ? (
             <ChevronUp />
           ) : (
             <ChevronsUpDown />
@@ -62,20 +64,20 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
         {column.getCanSort() && (
           <>
             <DropdownMenuCheckboxItem
-              checked={column.getIsSorted() === "asc"}
+              checked={isSorted === "asc"}
               onClick={() => column.toggleSorting(false)}
             >
               <ChevronUp />
               Asc
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              checked={column.getIsSorted() === "desc"}
+              checked={isSorted === "desc"}
               onClick={() => column.toggleSorting(true)}
             >
               <ChevronDown />
               Desc
             </DropdownMenuCheckboxItem>
-            {column.getIsSorted() && (
+            {isSorted && (
               <DropdownMenuItem onClick={() => column.clearSorting()}>
                 <X />
                 Reset
@@ -101,4 +103,5 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
   className?: string
   tableSchema: TableSchema | null
   columnSchema: ColumnSchema
+  isSorted: false | "asc" | "desc"
 }) => React.ReactElement
