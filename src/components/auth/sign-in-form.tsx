@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { Link, getRouteApi, useNavigate } from "@tanstack/react-router"
 
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -18,6 +18,8 @@ import { Separator } from "#/components/ui/separator"
 import { supabase } from "#/lib/supabase/client"
 import { authUserQueryOptions } from "#/lib/supabase/data/auth"
 
+const routeApi = getRouteApi("/auth/sign-in")
+
 async function signInWithOAuth(provider: "google" | "github") {
   const { error } = await supabase.auth.signInWithOAuth({ provider })
   if (error) toast.error(error.message)
@@ -26,6 +28,10 @@ async function signInWithOAuth(provider: "google" | "github") {
 export function SignInForm() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { redirect } = routeApi.useSearch()
+
+  const safeRedirect =
+    redirect?.startsWith("/") && !redirect.startsWith("//") ? redirect : "/"
 
   const form = useForm({
     defaultValues: { email: "user@supasheet.dev", password: "12345678" },
@@ -45,7 +51,7 @@ export function SignInForm() {
         navigate({ to: "/auth/mfa", replace: true })
         return
       }
-      navigate({ to: "/", replace: true })
+      navigate({ to: safeRedirect as string, replace: true })
     },
   })
 

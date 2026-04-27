@@ -2,7 +2,6 @@ import {
   HeadContent,
   Outlet,
   createRootRouteWithContext,
-  redirect,
   useRouter,
 } from "@tanstack/react-router"
 import type { ErrorComponentProps } from "@tanstack/react-router"
@@ -33,8 +32,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     const authUser =
       await context.queryClient.ensureQueryData(authUserQueryOptions)
     if (!authUser && !location.pathname.startsWith("/auth")) {
-      window.location.href = "/auth/sign-in"
-      throw redirect({ to: "/auth/sign-in" })
+      window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(location.href)}`
+      await new Promise<never>(() => {})
     }
     const user = authUser
       ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id))
