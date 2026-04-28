@@ -30,7 +30,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
-  DatabaseViews,
   PrimaryKey,
   Relationship,
   ResourceSchema,
