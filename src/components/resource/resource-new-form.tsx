@@ -60,6 +60,9 @@ export function ResourceNewForm({
   columnsSchema: ColumnSchema[]
   tableSchema: TableSchema
 }) {
+  const schema = tableSchema.schema
+  const table = tableSchema.name
+
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -70,26 +73,32 @@ export function ResourceNewForm({
   )
 
   const { mutateAsync: insertRow } = useMutation(
-    insertResourceMutationOptions(tableSchema.schema, tableSchema.name)
+    insertResourceMutationOptions(schema, table)
   )
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
       const payload = buildPayload(value, writableCols)
-      await insertRow(payload)
+      try {
+        await insertRow(payload)
+      } catch (error: any) {
+        toast.error(error?.message || "An error occurred")
+        console.error(error)
+        return
+      }
       queryClient.invalidateQueries({
         queryKey: [
           "supasheet",
           "resource-data",
-          tableSchema.schema,
-          tableSchema.name,
+          schema,
+          table,
         ],
       })
       toast.success("Record created")
       navigate({
         to: "/$schema/resource/$resource",
-        params: { schema: tableSchema.schema, resource: tableSchema.name },
+        params: { schema: schema, resource: table },
       })
     },
   })

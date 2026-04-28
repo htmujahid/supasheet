@@ -110,7 +110,7 @@ export const tableSchemaQueryOptions = <S extends DatabaseSchemas>(
         .schema("supasheet")
         .rpc("get_tables", { schema_name: schema, table_name: id })
       if (error) throw error
-      return data as unknown as TableSchema<S> | null
+      return data[0] as unknown as TableSchema<S> | null
     },
     staleTime: 1000 * 60 * 5,
   })
