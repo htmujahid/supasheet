@@ -35,6 +35,16 @@ export type ViewSchema<S extends DatabaseSchemas = DatabaseSchemas> =
     name: DatabaseViews<S>
   }
 
+export type ResourceSchema<S extends DatabaseSchemas = DatabaseSchemas> =
+  | TableSchema<S>
+  | ViewSchema<S>
+
+export function isTableSchema<S extends DatabaseSchemas>(
+  schema: ResourceSchema<S>
+): schema is TableSchema<S> {
+  return "primary_keys" in schema
+}
+
 export type PrimaryKey = {
   name: string
   schema: string

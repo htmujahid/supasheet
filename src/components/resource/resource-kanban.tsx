@@ -42,8 +42,9 @@ import type {
   DatabaseSchemas,
   DatabaseTables,
   PrimaryKey,
-  TableSchema,
+  ResourceSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
@@ -66,19 +67,21 @@ export type KanbanLayout = "board" | "list"
 
 export function ResourceKanban({
   data,
-  tableSchema,
+  resourceSchema,
   groupBy,
   layout,
 }: {
   data: KanbanViewReducedData
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
   groupBy: string
   layout: KanbanLayout
 }) {
-  const schema = tableSchema?.schema ?? ""
-  const resource = tableSchema?.name ?? ""
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
-  const isTable = !!tableSchema
+  const schema = resourceSchema.schema ?? ""
+  const resource = resourceSchema.name ?? ""
+  const primaryKeys = (
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+  ) as PrimaryKey[]
+  const isTable = isTableSchema(resourceSchema)
 
   const navigate = useNavigate({
     from: "/$schema/resource/$resource/kanban/$kanbanId",

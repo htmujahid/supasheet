@@ -32,13 +32,15 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { DatabaseViews, TableMetadata } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
+  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/")({
@@ -93,8 +95,20 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
         columnsSchemaQueryOptions(schema, resource)
       ),
     ])
-    if (!tableSchema || !columnsSchema?.length) throw notFound()
-    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+    if (!columnsSchema?.length) throw notFound()
+
+    let viewSchema = null
+    if (!tableSchema) {
+      viewSchema = await context.queryClient.ensureQueryData(
+        viewSchemaQueryOptions(schema, resource)
+      )
+    }
+
+    const resourceSchema = tableSchema ?? viewSchema
+    if (!resourceSchema) throw notFound()
+    const metaData = JSON.parse(
+      resourceSchema?.comment ?? "{}"
+    ) as TableMetadata
     context.queryClient.ensureQueryData(
       resourceDataQueryOptions(
         schema,
@@ -107,7 +121,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
         filters
       )
     )
-    return { columnsSchema, tableSchema }
+    return { columnsSchema, resourceSchema }
   },
   head: ({ params }) => ({
     meta: [
@@ -191,13 +205,13 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
-  const { tableSchema, columnsSchema = [] } = Route.useLoaderData()
+  const { resourceSchema, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
+    resourceSchema?.comment ? JSON.parse(resourceSchema.comment) : {}
   ) as TableMetadata
   const metaItems = meta.items ?? []
-  const isTable = !!tableSchema
+  const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
   )
@@ -250,7 +264,7 @@ function RouteComponent() {
         <ResourceTable
           data={resourceData?.result ?? []}
           columnsSchema={columnsSchema ?? []}
-          tableSchema={tableSchema ?? null}
+          resourceSchema={resourceSchema}
           sorting={sorting}
           pagination={pagination}
           columnFilters={filters}

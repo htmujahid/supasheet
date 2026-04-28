@@ -16,8 +16,9 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
   PrimaryKey,
-  TableSchema,
+  ResourceSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 
@@ -26,7 +27,7 @@ import { getResourceTableColumns } from "./resource-table-columns"
 interface ResourceTableProps {
   data: Record<string, unknown>[]
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState
@@ -36,16 +37,18 @@ interface ResourceTableProps {
 export function ResourceTable({
   data,
   columnsSchema,
-  tableSchema,
+  resourceSchema,
   sorting,
   pagination,
   columnFilters,
   pageCount,
 }: ResourceTableProps) {
   const queryClient = useQueryClient()
-  const schema = tableSchema?.schema
-  const resource = tableSchema?.name
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const schema = resourceSchema.schema
+  const resource = resourceSchema.name
+  const primaryKeys = (
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+  ) as PrimaryKey[]
 
   const canDelete = useHasPermission(
     `${schema}.${resource}:delete` as AppPermission
@@ -79,8 +82,8 @@ export function ResourceTable({
   }
 
   const columns = useMemo(
-    () => getResourceTableColumns({ columnsSchema, tableSchema }),
-    [columnsSchema, tableSchema]
+    () => getResourceTableColumns({ columnsSchema, resourceSchema }),
+    [columnsSchema, resourceSchema]
   )
 
   const table = useDataTable({

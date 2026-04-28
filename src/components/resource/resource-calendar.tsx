@@ -19,7 +19,8 @@ import {
 } from "#/components/ui/event-calendar"
 import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey, TableSchema } from "#/lib/database-meta.types"
+import type { PrimaryKey, ResourceSchema } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
@@ -69,19 +70,21 @@ export function colorFromString(str: string | null | undefined): TEventColor {
 export interface ResourceCalendarProps {
   view?: TCalendarView
   data: IEvent[]
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
   currentView: CalendarView
 }
 
 export function ResourceCalendar({
   view = "month",
   data,
-  tableSchema,
+  resourceSchema,
   currentView,
 }: ResourceCalendarProps) {
-  const schema = tableSchema?.schema ?? ""
-  const resource = tableSchema?.name ?? ""
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const schema = resourceSchema.schema ?? ""
+  const resource = resourceSchema.name ?? ""
+  const primaryKeys = (
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+  ) as PrimaryKey[]
   const startDateField = currentView.startDate ?? ""
   const endDateField = currentView.endDate ?? ""
 

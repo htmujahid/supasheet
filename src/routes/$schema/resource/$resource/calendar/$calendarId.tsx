@@ -30,12 +30,14 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { DatabaseViews, TableMetadata } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
+  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute(
@@ -64,22 +66,27 @@ export const Route = createFileRoute(
       tableSchemaQueryOptions(schema, resource)
     )
 
-    if (!tableSchema) throw notFound()
+    let viewSchema = null
+    if (!tableSchema) {
+      viewSchema = await context.queryClient.ensureQueryData(
+        viewSchemaQueryOptions(schema, resource)
+      )
+    }
 
-    const meta = (
-      tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-    ) as TableMetadata
+    const resourceSchema = tableSchema ?? viewSchema
+    if (!resourceSchema) throw notFound()
+
+    const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const calendarView = meta.items?.find(
       (item) => item.id === calendarId && item.type === "calendar"
     )
     if (!calendarView) throw notFound()
 
-    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
     context.queryClient.ensureQueryData(
-      resourceDataQueryOptions(schema, resource, metaData.query)
+      resourceDataQueryOptions(schema, resource, meta.query)
     )
 
-    return { calendarView, tableSchema }
+    return { calendarView, resourceSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Calendar | ${formatTitle(params.resource)} | Supasheet` }],
@@ -184,11 +191,9 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { view } = Route.useSearch()
-  const { calendarView, tableSchema } = Route.useLoaderData()
+  const { calendarView, resourceSchema } = Route.useLoaderData()
 
-  const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata
+  const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, meta.query)
   )
@@ -213,7 +218,7 @@ function RouteComponent() {
     }))
 
   const metaItems = meta.items ?? []
-  const isTable = !!tableSchema
+  const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
   )
@@ -255,7 +260,7 @@ function RouteComponent() {
         <ResourceCalendar
           view={view}
           data={data}
-          tableSchema={tableSchema}
+          resourceSchema={resourceSchema}
           currentView={calendarView}
         />
       </div>

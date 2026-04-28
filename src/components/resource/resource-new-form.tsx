@@ -88,12 +88,7 @@ export function ResourceNewForm({
         return
       }
       queryClient.invalidateQueries({
-        queryKey: [
-          "supasheet",
-          "resource-data",
-          schema,
-          table,
-        ],
+        queryKey: ["supasheet", "resource-data", schema, table],
       })
       toast.success("Record created")
       navigate({

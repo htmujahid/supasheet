@@ -109,8 +109,9 @@ export const tableSchemaQueryOptions = <S extends DatabaseSchemas>(
       const { data, error } = await supabase
         .schema("supasheet")
         .rpc("get_tables", { schema_name: schema, table_name: id })
+      console.log("tableSchemaQueryOptions", { data, error })
       if (error) throw error
-      return data[0] as unknown as TableSchema<S> | null
+      return (data[0] ?? null) as unknown as TableSchema<S> | null
     },
     staleTime: 1000 * 60 * 5,
   })
@@ -136,10 +137,10 @@ export const viewSchemaQueryOptions = <S extends DatabaseSchemas>(
             view_name: id,
           })
         if (matViewError) return null
-        return matViewData[0] as unknown as ViewSchema<S> | null
+        return (matViewData[0] ?? null) as unknown as ViewSchema<S> | null
       }
 
-      return viewData[0] as unknown as ViewSchema<S> | null
+      return (viewData[0] ?? null) as unknown as ViewSchema<S> | null
     },
     staleTime: 1000 * 60 * 5,
   })
@@ -220,7 +221,7 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
       const { data, error } = await query.maybeSingle()
       if (error) throw error
 
-      return data as Record<string, unknown> | null
+      return data ?? (null as Record<string, unknown> | null)
     },
     staleTime: 0,
   })

@@ -9,20 +9,22 @@ import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
 import { METADATA_COLUMNS } from "#/config/database.config"
 import { getColumnMetadata } from "#/lib/columns"
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 
 import { AllCells } from "../cells/all-cells"
 
 export function ResourceMetadataView({
-  tableSchema,
+  resourceSchema,
   columnsSchema,
   singleResourceData,
 }: {
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
   columnsSchema: ColumnSchema[]
   singleResourceData: Record<string, unknown>
 }) {
+  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const metadataColumns =
     columnsSchema?.filter((column) =>
       METADATA_COLUMNS.includes(column.name as string)

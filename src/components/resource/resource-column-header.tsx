@@ -11,7 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { cn } from "#/lib/utils"
 
@@ -22,20 +23,23 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
   title,
   className,
   columnSchema,
-  tableSchema,
+  resourceSchema,
   isSorted,
 }: {
   column: Column<TData, TValue>
   title: string
   className?: string
-  tableSchema: TableSchema | null
+  resourceSchema: ResourceSchema
   columnSchema: ColumnSchema
   isSorted: false | "asc" | "desc"
 }) {
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
-        {getDataTypeIcon(tableSchema, columnSchema)}
+        {getDataTypeIcon(
+          isTableSchema(resourceSchema) ? resourceSchema : null,
+          columnSchema
+        )}
         {formatTitle(title)}
       </div>
     )
@@ -49,7 +53,10 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
           className
         )}
       >
-        {getDataTypeIcon(tableSchema, columnSchema)}
+        {getDataTypeIcon(
+          isTableSchema(resourceSchema) ? resourceSchema : null,
+          columnSchema
+        )}
         <span className="truncate">{formatTitle(title)}</span>
         {column.getCanSort() &&
           (isSorted === "desc" ? (
@@ -101,7 +108,7 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
   column: Column<TData, TValue>
   title: string
   className?: string
-  tableSchema: TableSchema | null
+  resourceSchema: ResourceSchema
   columnSchema: ColumnSchema
   isSorted: false | "asc" | "desc"
 }) => React.ReactElement

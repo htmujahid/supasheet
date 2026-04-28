@@ -15,8 +15,9 @@ import { useDataTable } from "#/hooks/use-data-table"
 import type {
   ColumnSchema,
   PrimaryKey,
-  TableSchema,
+  ResourceSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
 
 import { getResourceGridColumns } from "./resource-grid-columns"
@@ -24,7 +25,7 @@ import { getResourceGridColumns } from "./resource-grid-columns"
 interface ResourceGridProps {
   data: Record<string, unknown>[]
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState
@@ -34,16 +35,17 @@ interface ResourceGridProps {
 export function ResourceGrid({
   data,
   columnsSchema,
-  tableSchema,
+  resourceSchema,
   sorting,
   pagination,
   columnFilters,
   pageCount,
 }: ResourceGridProps) {
   const queryClient = useQueryClient()
-  const schema = tableSchema.schema
-  const resource = tableSchema.name
-  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+  const schema = resourceSchema.schema
+  const resource = resourceSchema.name
+  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
 
   const columns = useMemo(
     () => getResourceGridColumns({ columnsSchema, tableSchema }),
@@ -109,6 +111,7 @@ export function ResourceGrid({
   return (
     <DataGrid
       table={table}
+      isEditable={!!tableSchema}
       onDelete={undefined}
       onRowsChange={handleRowsChange}
     />

@@ -33,8 +33,9 @@ import type {
   DatabaseTables,
   DatabaseViews,
   PrimaryKey,
-  TableSchema,
+  ResourceSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
@@ -50,14 +51,19 @@ export interface GalleryViewData {
 
 interface ResourceGalleryProps {
   data: GalleryViewData[]
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
 }
 
-export function ResourceGallery({ data, tableSchema }: ResourceGalleryProps) {
-  const schema = tableSchema?.schema ?? ""
-  const resource = tableSchema?.name ?? ""
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
-  const isTable = !!tableSchema
+export function ResourceGallery({
+  data,
+  resourceSchema,
+}: ResourceGalleryProps) {
+  const schema = resourceSchema.schema ?? ""
+  const resource = resourceSchema.name ?? ""
+  const primaryKeys = (
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+  ) as PrimaryKey[]
+  const isTable = isTableSchema(resourceSchema)
 
   return (
     <div className="flex flex-col gap-4">

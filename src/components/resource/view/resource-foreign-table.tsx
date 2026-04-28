@@ -7,7 +7,7 @@ import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import type {
   ColumnSchema,
   ResourceDataSchema,
-  TableSchema,
+  ResourceSchema,
 } from "@/lib/database-meta.types"
 
 import { DataTable } from "#/components/data-table/data-table"
@@ -15,7 +15,7 @@ import { DataTable } from "#/components/data-table/data-table"
 import { getResourceForeignTableColumns } from "./resource-foriegn-table-columns"
 
 type ResourceForeignTableProps = {
-  relationship: TableSchema & { columns: ColumnSchema[] }
+  relationship: ResourceSchema & { columns: ColumnSchema[] }
   data: ResourceDataSchema[] | null
 }
 
@@ -28,7 +28,7 @@ export function ResourceForeignTable({
       getResourceForeignTableColumns({
         data: data ?? [],
         columnsSchema: relationship.columns ?? [],
-        tableSchema: relationship as unknown as TableSchema,
+        resourceSchema: relationship,
       }),
     [relationship, data]
   )

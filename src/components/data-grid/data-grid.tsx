@@ -17,6 +17,7 @@ type GridRow = Record<string, unknown>
 
 interface DataGridProps<TData> {
   table: Table<TData>
+  isEditable?: boolean
   onDelete?: (rows: TData[]) => void | Promise<void>
   onRowsChange?: (rows: GridRow[], data: RowsChangeData<GridRow>) => void
   className?: string
@@ -24,6 +25,7 @@ interface DataGridProps<TData> {
 
 export function DataGrid<TData>({
   table,
+  isEditable = true,
   onDelete,
   onRowsChange,
   className,
@@ -54,7 +56,7 @@ export function DataGrid<TData>({
             header.isPlaceholder
               ? null
               : flexRender(header.column.columnDef.header, header.getContext()),
-          renderEditCell: getEditCell(meta),
+          renderEditCell: isEditable ? getEditCell(meta) : undefined,
         } as Column<GridRow>
       })
     )

@@ -30,11 +30,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
+  DatabaseViews,
   PrimaryKey,
   Relationship,
+  ResourceSchema,
   TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
@@ -42,6 +45,7 @@ import {
   relatedTablesSchemaQueryOptions,
   singleResourceDataQueryOptions,
   tableSchemaQueryOptions,
+  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
@@ -68,8 +72,21 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
         ),
       ]
     )
-    if (!tableSchema || !columnsSchema?.length) throw notFound()
-    const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+    if (!columnsSchema?.length) throw notFound()
+
+    let viewSchema = null
+    if (!tableSchema) {
+      viewSchema = await context.queryClient.ensureQueryData(
+        viewSchemaQueryOptions(schema, resource)
+      )
+    }
+
+    const resourceSchema = tableSchema ?? viewSchema
+    if (!resourceSchema) throw notFound()
+
+    const primaryKeys = (
+      isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+    ) as PrimaryKey[]
     const pk = parsePkSplat(_splat ?? "", primaryKeys)
 
     const joins: Required<TableMetadata>["query"]["join"] = []
@@ -178,7 +195,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
     if (!record) throw notFound()
 
     return {
-      tableSchema,
+      resourceSchema,
       columnsSchema,
       oneToOneRelationships,
       allManyRelationships,
@@ -312,14 +329,16 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
 function RouteComponent() {
   const { schema, resource, _splat } = Route.useParams()
   const {
-    tableSchema,
+    resourceSchema,
     columnsSchema,
     oneToOneRelationships,
     allManyRelationships,
     joins,
   } = Route.useLoaderData()
 
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+  ) as PrimaryKey[]
   const pk = parsePkSplat(_splat ?? "", primaryKeys)
   const { data: record } = useSuspenseQuery(
     singleResourceDataQueryOptions(schema, resource, pk, { join: joins })
@@ -342,7 +361,7 @@ function RouteComponent() {
           { title: "View record" },
         ]}
       >
-        {tableSchema && canUpdate && (
+        {isTableSchema(resourceSchema) && canUpdate && (
           <Button
             size="sm"
             variant="outline"
@@ -363,14 +382,14 @@ function RouteComponent() {
           <div className="columns-1 gap-4 lg:columns-2">
             <div className="mb-4 break-inside-avoid">
               <ResourceDetailView
-                tableSchema={tableSchema}
+                resourceSchema={resourceSchema}
                 columnsSchema={columnsSchema}
                 singleResourceData={record}
               />
             </div>
             <div className="mb-4 break-inside-avoid">
               <ResourceMetadataView
-                tableSchema={tableSchema}
+                resourceSchema={resourceSchema}
                 columnsSchema={columnsSchema}
                 singleResourceData={record}
               />
@@ -378,7 +397,7 @@ function RouteComponent() {
             {oneToOneRelationships.map((relationship) => (
               <div key={relationship.id} className="mb-4 break-inside-avoid">
                 <ResourceDetailView
-                  tableSchema={relationship as unknown as TableSchema}
+                  resourceSchema={relationship as unknown as ResourceSchema}
                   columnsSchema={relationship.columns ?? []}
                   singleResourceData={
                     (record[relationship.name as string] as Record<
@@ -410,7 +429,7 @@ function RouteComponent() {
                 >
                   <ResourceForeignTable
                     relationship={
-                      relationship as unknown as TableSchema & {
+                      relationship as unknown as ResourceSchema & {
                         columns: ColumnSchema[]
                       }
                     }

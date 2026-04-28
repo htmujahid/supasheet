@@ -24,12 +24,14 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { DatabaseViews, TableMetadata } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
+  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute(
@@ -50,22 +52,27 @@ export const Route = createFileRoute(
       tableSchemaQueryOptions(schema, resource)
     )
 
-    if (!tableSchema) throw notFound()
+    let viewSchema = null
+    if (!tableSchema) {
+      viewSchema = await context.queryClient.ensureQueryData(
+        viewSchemaQueryOptions(schema, resource)
+      )
+    }
 
-    const meta = (
-      tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-    ) as TableMetadata
+    const resourceSchema = tableSchema ?? viewSchema
+    if (!resourceSchema) throw notFound()
+
+    const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const galleryView = meta.items?.find(
       (item) => item.id === galleryId && item.type === "gallery"
     )
     if (!galleryView) throw notFound()
 
-    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
     context.queryClient.ensureQueryData(
-      resourceDataQueryOptions(schema, resource, metaData.query)
+      resourceDataQueryOptions(schema, resource, meta.query)
     )
 
-    return { galleryView, tableSchema }
+    return { galleryView, resourceSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Gallery | ${formatTitle(params.resource)} | Supasheet` }],
@@ -169,11 +176,9 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
-  const { galleryView, tableSchema } = Route.useLoaderData()
+  const { galleryView, resourceSchema } = Route.useLoaderData()
 
-  const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata
+  const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, meta.query)
   )
@@ -198,7 +203,7 @@ function RouteComponent() {
   }))
 
   const metaItems = meta.items ?? []
-  const isTable = !!tableSchema
+  const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
   )
@@ -237,7 +242,7 @@ function RouteComponent() {
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">
-        <ResourceGallery data={data} tableSchema={tableSchema} />
+        <ResourceGallery data={data} resourceSchema={resourceSchema} />
       </div>
     </>
   )

@@ -11,8 +11,10 @@ import type {
   ColumnSchema,
   Relationship,
   ResourceDataSchema,
+  ResourceSchema,
   TableSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { cn } from "#/lib/utils"
 
 import { AllCells } from "./cells/all-cells"
@@ -21,13 +23,14 @@ import { ArrayCell } from "./cells/array-cell"
 export const ResourceRowCell = memo(function ({
   row,
   columnSchema,
-  tableSchema,
+  resourceSchema,
 }: {
   row: Row<ResourceDataSchema>
   columnSchema: ColumnSchema
-  tableSchema: TableSchema | null
+  resourceSchema: ResourceSchema
 }) {
-  // Memoize expensive calculations to avoid recalculating on every render
+  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
+
   const columnData = useMemo(
     () => getColumnMetadata(tableSchema, columnSchema),
     [tableSchema, columnSchema]
@@ -60,7 +63,7 @@ export const ResourceRowCell = memo(function ({
             row.original?.[
               columnSchema.name as keyof ResourceDataSchema
             ]?.toString() ?? "",
-            tableSchema ?? null
+            tableSchema
           )}
           target="_blank"
           className="absolute top-1/2 left-0 -translate-y-1/2 transform rounded border p-0.5"

@@ -10,9 +10,10 @@ import type {
   ColumnSchema,
   PrimaryKey,
   ResourceDataSchema,
+  ResourceSchema,
   TableMetadata,
-  TableSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 
 import { ResourceColumnHeader } from "./resource-column-header"
@@ -28,15 +29,16 @@ export function parsePkSplat(
 
 export function getResourceTableColumns({
   columnsSchema,
-  tableSchema,
+  resourceSchema,
 }: {
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
 }) {
-  const schema = tableSchema?.schema
-  const resource = tableSchema?.name
+  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
+  const schema = resourceSchema.schema
+  const resource = resourceSchema.name
 
-  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+  const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const joinedColumns: `${string}.${string}`[] = (
     tableMeta.query?.join ?? []
   ).flatMap((join) =>
@@ -101,7 +103,7 @@ export function getResourceTableColumns({
         <ResourceColumnHeader
           column={column}
           title={name}
-          tableSchema={tableSchema}
+          resourceSchema={resourceSchema}
           columnSchema={col}
           isSorted={column.getIsSorted()}
         />
@@ -110,7 +112,7 @@ export function getResourceTableColumns({
         <ResourceRowCell
           row={row}
           columnSchema={col}
-          tableSchema={tableSchema ?? null}
+          resourceSchema={resourceSchema}
         />
       ),
       size: 170,

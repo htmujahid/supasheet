@@ -39,6 +39,7 @@ import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
+  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/grid")({
@@ -85,16 +86,27 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
     deps: { sortId, sortDesc, page, pageSize, filters },
   }) => {
     const { schema, resource } = params
-    const [columnsSchema, tableSchema] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema, resource)
-      ),
+    const [tableSchema, columnsSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
         tableSchemaQueryOptions(schema, resource)
       ),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema, resource)
+      ),
     ])
-    if (!tableSchema || !columnsSchema?.length) throw notFound()
-    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+    if (!columnsSchema?.length) throw notFound()
+
+    let viewSchema = null
+    if (!tableSchema) {
+      viewSchema = await context.queryClient.ensureQueryData(
+        viewSchemaQueryOptions(schema, resource)
+      )
+    }
+
+    const resourceSchema = tableSchema ?? viewSchema
+    if (!resourceSchema) throw notFound()
+
+    const metaData = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     context.queryClient.ensureQueryData(
       resourceDataQueryOptions(
         schema,
@@ -107,7 +119,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
         filters
       )
     )
-    return { columnsSchema, tableSchema }
+    return { columnsSchema, resourceSchema }
   },
   head: ({ params }) => ({
     meta: [
@@ -199,11 +211,9 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
-  const { tableSchema, columnsSchema = [] } = Route.useLoaderData()
+  const { resourceSchema, columnsSchema = [] } = Route.useLoaderData()
 
-  const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata
+  const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const metaItems = meta.items ?? []
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
@@ -265,7 +275,7 @@ function RouteComponent() {
         <ResourceGrid
           data={resourceData?.result ?? []}
           columnsSchema={columnsSchema ?? []}
-          tableSchema={tableSchema}
+          resourceSchema={resourceSchema}
           sorting={sorting}
           pagination={pagination}
           columnFilters={filters}

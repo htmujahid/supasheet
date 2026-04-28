@@ -28,12 +28,14 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { DatabaseViews, TableMetadata } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
+  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute(
@@ -59,21 +61,28 @@ export const Route = createFileRoute(
     const tableSchema = await context.queryClient.ensureQueryData(
       tableSchemaQueryOptions(schema, resource)
     )
-    if (!tableSchema) throw notFound()
 
-    const meta = (
-      tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-    ) as TableMetadata
+    let viewSchema = null
+    if (!tableSchema) {
+      viewSchema = await context.queryClient.ensureQueryData(
+        viewSchemaQueryOptions(schema, resource)
+      )
+    }
+
+    const resourceSchema = tableSchema ?? viewSchema
+    if (!resourceSchema) throw notFound()
+
+    const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const kanbanView = meta.items?.find(
       (item) => item.id === kanbanId && item.type === "kanban"
     )
     if (!kanbanView) throw notFound()
-    const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+
     context.queryClient.ensureQueryData(
-      resourceDataQueryOptions(schema, resource, metaData.query)
+      resourceDataQueryOptions(schema, resource, meta.query)
     )
 
-    return { kanbanView, tableSchema }
+    return { kanbanView, resourceSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Kanban | ${formatTitle(params.resource)} | Supasheet` }],
@@ -178,11 +187,9 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { layout } = Route.useSearch()
-  const { kanbanView, tableSchema } = Route.useLoaderData()
+  const { kanbanView, resourceSchema } = Route.useLoaderData()
 
-  const meta = (
-    tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
-  ) as TableMetadata
+  const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, meta.query)
   )
@@ -219,7 +226,7 @@ function RouteComponent() {
   }
 
   const metaItems = meta.items ?? []
-  const isTable = !!tableSchema
+  const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(
     `${schema}.${resource}:insert` as AppPermission
   )
@@ -260,7 +267,7 @@ function RouteComponent() {
       <div className="flex flex-1 flex-col px-4 py-4">
         <ResourceKanban
           data={data}
-          tableSchema={tableSchema}
+          resourceSchema={resourceSchema}
           groupBy={groupByField ?? ""}
           layout={layout}
         />

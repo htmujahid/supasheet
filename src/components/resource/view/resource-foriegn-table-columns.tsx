@@ -3,7 +3,7 @@ import type { ColumnDef, Row } from "@tanstack/react-table"
 import type {
   ColumnSchema,
   ResourceDataSchema,
-  TableSchema,
+  ResourceSchema,
 } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
 
@@ -11,11 +11,11 @@ import { ResourceRowCell } from "../resource-row-cell"
 
 export function getResourceForeignTableColumns({
   columnsSchema,
-  tableSchema,
+  resourceSchema,
   data,
 }: {
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema
+  resourceSchema: ResourceSchema
   data: ResourceDataSchema[]
 }) {
   return [
@@ -31,7 +31,7 @@ export function getResourceForeignTableColumns({
         <ResourceRowCell
           row={row}
           columnSchema={c}
-          tableSchema={tableSchema ?? null}
+          resourceSchema={resourceSchema}
         />
       ),
       size: 150,
@@ -55,7 +55,7 @@ export function getResourceForeignTableColumns({
               <ResourceRowCell
                 row={row}
                 columnSchema={{ id: key, name: key } as ColumnSchema}
-                tableSchema={tableSchema ?? null}
+                resourceSchema={resourceSchema}
               />
             ),
             size: 150,
