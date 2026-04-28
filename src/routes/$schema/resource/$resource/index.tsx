@@ -85,12 +85,12 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
     deps: { sortId, sortDesc, page, pageSize, filters },
   }) => {
     const { schema, resource } = params
-    const [columnsSchema, tableSchema] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema, resource)
-      ),
+    const [tableSchema, columnsSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
         tableSchemaQueryOptions(schema, resource)
+      ),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema, resource)
       ),
     ])
     if (!tableSchema || !columnsSchema?.length) throw notFound()
