@@ -10,8 +10,8 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
-import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { Skeleton } from "#/components/ui/skeleton"
 import { ResourceGallery } from "#/components/resource/resource-gallery"
 import type { GalleryViewData } from "#/components/resource/resource-gallery"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
@@ -90,8 +90,23 @@ export const Route = createFileRoute(
             { title: "Gallery" },
           ]}
         />
-        <div className="flex flex-1 flex-col px-4 py-4">
-          <DataTableSkeleton columnCount={4} rowCount={8} />
+        <div className="flex flex-1 flex-col gap-4 px-4 py-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="rounded-xl border bg-card shadow-xs">
+                {/* Cover image area */}
+                <div className="p-4 pb-0">
+                  <Skeleton className="aspect-4/3 w-full rounded-md" />
+                </div>
+                {/* Card content */}
+                <div className="flex flex-col gap-2 p-4">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-2/3" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </>
     )

@@ -95,7 +95,7 @@ export function ResourceGallery({
               >
                 <Card className="cursor-pointer">
                   <CardHeader>
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-muted">
+                    <div className="relative aspect-4/3 w-full overflow-hidden rounded-md bg-muted">
                       {item.cover ? (
                         <img
                           src={item.cover}

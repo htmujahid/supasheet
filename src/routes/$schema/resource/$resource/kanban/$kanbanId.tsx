@@ -10,8 +10,8 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
-import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { Skeleton } from "#/components/ui/skeleton"
 import { ResourceKanban } from "#/components/resource/resource-kanban"
 import type {
   KanbanLayout,
@@ -100,8 +100,34 @@ export const Route = createFileRoute(
             { title: "Kanban" },
           ]}
         />
-        <div className="flex flex-1 flex-col px-4 py-4">
-          <DataTableSkeleton columnCount={4} rowCount={6} />
+        <div className="flex flex-1 flex-col gap-2 px-4 py-4">
+          {/* Layout toggle */}
+          <div className="flex justify-end gap-1">
+            <Skeleton className="h-8 w-8" />
+            <Skeleton className="h-8 w-8" />
+          </div>
+          {/* Kanban columns */}
+          <div className="flex gap-4 overflow-x-auto">
+            {Array.from({ length: 4 }).map((_, col) => (
+              <div key={col} className="flex min-w-xs flex-col gap-2">
+                {/* Column header */}
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-5 w-6 rounded-sm" />
+                </div>
+                {/* Cards */}
+                {Array.from({ length: col === 0 ? 4 : col === 1 ? 3 : col === 2 ? 5 : 2 }).map((_, row) => (
+                  <div key={row} className="flex flex-col gap-2 rounded-md border bg-card p-3 shadow-xs">
+                    <div className="flex items-center justify-between gap-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-5 w-12 rounded-sm" />
+                    </div>
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </>
     )

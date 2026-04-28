@@ -10,8 +10,8 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
-import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { Skeleton } from "#/components/ui/skeleton"
 import {
   ResourceCalendar,
   colorFromString,
@@ -104,8 +104,32 @@ export const Route = createFileRoute(
             { title: "Calendar" },
           ]}
         />
-        <div className="flex flex-1 flex-col px-4 py-4">
-          <DataTableSkeleton columnCount={7} rowCount={6} />
+        <div className="flex flex-1 flex-col gap-2 px-4 py-4">
+          {/* Calendar header: prev/next + title + view switcher */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-6 w-32" />
+            </div>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-8 w-8" />
+              ))}
+            </div>
+          </div>
+          {/* Day-of-week header row */}
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <Skeleton key={i} className="h-6" />
+            ))}
+          </div>
+          {/* Calendar grid: 6 weeks × 7 days */}
+          <div className="grid flex-1 grid-cols-7 grid-rows-6 gap-1">
+            {Array.from({ length: 42 }).map((_, i) => (
+              <Skeleton key={i} className="min-h-[80px] rounded-md" />
+            ))}
+          </div>
         </div>
       </>
     )
