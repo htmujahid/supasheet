@@ -3,8 +3,8 @@ create schema if not exists store;
 grant usage on schema store to authenticated;
 
 begin;
-create type product_status as enum ('active', 'draft', 'archived', 'out_of_stock');
-create type order_status as enum ('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded');
+create type store.product_status as enum ('active', 'draft', 'archived', 'out_of_stock');
+create type store.order_status as enum ('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded');
 
 -- Product permissions
 alter type supasheet.app_permission add value 'store.products:select';
@@ -49,7 +49,7 @@ create table store.products (
     description RICH_TEXT,
     price numeric(10, 2) not null default 0,
     stock integer not null default 0,
-    status product_status default 'draft',
+    status store.product_status default 'draft',
     category varchar(100),
     image file,
 
@@ -127,7 +127,7 @@ create policy products_delete on store.products
 create table store.orders (
     id uuid primary key default extensions.uuid_generate_v4(),
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
-    status order_status default 'pending',
+    status store.order_status default 'pending',
     total numeric(10, 2) not null default 0,
     notes text,
 

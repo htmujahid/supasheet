@@ -3,10 +3,10 @@ create schema if not exists desk;
 grant usage on schema desk to authenticated;
 
 begin;
-create type task_status as enum ('pending', 'in_progress', 'completed', 'archived');
-create type task_priority as enum ('low', 'medium', 'high', 'critical');
-create type project_status as enum ('planning', 'active', 'on_hold', 'completed', 'cancelled');
-create type project_priority as enum ('low', 'medium', 'high', 'critical');
+create type desk.task_status as enum ('pending', 'in_progress', 'completed', 'archived');
+create type desk.task_priority as enum ('low', 'medium', 'high', 'critical');
+create type desk.project_status as enum ('planning', 'active', 'on_hold', 'completed', 'cancelled');
+create type desk.project_priority as enum ('low', 'medium', 'high', 'critical');
 
 -- Task permissions
 alter type supasheet.app_permission add value 'desk.tasks:select';
@@ -54,8 +54,8 @@ create table desk.projects (
     id uuid primary key default extensions.uuid_generate_v4(),
     title varchar(500) not null,
     description RICH_TEXT,
-    status project_status default 'planning',
-    priority project_priority default 'medium',
+    status desk.project_status default 'planning',
+    priority desk.project_priority default 'medium',
 
     -- User association
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
@@ -172,8 +172,8 @@ create table desk.tasks (
     id uuid primary key default extensions.uuid_generate_v4(),
     title varchar(500) not null,
     description RICH_TEXT,
-    status task_status default 'pending',
-    priority task_priority default 'medium',
+    status desk.task_status default 'pending',
+    priority desk.task_priority default 'medium',
     cover file,
 
     -- User association
