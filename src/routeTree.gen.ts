@@ -44,6 +44,7 @@ import { Route as CoreUser_rolesNewRouteImport } from './routes/core/user_roles/
 import { Route as CoreRole_permissionsNewRouteImport } from './routes/core/role_permissions/new'
 import { Route as CoreAudit_logsAuditLogIdRouteImport } from './routes/core/audit_logs/$auditLogId'
 import { Route as CoreUsersUserIdRouteRouteImport } from './routes/core/users/$userId/route'
+import { Route as SchemaResourceResourceRouteRouteImport } from './routes/$schema/resource/$resource/route'
 import { Route as CoreUsersUserIdIndexRouteImport } from './routes/core/users/$userId/index'
 import { Route as SchemaSqlEditorSnippetIndexRouteImport } from './routes/$schema/sql-editor/$snippet/index'
 import { Route as SchemaResourceResourceIndexRouteImport } from './routes/$schema/resource/$resource/index'
@@ -236,6 +237,12 @@ const CoreUsersUserIdRouteRoute = CoreUsersUserIdRouteRouteImport.update({
   path: '/users/$userId',
   getParentRoute: () => CoreRouteRoute,
 } as any)
+const SchemaResourceResourceRouteRoute =
+  SchemaResourceResourceRouteRouteImport.update({
+    id: '/resource/$resource',
+    path: '/resource/$resource',
+    getParentRoute: () => SchemaRouteRoute,
+  } as any)
 const CoreUsersUserIdIndexRoute = CoreUsersUserIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -249,9 +256,9 @@ const SchemaSqlEditorSnippetIndexRoute =
   } as any)
 const SchemaResourceResourceIndexRoute =
   SchemaResourceResourceIndexRouteImport.update({
-    id: '/resource/$resource/',
-    path: '/resource/$resource/',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaReportReportIndexRoute = SchemaReportReportIndexRouteImport.update({
   id: '/report/$report/',
@@ -275,45 +282,45 @@ const CoreUsersUserIdDangerRoute = CoreUsersUserIdDangerRouteImport.update({
 } as any)
 const SchemaResourceResourceNewRoute =
   SchemaResourceResourceNewRouteImport.update({
-    id: '/resource/$resource/new',
-    path: '/resource/$resource/new',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceGridRoute =
   SchemaResourceResourceGridRouteImport.update({
-    id: '/resource/$resource/grid',
-    path: '/resource/$resource/grid',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/grid',
+    path: '/grid',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceViewSplatRoute =
   SchemaResourceResourceViewSplatRouteImport.update({
-    id: '/resource/$resource/view/$',
-    path: '/resource/$resource/view/$',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/view/$',
+    path: '/view/$',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceUpdateSplatRoute =
   SchemaResourceResourceUpdateSplatRouteImport.update({
-    id: '/resource/$resource/update/$',
-    path: '/resource/$resource/update/$',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/update/$',
+    path: '/update/$',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceKanbanKanbanIdRoute =
   SchemaResourceResourceKanbanKanbanIdRouteImport.update({
-    id: '/resource/$resource/kanban/$kanbanId',
-    path: '/resource/$resource/kanban/$kanbanId',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/kanban/$kanbanId',
+    path: '/kanban/$kanbanId',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceGalleryGalleryIdRoute =
   SchemaResourceResourceGalleryGalleryIdRouteImport.update({
-    id: '/resource/$resource/gallery/$galleryId',
-    path: '/resource/$resource/gallery/$galleryId',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/gallery/$galleryId',
+    path: '/gallery/$galleryId',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceCalendarCalendarIdRoute =
   SchemaResourceResourceCalendarCalendarIdRouteImport.update({
-    id: '/resource/$resource/calendar/$calendarId',
-    path: '/resource/$resource/calendar/$calendarId',
-    getParentRoute: () => SchemaRouteRoute,
+    id: '/calendar/$calendarId',
+    path: '/calendar/$calendarId',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -336,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/$schema/': typeof SchemaIndexRoute
   '/core/': typeof CoreIndexRoute
   '/storage/': typeof StorageIndexRoute
+  '/$schema/resource/$resource': typeof SchemaResourceResourceRouteRouteWithChildren
   '/core/users/$userId': typeof CoreUsersUserIdRouteRouteWithChildren
   '/core/audit_logs/$auditLogId': typeof CoreAudit_logsAuditLogIdRoute
   '/core/role_permissions/new': typeof CoreRole_permissionsNewRoute
@@ -434,6 +442,7 @@ export interface FileRoutesById {
   '/$schema/': typeof SchemaIndexRoute
   '/core/': typeof CoreIndexRoute
   '/storage/': typeof StorageIndexRoute
+  '/$schema/resource/$resource': typeof SchemaResourceResourceRouteRouteWithChildren
   '/core/users/$userId': typeof CoreUsersUserIdRouteRouteWithChildren
   '/core/audit_logs/$auditLogId': typeof CoreAudit_logsAuditLogIdRoute
   '/core/role_permissions/new': typeof CoreRole_permissionsNewRoute
@@ -487,6 +496,7 @@ export interface FileRouteTypes {
     | '/$schema/'
     | '/core/'
     | '/storage/'
+    | '/$schema/resource/$resource'
     | '/core/users/$userId'
     | '/core/audit_logs/$auditLogId'
     | '/core/role_permissions/new'
@@ -584,6 +594,7 @@ export interface FileRouteTypes {
     | '/$schema/'
     | '/core/'
     | '/storage/'
+    | '/$schema/resource/$resource'
     | '/core/users/$userId'
     | '/core/audit_logs/$auditLogId'
     | '/core/role_permissions/new'
@@ -872,6 +883,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoreUsersUserIdRouteRouteImport
       parentRoute: typeof CoreRouteRoute
     }
+    '/$schema/resource/$resource': {
+      id: '/$schema/resource/$resource'
+      path: '/resource/$resource'
+      fullPath: '/$schema/resource/$resource'
+      preLoaderRoute: typeof SchemaResourceResourceRouteRouteImport
+      parentRoute: typeof SchemaRouteRoute
+    }
     '/core/users/$userId/': {
       id: '/core/users/$userId/'
       path: '/'
@@ -888,10 +906,10 @@ declare module '@tanstack/react-router' {
     }
     '/$schema/resource/$resource/': {
       id: '/$schema/resource/$resource/'
-      path: '/resource/$resource'
+      path: '/'
       fullPath: '/$schema/resource/$resource/'
       preLoaderRoute: typeof SchemaResourceResourceIndexRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/report/$report/': {
       id: '/$schema/report/$report/'
@@ -923,66 +941,60 @@ declare module '@tanstack/react-router' {
     }
     '/$schema/resource/$resource/new': {
       id: '/$schema/resource/$resource/new'
-      path: '/resource/$resource/new'
+      path: '/new'
       fullPath: '/$schema/resource/$resource/new'
       preLoaderRoute: typeof SchemaResourceResourceNewRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/grid': {
       id: '/$schema/resource/$resource/grid'
-      path: '/resource/$resource/grid'
+      path: '/grid'
       fullPath: '/$schema/resource/$resource/grid'
       preLoaderRoute: typeof SchemaResourceResourceGridRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/view/$': {
       id: '/$schema/resource/$resource/view/$'
-      path: '/resource/$resource/view/$'
+      path: '/view/$'
       fullPath: '/$schema/resource/$resource/view/$'
       preLoaderRoute: typeof SchemaResourceResourceViewSplatRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/update/$': {
       id: '/$schema/resource/$resource/update/$'
-      path: '/resource/$resource/update/$'
+      path: '/update/$'
       fullPath: '/$schema/resource/$resource/update/$'
       preLoaderRoute: typeof SchemaResourceResourceUpdateSplatRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/kanban/$kanbanId': {
       id: '/$schema/resource/$resource/kanban/$kanbanId'
-      path: '/resource/$resource/kanban/$kanbanId'
+      path: '/kanban/$kanbanId'
       fullPath: '/$schema/resource/$resource/kanban/$kanbanId'
       preLoaderRoute: typeof SchemaResourceResourceKanbanKanbanIdRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/gallery/$galleryId': {
       id: '/$schema/resource/$resource/gallery/$galleryId'
-      path: '/resource/$resource/gallery/$galleryId'
+      path: '/gallery/$galleryId'
       fullPath: '/$schema/resource/$resource/gallery/$galleryId'
       preLoaderRoute: typeof SchemaResourceResourceGalleryGalleryIdRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/calendar/$calendarId': {
       id: '/$schema/resource/$resource/calendar/$calendarId'
-      path: '/resource/$resource/calendar/$calendarId'
+      path: '/calendar/$calendarId'
       fullPath: '/$schema/resource/$resource/calendar/$calendarId'
       preLoaderRoute: typeof SchemaResourceResourceCalendarCalendarIdRouteImport
-      parentRoute: typeof SchemaRouteRoute
+      parentRoute: typeof SchemaResourceResourceRouteRoute
     }
   }
 }
 
-interface SchemaRouteRouteChildren {
-  SchemaIndexRoute: typeof SchemaIndexRoute
-  SchemaChartIndexRoute: typeof SchemaChartIndexRoute
-  SchemaDashboardIndexRoute: typeof SchemaDashboardIndexRoute
-  SchemaReportIndexRoute: typeof SchemaReportIndexRoute
+interface SchemaResourceResourceRouteRouteChildren {
   SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRoute
   SchemaResourceResourceNewRoute: typeof SchemaResourceResourceNewRoute
-  SchemaReportReportIndexRoute: typeof SchemaReportReportIndexRoute
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
-  SchemaSqlEditorSnippetIndexRoute: typeof SchemaSqlEditorSnippetIndexRoute
   SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
   SchemaResourceResourceGalleryGalleryIdRoute: typeof SchemaResourceResourceGalleryGalleryIdRoute
   SchemaResourceResourceKanbanKanbanIdRoute: typeof SchemaResourceResourceKanbanKanbanIdRoute
@@ -990,25 +1002,46 @@ interface SchemaRouteRouteChildren {
   SchemaResourceResourceViewSplatRoute: typeof SchemaResourceResourceViewSplatRoute
 }
 
+const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRouteChildren =
+  {
+    SchemaResourceResourceGridRoute: SchemaResourceResourceGridRoute,
+    SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
+    SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
+    SchemaResourceResourceCalendarCalendarIdRoute:
+      SchemaResourceResourceCalendarCalendarIdRoute,
+    SchemaResourceResourceGalleryGalleryIdRoute:
+      SchemaResourceResourceGalleryGalleryIdRoute,
+    SchemaResourceResourceKanbanKanbanIdRoute:
+      SchemaResourceResourceKanbanKanbanIdRoute,
+    SchemaResourceResourceUpdateSplatRoute:
+      SchemaResourceResourceUpdateSplatRoute,
+    SchemaResourceResourceViewSplatRoute: SchemaResourceResourceViewSplatRoute,
+  }
+
+const SchemaResourceResourceRouteRouteWithChildren =
+  SchemaResourceResourceRouteRoute._addFileChildren(
+    SchemaResourceResourceRouteRouteChildren,
+  )
+
+interface SchemaRouteRouteChildren {
+  SchemaIndexRoute: typeof SchemaIndexRoute
+  SchemaResourceResourceRouteRoute: typeof SchemaResourceResourceRouteRouteWithChildren
+  SchemaChartIndexRoute: typeof SchemaChartIndexRoute
+  SchemaDashboardIndexRoute: typeof SchemaDashboardIndexRoute
+  SchemaReportIndexRoute: typeof SchemaReportIndexRoute
+  SchemaReportReportIndexRoute: typeof SchemaReportReportIndexRoute
+  SchemaSqlEditorSnippetIndexRoute: typeof SchemaSqlEditorSnippetIndexRoute
+}
+
 const SchemaRouteRouteChildren: SchemaRouteRouteChildren = {
   SchemaIndexRoute: SchemaIndexRoute,
+  SchemaResourceResourceRouteRoute:
+    SchemaResourceResourceRouteRouteWithChildren,
   SchemaChartIndexRoute: SchemaChartIndexRoute,
   SchemaDashboardIndexRoute: SchemaDashboardIndexRoute,
   SchemaReportIndexRoute: SchemaReportIndexRoute,
-  SchemaResourceResourceGridRoute: SchemaResourceResourceGridRoute,
-  SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
   SchemaReportReportIndexRoute: SchemaReportReportIndexRoute,
-  SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
   SchemaSqlEditorSnippetIndexRoute: SchemaSqlEditorSnippetIndexRoute,
-  SchemaResourceResourceCalendarCalendarIdRoute:
-    SchemaResourceResourceCalendarCalendarIdRoute,
-  SchemaResourceResourceGalleryGalleryIdRoute:
-    SchemaResourceResourceGalleryGalleryIdRoute,
-  SchemaResourceResourceKanbanKanbanIdRoute:
-    SchemaResourceResourceKanbanKanbanIdRoute,
-  SchemaResourceResourceUpdateSplatRoute:
-    SchemaResourceResourceUpdateSplatRoute,
-  SchemaResourceResourceViewSplatRoute: SchemaResourceResourceViewSplatRoute,
 }
 
 const SchemaRouteRouteWithChildren = SchemaRouteRoute._addFileChildren(

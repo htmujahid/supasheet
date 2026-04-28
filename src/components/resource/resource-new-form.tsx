@@ -53,19 +53,13 @@ function buildPayload(
   return payload
 }
 
-interface ResourceNewFormProps {
-  schema: string
-  resource: string
-  columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema | null
-}
-
 export function ResourceNewForm({
-  schema,
-  resource,
   columnsSchema,
   tableSchema,
-}: ResourceNewFormProps) {
+}: {
+  columnsSchema: ColumnSchema[]
+  tableSchema: TableSchema
+}) {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -76,7 +70,7 @@ export function ResourceNewForm({
   )
 
   const { mutateAsync: insertRow } = useMutation(
-    insertResourceMutationOptions(schema, resource)
+    insertResourceMutationOptions(tableSchema.schema, tableSchema.name)
   )
 
   const form = useAppForm({
@@ -85,12 +79,17 @@ export function ResourceNewForm({
       const payload = buildPayload(value, writableCols)
       await insertRow(payload)
       queryClient.invalidateQueries({
-        queryKey: ["supasheet", "resource-data", schema, resource],
+        queryKey: [
+          "supasheet",
+          "resource-data",
+          tableSchema.schema,
+          tableSchema.name,
+        ],
       })
       toast.success("Record created")
       navigate({
         to: "/$schema/resource/$resource",
-        params: { schema, resource },
+        params: { schema: tableSchema.schema, resource: tableSchema.name },
       })
     },
   })
@@ -123,7 +122,10 @@ export function ResourceNewForm({
             onClick={() =>
               navigate({
                 to: "/$schema/resource/$resource",
-                params: { schema, resource },
+                params: {
+                  schema: tableSchema.schema,
+                  resource: tableSchema.name,
+                },
               })
             }
           >

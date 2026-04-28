@@ -13,7 +13,7 @@ import {
   ChartTooltipContent,
 } from "#/components/ui/chart"
 import type { ChartConfig } from "#/components/ui/chart"
-import type { ChartSchema } from "#/lib/supabase/data/chart"
+import type { ChartMeta } from "#/lib/supabase/data/chart"
 
 const CHART_COLORS = [
   "var(--chart-1)",
@@ -24,19 +24,19 @@ const CHART_COLORS = [
 ]
 
 export function LineChartWidget({
-  chart,
+  chartMeta,
   data,
 }: {
-  chart: ChartSchema
+  chartMeta: ChartMeta
   data: Record<string, any>[] | null
 }) {
   if (!data || data.length === 0) {
     return (
       <Card className="col-span-2">
         <CardHeader>
-          <CardTitle>{chart.name}</CardTitle>
-          {chart.description && (
-            <CardDescription>{chart.description}</CardDescription>
+          <CardTitle>{chartMeta.name}</CardTitle>
+          {chartMeta.description && (
+            <CardDescription>{chartMeta.description}</CardDescription>
           )}
         </CardHeader>
         <CardContent>
@@ -55,9 +55,9 @@ export function LineChartWidget({
     return (
       <Card className="col-span-2">
         <CardHeader>
-          <CardTitle>{chart.name}</CardTitle>
-          {chart.description && (
-            <CardDescription>{chart.description}</CardDescription>
+          <CardTitle>{chartMeta.name}</CardTitle>
+          {chartMeta.description && (
+            <CardDescription>{chartMeta.description}</CardDescription>
           )}
         </CardHeader>
         <CardContent>
@@ -86,9 +86,9 @@ export function LineChartWidget({
   return (
     <Card className="col-span-2">
       <CardHeader>
-        <CardTitle>{chart.name}</CardTitle>
-        {chart.description && (
-          <CardDescription>{chart.description}</CardDescription>
+        <CardTitle>{chartMeta.name}</CardTitle>
+        {chartMeta.description && (
+          <CardDescription>{chartMeta.description}</CardDescription>
         )}
       </CardHeader>
       <CardContent>
@@ -119,8 +119,10 @@ export function LineChartWidget({
             ))}
           </LineChart>
         </ChartContainer>
-        {chart.caption && (
-          <p className="mt-2 text-xs text-muted-foreground">{chart.caption}</p>
+        {chartMeta.caption && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            {chartMeta.caption}
+          </p>
         )}
       </CardContent>
     </Card>

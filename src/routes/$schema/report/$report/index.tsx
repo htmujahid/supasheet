@@ -16,6 +16,7 @@ import type {
 } from "@tanstack/react-table"
 
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
+import z from "zod"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
@@ -28,6 +29,11 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import type {
+  DatabaseSchemas,
+  DatabaseTables,
+  DatabaseViews,
+} from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   reportDataQueryOptions,
@@ -36,6 +42,12 @@ import {
 import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/report/$report/")({
+  params: z.object({
+    schema: z.string<DatabaseSchemas>(),
+    report: z.string<
+      DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>
+    >(),
+  }),
   validateSearch: (
     search: {
       sortId?: string
@@ -66,7 +78,7 @@ export const Route = createFileRoute("/$schema/report/$report/")({
     const [reports, columnsSchema] = await Promise.all([
       context.queryClient.ensureQueryData(reportsQueryOptions(params.schema)),
       context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(params.schema as "supasheet", params.report)
+        columnsSchemaQueryOptions(params.schema, params.report)
       ),
     ])
 

@@ -17,8 +17,23 @@ export type DatabaseViews<TSchema extends DatabaseSchemas> =
       : never
     : never
 
-export type ColumnSchema = Database["supasheet"]["Tables"]["columns"]["Row"]
-export type TableSchema = Database["supasheet"]["Tables"]["tables"]["Row"]
+export type ColumnSchema<S extends DatabaseSchemas = DatabaseSchemas> =
+  Database["supasheet"]["Tables"]["columns"]["Row"] & {
+    schema: S
+    table: DatabaseTables<S> | DatabaseViews<S>
+  }
+
+export type TableSchema<S extends DatabaseSchemas = DatabaseSchemas> =
+  Database["supasheet"]["Tables"]["tables"]["Row"] & {
+    schema: S
+    name: DatabaseTables<S>
+  }
+
+export type ViewSchema<S extends DatabaseSchemas = DatabaseSchemas> =
+  Database["supasheet"]["Tables"]["views"]["Row"] & {
+    schema: S
+    name: DatabaseViews<S>
+  }
 
 export type PrimaryKey = {
   name: string

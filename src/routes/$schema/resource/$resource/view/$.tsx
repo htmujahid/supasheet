@@ -58,17 +58,17 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
     const [tableSchema, columnsSchema, relatedTablesSchema] = await Promise.all(
       [
         context.queryClient.ensureQueryData(
-          tableSchemaQueryOptions(schema as "supasheet", resource)
+          tableSchemaQueryOptions(schema, resource)
         ),
         context.queryClient.ensureQueryData(
-          columnsSchemaQueryOptions(schema as "supasheet", resource)
+          columnsSchemaQueryOptions(schema, resource)
         ),
         context.queryClient.ensureQueryData(
           relatedTablesSchemaQueryOptions(schema, resource)
         ),
       ]
     )
-    if (!columnsSchema?.length) throw notFound()
+    if (!tableSchema || !columnsSchema?.length) throw notFound()
     const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
     const pk = parsePkSplat(_splat ?? "", primaryKeys)
 
@@ -392,14 +392,12 @@ function RouteComponent() {
           </div>
 
           {allManyRelationships.length > 0 && (
-            <Tabs
-              defaultValue={allManyRelationships[0]?.name?.toString() ?? ""}
-            >
+            <Tabs defaultValue={allManyRelationships[0]?.name ?? ""}>
               <TabsList className="w-full">
                 {allManyRelationships.map((relationship) => (
                   <TabsTrigger
                     key={relationship.id}
-                    value={relationship.name?.toString() ?? ""}
+                    value={relationship.name ?? ""}
                   >
                     {formatTitle(relationship.name as string)}
                   </TabsTrigger>
@@ -408,7 +406,7 @@ function RouteComponent() {
               {allManyRelationships.map((relationship) => (
                 <TabsContent
                   key={relationship.id}
-                  value={relationship.name?.toString() ?? ""}
+                  value={relationship.name ?? ""}
                 >
                   <ResourceForeignTable
                     relationship={

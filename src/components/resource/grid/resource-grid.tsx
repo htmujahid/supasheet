@@ -1,11 +1,12 @@
 import { useCallback, useMemo } from "react"
 
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 import type {
   ColumnFiltersState,
   PaginationState,
   SortingState,
 } from "@tanstack/react-table"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "sonner"
 
@@ -23,7 +24,7 @@ import { getResourceGridColumns } from "./resource-grid-columns"
 interface ResourceGridProps {
   data: Record<string, unknown>[]
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema | null
+  tableSchema: TableSchema
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState
@@ -40,9 +41,9 @@ export function ResourceGrid({
   pageCount,
 }: ResourceGridProps) {
   const queryClient = useQueryClient()
-  const schema = tableSchema?.schema ?? ""
-  const resource = tableSchema?.name ?? ""
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const schema = tableSchema.schema
+  const resource = tableSchema.name
+  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
 
   const columns = useMemo(
     () => getResourceGridColumns({ columnsSchema, tableSchema }),
@@ -106,6 +107,10 @@ export function ResourceGrid({
   )
 
   return (
-    <DataGrid table={table} onDelete={undefined} onRowsChange={handleRowsChange} />
+    <DataGrid
+      table={table}
+      onDelete={undefined}
+      onRowsChange={handleRowsChange}
+    />
   )
 }

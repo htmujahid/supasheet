@@ -73,22 +73,21 @@ function buildPayload(
 }
 
 interface ResourceUpdateFormProps {
-  schema: string
-  resource: string
   columnsSchema: ColumnSchema[]
   primaryKeys: PrimaryKey[]
   record: Record<string, unknown>
-  tableSchema: TableSchema | null
+  tableSchema: TableSchema
 }
 
 export function ResourceUpdateForm({
-  schema,
-  resource,
   columnsSchema,
   primaryKeys,
   record,
   tableSchema,
 }: ResourceUpdateFormProps) {
+  const schema = tableSchema?.schema
+  const resource = tableSchema?.name
+
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 

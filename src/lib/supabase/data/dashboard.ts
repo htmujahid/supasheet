@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
 
+import type { DatabaseSchemas, DatabaseViews } from "#/lib/database-meta.types"
 import { supabase } from "#/lib/supabase/client"
 
 export type DashboardWidgetType =
@@ -18,12 +19,12 @@ export type DashboardWidgetMeta = {
   widget_type: DashboardWidgetType
 }
 
-export type DashboardWidgetSchema = {
-  schema: string
-  view_name: string
+export type DashboardWidgetSchema<S extends DatabaseSchemas> = {
+  schema: S
+  view_name: DatabaseViews<S>
 } & DashboardWidgetMeta
 
-export const dashboardWidgetsQueryOptions = (schema: string) =>
+export const dashboardWidgetsQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "dashboard-widgets", schema],
     queryFn: async () => {
@@ -40,17 +41,20 @@ export const dashboardWidgetsQueryOptions = (schema: string) =>
           view_name: widget.name,
           schema: widget.schema,
           ...meta,
-        } as DashboardWidgetSchema
+        } as DashboardWidgetSchema<typeof schema>
       })
     },
     staleTime: 1000 * 60 * 5,
   })
 
-export const widgetDataQueryOptions = (schema: string, viewName: string) =>
+export const widgetDataQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  viewName: DatabaseViews<S>
+) =>
   queryOptions({
     queryKey: ["supasheet", "widget-data", schema, viewName],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .schema(schema)
         .from(viewName)
         .select("*")

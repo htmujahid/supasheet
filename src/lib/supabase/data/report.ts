@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 import type { ColumnFiltersState } from "@tanstack/react-table"
 
+import type { DatabaseSchemas, DatabaseViews } from "#/lib/database-meta.types"
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
 
@@ -12,12 +13,12 @@ export type ReportMeta = {
   type: "report"
 }
 
-export type ReportSchema = {
-  schema: string
-  view_name: string
+export type ReportSchema<S extends DatabaseSchemas> = {
+  schema: S
+  view_name: DatabaseViews<S>
 } & ReportMeta
 
-export const reportsQueryOptions = (schema: string) =>
+export const reportsQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "reports", schema],
     queryFn: async () => {
@@ -34,15 +35,15 @@ export const reportsQueryOptions = (schema: string) =>
           view_name: report.name,
           schema: report.schema,
           ...meta,
-        } as ReportSchema
+        } as ReportSchema<typeof schema>
       })
     },
     staleTime: 1000 * 60 * 5,
   })
 
-export const reportDataQueryOptions = (
-  schema: string,
-  viewName: string,
+export const reportDataQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  viewName: DatabaseViews<S>,
   page: number,
   pageSize: number,
   sortId?: string,
@@ -62,7 +63,7 @@ export const reportDataQueryOptions = (
       filters,
     ],
     queryFn: async () => {
-      let query = (supabase as any)
+      let query = supabase
         .schema(schema)
         .from(viewName)
         .select("*", { count: "exact" })
@@ -78,8 +79,8 @@ export const reportDataQueryOptions = (
       if (error) throw error
 
       return {
-        result: (data ?? []) as Record<string, any>[],
-        count: count as number | null,
+        result: (data ?? []) as Record<string, unknown>[],
+        count: count,
       }
     },
     staleTime: 1000 * 60 * 5,

@@ -32,7 +32,6 @@ import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
-  columnsSchemaQueryOptions,
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
@@ -57,16 +56,10 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, kanbanId } = params
 
-    const [tableSchema, columnsSchema] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema as "supasheet", resource)
-      ),
-      context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema as "supasheet", resource)
-      ),
-    ])
-
-    if (!columnsSchema?.length) throw notFound()
+    const tableSchema = await context.queryClient.ensureQueryData(
+      tableSchemaQueryOptions(schema, resource)
+    )
+    if (!tableSchema) throw notFound()
 
     const meta = (
       tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
@@ -80,7 +73,7 @@ export const Route = createFileRoute(
       resourceDataQueryOptions(schema, resource, metaData.query)
     )
 
-    return { kanbanView, tableSchema, columnsSchema }
+    return { kanbanView, tableSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Kanban | ${formatTitle(params.resource)} | Supasheet` }],
@@ -185,7 +178,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { layout } = Route.useSearch()
-  const { kanbanView, tableSchema, columnsSchema } = Route.useLoaderData()
+  const { kanbanView, tableSchema } = Route.useLoaderData()
 
   const meta = (
     tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
@@ -268,7 +261,6 @@ function RouteComponent() {
         <ResourceKanban
           data={data}
           tableSchema={tableSchema}
-          columnsSchema={columnsSchema}
           groupBy={groupByField ?? ""}
           layout={layout}
         />

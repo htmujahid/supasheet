@@ -9,6 +9,7 @@ import {
 } from "#/components/ui/card"
 import { Progress } from "#/components/ui/progress"
 import { Skeleton } from "#/components/ui/skeleton"
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import { widgetDataQueryOptions } from "#/lib/supabase/data/dashboard"
 import type { DashboardWidgetSchema } from "#/lib/supabase/data/dashboard"
 
@@ -30,7 +31,11 @@ function Card4Skeleton() {
   )
 }
 
-export function Card4({ widget }: { widget: DashboardWidgetSchema }) {
+export function Card4<S extends DatabaseSchemas>({
+  widget,
+}: {
+  widget: DashboardWidgetSchema<S>
+}) {
   const { data, isPending } = useQuery(
     widgetDataQueryOptions(widget.schema, widget.view_name)
   )

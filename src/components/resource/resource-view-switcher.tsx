@@ -20,16 +20,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type {
+  DatabaseSchemas,
+  DatabaseTables,
+  TableMetadata,
+} from "#/lib/database-meta.types"
 
 type MetaItem = NonNullable<TableMetadata["items"]>[number]
-
-interface ResourceViewSwitcherProps {
-  schema: string
-  resource: string
-  metaItems: MetaItem[]
-  currentViewId: string
-}
 
 const builtInViews = [
   { id: "table", label: "Table View", icon: <TableIcon className="size-3" /> },
@@ -47,12 +44,17 @@ function getMetaItemIcon(item: MetaItem) {
   return null
 }
 
-export function ResourceViewSwitcher({
+export function ResourceViewSwitcher<S extends DatabaseSchemas>({
   schema,
   resource,
   metaItems,
   currentViewId,
-}: ResourceViewSwitcherProps) {
+}: {
+  schema: S
+  resource: DatabaseTables<S>
+  metaItems: MetaItem[]
+  currentViewId: string
+}) {
   const navigate = useNavigate()
 
   const currentBuiltIn = builtInViews.find((v) => v.id === currentViewId)

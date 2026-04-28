@@ -26,7 +26,7 @@ import { getResourceTableColumns } from "./resource-table-columns"
 interface ResourceTableProps {
   data: Record<string, unknown>[]
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema | null
+  tableSchema: TableSchema
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState
@@ -43,8 +43,8 @@ export function ResourceTable({
   pageCount,
 }: ResourceTableProps) {
   const queryClient = useQueryClient()
-  const schema = tableSchema?.schema ?? ""
-  const resource = tableSchema?.name ?? ""
+  const schema = tableSchema?.schema
+  const resource = tableSchema?.name
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
 
   const canDelete = useHasPermission(

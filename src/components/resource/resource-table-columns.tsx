@@ -31,10 +31,10 @@ export function getResourceTableColumns({
   tableSchema,
 }: {
   columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema | null
+  tableSchema: TableSchema
 }) {
-  const schema = tableSchema?.schema ?? ""
-  const resource = tableSchema?.name ?? ""
+  const schema = tableSchema?.schema
+  const resource = tableSchema?.name
 
   const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
   const joinedColumns: `${string}.${string}`[] = (

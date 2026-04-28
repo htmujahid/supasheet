@@ -16,7 +16,7 @@ export type AuditLog = Database["supasheet"]["Tables"]["audit_logs"]["Row"]
 export function getAuditLogsTableColumns({
   columnsSchema,
 }: {
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
 }): ColumnDef<AuditLog, unknown>[] {
   return [
     {

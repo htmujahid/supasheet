@@ -1,3 +1,4 @@
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import type { DashboardWidgetSchema } from "#/lib/supabase/data/dashboard"
 
 import { Card1 } from "./card-1"
@@ -7,7 +8,11 @@ import { Card4 } from "./card-4"
 import { Table1Widget } from "./table-1"
 import { Table2Widget } from "./table-2"
 
-export function DashboardWidget({ widget }: { widget: DashboardWidgetSchema }) {
+export function DashboardWidget<S extends DatabaseSchemas>({
+  widget,
+}: {
+  widget: DashboardWidgetSchema<S>
+}) {
   switch (widget.widget_type) {
     case "card_1":
       return <Card1 widget={widget} />

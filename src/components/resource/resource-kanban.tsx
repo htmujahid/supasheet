@@ -38,8 +38,12 @@ import {
   KanbanOverlay,
 } from "#/components/ui/kanban"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey } from "#/lib/database-meta.types"
-import type { Database } from "#/lib/database.types"
+import type {
+  DatabaseSchemas,
+  DatabaseTables,
+  PrimaryKey,
+  TableSchema,
+} from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
@@ -47,13 +51,6 @@ import {
   updateResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 import { cn } from "#/lib/utils"
-
-type TableSchema =
-  | Database["supasheet"]["Functions"]["get_tables"]["Returns"][number]
-  | null
-
-type ColumnSchema =
-  Database["supasheet"]["Functions"]["get_columns"]["Returns"][number]
 
 export interface KanbanViewData {
   title: string | null
@@ -67,21 +64,17 @@ export type KanbanViewReducedData = Record<string, KanbanViewData[]>
 
 export type KanbanLayout = "board" | "list"
 
-interface ResourceKanbanProps {
-  data: KanbanViewReducedData
-  tableSchema: TableSchema
-  columnsSchema: ColumnSchema[]
-  groupBy: string
-  layout: KanbanLayout
-}
-
 export function ResourceKanban({
   data,
   tableSchema,
-  columnsSchema: _columnsSchema,
   groupBy,
   layout,
-}: ResourceKanbanProps) {
+}: {
+  data: KanbanViewReducedData
+  tableSchema: TableSchema
+  groupBy: string
+  layout: KanbanLayout
+}) {
   const schema = tableSchema?.schema ?? ""
   const resource = tableSchema?.name ?? ""
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
@@ -266,7 +259,7 @@ export function ResourceKanban({
   )
 }
 
-function KanbanContextMenu({
+function KanbanContextMenu<S extends DatabaseSchemas>({
   children,
   task,
   schema,
@@ -277,8 +270,8 @@ function KanbanContextMenu({
 }: {
   children: React.ReactNode
   task: KanbanViewData
-  schema: string
-  resource: string
+  schema: S
+  resource: DatabaseTables<S>
   pkSplat: string
   primaryKeys: PrimaryKey[]
   isTable: boolean

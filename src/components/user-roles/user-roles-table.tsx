@@ -21,7 +21,7 @@ import type { UserRole } from "./user-roles-table-columns"
 
 interface UserRolesTableProps {
   data: UserRole[]
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState

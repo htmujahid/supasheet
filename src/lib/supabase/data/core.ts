@@ -2,6 +2,7 @@ import { mutationOptions, queryOptions } from "@tanstack/react-query"
 
 import type { ColumnFiltersState } from "@tanstack/react-table"
 
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import type { Database } from "#/lib/database.types"
 
 import { supabase } from "../client"
@@ -320,7 +321,7 @@ export const deleteAccountsMutationOptions = mutationOptions({
   },
 })
 
-export const userPermissionsQueryOptions = (schema?: string) =>
+export const userPermissionsQueryOptions = (schema?: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "permissions", schema ?? null],
     queryFn: async () => {

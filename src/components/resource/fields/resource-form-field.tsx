@@ -7,6 +7,7 @@ import {
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
+  DatabaseSchemas,
   Relationship,
   TableSchema,
 } from "#/lib/database-meta.types"
@@ -32,13 +33,13 @@ function FieldErrors() {
   )
 }
 
-export function ResourceFormField({
+export function ResourceFormField<S extends DatabaseSchemas>({
   columnSchema,
   tableSchema,
   form,
 }: {
-  columnSchema: ColumnSchema
-  tableSchema: TableSchema | null
+  columnSchema: ColumnSchema<S>
+  tableSchema: TableSchema<S> | null
   form: ResourceFormApi
 }) {
   let columnMetadata: ColumnMetadata

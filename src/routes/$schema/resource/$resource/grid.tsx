@@ -87,13 +87,13 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
     const { schema, resource } = params
     const [columnsSchema, tableSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema as "supasheet", resource)
+        columnsSchemaQueryOptions(schema, resource)
       ),
       context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema as "supasheet", resource)
+        tableSchemaQueryOptions(schema, resource)
       ),
     ])
-    if (!columnsSchema?.length) throw notFound()
+    if (!tableSchema || !columnsSchema?.length) throw notFound()
     const metaData = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
     context.queryClient.ensureQueryData(
       resourceDataQueryOptions(
@@ -265,7 +265,7 @@ function RouteComponent() {
         <ResourceGrid
           data={resourceData?.result ?? []}
           columnsSchema={columnsSchema ?? []}
-          tableSchema={tableSchema ?? null}
+          tableSchema={tableSchema}
           sorting={sorting}
           pagination={pagination}
           columnFilters={filters}

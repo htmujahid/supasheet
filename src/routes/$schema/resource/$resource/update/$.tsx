@@ -44,10 +44,10 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
     const { schema, resource, _splat } = params
     const [tableSchema, columnsSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema as "supasheet", resource)
+        tableSchemaQueryOptions(schema, resource)
       ),
       context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema as "supasheet", resource)
+        columnsSchemaQueryOptions(schema, resource)
       ),
     ])
     if (!tableSchema || !columnsSchema?.length) throw notFound()
@@ -205,8 +205,6 @@ function RouteComponent() {
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-2xl px-4 py-4">
           <ResourceUpdateForm
-            schema={schema}
-            resource={resource}
             columnsSchema={columnsSchema}
             primaryKeys={primaryKeys}
             record={record!}

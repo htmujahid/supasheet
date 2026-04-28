@@ -33,7 +33,7 @@ export const Route = createFileRoute("/$schema/")({
 function ResourceIcon({
   item,
 }: {
-  item: { type: "table" | "view"; meta: { icon: string } }
+  item: { type: "table" | "view"; meta: { icon: string | undefined } }
 }) {
   const iconName = (item.meta?.icon ||
     (item.type === "table" ? "Table2" : "Eye")) as keyof typeof LucideIcons
@@ -155,7 +155,12 @@ function RouteComponent() {
                   <Card className="transition-colors hover:bg-accent/50">
                     <CardHeader>
                       <div className="flex items-center gap-2.5">
-                        <ResourceIcon item={resource} />
+                        <ResourceIcon
+                          item={{
+                            type: resource.type,
+                            meta: { icon: resource.meta.icon },
+                          }}
+                        />
                         <CardTitle className="truncate text-sm">
                           {formatTitle(resource.name)}
                         </CardTitle>

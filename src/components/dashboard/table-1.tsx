@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "#/components/ui/table"
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import { widgetDataQueryOptions } from "#/lib/supabase/data/dashboard"
 import type { DashboardWidgetSchema } from "#/lib/supabase/data/dashboard"
 
@@ -47,7 +48,11 @@ function Table1Skeleton() {
   )
 }
 
-export function Table1Widget({ widget }: { widget: DashboardWidgetSchema }) {
+export function Table1Widget<S extends DatabaseSchemas>({
+  widget,
+}: {
+  widget: DashboardWidgetSchema<S>
+}) {
   const [searchTerm, setSearchTerm] = useState("")
   const { data, isPending } = useQuery(
     widgetDataQueryOptions(widget.schema, widget.view_name)

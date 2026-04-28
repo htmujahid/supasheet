@@ -37,11 +37,11 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
   },
   loader: async ({ context, params: { schema, resource } }) => {
     const tableSchema = await context.queryClient.ensureQueryData(
-      tableSchemaQueryOptions(schema as "supasheet", resource)
+      tableSchemaQueryOptions(schema, resource)
     )
     if (!tableSchema) throw notFound()
     const columnsSchema = await context.queryClient.ensureQueryData(
-      columnsSchemaQueryOptions(schema as "supasheet", resource)
+      columnsSchemaQueryOptions(schema, resource)
     )
     if (!columnsSchema) throw notFound()
     return { columnsSchema, tableSchema }
@@ -173,7 +173,7 @@ function RouteComponent() {
       <DefaultHeader
         breadcrumbs={[
           {
-            title: formatTitle(resource),
+            title: formatTitle(tableSchema.name),
             url: `/${schema}/resource/${resource}`,
           },
           { title: "New record" },
@@ -182,8 +182,6 @@ function RouteComponent() {
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-2xl px-4 py-4">
           <ResourceNewForm
-            schema={schema}
-            resource={resource}
             columnsSchema={columnsSchema}
             tableSchema={tableSchema}
           />

@@ -2,11 +2,12 @@ import { useCallback, useMemo, useState } from "react"
 
 import type { Table } from "@tanstack/react-table"
 import { flexRender } from "@tanstack/react-table"
+
 import type { Column, RowsChangeData } from "react-data-grid"
 
 import { DataGrid as ReactDataGrid } from "#/components/ui/data-grid"
-import type { ColumnMetadata } from "#/types/fields"
 import { cn } from "#/lib/utils"
+import type { ColumnMetadata } from "#/types/fields"
 
 import { DataTablePagination } from "../data-table/data-table-pagination"
 import { DataTableToolbar } from "../data-table/data-table-toolbar"
@@ -52,10 +53,7 @@ export function DataGrid<TData>({
           renderHeaderCell: () =>
             header.isPlaceholder
               ? null
-              : flexRender(
-                  header.column.columnDef.header,
-                  header.getContext()
-                ),
+              : flexRender(header.column.columnDef.header, header.getContext()),
           renderEditCell: getEditCell(meta),
         } as Column<GridRow>
       })

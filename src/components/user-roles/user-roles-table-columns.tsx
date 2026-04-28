@@ -11,7 +11,7 @@ export type UserRole = Database["supasheet"]["Tables"]["user_roles"]["Row"]
 export function getUserRolesTableColumns({
   columnsSchema,
 }: {
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
 }): ColumnDef<UserRole, unknown>[] {
   return [
     {

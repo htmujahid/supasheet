@@ -11,7 +11,7 @@ type RolePermission = Database["supasheet"]["Tables"]["role_permissions"]["Row"]
 export function getRolePermissionsTableColumns({
   columnsSchema,
 }: {
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
 }): ColumnDef<RolePermission, unknown>[] {
   return [
     {

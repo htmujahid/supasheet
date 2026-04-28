@@ -51,7 +51,7 @@ export function SignInForm() {
         navigate({ to: "/auth/mfa", replace: true })
         return
       }
-      navigate({ to: safeRedirect as string, replace: true })
+      navigate({ to: safeRedirect, replace: true })
     },
   })
 

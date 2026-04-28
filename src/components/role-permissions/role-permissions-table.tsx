@@ -23,7 +23,7 @@ type RolePermission = Database["supasheet"]["Tables"]["role_permissions"]["Row"]
 
 interface RolePermissionsTableProps {
   data: RolePermission[]
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState

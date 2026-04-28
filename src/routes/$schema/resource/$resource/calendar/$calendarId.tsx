@@ -34,7 +34,6 @@ import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
-  columnsSchemaQueryOptions,
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
@@ -61,16 +60,11 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, calendarId } = params
 
-    const [tableSchema, columnsSchema] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema as "supasheet", resource)
-      ),
-      context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema as "supasheet", resource)
-      ),
-    ])
+    const tableSchema = await context.queryClient.ensureQueryData(
+      tableSchemaQueryOptions(schema, resource)
+    )
 
-    if (!columnsSchema?.length) throw notFound()
+    if (!tableSchema) throw notFound()
 
     const meta = (
       tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
@@ -85,7 +79,7 @@ export const Route = createFileRoute(
       resourceDataQueryOptions(schema, resource, metaData.query)
     )
 
-    return { calendarView, tableSchema, columnsSchema }
+    return { calendarView, tableSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Calendar | ${formatTitle(params.resource)} | Supasheet` }],
@@ -190,7 +184,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { view } = Route.useSearch()
-  const { calendarView, tableSchema, columnsSchema } = Route.useLoaderData()
+  const { calendarView, tableSchema } = Route.useLoaderData()
 
   const meta = (
     tableSchema?.comment ? JSON.parse(tableSchema.comment) : {}
@@ -262,7 +256,6 @@ function RouteComponent() {
           view={view}
           data={data}
           tableSchema={tableSchema}
-          columnsSchema={columnsSchema}
           currentView={calendarView}
         />
       </div>

@@ -3,7 +3,16 @@ import { mutationOptions, queryOptions } from "@tanstack/react-query"
 import type { ColumnFiltersState } from "@tanstack/react-table"
 
 import { SYSTEM_SCHEMAS } from "#/config/database.config"
-import type { DatabaseSchemas, TableMetadata } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  DatabaseSchemas,
+  DatabaseTables,
+  DatabaseViews,
+  TableMetadata,
+  TableSchema,
+  ViewMetadata,
+  ViewSchema,
+} from "#/lib/database-meta.types"
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
 
@@ -16,12 +25,12 @@ export const schemasQueryOptions = queryOptions({
     if (error) throw error
     return data.map((s) =>
       s.schema === SYSTEM_SCHEMAS[0] ? { schema: "core" } : s
-    )
+    ) as { schema: DatabaseSchemas }[]
   },
   staleTime: 1000 * 60 * 5,
 })
 
-export const resourcesQueryOptions = (schema: string) =>
+export const resourcesQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "schema", "resources", schema],
     queryFn: async () => {
@@ -35,31 +44,37 @@ export const resourcesQueryOptions = (schema: string) =>
 
       const tableResources = (tableSchema.data ?? [])
         .map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          schema: resource.schema as string,
+          name: resource.name as DatabaseTables<typeof schema>,
+          id: resource.name as DatabaseTables<typeof schema>,
+          schema: resource.schema as typeof schema,
           type: "table" as const,
-          meta: resource.comment ? JSON.parse(resource.comment) : {},
+          meta: (resource.comment
+            ? JSON.parse(resource.comment)
+            : {}) as TableMetadata,
         }))
         .filter((resource) => resource.meta.display !== "none")
 
       const viewResources = (viewSchema.data ?? [])
         .map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          schema: resource.schema as string,
+          name: resource.name as DatabaseViews<typeof schema>,
+          id: resource.name as DatabaseViews<typeof schema>,
+          schema: resource.schema as typeof schema,
           type: "view" as const,
-          meta: resource.comment ? JSON.parse(resource.comment) : {},
+          meta: (resource.comment
+            ? JSON.parse(resource.comment)
+            : {}) as ViewMetadata,
         }))
         .filter((resource) => resource.meta.display === "block")
 
       const matViewResources = (matViewSchema.data ?? [])
         .map((resource) => ({
-          name: resource.name as string,
-          id: resource.name as string,
-          schema: resource.schema as string,
+          name: resource.name as DatabaseViews<typeof schema>,
+          id: resource.name as DatabaseViews<typeof schema>,
+          schema: resource.schema as typeof schema,
           type: "view" as const,
-          meta: resource.comment ? JSON.parse(resource.comment) : {},
+          meta: (resource.comment
+            ? JSON.parse(resource.comment)
+            : {}) as ViewMetadata,
         }))
         .filter((resource) => resource.meta.display === "block")
 
@@ -68,7 +83,10 @@ export const resourcesQueryOptions = (schema: string) =>
     staleTime: 1000 * 60 * 5,
   })
 
-export const columnsSchemaQueryOptions = (schema: string, id: string) =>
+export const columnsSchemaQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  id: DatabaseTables<S> | DatabaseViews<S>
+) =>
   queryOptions({
     queryKey: ["supasheet", "schema", "columns", schema, id],
     queryFn: async () => {
@@ -76,12 +94,15 @@ export const columnsSchemaQueryOptions = (schema: string, id: string) =>
         .schema("supasheet")
         .rpc("get_columns", { schema_name: schema, table_name: id })
       if (error) throw error
-      return data
+      return (data as unknown as ColumnSchema<S>[]) ?? []
     },
     staleTime: 1000 * 60 * 5,
   })
 
-export const tableSchemaQueryOptions = (schema: string, id: string) =>
+export const tableSchemaQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  id: DatabaseTables<S> | DatabaseViews<S>
+) =>
   queryOptions({
     queryKey: ["supasheet", "schema", "table", schema, id],
     queryFn: async () => {
@@ -89,12 +110,15 @@ export const tableSchemaQueryOptions = (schema: string, id: string) =>
         .schema("supasheet")
         .rpc("get_tables", { schema_name: schema, table_name: id })
       if (error) throw error
-      return data[0] ?? null
+      return data as unknown as TableSchema<S> | null
     },
     staleTime: 1000 * 60 * 5,
   })
 
-export const viewSchemaQueryOptions = (schema: string, id: string) =>
+export const viewSchemaQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  id: DatabaseViews<S>
+) =>
   queryOptions({
     queryKey: ["supasheet", "schema", "view", schema, id],
     queryFn: async () => {
@@ -112,17 +136,17 @@ export const viewSchemaQueryOptions = (schema: string, id: string) =>
             view_name: id,
           })
         if (matViewError) return null
-        return matViewData[0] ?? null
+        return matViewData[0] as unknown as ViewSchema<S> | null
       }
 
-      return viewData[0] ?? null
+      return viewData[0] as unknown as ViewSchema<S> | null
     },
     staleTime: 1000 * 60 * 5,
   })
 
-export const resourceDataQueryOptions = (
-  schema: DatabaseSchemas,
-  resource: string,
+export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>,
   defaultQuery: TableMetadata["query"],
   page?: number,
   pageSize?: number,
@@ -148,7 +172,7 @@ export const resourceDataQueryOptions = (
           (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
-      let query = (supabase as any)
+      let query = supabase
         .schema(schema)
         .from(resource)
         .select("*" + joins.join(""), { count: "exact" })
@@ -165,16 +189,16 @@ export const resourceDataQueryOptions = (
       if (error) throw error
 
       return {
-        result: (data ?? []) as Record<string, any>[],
-        count: count as number | null,
+        result: (data ?? []) as unknown as Record<string, unknown>[],
+        count: count,
       }
     },
     staleTime: 1000 * 60 * 2,
   })
 
-export const singleResourceDataQueryOptions = (
-  schema: string,
-  resource: string,
+export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>,
   pk: Record<string, unknown>,
   defaultQuery?: TableMetadata["query"]
 ) =>
@@ -186,38 +210,38 @@ export const singleResourceDataQueryOptions = (
           (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
-      let query = (supabase as any)
+      let query = supabase
         .schema(schema)
         .from(resource)
         .select("*" + joins.join(""))
       for (const [col, val] of Object.entries(pk)) {
-        query = query.eq(col, val)
+        query = query.eq(col, val as never)
       }
       const { data, error } = await query.maybeSingle()
       if (error) throw error
 
-      return data as Record<string, any> | null
+      return data as Record<string, unknown> | null
     },
     staleTime: 0,
   })
 
-export const insertResourceMutationOptions = (
-  schema: string,
-  resource: string
+export const insertResourceMutationOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>
 ) =>
   mutationOptions({
-    mutationFn: async (row: Record<string, any>) => {
-      const { error } = await (supabase as any)
+    mutationFn: async (row: Record<string, unknown>) => {
+      const { error } = await supabase
         .schema(schema)
         .from(resource)
-        .insert(row)
+        .insert(row as never)
       if (error) throw error
     },
   })
 
-export const updateResourceMutationOptions = (
-  schema: string,
-  resource: string
+export const updateResourceMutationOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>
 ) =>
   mutationOptions({
     mutationFn: async ({
@@ -225,15 +249,15 @@ export const updateResourceMutationOptions = (
       data,
     }: {
       pk: Record<string, unknown>
-      data: Record<string, any>
+      data: Record<string, unknown>
     }) => {
-      let query = (supabase as any)
+      let query = supabase
         .schema(schema)
         .from(resource)
-        .update(data)
+        .update(data as never)
         .select()
       for (const [col, val] of Object.entries(pk)) {
-        query = query.eq(col, val)
+        query = query.eq(col, val as never)
       }
       const { data: updated, error } = await query
       if (error) throw error
@@ -245,19 +269,15 @@ export const updateResourceMutationOptions = (
     },
   })
 
-export const deleteResourceMutationOptions = (
-  schema: string,
-  resource: string
+export const deleteResourceMutationOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>
 ) =>
   mutationOptions({
     mutationFn: async (pk: Record<string, unknown>) => {
-      let query = (supabase as any)
-        .schema(schema)
-        .from(resource)
-        .delete()
-        .select()
+      let query = supabase.schema(schema).from(resource).delete().select()
       for (const [col, val] of Object.entries(pk)) {
-        query = query.eq(col, val)
+        query = query.eq(col, val as never)
       }
       const { data: deleted, error } = await query
       if (error) throw error
@@ -269,7 +289,10 @@ export const deleteResourceMutationOptions = (
     },
   })
 
-export const relatedTablesSchemaQueryOptions = (schema: string, id: string) =>
+export const relatedTablesSchemaQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  id: DatabaseTables<S> | DatabaseViews<S>
+) =>
   queryOptions({
     queryKey: ["supasheet", "schema", "related_tables", schema, id],
     queryFn: async () => {

@@ -21,7 +21,7 @@ import type { User } from "./users-table-columns"
 
 interface UsersTableProps {
   data: User[]
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState

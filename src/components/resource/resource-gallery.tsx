@@ -28,19 +28,17 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey } from "#/lib/database-meta.types"
-import type { Database } from "#/lib/database.types"
+import type {
+  DatabaseSchemas,
+  DatabaseTables,
+  DatabaseViews,
+  PrimaryKey,
+  TableSchema,
+} from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 import { cn } from "#/lib/utils"
-
-type TableSchema =
-  | Database["supasheet"]["Functions"]["get_tables"]["Returns"][number]
-  | null
-
-type ColumnSchema =
-  Database["supasheet"]["Functions"]["get_columns"]["Returns"][number]
 
 export interface GalleryViewData {
   cover: string | null
@@ -53,14 +51,9 @@ export interface GalleryViewData {
 interface ResourceGalleryProps {
   data: GalleryViewData[]
   tableSchema: TableSchema
-  columnsSchema: ColumnSchema[]
 }
 
-export function ResourceGallery({
-  data,
-  tableSchema,
-  columnsSchema: _columnsSchema,
-}: ResourceGalleryProps) {
+export function ResourceGallery({ data, tableSchema }: ResourceGalleryProps) {
   const schema = tableSchema?.schema ?? ""
   const resource = tableSchema?.name ?? ""
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
@@ -142,7 +135,7 @@ export function ResourceGallery({
   )
 }
 
-function GalleryContextMenu({
+function GalleryContextMenu<S extends DatabaseSchemas>({
   children,
   item,
   schema,
@@ -153,8 +146,8 @@ function GalleryContextMenu({
 }: {
   children: React.ReactNode
   item: GalleryViewData
-  schema: string
-  resource: string
+  schema: S
+  resource: DatabaseViews<S> | DatabaseTables<S>
   pkSplat: string
   primaryKeys: PrimaryKey[]
   isTable: boolean

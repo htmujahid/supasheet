@@ -19,8 +19,7 @@ import {
 } from "#/components/ui/event-calendar"
 import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey } from "#/lib/database-meta.types"
-import type { Database } from "#/lib/database.types"
+import type { PrimaryKey, TableSchema } from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
@@ -29,13 +28,6 @@ import {
 } from "#/lib/supabase/data/resource"
 
 export type { IEvent, TCalendarView }
-
-type TableSchema =
-  | Database["supasheet"]["Functions"]["get_tables"]["Returns"][number]
-  | null
-
-type ColumnSchema =
-  Database["supasheet"]["Functions"]["get_columns"]["Returns"][number]
 
 export type CalendarView = {
   id: string
@@ -78,7 +70,6 @@ export interface ResourceCalendarProps {
   view?: TCalendarView
   data: IEvent[]
   tableSchema: TableSchema
-  columnsSchema: ColumnSchema[]
   currentView: CalendarView
 }
 
@@ -86,7 +77,6 @@ export function ResourceCalendar({
   view = "month",
   data,
   tableSchema,
-  columnsSchema: _columnsSchema,
   currentView,
 }: ResourceCalendarProps) {
   const schema = tableSchema?.schema ?? ""

@@ -15,7 +15,7 @@ import { getAuditLogsTableColumns } from "./audit-logs-table-columns"
 
 interface AuditLogTableProps {
   data: AuditLog[]
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
   sorting: SortingState
   pagination: PaginationState
   columnFilters: ColumnFiltersState

@@ -16,7 +16,7 @@ export type User = Database["supasheet"]["Tables"]["users"]["Row"]
 export function getUsersTableColumns({
   columnsSchema,
 }: {
-  columnsSchema: ColumnSchema[]
+  columnsSchema: ColumnSchema<"supasheet">[]
 }): ColumnDef<User, unknown>[] {
   return [
     {

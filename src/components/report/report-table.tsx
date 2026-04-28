@@ -8,11 +8,9 @@ import type {
 
 import { DataTable } from "#/components/data-table/data-table"
 import { useDataTable } from "#/hooks/use-data-table"
-import type { Database } from "#/lib/database.types"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 
 import { getReportTableColumns } from "./report-table-columns"
-
-type ColumnSchema = Database["supasheet"]["Tables"]["columns"]["Row"]
 
 interface ReportTableProps {
   data: Record<string, unknown>[]

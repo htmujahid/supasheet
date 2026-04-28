@@ -20,18 +20,18 @@ import { formatTitle } from "#/lib/format"
 import { createRolePermissionMutationOptions } from "#/lib/supabase/data/core"
 import type { AppPermission, AppRole } from "#/lib/supabase/data/core"
 
-function isSkippedForCreate(col: ColumnSchema): boolean {
+function isSkippedForCreate(col: ColumnSchema<"supasheet">): boolean {
   return (col.is_generated ?? false) || (col.is_identity ?? false)
 }
 
-function getInitialValue(col: ColumnSchema): unknown {
+function getInitialValue(col: ColumnSchema<"supasheet">): unknown {
   if (col.data_type === "ARRAY") return []
   return ""
 }
 
 interface RolePermissionsFormProps {
-  columnsSchema: ColumnSchema[]
-  tableSchema: TableSchema | null
+  columnsSchema: ColumnSchema<"supasheet">[]
+  tableSchema: TableSchema<"supasheet"> | null
 }
 
 export function RolePermissionsForm({

@@ -18,6 +18,7 @@ import {
   FolderIcon,
   HomeIcon,
 } from "lucide-react"
+import { z } from "zod"
 
 import { ModuleSwitcher } from "#/components/layouts/module-switcher"
 import { NavMain } from "#/components/layouts/nav-main"
@@ -40,6 +41,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "#/components/ui/sidebar"
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { userPermissionsQueryOptions } from "#/lib/supabase/data/core"
 import {
@@ -48,6 +50,9 @@ import {
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema")({
+  params: z.object({
+    schema: z.string<DatabaseSchemas>(),
+  }),
   beforeLoad: async ({ context, params }) => {
     const permissions = context.authUser
       ? await context.queryClient.ensureQueryData(

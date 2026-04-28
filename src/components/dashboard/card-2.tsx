@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import { widgetDataQueryOptions } from "#/lib/supabase/data/dashboard"
 import type { DashboardWidgetSchema } from "#/lib/supabase/data/dashboard"
 
@@ -34,7 +35,11 @@ function Card2Skeleton() {
   )
 }
 
-export function Card2({ widget }: { widget: DashboardWidgetSchema }) {
+export function Card2<S extends DatabaseSchemas>({
+  widget,
+}: {
+  widget: DashboardWidgetSchema<S>
+}) {
   const { data, isPending } = useQuery(
     widgetDataQueryOptions(widget.schema, widget.view_name)
   )
