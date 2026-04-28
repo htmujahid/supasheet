@@ -19,6 +19,14 @@ import type {
 
 import { DataTable } from "#/components/data-table/data-table"
 import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "#/components/ui/empty"
+import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
 } from "#/lib/supabase/data/resource"
@@ -105,10 +113,38 @@ export function ForeignTableSheet({
           </SheetDescription>
         </SheetHeader>
         <div className="data-table-container px-4">
-          <DataTable
-            table={table}
-            className="[&>div:nth-child(2)]:h-[calc(100svh-174px)]"
-          />
+          {columnsSchema && !columnsSchema.length ? (
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                </EmptyMedia>
+                <EmptyTitle>Access Denied</EmptyTitle>
+              </EmptyHeader>
+              <EmptyContent>
+                <EmptyDescription>
+                  You don&apos;t have permission to access this table.
+                </EmptyDescription>
+              </EmptyContent>
+            </Empty>
+          ) : (
+            <DataTable
+              table={table}
+              className="[&>div:nth-child(2)]:h-[calc(100svh-174px)]"
+            />
+          )}
         </div>
       </SheetContent>
     </Sheet>
