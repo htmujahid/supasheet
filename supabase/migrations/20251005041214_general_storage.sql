@@ -1,14 +1,14 @@
--- Cleanup
-DROP POLICY IF EXISTS "enable_read_authenticated_public_bucket" ON storage.buckets;
-DROP POLICY IF EXISTS "enable_read_all_public_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_insert_authenticated_public_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_update_owner_public_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_delete_owner_public_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_read_authenticated_personal_bucket" ON storage.buckets;
-DROP POLICY IF EXISTS "enable_read_owner_personal_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_insert_owner_personal_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_update_owner_personal_objects" ON storage.objects;
-DROP POLICY IF EXISTS "enable_delete_owner_personal_objects" ON storage.objects;
+-- Cleanup policies only
+DROP POLICY IF EXISTS enable_read_authenticated_public_bucket ON storage.buckets;
+DROP POLICY IF EXISTS enable_read_all_public_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_insert_authenticated_public_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_update_owner_public_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_delete_owner_public_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_read_authenticated_personal_bucket ON storage.buckets;
+DROP POLICY IF EXISTS enable_read_owner_personal_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_insert_owner_personal_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_update_owner_personal_objects ON storage.objects;
+DROP POLICY IF EXISTS enable_delete_owner_personal_objects ON storage.objects;
 
 -- Buckets
 INSERT INTO storage.buckets (id, name, public)
