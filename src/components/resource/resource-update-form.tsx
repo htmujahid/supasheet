@@ -17,60 +17,18 @@ import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
   PrimaryKey,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
 
 import { ResourceFormField } from "./fields/resource-form-field"
+import {
+  buildUpdatePayload,
+  getUpdateInitialValue,
+  isSkippedForUpdate,
+} from "./resource-form-utils"
 import { useAppForm } from "./form-hook"
-
-function isSkippedForUpdate(
-  col: ColumnSchema,
-  primaryKeys: PrimaryKey[]
-): boolean {
-  if (col.is_generated ?? false) return true
-  if (primaryKeys.some((pk) => pk.name === col.name)) return true
-  return false
-}
-
-function getInitialValue(
-  col: ColumnSchema,
-  record: Record<string, unknown>
-): unknown {
-  const val = record[col.name ?? col.id]
-  if (val === null || val === undefined) return ""
-  if (col.data_type === "ARRAY") return Array.isArray(val) ? val : []
-  if (col.format === "json" || col.format === "jsonb") {
-    return typeof val === "string" ? val : JSON.stringify(val, null, 2)
-  }
-  return val
-}
-
-function buildPayload(
-  value: Record<string, unknown>,
-  cols: ColumnSchema[]
-): Record<string, unknown> {
-  const payload: Record<string, unknown> = {}
-  for (const [k, v] of Object.entries(value)) {
-    const col = cols.find((c) => (c.name ?? c.id) === k)
-    if (v === "" || v === null || v === undefined) {
-      payload[k] = null
-    } else if (
-      col &&
-      (col.format === "json" || col.format === "jsonb") &&
-      typeof v === "string"
-    ) {
-      try {
-        payload[k] = JSON.parse(v)
-      } catch {
-        payload[k] = v
-      }
-    } else {
-      payload[k] = v
-    }
-  }
-  return payload
-}
 
 interface ResourceUpdateFormProps {
   columnsSchema: ColumnSchema[]
@@ -95,17 +53,22 @@ export function ResourceUpdateForm({
     primaryKeys.map((k) => [k.name, record[k.name]])
   )
 
+  const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  const columnsMeta = tableMeta.columns
+
   const primaryKeyCols = columnsSchema.filter((col) =>
     primaryKeys.some((key) => key.name === col.name)
   )
   const editableCols = columnsSchema.filter(
-    (col) => !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)
+    (col) =>
+      !isSkippedForUpdate(col, primaryKeys, columnsMeta) &&
+      (col.is_updatable ?? true)
   )
 
   const defaultValues = Object.fromEntries(
     editableCols.map((col) => [
       col.name ?? col.id,
-      getInitialValue(col, record),
+      getUpdateInitialValue(col, record),
     ])
   )
 
@@ -116,7 +79,7 @@ export function ResourceUpdateForm({
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
-      const data = buildPayload(value, editableCols)
+      const data = buildUpdatePayload(value, editableCols)
       await updateRow({ pk, data })
       queryClient.invalidateQueries({
         queryKey: ["supasheet", "resource-data", schema, resource],

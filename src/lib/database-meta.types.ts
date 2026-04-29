@@ -77,7 +77,6 @@ export type TableMetadata = {
     readOnly: string[],
     writeOnce: string[],
     hidden: string[]
-    metadata: string[]
   },
   query?: {
     sort?: { id: string; desc: boolean }[]

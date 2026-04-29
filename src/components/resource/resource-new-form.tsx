@@ -12,46 +12,16 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card"
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type { ColumnSchema, TableMetadata, TableSchema } from "#/lib/database-meta.types"
 import { insertResourceMutationOptions } from "#/lib/supabase/data/resource"
 
 import { ResourceFormField } from "./fields/resource-form-field"
+import {
+  buildCreatePayload,
+  getCreateInitialValue,
+  isSkippedForCreate,
+} from "./resource-form-utils"
 import { useAppForm } from "./form-hook"
-
-function isSkippedForCreate(col: ColumnSchema): boolean {
-  return (col.is_generated ?? false) || (col.is_identity ?? false)
-}
-
-function getInitialValue(col: ColumnSchema): unknown {
-  // Arrays default to empty array so ArrayField renders correctly
-  if (col.data_type === "ARRAY") return []
-  return ""
-}
-
-function buildPayload(
-  value: Record<string, unknown>,
-  cols: ColumnSchema[]
-): Record<string, unknown> {
-  const payload: Record<string, unknown> = {}
-  for (const [k, v] of Object.entries(value)) {
-    if (v === "" || v === null || v === undefined) continue
-    const col = cols.find((c) => (c.name ?? c.id) === k)
-    if (
-      col &&
-      (col.format === "json" || col.format === "jsonb") &&
-      typeof v === "string"
-    ) {
-      try {
-        payload[k] = JSON.parse(v)
-      } catch {
-        payload[k] = v
-      }
-    } else {
-      payload[k] = v
-    }
-  }
-  return payload
-}
 
 export function ResourceNewForm({
   columnsSchema,
@@ -66,10 +36,15 @@ export function ResourceNewForm({
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const writableCols = columnsSchema.filter((col) => !isSkippedForCreate(col))
+  const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  const columnsMeta = tableMeta.columns
+
+  const writableCols = columnsSchema.filter(
+    (col) => !isSkippedForCreate(col, columnsMeta)
+  )
 
   const defaultValues = Object.fromEntries(
-    writableCols.map((col) => [col.name ?? col.id, getInitialValue(col)])
+    writableCols.map((col) => [col.name ?? col.id, getCreateInitialValue(col)])
   )
 
   const { mutateAsync: insertRow } = useMutation(
@@ -79,7 +54,7 @@ export function ResourceNewForm({
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
-      const payload = buildPayload(value, writableCols)
+      const payload = buildCreatePayload(value, writableCols)
       try {
         await insertRow(payload)
       } catch (error: any) {

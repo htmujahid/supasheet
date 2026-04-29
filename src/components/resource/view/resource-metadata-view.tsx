@@ -9,7 +9,11 @@ import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
 import { METADATA_COLUMNS } from "#/config/database.config"
 import { getColumnMetadata } from "#/lib/columns"
-import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  ResourceSchema,
+  TableMetadata,
+} from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 
@@ -25,10 +29,13 @@ export function ResourceMetadataView({
   singleResourceData: Record<string, unknown>
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
+  const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
+  const hiddenColumns = tableMeta.columns?.hidden ?? []
   const metadataColumns =
-    columnsSchema?.filter((column) =>
-      METADATA_COLUMNS.includes(column.name as string)
-    ) ?? []
+    columnsSchema?.filter((column) => {
+      const name = column.name as string
+      return METADATA_COLUMNS.includes(name) && !hiddenColumns.includes(name)
+    }) ?? []
 
   if (!metadataColumns.length) return null
 
