@@ -1,6 +1,4 @@
 -- Cleanup
-DELETE FROM storage.buckets WHERE id IN ('public', 'personal');
-
 DROP POLICY IF EXISTS "enable_read_authenticated_public_bucket" ON storage.buckets;
 DROP POLICY IF EXISTS "enable_read_all_public_objects" ON storage.objects;
 DROP POLICY IF EXISTS "enable_insert_authenticated_public_objects" ON storage.objects;
