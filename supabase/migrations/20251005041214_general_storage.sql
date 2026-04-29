@@ -1,5 +1,6 @@
 insert into storage.buckets (id, name, public)
-values ('public', 'public', true), ('personal', 'personal', true);
+values ('public', 'public', true), ('personal', 'personal', true)
+ON CONFLICT DO NOTHING;
 
 create policy "Enable read access to authenticated users for public bucket" ON storage.buckets
 as permissive for select
