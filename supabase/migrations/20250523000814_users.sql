@@ -184,7 +184,8 @@ execute procedure supasheet.new_user_created_setup();
 -- Storage
 -- user Image
 insert into storage.buckets (id, name, public)
-values ('account_image', 'account_image', true);
+values ('account_image', 'account_image', true)
+ON CONFLICT DO NOTHING;
 
 -- Function: get the storage filename as a UUID.
 -- Useful if you want to name files with UUIDs related to an user
