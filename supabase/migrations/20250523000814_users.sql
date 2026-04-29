@@ -207,6 +207,8 @@ grant
     service_role;
 
 -- RLS policies for storage bucket account_image
+drop policy if exists account_image on storage.objects;
+
 create policy account_image on storage.objects for all using (
     bucket_id = 'account_image'
         and (            
