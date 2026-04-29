@@ -1,5 +1,6 @@
 insert into storage.buckets (id, name, public) 
-values ('uploads', 'uploads', true);
+values ('uploads', 'uploads', true)
+ON CONFLICT DO NOTHING;
 
 create policy "Enable read access to authenticated users for upload bucket" ON storage.buckets
 as permissive for select
