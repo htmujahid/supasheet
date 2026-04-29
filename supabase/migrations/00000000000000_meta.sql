@@ -451,8 +451,7 @@ INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materi
 ----------------------------------------------------------------
 -- Trigger Function for CREATE events
 ----------------------------------------------------------------
--- Create the event trigger function with name parsing
-CREATE OR REPLACE FUNCTION log_new_table_creation()
+CREATE OR REPLACE FUNCTION supasheet.log_new_table_creation()
 RETURNS event_trigger AS $$
 DECLARE
     obj record;
@@ -465,11 +464,8 @@ BEGIN
         schema_name := obj.schema_name;
         full_identity := obj.object_identity;
         
-        -- Extract just the object name (without schema prefix)
-        -- If object_identity is "public.my_table", this gets "my_table"
         object_name := split_part(full_identity, '.', 2);
         
-        -- If there's no dot, the entire identity is the object name
         IF object_name = '' THEN
             object_name := full_identity;
         END IF;
@@ -480,52 +476,34 @@ BEGIN
         INSERT INTO supasheet.columns
         SELECT * FROM supasheet.generate_columns(schema_name, schema_name || '.' || object_name) on conflict do nothing;
 
-        -- Check if it's a table creation
         IF obj.object_type = 'table' THEN
-            DELETE FROM supasheet.tables
-            WHERE schema = schema_name;
-
-            INSERT INTO supasheet.tables
-            SELECT * FROM supasheet.generate_tables(schema_name);
-
-            DELETE FROM supasheet.tables
-            WHERE schema = 'supasheet';
-
-            INSERT INTO supasheet.tables
-            SELECT * FROM supasheet.generate_tables('supasheet');
+            DELETE FROM supasheet.tables WHERE schema = schema_name;
+            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
+            DELETE FROM supasheet.tables WHERE schema = 'supasheet';
+            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet');
         
-        -- Check if it's a view creation
         ELSIF obj.object_type = 'view' THEN
-            DELETE FROM supasheet.views 
-            WHERE schema = schema_name and name = object_name;
-            
-            INSERT INTO supasheet.views 
-            SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
+            DELETE FROM supasheet.views WHERE schema = schema_name and name = object_name;
+            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
         
-        -- Check if it's a materialized view creation
         ELSIF obj.object_type = 'materialized view' THEN
-            DELETE FROM supasheet.materialized_views 
-            WHERE schema = schema_name and name = object_name;
-            
-            INSERT INTO supasheet.materialized_views 
-            SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
+            DELETE FROM supasheet.materialized_views WHERE schema = schema_name and name = object_name;
+            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
         END IF;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the event trigger
 CREATE EVENT TRIGGER table_creation_trigger
 ON ddl_command_end
 WHEN TAG IN ('CREATE TABLE', 'CREATE VIEW', 'CREATE MATERIALIZED VIEW')
-EXECUTE FUNCTION log_new_table_creation();
+EXECUTE FUNCTION supasheet.log_new_table_creation();
 
 
 ----------------------------------------------------------------
 -- Trigger Function for DROP events
 ----------------------------------------------------------------
--- Create the event trigger function for handling DROP operations
-CREATE OR REPLACE FUNCTION log_table_deletion()
+CREATE OR REPLACE FUNCTION supasheet.log_table_deletion()
 RETURNS event_trigger AS $$
 DECLARE
     obj record;
@@ -537,41 +515,30 @@ BEGIN
         schema_name := obj.schema_name;
         object_name := obj.object_name;
 
-        -- Delete columns for any dropped object
         DELETE FROM supasheet.columns
         WHERE schema = schema_name AND "table" = object_name;
 
-        -- Check if it's a table deletion
         IF obj.object_type = 'table' THEN
-            DELETE FROM supasheet.tables
-            WHERE schema = schema_name AND name = object_name;
-
-        -- Check if it's a view deletion
+            DELETE FROM supasheet.tables WHERE schema = schema_name AND name = object_name;
         ELSIF obj.object_type = 'view' THEN
-            DELETE FROM supasheet.views
-            WHERE schema = schema_name AND name = object_name;
-
-        -- Check if it's a materialized view deletion
+            DELETE FROM supasheet.views WHERE schema = schema_name AND name = object_name;
         ELSIF obj.object_type = 'materialized view' THEN
-            DELETE FROM supasheet.materialized_views
-            WHERE schema = schema_name AND name = object_name;
+            DELETE FROM supasheet.materialized_views WHERE schema = schema_name AND name = object_name;
         END IF;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the event trigger for DROP operations
 CREATE EVENT TRIGGER table_deletion_trigger
 ON sql_drop
 WHEN TAG IN ('DROP TABLE', 'DROP VIEW', 'DROP MATERIALIZED VIEW')
-EXECUTE FUNCTION log_table_deletion();
+EXECUTE FUNCTION supasheet.log_table_deletion();
 
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER events
 ----------------------------------------------------------------
--- Create the event trigger function for handling ALTER operations
-CREATE OR REPLACE FUNCTION log_table_alteration()
+CREATE OR REPLACE FUNCTION supasheet.log_table_alteration()
 RETURNS event_trigger AS $$
 DECLARE
     obj record;
@@ -584,68 +551,43 @@ BEGIN
         schema_name := obj.schema_name;
         full_identity := obj.object_identity;
 
-        -- Extract just the object name (without schema prefix)
-        -- If object_identity is "public.my_table", this gets "my_table"
         object_name := split_part(full_identity, '.', 2);
 
-        -- If there's no dot, the entire identity is the object name
         IF object_name = '' THEN
             object_name := full_identity;
         END IF;
 
-        -- Update columns for any altered object
-        DELETE FROM supasheet.columns
-        WHERE schema = schema_name AND "table" = object_name;
+        DELETE FROM supasheet.columns WHERE schema = schema_name AND "table" = object_name;
+        INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns(schema_name, schema_name || '.' || object_name);
 
-        INSERT INTO supasheet.columns
-        SELECT * FROM supasheet.generate_columns(schema_name, schema_name || '.' || object_name);
-
-        -- Check if it's a table alteration
         IF obj.object_type = 'table' THEN
-            DELETE FROM supasheet.tables
-            WHERE schema = schema_name;
+            DELETE FROM supasheet.tables WHERE schema = schema_name;
+            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
+            DELETE FROM supasheet.tables WHERE schema = 'supasheet';
+            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet');
 
-            INSERT INTO supasheet.tables
-            SELECT * FROM supasheet.generate_tables(schema_name);
-
-            DELETE FROM supasheet.tables
-            WHERE schema = 'supasheet';
-
-            INSERT INTO supasheet.tables
-            SELECT * FROM supasheet.generate_tables('supasheet');
-
-        -- Check if it's a view alteration
         ELSIF obj.object_type = 'view' THEN
-            DELETE FROM supasheet.views
-            WHERE schema = schema_name AND name = object_name;
+            DELETE FROM supasheet.views WHERE schema = schema_name AND name = object_name;
+            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
 
-            INSERT INTO supasheet.views
-            SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
-
-        -- Check if it's a materialized view alteration
         ELSIF obj.object_type = 'materialized view' THEN
-            DELETE FROM supasheet.materialized_views
-            WHERE schema = schema_name AND name = object_name;
-
-            INSERT INTO supasheet.materialized_views
-            SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
+            DELETE FROM supasheet.materialized_views WHERE schema = schema_name AND name = object_name;
+            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
         END IF;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the event trigger for ALTER operations
 CREATE EVENT TRIGGER table_alteration_trigger
 ON ddl_command_end
 WHEN TAG IN ('ALTER TABLE', 'ALTER VIEW', 'ALTER MATERIALIZED VIEW')
-EXECUTE FUNCTION log_table_alteration();
+EXECUTE FUNCTION supasheet.log_table_alteration();
 
 
 ----------------------------------------------------------------
 -- Trigger Function for COMMENT events
 ----------------------------------------------------------------
--- Create the event trigger function for handling COMMENT operations
-CREATE OR REPLACE FUNCTION log_comment_changes()
+CREATE OR REPLACE FUNCTION supasheet.log_comment_changes()
 RETURNS event_trigger AS $$
 DECLARE
     obj record;
@@ -660,13 +602,7 @@ BEGIN
         schema_name := obj.schema_name;
         full_identity := obj.object_identity;
 
-        -- Extract just the object name (without schema prefix)
-        -- For columns, object_identity is like "public.table_name.column_name"
-        -- For tables/views, it's like "public.table_name"
-
-        -- Check if it's a column comment (has two dots)
         IF obj.object_type = 'table column' THEN
-            -- Extract table name (second part) and column name (third part)
             object_name := split_part(full_identity, '.', 2);
             column_name := split_part(full_identity, '.', 3);
 
@@ -675,43 +611,32 @@ BEGIN
                 column_name := split_part(full_identity, '.', 2);
             END IF;
 
-            -- Get the table OID
             table_oid := (quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid;
 
-            -- Update only the comment for the specific column
             UPDATE supasheet.columns
             SET comment = col_description(
                 table_oid,
-                (SELECT attnum FROM pg_attribute
-                 WHERE attrelid = table_oid
-                 AND attname = column_name)
+                (SELECT attnum FROM pg_attribute WHERE attrelid = table_oid AND attname = column_name)
             )
-            WHERE schema = schema_name
-            AND "table" = object_name
-            AND name = column_name;
+            WHERE schema = schema_name AND "table" = object_name AND name = column_name;
 
         ELSE
-            -- For table, view, or materialized view comments
             object_name := split_part(full_identity, '.', 2);
 
-            -- If there's no dot, the entire identity is the object name
             IF object_name = '' THEN
                 object_name := full_identity;
             END IF;
 
-            -- Check if it's a table comment
             IF obj.object_type = 'table' THEN
                 UPDATE supasheet.tables
                 SET comment = obj_description((quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid)
                 WHERE schema = schema_name AND name = object_name;
 
-            -- Check if it's a view comment
             ELSIF obj.object_type = 'view' THEN
                 UPDATE supasheet.views
                 SET comment = obj_description((quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid)
                 WHERE schema = schema_name AND name = object_name;
 
-            -- Check if it's a materialized view comment
             ELSIF obj.object_type = 'materialized view' THEN
                 UPDATE supasheet.materialized_views
                 SET comment = obj_description((quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid)
@@ -722,18 +647,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the event trigger for COMMENT operations
 CREATE EVENT TRIGGER comment_trigger
 ON ddl_command_end
 WHEN TAG IN ('COMMENT')
-EXECUTE FUNCTION log_comment_changes();
+EXECUTE FUNCTION supasheet.log_comment_changes();
 
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER TYPE events (enum changes)
 ----------------------------------------------------------------
--- Create the event trigger function for handling ALTER TYPE operations on enums
-CREATE OR REPLACE FUNCTION log_enum_alteration()
+CREATE OR REPLACE FUNCTION supasheet.log_enum_alteration()
 RETURNS event_trigger AS $$
 DECLARE
     obj record;
@@ -744,20 +667,16 @@ DECLARE
 BEGIN
     FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
     LOOP
-        -- Only process if it's a type alteration
         IF obj.object_type = 'type' THEN
             schema_name := obj.schema_name;
             full_identity := obj.object_identity;
 
-            -- Extract just the type name (without schema prefix)
             type_name := split_part(full_identity, '.', 2);
 
-            -- If there's no dot, the entire identity is the type name
             IF type_name = '' THEN
                 type_name := full_identity;
             END IF;
 
-            -- Get the updated enum values from pg_catalog.pg_enum
             SELECT array_to_json(
                 array(
                     SELECT enumlabel
@@ -767,8 +686,6 @@ BEGIN
                 )
             ) INTO enum_values;
 
-            -- Update all columns that use this enum type
-            -- This finds columns where data_type is 'USER-DEFINED' and actual_type matches the enum name
             UPDATE supasheet.columns
             SET enums = enum_values
             WHERE schema = schema_name
@@ -779,9 +696,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the event trigger for ALTER TYPE operations
 CREATE EVENT TRIGGER enum_alteration_trigger
 ON ddl_command_end
 WHEN TAG IN ('ALTER TYPE')
-EXECUTE FUNCTION log_enum_alteration();
-
+EXECUTE FUNCTION supasheet.log_enum_alteration();
