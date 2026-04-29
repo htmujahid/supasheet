@@ -1,4 +1,4 @@
-DELETE FROM storage.buckets WHERE id = 'uploads';
+-- Cleanup
 
 DROP POLICY IF EXISTS enable_read_authenticated_uploads_bucket ON storage.buckets;
 DROP POLICY IF EXISTS enable_read_authorized_uploads_objects ON storage.objects;
@@ -8,7 +8,8 @@ DROP POLICY IF EXISTS enable_delete_authorized_uploads_objects ON storage.object
 
 -- Bucket
 INSERT INTO storage.buckets (id, name, public)
-VALUES ('uploads', 'uploads', true);
+VALUES ('uploads', 'uploads', true)
+ON CONFLICT DO NOTHING;
 
 -- Uploads bucket policies
 CREATE POLICY enable_read_authenticated_uploads_bucket ON storage.buckets
