@@ -1,4 +1,4 @@
-CREATE TYPE FILE_OBJECT AS (
+CREATE TYPE supasheet.FILE_OBJECT AS (
   name VARCHAR(255),
   type VARCHAR(100),
   size BIGINT,
@@ -6,22 +6,22 @@ CREATE TYPE FILE_OBJECT AS (
   last_modified TIMESTAMP
 );
 
-create domain FILE as FILE_OBJECT[];
+CREATE DOMAIN supasheet.FILE AS supasheet.FILE_OBJECT[];
 
-create domain EMAIL as text;
+CREATE DOMAIN supasheet.EMAIL AS text;
 
-create domain TEL as text;
+CREATE DOMAIN supasheet.TEL AS text;
 
-create domain RATING as real check (value >= 0 and value <= 5);
+CREATE DOMAIN supasheet.RATING AS real CHECK (value >= 0 AND value <= 5);
 
-create domain PERCENTAGE as real;
+CREATE DOMAIN supasheet.PERCENTAGE AS real;
 
-create domain URL as text;
+CREATE DOMAIN supasheet.URL AS text;
 
-create domain DURATION as bigint;
+CREATE DOMAIN supasheet.DURATION AS bigint;
 
-create domain COLOR as varchar(16);
+CREATE DOMAIN supasheet.COLOR AS varchar(16);
 
-create domain AVATAR as FILE_OBJECT;
+CREATE DOMAIN supasheet.AVATAR AS supasheet.FILE_OBJECT;
 
-create domain RICH_TEXT as text;
+CREATE DOMAIN supasheet.RICH_TEXT AS text;
