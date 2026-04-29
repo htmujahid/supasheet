@@ -1,12 +1,11 @@
--- Cleanup
-
+-- Cleanup policies only (no DELETE on storage.buckets)
 DROP POLICY IF EXISTS enable_read_authenticated_uploads_bucket ON storage.buckets;
 DROP POLICY IF EXISTS enable_read_authorized_uploads_objects ON storage.objects;
 DROP POLICY IF EXISTS enable_insert_authorized_uploads_objects ON storage.objects;
 DROP POLICY IF EXISTS enable_update_authorized_uploads_objects ON storage.objects;
 DROP POLICY IF EXISTS enable_delete_authorized_uploads_objects ON storage.objects;
 
--- Bucket
+-- Bucket (skip if exists)
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('uploads', 'uploads', true)
 ON CONFLICT DO NOTHING;
