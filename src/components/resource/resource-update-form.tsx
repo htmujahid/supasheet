@@ -95,7 +95,7 @@ export function ResourceUpdateForm({
     primaryKeys.map((k) => [k.name, record[k.name]])
   )
 
-  const readonlyCols = columnsSchema.filter((col) =>
+  const primaryKeyCols = columnsSchema.filter((col) =>
     primaryKeys.some((key) => key.name === col.name)
   )
   const editableCols = columnsSchema.filter(
@@ -151,7 +151,7 @@ export function ResourceUpdateForm({
         }}
       >
         <CardContent className="space-y-4 py-4">
-          {readonlyCols.map((col) => {
+          {primaryKeyCols.map((col) => {
             const name = col.name ?? col.id
             return (
               <Field key={name}>

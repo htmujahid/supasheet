@@ -1,6 +1,6 @@
-import { SquarePenIcon } from "lucide-react"
+import { EllipsisIcon } from "lucide-react"
 
-import { Button } from "#/components/ui/button"
+import { buttonVariants } from "#/components/ui/button"
 import { ButtonGroup } from "#/components/ui/button-group"
 import {
   DropdownMenu,
@@ -26,10 +26,8 @@ export function FieldOptionDropdown({
   return (
     <ButtonGroup>
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="outline" size={"icon"} className="">
-            <SquarePenIcon size={16} aria-hidden="true" />
-          </Button>
+        <DropdownMenuTrigger className={buttonVariants({ variant: "outline", size: "icon" })}>
+          <EllipsisIcon size={16} aria-hidden="true" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end">
           {!columnMetadata.required && (

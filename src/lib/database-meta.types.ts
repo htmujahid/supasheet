@@ -73,7 +73,12 @@ export type PaginatedData<T> = {
 export type TableMetadata = {
   display?: "block" | "none"
   icon?: string
-  primaryItem?: string
+  columns?: {
+    readOnly: string[],
+    writeOnce: string[],
+    hidden: string[]
+    metadata: string[]
+  },
   query?: {
     sort?: { id: string; desc: boolean }[]
     filter?: {
@@ -84,6 +89,7 @@ export type TableMetadata = {
     }[]
     join?: { table: string; on: string; columns: string[] }[]
   }
+  primaryItem?: string
   items?: {
     id: string
     name: string

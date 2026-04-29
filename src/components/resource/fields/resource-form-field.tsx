@@ -59,6 +59,8 @@ export function ResourceFormField<S extends DatabaseSchemas>({
     columnMetadata = getColumnMetadata(tableSchema, columnSchema)
   }
 
+  if (columnMetadata.isMetadata) return null;
+
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
     (r) =>
       r.source_column_name === columnSchema.name &&
