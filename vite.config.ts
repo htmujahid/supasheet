@@ -6,7 +6,7 @@ import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 
 const config = defineConfig({
-  base: '/',
+  base: "/",
   plugins: [
     devtools(),
     tsconfigPaths({ projects: ["./tsconfig.json"] }),

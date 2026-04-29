@@ -11,7 +11,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { Skeleton } from "#/components/ui/skeleton"
 import {
   ResourceCalendar,
   colorFromString,
@@ -29,6 +28,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"

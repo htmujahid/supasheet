@@ -11,7 +11,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { Skeleton } from "#/components/ui/skeleton"
 import { ResourceKanban } from "#/components/resource/resource-kanban"
 import type {
   KanbanLayout,
@@ -27,6 +26,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
@@ -116,8 +116,13 @@ export const Route = createFileRoute(
                   <Skeleton className="h-5 w-6 rounded-sm" />
                 </div>
                 {/* Cards */}
-                {Array.from({ length: col === 0 ? 4 : col === 1 ? 3 : col === 2 ? 5 : 2 }).map((_, row) => (
-                  <div key={row} className="flex flex-col gap-2 rounded-md border bg-card p-3 shadow-xs">
+                {Array.from({
+                  length: col === 0 ? 4 : col === 1 ? 3 : col === 2 ? 5 : 2,
+                }).map((_, row) => (
+                  <div
+                    key={row}
+                    className="flex flex-col gap-2 rounded-md border bg-card p-3 shadow-xs"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <Skeleton className="h-4 w-3/4" />
                       <Skeleton className="h-5 w-12 rounded-sm" />
