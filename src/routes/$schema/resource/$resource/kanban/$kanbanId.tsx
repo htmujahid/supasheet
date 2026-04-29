@@ -118,7 +118,7 @@ export const Route = createFileRoute(
                 {/* Cards */}
                 {Array.from({
                   length: col === 0 ? 4 : col === 1 ? 3 : col === 2 ? 5 : 2,
-                }).map((_, row) => (
+                }).map((__, row) => (
                   <div
                     key={row}
                     className="flex flex-col gap-2 rounded-md border bg-card p-3 shadow-xs"

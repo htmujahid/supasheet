@@ -87,6 +87,7 @@ comment on table store.products is
     "query": {
         "sort": [{"id": "name", "desc": false}]
     },
+    "primaryItem": "gallery",
     "items": [
         {"id": "gallery", "name": "Product Gallery", "type": "gallery", "cover": "image", "title": "name", "description": "description", "badge": "status"}
     ]
