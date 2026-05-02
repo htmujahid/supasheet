@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 
 import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
-import { ArrowUpRightIcon, Link2Icon } from "lucide-react"
+import { ArrowUpRightIcon, Link2Icon, PencilIcon } from "lucide-react"
 
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
@@ -30,9 +30,11 @@ export function parsePkSplat(
 export function getResourceTableColumns({
   columnsSchema,
   resourceSchema,
+  canUpdate = false,
 }: {
   columnsSchema: ColumnSchema[]
   resourceSchema: ResourceSchema
+  canUpdate?: boolean
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const schema = resourceSchema.schema
@@ -70,18 +72,33 @@ export function getResourceTableColumns({
             onCheckedChange={(checked) => row.toggleSelected(!!checked)}
             aria-label="Select row"
           />
-          <Link
-            to="/$schema/resource/$resource/detail/$"
-            params={{
-              schema,
-              resource,
-              _splat: row.id,
-            }}
-            className="rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ArrowUpRightIcon className="size-3" />
-          </Link>
+          {canUpdate ? (
+            <Link
+              to="/$schema/resource/$resource/update/$"
+              params={{
+                schema,
+                resource,
+                _splat: row.id,
+              }}
+              className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <PencilIcon className="size-3" />
+            </Link>
+          ) : (
+            <Link
+              to="/$schema/resource/$resource/detail/$"
+              params={{
+                schema,
+                resource,
+                _splat: row.id,
+              }}
+              className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ArrowUpRightIcon className="size-3" />
+            </Link>
+          )}
         </div>
       ),
       enableSorting: false,

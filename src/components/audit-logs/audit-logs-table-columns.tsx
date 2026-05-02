@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 
 import type { ColumnDef } from "@tanstack/react-table"
 
-import { AlertCircleIcon } from "lucide-react"
+import { AlertCircleIcon, ArrowUpRightIcon } from "lucide-react"
 
 import { DataTableColumnHeader } from "#/components/data-table/data-table-column-header"
 import { Badge } from "#/components/ui/badge"
@@ -35,11 +35,21 @@ export function getAuditLogsTableColumns({
         />
       ),
       cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(checked) => row.toggleSelected(!!checked)}
-          aria-label="Select row"
-        />
+        <div className="flex items-center gap-1.5">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+            aria-label="Select row"
+          />
+          <Link
+            to="/core/audit_logs/$auditLogId"
+            params={{ auditLogId: row.original.id }}
+            className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ArrowUpRightIcon className="size-3" />
+          </Link>
+        </div>
       ),
       enableSorting: false,
       enableHiding: false,
@@ -50,13 +60,9 @@ export function getAuditLogsTableColumns({
         <DataTableColumnHeader column={column} title="ID" />
       ),
       cell: ({ row }) => (
-        <Link
-          to="/core/audit_logs/$auditLogId"
-          params={{ auditLogId: row.original.id }}
-          className="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
-        >
+        <span className="font-mono text-xs text-muted-foreground">
           {row.original.id.slice(0, 8)}…
-        </Link>
+        </span>
       ),
       meta: getColumnMetadata(
         null,

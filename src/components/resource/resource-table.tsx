@@ -54,6 +54,9 @@ export function ResourceTable({
   const canDelete = useHasPermission(
     `${schema}.${resource}:delete` as AppPermission
   )
+  const canUpdate = useHasPermission(
+    `${schema}.${resource}:update` as AppPermission
+  )
 
   const { mutateAsync: deleteRow } = useMutation(
     deleteResourceMutationOptions(schema, resource)
@@ -83,8 +86,8 @@ export function ResourceTable({
   }
 
   const columns = useMemo(
-    () => getResourceTableColumns({ columnsSchema, resourceSchema }),
-    [columnsSchema, resourceSchema]
+    () => getResourceTableColumns({ columnsSchema, resourceSchema, canUpdate }),
+    [columnsSchema, resourceSchema, canUpdate]
   )
 
   const table = useDataTable({

@@ -39,9 +39,10 @@ export function UsersTable({
 }: UsersTableProps) {
   const queryClient = useQueryClient()
   const canDelete = useHasPermission("supasheet.users:delete")
+  const canUpdate = useHasPermission("supasheet.users:update")
   const columns = useMemo(
-    () => getUsersTableColumns({ columnsSchema }),
-    [columnsSchema]
+    () => getUsersTableColumns({ columnsSchema, canUpdate }),
+    [columnsSchema, canUpdate]
   )
   const table = useDataTable({
     columns,

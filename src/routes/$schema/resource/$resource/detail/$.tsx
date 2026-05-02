@@ -114,23 +114,41 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
       __selectClause: string
     }
 
-    const oneToOneRelationships: RelatedTable[] = []
+    type OneToOneRelation = RelatedTable & {
+      __embedKey: string
+      __fkColumn: string
+    }
+
+    const oneToOneRelationships: OneToOneRelation[] = []
     const oneToManyRelationships: ManyRelation[] = []
     const manyToManyRelationships: ManyRelation[] = []
 
     for (const table of tables) {
       // One-to-one: current resource references the other table (FK on current side)
-      const oneToOneAsSource = table.relationships?.find(
+      const oneToOneAsSourceList = (table.relationships ?? []).filter(
         (rel) =>
           rel.source_schema === schema && rel.source_table_name === resource
       )
-      if (oneToOneAsSource) {
-        joins.push({
-          table: oneToOneAsSource.target_table_name,
-          on: oneToOneAsSource.target_column_name,
-          columns: ["*"],
-        })
-        oneToOneRelationships.push(table)
+      if (oneToOneAsSourceList.length > 0) {
+        const useAlias = oneToOneAsSourceList.length > 1
+        for (const rel of oneToOneAsSourceList) {
+          const alias = useAlias
+            ? rel.source_column_name.replace(/_id$/, "") ||
+              rel.target_table_name
+            : rel.target_table_name
+          joins.push({
+            table: useAlias
+              ? `${alias}:${rel.target_table_name}`
+              : rel.target_table_name,
+            on: rel.source_column_name,
+            columns: ["*"],
+          })
+          oneToOneRelationships.push({
+            ...table,
+            __embedKey: alias,
+            __fkColumn: rel.source_column_name,
+          })
+        }
         continue
       }
 
@@ -153,7 +171,11 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
           on: oneToOneAsTarget.source_column_name,
           columns: ["*"],
         })
-        oneToOneRelationships.push(table)
+        oneToOneRelationships.push({
+          ...table,
+          __embedKey: oneToOneAsTarget.source_table_name,
+          __fkColumn: oneToOneAsTarget.source_column_name,
+        })
         continue
       }
 
@@ -435,7 +457,7 @@ function RouteComponent() {
                             <Input
                               value={p.value}
                               disabled
-                              className="font-mono text-xs text-muted-foreground"
+                              className="rounded-none border-0 border-b px-0 font-mono text-xs text-muted-foreground disabled:bg-transparent dark:disabled:bg-transparent"
                             />
                           </Field>
                         ))}
@@ -471,12 +493,20 @@ function RouteComponent() {
               />
             </div>
             {oneToOneRelationships.map((relationship) => (
-              <div key={relationship.id} className="mb-4 break-inside-avoid">
+              <div
+                key={`${relationship.id}-${relationship.__fkColumn}`}
+                className="mb-4 break-inside-avoid"
+              >
                 <ResourceDetailView
-                  resourceSchema={relationship as unknown as ResourceSchema}
+                  resourceSchema={
+                    {
+                      ...relationship,
+                      name: relationship.__embedKey,
+                    } as unknown as ResourceSchema
+                  }
                   columnsSchema={relationship.columns ?? []}
                   singleResourceData={
-                    (record[relationship.name as string] as Record<
+                    (record[relationship.__embedKey] as Record<
                       string,
                       unknown
                     >) ?? {}
