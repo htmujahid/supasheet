@@ -700,3 +700,109 @@ CREATE EVENT TRIGGER enum_alteration_trigger
 ON ddl_command_end
 WHEN TAG IN ('ALTER TYPE')
 EXECUTE FUNCTION supasheet.log_enum_alteration();
+
+
+----------------------------------------------------------------
+-- Trigger Function for CREATE SCHEMA events
+----------------------------------------------------------------
+CREATE OR REPLACE FUNCTION supasheet.log_schema_creation()
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    schema_name TEXT;
+BEGIN
+    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
+    LOOP
+        IF obj.object_type = 'schema' THEN
+            schema_name := obj.object_identity;
+
+            DELETE FROM supasheet.columns WHERE schema = schema_name;
+            INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns(schema_name);
+
+            DELETE FROM supasheet.tables WHERE schema = schema_name;
+            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
+
+            DELETE FROM supasheet.views WHERE schema = schema_name;
+            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name);
+
+            DELETE FROM supasheet.materialized_views WHERE schema = schema_name;
+            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name);
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE EVENT TRIGGER schema_creation_trigger
+ON ddl_command_end
+WHEN TAG IN ('CREATE SCHEMA')
+EXECUTE FUNCTION supasheet.log_schema_creation();
+
+
+----------------------------------------------------------------
+-- Trigger Function for ALTER SCHEMA events
+----------------------------------------------------------------
+CREATE OR REPLACE FUNCTION supasheet.log_schema_alteration()
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    new_schema TEXT;
+BEGIN
+    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
+    LOOP
+        IF obj.object_type = 'schema' THEN
+            new_schema := obj.object_identity;
+
+            DELETE FROM supasheet.columns WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
+            DELETE FROM supasheet.tables WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
+            DELETE FROM supasheet.views WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
+            DELETE FROM supasheet.materialized_views WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
+
+            DELETE FROM supasheet.columns WHERE schema = new_schema;
+            INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns(new_schema);
+
+            DELETE FROM supasheet.tables WHERE schema = new_schema;
+            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(new_schema);
+
+            DELETE FROM supasheet.views WHERE schema = new_schema;
+            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(new_schema);
+
+            DELETE FROM supasheet.materialized_views WHERE schema = new_schema;
+            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(new_schema);
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE EVENT TRIGGER schema_alteration_trigger
+ON ddl_command_end
+WHEN TAG IN ('ALTER SCHEMA')
+EXECUTE FUNCTION supasheet.log_schema_alteration();
+
+
+----------------------------------------------------------------
+-- Trigger Function for DROP SCHEMA events
+----------------------------------------------------------------
+CREATE OR REPLACE FUNCTION supasheet.log_schema_deletion()
+RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    schema_name TEXT;
+BEGIN
+    FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
+    LOOP
+        IF obj.object_type = 'schema' THEN
+            schema_name := obj.object_name;
+
+            DELETE FROM supasheet.columns WHERE schema = schema_name;
+            DELETE FROM supasheet.tables WHERE schema = schema_name;
+            DELETE FROM supasheet.views WHERE schema = schema_name;
+            DELETE FROM supasheet.materialized_views WHERE schema = schema_name;
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE EVENT TRIGGER schema_deletion_trigger
+ON sql_drop
+WHEN TAG IN ('DROP SCHEMA')
+EXECUTE FUNCTION supasheet.log_schema_deletion();

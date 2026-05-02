@@ -1,17 +1,16 @@
 -- Blog Schema Seed Data
--- This file contains seed data for the blog schema tables
+-- Hardcoded user IDs from supabase/seed.sql:
+--   b73eb03e-fb7a-424d-84ff-18e2791ce0b4  user@supasheet.dev
+--   b73eb03e-fb7a-424d-84ff-18e2791ce0b1  user1@supasheet.dev
 
 DO $$
 DECLARE
-    -- User IDs - using the specific UUIDs from seed.sql
     user_1_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4';
     user_2_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1';
 
-    -- Author IDs
     author_1_id UUID;
     author_2_id UUID;
 
-    -- Category IDs
     tech_cat_id UUID;
     travel_cat_id UUID;
     food_cat_id UUID;
@@ -19,7 +18,6 @@ DECLARE
     tutorial_cat_id UUID;
     news_cat_id UUID;
 
-    -- Post IDs
     post_1_id UUID;
     post_2_id UUID;
     post_3_id UUID;
@@ -30,53 +28,71 @@ DECLARE
     post_8_id UUID;
     post_9_id UUID;
     post_10_id UUID;
+    post_11_id UUID;
+    post_12_id UUID;
+
+    comment_1_id UUID;
+    comment_3_id UUID;
 BEGIN
-    -- Create Authors
-    INSERT INTO blog.authors (id, user_id, language, country, created_at, updated_at) VALUES
-    (gen_random_uuid(), user_1_id, 'en', 'US', current_date - interval '180 days', current_timestamp)
+    ----------------------------------------------------------------
+    -- Authors
+    ----------------------------------------------------------------
+    INSERT INTO blog.authors (id, user_id, display_name, bio, language, country, created_at, updated_at) VALUES
+    (gen_random_uuid(), user_1_id, 'John Doe',
+     'Software engineer writing about distributed systems, databases, and the small details that make great products.',
+     'en', 'US', current_timestamp - interval '180 days', current_timestamp)
     RETURNING id INTO author_1_id;
 
-    INSERT INTO blog.authors (id, user_id, language, country, created_at, updated_at) VALUES
-    (gen_random_uuid(), user_2_id, 'en', 'US', current_date - interval '120 days', current_timestamp)
+    INSERT INTO blog.authors (id, user_id, display_name, bio, language, country, created_at, updated_at) VALUES
+    (gen_random_uuid(), user_2_id, 'Jane Smith',
+     'Travel writer and home cook documenting recipes, routines, and the occasional misadventure abroad.',
+     'en', 'US', current_timestamp - interval '120 days', current_timestamp)
     RETURNING id INTO author_2_id;
 
-    -- Create Social Links
-    INSERT INTO blog.social_links (author_id, github, twitter) VALUES
-    (author_1_id, 'https://github.com/johndoe', 'https://twitter.com/johndoe'),
-    (author_2_id, 'https://github.com/janesmith', 'https://twitter.com/janesmith');
+    ----------------------------------------------------------------
+    -- Social links
+    ----------------------------------------------------------------
+    INSERT INTO blog.social_links (author_id, website, github, twitter, linkedin) VALUES
+    (author_1_id, 'https://johndoe.dev',     'https://github.com/johndoe',   'https://twitter.com/johndoe',   'https://linkedin.com/in/johndoe'),
+    (author_2_id, 'https://janesmith.blog',  'https://github.com/janesmith', 'https://twitter.com/janesmith', 'https://linkedin.com/in/janesmith');
 
-    -- Create Categories
-    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
-    (gen_random_uuid(), 'Technology', 'technology', 'All about the latest in tech and software development', NULL)
+    ----------------------------------------------------------------
+    -- Categories (global = user_id NULL; tutorials owned by user_1)
+    ----------------------------------------------------------------
+    INSERT INTO blog.categories (id, name, slug, description, color, icon, user_id) VALUES
+    (gen_random_uuid(), 'Technology',     'technology',   'All about the latest in tech and software development', '#3b82f6', 'Cpu',       NULL)
     RETURNING id INTO tech_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
-    (gen_random_uuid(), 'Travel', 'travel', 'Travel stories and destination guides', NULL)
+    INSERT INTO blog.categories (id, name, slug, description, color, icon, user_id) VALUES
+    (gen_random_uuid(), 'Travel',         'travel',       'Travel stories and destination guides',                 '#f59e0b', 'Plane',     NULL)
     RETURNING id INTO travel_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
-    (gen_random_uuid(), 'Food & Recipes', 'food-recipes', 'Delicious recipes and culinary adventures', NULL)
+    INSERT INTO blog.categories (id, name, slug, description, color, icon, user_id) VALUES
+    (gen_random_uuid(), 'Food & Recipes', 'food-recipes', 'Delicious recipes and culinary adventures',             '#ef4444', 'Utensils',  NULL)
     RETURNING id INTO food_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
-    (gen_random_uuid(), 'Lifestyle', 'lifestyle', 'Tips and insights for everyday living', NULL)
+    INSERT INTO blog.categories (id, name, slug, description, color, icon, user_id) VALUES
+    (gen_random_uuid(), 'Lifestyle',      'lifestyle',    'Tips and insights for everyday living',                 '#ec4899', 'Heart',     NULL)
     RETURNING id INTO lifestyle_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
-    (gen_random_uuid(), 'Tutorials', 'tutorials', 'Step-by-step guides and how-tos', user_1_id)
+    INSERT INTO blog.categories (id, name, slug, description, color, icon, user_id) VALUES
+    (gen_random_uuid(), 'Tutorials',      'tutorials',    'Step-by-step guides and how-tos',                       '#10b981', 'BookOpen',  user_1_id)
     RETURNING id INTO tutorial_cat_id;
 
-    INSERT INTO blog.categories (id, name, slug, description, user_id) VALUES
-    (gen_random_uuid(), 'News', 'news', 'Latest news and updates', NULL)
+    INSERT INTO blog.categories (id, name, slug, description, color, icon, user_id) VALUES
+    (gen_random_uuid(), 'News',           'news',         'Latest news and updates',                               '#8b5cf6', 'Newspaper', NULL)
     RETURNING id INTO news_cat_id;
 
-    -- Create Blog Posts
+    ----------------------------------------------------------------
+    -- Posts
+    ----------------------------------------------------------------
 
-    -- Post 1: Published tech post by author 1
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 1: published tech tutorial (featured)
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_1_id,
      'Getting Started with PostgreSQL Row Level Security',
      'getting-started-with-postgresql-row-level-security',
+     'Row Level Security (RLS) is a powerful PostgreSQL feature that controls which rows users can access. A practical introduction with policies you can copy.',
      E'# Getting Started with PostgreSQL Row Level Security\n\n' ||
      E'Row Level Security (RLS) is a powerful feature in PostgreSQL that allows you to control which rows users can access in database tables. ' ||
      E'This is particularly useful for multi-tenant applications where you want to ensure that users can only see their own data.\n\n' ||
@@ -84,312 +100,297 @@ BEGIN
      E'RLS policies are expressions that PostgreSQL evaluates for each row. If the policy expression returns true, the row is visible to the user; ' ||
      E'otherwise, it''s hidden. This happens at the database level, making it a robust security mechanism.\n\n' ||
      E'## Setting Up RLS\n\n' ||
-     E'Here''s a simple example:\n\n' ||
      E'```sql\n' ||
      E'ALTER TABLE documents ENABLE ROW LEVEL SECURITY;\n\n' ||
      E'CREATE POLICY user_documents ON documents\n' ||
      E'FOR ALL USING (user_id = current_user_id());\n' ||
      E'```\n\n' ||
-     E'This policy ensures that users can only access documents where the user_id matches their own ID.\n\n' ||
      E'## Best Practices\n\n' ||
      E'1. Always enable RLS on tables containing user data\n' ||
      E'2. Write clear, simple policies that are easy to understand\n' ||
      E'3. Test your policies thoroughly\n' ||
-     E'4. Consider performance implications for complex policies\n\n' ||
-     E'Row Level Security is an essential tool for building secure applications. Start using it today!',
+     E'4. Consider performance implications for complex policies',
+     'published', true, ARRAY['postgres', 'security', 'rls'], 4821,
      current_date - interval '45 days',
      current_date - interval '50 days',
      current_date - interval '45 days')
     RETURNING id INTO post_1_id;
 
-    -- Post 2: Published travel post by author 2
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 2: published travel
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_2_id,
      'Hidden Gems of Kyoto: A Local''s Guide',
      'hidden-gems-of-kyoto-locals-guide',
+     'Kyoto is famous for its temples, but the real magic is in the early morning torii, autumn canal paths, and quiet alleys most tourists miss.',
      E'# Hidden Gems of Kyoto: A Local''s Guide\n\n' ||
      E'Kyoto is known for its stunning temples and traditional gardens, but beyond the tourist hotspots lie countless hidden treasures waiting to be discovered.\n\n' ||
      E'## 1. Fushimi Inari Early Morning\n\n' ||
-     E'While Fushimi Inari is famous, most tourists don''t know the magic of visiting at 5 AM. The torii gates are practically empty, and you can hear the birds chirping as the sun rises.\n\n' ||
+     E'While Fushimi Inari is famous, most tourists don''t know the magic of visiting at 5 AM.\n\n' ||
      E'## 2. Philosopher''s Path in Autumn\n\n' ||
-     E'This canal-side path becomes a tunnel of red and gold leaves in November. Local cafes along the way serve the best matcha you''ll ever taste.\n\n' ||
+     E'This canal-side path becomes a tunnel of red and gold leaves in November.\n\n' ||
      E'## 3. Nishiki Market Side Alleys\n\n' ||
-     E'Everyone visits Nishiki Market, but the real treasures are in the tiny side alleys where local artisans sell handcrafted goods and traditional sweets.\n\n' ||
+     E'Everyone visits Nishiki Market, but the real treasures are in the tiny side alleys.\n\n' ||
      E'## 4. Arashiyama Bamboo Grove at Dusk\n\n' ||
-     E'Skip the crowded daytime visit and come at dusk when the grove is lit up and almost empty. The experience is surreal and peaceful.\n\n' ||
-     E'Kyoto rewards those who venture off the beaten path. Take your time, explore slowly, and you''ll discover the true spirit of this ancient city.',
+     E'Skip the crowded daytime visit and come at dusk when the grove is lit up and almost empty.',
+     'published', false, ARRAY['kyoto', 'japan', 'travel'], 2147,
      current_date - interval '30 days',
      current_date - interval '35 days',
      current_date - interval '30 days')
     RETURNING id INTO post_2_id;
 
-    -- Post 3: Published food post by author 1
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 3: published food
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_1_id,
      'Perfect Homemade Sourdough Bread Recipe',
      'perfect-homemade-sourdough-bread-recipe',
+     'After years of experimentation, my reliable sourdough recipe — 70% hydration, 4 sets of folds, and a long cold ferment.',
      E'# Perfect Homemade Sourdough Bread Recipe\n\n' ||
      E'After years of experimentation, I''ve finally perfected my sourdough bread recipe. The secret? Patience and understanding your starter.\n\n' ||
      E'## Ingredients\n\n' ||
      E'- 500g bread flour\n- 350g water (70% hydration)\n- 100g active sourdough starter\n- 10g salt\n\n' ||
      E'## Method\n\n' ||
-     E'### Day 1 - Morning\n' ||
-     E'1. Mix flour and water, let rest for 30 minutes (autolyse)\n' ||
-     E'2. Add starter and salt, mix thoroughly\n' ||
-     E'3. Perform 4 sets of stretch and folds every 30 minutes\n\n' ||
-     E'### Day 1 - Evening\n' ||
-     E'4. Shape the dough and place in a banneton\n' ||
-     E'5. Refrigerate overnight (cold fermentation)\n\n' ||
-     E'### Day 2 - Morning\n' ||
-     E'6. Preheat Dutch oven to 500°F\n' ||
-     E'7. Score the dough and bake covered for 20 minutes\n' ||
-     E'8. Remove lid, reduce heat to 450°F, bake 25 more minutes\n\n' ||
-     E'## Tips for Success\n\n' ||
-     E'- Use a kitchen scale for accuracy\n- Room temperature affects fermentation time\n- A strong, active starter is crucial\n- Don''t skip the cold fermentation\n\n' ||
-     E'The result is a crusty exterior with a chewy, tangy interior. Pure bliss!',
+     E'### Day 1\n' ||
+     E'1. Autolyse 30 minutes\n' ||
+     E'2. Add starter and salt\n' ||
+     E'3. 4 sets of stretch and folds\n' ||
+     E'4. Shape, bench rest, cold retard overnight\n\n' ||
+     E'### Day 2\n' ||
+     E'5. Preheat Dutch oven to 500F\n' ||
+     E'6. Score and bake 20 min covered, 25 min uncovered at 450F',
+     'published', false, ARRAY['baking', 'bread', 'recipe'], 1532,
      current_date - interval '20 days',
      current_date - interval '22 days',
      current_date - interval '20 days')
     RETURNING id INTO post_3_id;
 
-    -- Post 4: Published tech tutorial by author 1
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 4: published tech tutorial (featured)
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_1_id,
      'Building a REST API with Node.js and Express',
      'building-rest-api-nodejs-express',
+     'A practical walkthrough of building a production-ready REST API from scratch with Node.js and Express, including error handling.',
      E'# Building a REST API with Node.js and Express\n\n' ||
      E'Learn how to build a production-ready REST API from scratch using Node.js and Express.\n\n' ||
      E'## Setup\n\n' ||
-     E'First, initialize your project:\n\n' ||
-     E'```bash\n' ||
-     E'npm init -y\n' ||
-     E'npm install express dotenv cors helmet\n' ||
-     E'npm install --save-dev nodemon\n' ||
-     E'```\n\n' ||
+     E'```bash\nnpm init -y\nnpm install express dotenv cors helmet\n```\n\n' ||
      E'## Basic Server\n\n' ||
-     E'```javascript\n' ||
-     E'const express = require(''express'');\n' ||
-     E'const app = express();\n\n' ||
-     E'app.use(express.json());\n\n' ||
-     E'app.get(''/api/health'', (req, res) => {\n' ||
-     E'  res.json({ status: ''healthy'' });\n' ||
-     E'});\n\n' ||
-     E'app.listen(3000, () => {\n' ||
-     E'  console.log(''Server running on port 3000'');\n' ||
-     E'});\n' ||
-     E'```\n\n' ||
-     E'## CRUD Operations\n\n' ||
-     E'Implement Create, Read, Update, and Delete operations:\n\n' ||
-     E'```javascript\n' ||
-     E'// GET all items\n' ||
-     E'app.get(''/api/items'', async (req, res) => {\n' ||
-     E'  // Implementation\n' ||
-     E'});\n\n' ||
-     E'// POST create item\n' ||
-     E'app.post(''/api/items'', async (req, res) => {\n' ||
-     E'  // Implementation\n' ||
-     E'});\n' ||
-     E'```\n\n' ||
-     E'## Error Handling\n\n' ||
-     E'Always implement proper error handling:\n\n' ||
-     E'```javascript\n' ||
-     E'app.use((err, req, res, next) => {\n' ||
-     E'  console.error(err.stack);\n' ||
-     E'  res.status(500).json({ error: ''Something went wrong!'' });\n' ||
-     E'});\n' ||
-     E'```\n\n' ||
-     E'This is a foundation you can build upon for any API project!',
+     E'```javascript\nconst express = require(''express'');\nconst app = express();\napp.use(express.json());\napp.listen(3000);\n```\n\n' ||
+     E'## CRUD + Error Handling\n\n' ||
+     E'Always implement proper error handling and validation.',
+     'published', true, ARRAY['nodejs', 'express', 'api', 'tutorial'], 3290,
      current_date - interval '15 days',
      current_date - interval '18 days',
      current_date - interval '15 days')
     RETURNING id INTO post_4_id;
 
-    -- Post 5: Draft post by author 2
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 5: draft
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_2_id,
-     'Top 10 Productivity Apps for 2024',
-     'top-10-productivity-apps-2024',
-     E'# Top 10 Productivity Apps for 2024\n\n' ||
-     E'*Draft - Work in progress*\n\n' ||
-     E'In this post, I''ll review the best productivity apps that have helped me stay organized and efficient.\n\n' ||
-     E'## 1. Notion\n- All-in-one workspace\n- Highly customizable\n\n' ||
-     E'## 2. Todoist\n- Simple task management\n- Great mobile app\n\n' ||
-     E'[More content to be added...]',
+     'Top 10 Productivity Apps for 2026',
+     'top-10-productivity-apps-2026',
+     'A draft round-up of the productivity apps I actually still use after a year — Notion, Todoist, and seven others.',
+     E'# Top 10 Productivity Apps for 2026\n\n*Draft — work in progress*\n\n## 1. Notion\n## 2. Todoist\n[More content to be added...]',
+     'draft', false, ARRAY['productivity', 'apps'], 0,
      NULL,
      current_date - interval '5 days',
      current_date - interval '2 days')
     RETURNING id INTO post_5_id;
 
-    -- Post 6: Published lifestyle post by author 2
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 6: published lifestyle
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_2_id,
      'Morning Routines That Actually Work',
      'morning-routines-that-actually-work',
+     'A year of testing morning routines: what actually moved the needle, and what just stressed me out before 8am.',
      E'# Morning Routines That Actually Work\n\n' ||
      E'I''ve tested dozens of morning routines over the past year. Here''s what actually made a difference.\n\n' ||
      E'## What Worked\n\n' ||
-     E'### 1. No Phone for First Hour\n' ||
-     E'This was hard but transformative. Instead of scrolling through social media, I:\n' ||
-     E'- Meditate for 10 minutes\n- Journal 3 things I''m grateful for\n- Plan my top 3 priorities\n\n' ||
-     E'### 2. Hydrate Before Caffeine\n' ||
-     E'Drinking 16oz of water before coffee made a huge difference in my energy levels.\n\n' ||
-     E'### 3. Move Your Body\n' ||
-     E'Even just 15 minutes of stretching or a quick walk sets a positive tone.\n\n' ||
-     E'## What Didn''t Work\n\n' ||
-     E'- Waking up at 5 AM (I''m not a morning person, and that''s okay)\n' ||
-     E'- Complex breakfast routines (simple is better)\n- Checking email first thing (recipe for stress)\n\n' ||
-     E'## The Key Insight\n\n' ||
-     E'Your morning routine should energize you, not stress you out. Start small, be consistent, and adjust based on what feels good.',
+     E'1. No phone for the first hour\n' ||
+     E'2. Hydrate before caffeine\n' ||
+     E'3. Move your body for 15 minutes\n\n' ||
+     E'## What Didn''t\n\n' ||
+     E'- Waking up at 5 AM\n- Complex breakfast routines\n- Checking email first thing',
+     'published', false, ARRAY['lifestyle', 'habits'], 987,
      current_date - interval '10 days',
      current_date - interval '12 days',
      current_date - interval '10 days')
     RETURNING id INTO post_6_id;
 
-    -- Post 7: Published tech news by author 1
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 7: published tech news
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_1_id,
-     'The Rise of Edge Computing in 2024',
-     'rise-of-edge-computing-2024',
-     E'# The Rise of Edge Computing in 2024\n\n' ||
+     'The Rise of Edge Computing',
+     'rise-of-edge-computing',
+     'Why edge computing is reshaping data processing — from autonomous vehicles to in-store analytics — and what trade-offs to plan for.',
+     E'# The Rise of Edge Computing\n\n' ||
      E'Edge computing is transforming how we process and analyze data, bringing computation closer to where data is generated.\n\n' ||
-     E'## What is Edge Computing?\n\n' ||
-     E'Edge computing refers to processing data near its source rather than in centralized data centers. This reduces latency and bandwidth usage.\n\n' ||
      E'## Key Benefits\n\n' ||
-     E'1. **Lower Latency**: Critical for real-time applications like autonomous vehicles\n' ||
-     E'2. **Reduced Bandwidth**: Less data transmitted to the cloud\n' ||
-     E'3. **Enhanced Privacy**: Sensitive data can be processed locally\n' ||
-     E'4. **Improved Reliability**: Less dependent on cloud connectivity\n\n' ||
+     E'1. Lower latency\n2. Reduced bandwidth\n3. Enhanced privacy\n4. Improved reliability\n\n' ||
      E'## Real-World Applications\n\n' ||
-     E'- **IoT Devices**: Smart home devices processing data locally\n' ||
-     E'- **Retail**: In-store analytics without sending video feeds to cloud\n' ||
-     E'- **Healthcare**: Real-time patient monitoring\n' ||
-     E'- **Manufacturing**: Predictive maintenance on factory floors\n\n' ||
+     E'- IoT, retail, healthcare, manufacturing.\n\n' ||
      E'## Challenges\n\n' ||
-     E'- Device management at scale\n- Security concerns with distributed systems\n- Standardization across platforms\n\n' ||
-     E'Edge computing isn''t replacing cloud computingit''s complementing it. The future is hybrid.',
+     E'- Device management at scale\n- Distributed security\n- Standardization',
+     'published', false, ARRAY['edge', 'cloud', 'iot'], 2654,
      current_date - interval '7 days',
      current_date - interval '8 days',
      current_date - interval '7 days')
     RETURNING id INTO post_7_id;
 
-    -- Post 8: Published food post by author 2
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 8: published food
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_2_id,
      '15-Minute Weeknight Dinners',
      '15-minute-weeknight-dinners',
+     'Three weeknight dinners I actually cook on busy nights — pasta, sheet pan fajitas, and fried rice — plus the prep tricks that make them work.',
      E'# 15-Minute Weeknight Dinners\n\n' ||
-     E'Busy weeknight? These quick recipes are healthy, delicious, and take just 15 minutes.\n\n' ||
-     E'## 1. Garlic Shrimp Pasta\n\n' ||
-     E'**Ingredients:**\n' ||
-     E'- 8oz spaghetti\n- 1lb shrimp\n- 4 cloves garlic\n- Olive oil, lemon, parsley\n\n' ||
-     E'**Method:** Cook pasta. Sauté garlic and shrimp. Toss together. Done!\n\n' ||
-     E'## 2. Sheet Pan Chicken Fajitas\n\n' ||
-     E'**Ingredients:**\n' ||
-     E'- 1lb chicken breast, sliced\n- Bell peppers and onions\n- Fajita seasoning\n- Tortillas\n\n' ||
-     E'**Method:** Toss everything on a sheet pan. Broil for 12 minutes. Serve in tortillas.\n\n' ||
-     E'## 3. Fried Rice\n\n' ||
-     E'**Ingredients:**\n' ||
-     E'- 3 cups cooked rice (day-old is best)\n- 2 eggs\n- Mixed vegetables\n- Soy sauce\n\n' ||
-     E'**Method:** Scramble eggs, add rice and veggies, season with soy sauce.\n\n' ||
-     E'## Meal Prep Tips\n\n' ||
-     E'- Keep pre-cooked rice in the freezer\n- Buy pre-cut vegetables\n- Batch cook proteins on weekends\n- Stock your pantry with basics\n\n' ||
-     E'Quick doesn''t mean sacrificing flavor or nutrition!',
+     E'## 1. Garlic Shrimp Pasta\n\nCook pasta. Saute garlic and shrimp. Toss together.\n\n' ||
+     E'## 2. Sheet Pan Chicken Fajitas\n\nToss everything on a sheet pan. Broil 12 minutes.\n\n' ||
+     E'## 3. Fried Rice\n\nDay-old rice + 2 eggs + mixed veg + soy sauce.',
+     'published', false, ARRAY['recipes', 'weeknight', 'quick'], 1845,
      current_date - interval '25 days',
      current_date - interval '27 days',
      current_date - interval '25 days')
     RETURNING id INTO post_8_id;
 
-    -- Post 9: Draft post by author 1
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 9: draft
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_1_id,
      'Introduction to Docker Containers',
      'introduction-to-docker-containers',
-     E'# Introduction to Docker Containers\n\n' ||
-     E'*Draft*\n\n' ||
-     E'Docker has revolutionized how we deploy applications. In this tutorial, we''ll cover the basics.\n\n' ||
-     E'## What is Docker?\n\n' ||
-     E'Docker is a platform for developing, shipping, and running applications in containers.\n\n' ||
-     E'[Content in progress...]',
+     'A draft intro to Docker covering the basics most teams actually need: images, containers, volumes, and a sane local workflow.',
+     E'# Introduction to Docker Containers\n\n*Draft*\n\nDocker is a platform for developing, shipping, and running applications in containers.',
+     'draft', false, ARRAY['docker', 'devops'], 0,
      NULL,
      current_date - interval '3 days',
      current_timestamp)
     RETURNING id INTO post_9_id;
 
-    -- Post 10: Published travel post by author 2
-    INSERT INTO blog.posts (id, author_id, title, slug, content, published_at, created_at, updated_at) VALUES
+    -- 10: published travel
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
     (gen_random_uuid(), author_2_id,
      'Budget Travel: Europe on $50 a Day',
      'budget-travel-europe-50-per-day',
+     'Three months of European travel on $50/day — how I split accommodation, transport, food, and activities without missing the good stuff.',
      E'# Budget Travel: Europe on $50 a Day\n\n' ||
-     E'Yes, you can travel Europe on a budget! Here''s how I did it for 3 months.\n\n' ||
-     E'## Accommodation ($15-20/night)\n\n' ||
-     E'- **Hostels**: Book through HostelWorld or Booking.com\n' ||
-     E'- **Couchsurfing**: Free and meet locals\n' ||
-     E'- **House sitting**: Free accommodation in exchange for pet care\n\n' ||
-     E'## Transportation ($10-15/day)\n\n' ||
-     E'- **FlixBus**: Cheap intercity buses\n' ||
-     E'- **BlaBlaCar**: Ridesharing across countries\n' ||
-     E'- **Walking**: Best way to see cities\n\n' ||
-     E'## Food ($15-20/day)\n\n' ||
-     E'- **Supermarkets**: Make breakfast and lunch\n' ||
-     E'- **Local markets**: Cheap, fresh produce\n' ||
-     E'- **Happy hours**: Discounted dinners\n' ||
-     E'- **Street food**: Authentic and affordable\n\n' ||
-     E'## Activities ($5-10/day)\n\n' ||
-     E'- **Free walking tours**: Tip-based\n' ||
-     E'- **Museums**: Many have free days\n' ||
-     E'- **Parks and beaches**: Always free\n' ||
-     E'- **Student discounts**: Get an ISIC card\n\n' ||
-     E'## Money-Saving Tips\n\n' ||
-     E'1. Travel in shoulder season (April-May, Sept-Oct)\n' ||
-     E'2. Book accommodation with kitchens\n' ||
-     E'3. Use city passes for multiple attractions\n' ||
-     E'4. Avoid tourist traps in city centers\n' ||
-     E'5. Use travel credit cards with no foreign fees\n\n' ||
-     E'Budget travel doesn''t mean missing outit means being smart and creative!',
+     E'Yes, you can travel Europe on a budget. Here''s how I did it for 3 months.\n\n' ||
+     E'## Accommodation ($15-20)\n\nHostels, Couchsurfing, house sitting.\n\n' ||
+     E'## Transport ($10-15)\n\nFlixBus, BlaBlaCar, walking.\n\n' ||
+     E'## Food ($15-20)\n\nSupermarkets, local markets, happy hours, street food.\n\n' ||
+     E'## Activities ($5-10)\n\nFree walking tours, museum free days, parks.',
+     'published', false, ARRAY['budget', 'europe', 'travel'], 3120,
      current_date - interval '40 days',
      current_date - interval '42 days',
      current_date - interval '40 days')
     RETURNING id INTO post_10_id;
 
-    -- Associate posts with categories
+    -- 11: scheduled
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
+    (gen_random_uuid(), author_1_id,
+     'Database Migration Strategies for Growing Teams',
+     'database-migration-strategies-growing-teams',
+     'A scheduled deep-dive on safe migration patterns: expand-and-contract, dual-writes, and shadow tables — with rollback plans.',
+     E'# Database Migration Strategies for Growing Teams\n\n' ||
+     E'## Expand and Contract\n\nAdd new columns first, backfill, then remove old.\n\n' ||
+     E'## Dual Writes\n\nWrite to both schemas during transition.\n\n' ||
+     E'## Shadow Tables\n\nValidate by mirroring writes before cutover.',
+     'scheduled', false, ARRAY['database', 'migrations', 'devops'], 0,
+     current_date + interval '5 days',
+     current_date - interval '2 days',
+     current_date - interval '1 day')
+    RETURNING id INTO post_11_id;
+
+    -- 12: archived
+    INSERT INTO blog.posts (id, author_id, title, slug, excerpt, content, status, featured, tags, view_count, published_at, created_at, updated_at) VALUES
+    (gen_random_uuid(), author_2_id,
+     'My 2023 Reading List',
+     'my-2023-reading-list',
+     'An archived round-up of the 12 books that stuck with me in 2023 — kept around for posterity, no longer maintained.',
+     E'# My 2023 Reading List\n\n' ||
+     E'A look back at the books that defined my 2023.\n\n' ||
+     E'1. ...\n2. ...\n3. ...',
+     'archived', false, ARRAY['books', 'reading', 'retrospective'], 412,
+     current_date - interval '300 days',
+     current_date - interval '320 days',
+     current_date - interval '180 days')
+    RETURNING id INTO post_12_id;
+
+    ----------------------------------------------------------------
+    -- Post categories
+    ----------------------------------------------------------------
     INSERT INTO blog.post_categories (post_id, category_id) VALUES
-    -- Post 1: Tech + Tutorial
-    (post_1_id, tech_cat_id),
-    (post_1_id, tutorial_cat_id),
+    (post_1_id,  tech_cat_id),
+    (post_1_id,  tutorial_cat_id),
 
-    -- Post 2: Travel
-    (post_2_id, travel_cat_id),
+    (post_2_id,  travel_cat_id),
 
-    -- Post 3: Food
-    (post_3_id, food_cat_id),
+    (post_3_id,  food_cat_id),
 
-    -- Post 4: Tech + Tutorial
-    (post_4_id, tech_cat_id),
-    (post_4_id, tutorial_cat_id),
+    (post_4_id,  tech_cat_id),
+    (post_4_id,  tutorial_cat_id),
 
-    -- Post 5: Tech + Lifestyle (draft)
-    (post_5_id, tech_cat_id),
-    (post_5_id, lifestyle_cat_id),
+    (post_5_id,  tech_cat_id),
+    (post_5_id,  lifestyle_cat_id),
 
-    -- Post 6: Lifestyle
-    (post_6_id, lifestyle_cat_id),
+    (post_6_id,  lifestyle_cat_id),
 
-    -- Post 7: Tech + News
-    (post_7_id, tech_cat_id),
-    (post_7_id, news_cat_id),
+    (post_7_id,  tech_cat_id),
+    (post_7_id,  news_cat_id),
 
-    -- Post 8: Food
-    (post_8_id, food_cat_id),
+    (post_8_id,  food_cat_id),
 
-    -- Post 9: Tech + Tutorial (draft)
-    (post_9_id, tech_cat_id),
-    (post_9_id, tutorial_cat_id),
+    (post_9_id,  tech_cat_id),
+    (post_9_id,  tutorial_cat_id),
 
-    -- Post 10: Travel + Lifestyle
     (post_10_id, travel_cat_id),
-    (post_10_id, lifestyle_cat_id);
+    (post_10_id, lifestyle_cat_id),
 
-    RAISE NOTICE 'Blog schema seed data inserted successfully';
-    RAISE NOTICE 'Created % authors, % categories, and % posts', 2, 6, 10;
+    (post_11_id, tech_cat_id),
+    (post_11_id, tutorial_cat_id),
+
+    (post_12_id, lifestyle_cat_id);
+
+    ----------------------------------------------------------------
+    -- Comments (mix of approved + pending; one threaded reply)
+    ----------------------------------------------------------------
+    INSERT INTO blog.comments (id, post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
+    (gen_random_uuid(), post_1_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+     'Great primer! The expand-and-contract analogy clicked for me.',
+     'approved',
+     current_date - interval '40 days', current_date - interval '40 days')
+    RETURNING id INTO comment_1_id;
+
+    -- threaded reply to comment_1 by the original author
+    INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
+    (post_1_id, user_1_id, comment_1_id, 'John Doe', 'user@supasheet.dev',
+     'Thanks Jane — that section took the longest to write. Glad it landed.',
+     'approved',
+     current_date - interval '39 days', current_date - interval '39 days');
+
+    INSERT INTO blog.comments (id, post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
+    (gen_random_uuid(), post_2_id, user_1_id, NULL, 'John Doe', 'user@supasheet.dev',
+     'The early-morning Fushimi tip is gold. Confirming: 5am is correct, 6am is already busy.',
+     'approved',
+     current_date - interval '28 days', current_date - interval '28 days')
+    RETURNING id INTO comment_3_id;
+
+    INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
+    (post_3_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+     'Tried the recipe over the weekend with 75% hydration — slightly wetter crumb, still excellent.',
+     'approved',
+     current_date - interval '15 days', current_date - interval '15 days');
+
+    -- pending (awaits moderation)
+    INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
+    (post_4_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+     'Would love a follow-up on auth middleware patterns — JWT vs session cookies for an Express API.',
+     'pending',
+     current_date - interval '4 days', current_date - interval '4 days');
+
+    INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
+    (post_7_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+     'The retail analytics example matches what we''re seeing on the ground. Bandwidth costs are the hidden tax.',
+     'pending',
+     current_date - interval '2 days', current_date - interval '2 days');
+
+    RAISE NOTICE 'Blog seed inserted: 2 authors, 6 categories, 12 posts (8 published / 2 drafts / 1 scheduled / 1 archived), 6 comments';
 END $$;

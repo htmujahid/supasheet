@@ -691,3 +691,64 @@ SET project_id = (
     ORDER BY random()
     LIMIT 1
 );
+
+
+----------------------------------------------------------------
+-- Backfill new fields on existing seeded tasks
+-- assignee_id defaults to the creator; estimated_duration mirrors the recorded duration
+----------------------------------------------------------------
+
+UPDATE desk.tasks
+SET assignee_id = user_id
+WHERE assignee_id IS NULL;
+
+UPDATE desk.tasks
+SET estimated_duration = duration
+WHERE estimated_duration IS NULL AND duration IS NOT NULL;
+
+
+----------------------------------------------------------------
+-- Task comments
+-- Author = task owner (RLS scopes desk.tasks per-user). Selecting tasks
+-- by predicate keeps these inserts independent of generated UUIDs.
+----------------------------------------------------------------
+
+-- Two comments on every in_progress task by its owner
+INSERT INTO desk.task_comments (task_id, user_id, content, created_at, updated_at)
+SELECT
+    t.id, t.user_id,
+    'Made progress today — picking this up again tomorrow.',
+    current_timestamp - interval '2 days',
+    current_timestamp - interval '2 days'
+FROM desk.tasks t
+WHERE t.status = 'in_progress';
+
+INSERT INTO desk.task_comments (task_id, user_id, content, created_at, updated_at)
+SELECT
+    t.id, t.user_id,
+    'Blocker resolved. Estimating one more session to finish.',
+    current_timestamp - interval '1 day',
+    current_timestamp - interval '1 day'
+FROM desk.tasks t
+WHERE t.status = 'in_progress'
+  AND t.priority IN ('high', 'critical');
+
+-- One retrospective comment on each completed task by its owner
+INSERT INTO desk.task_comments (task_id, user_id, content, created_at, updated_at)
+SELECT
+    t.id, t.user_id,
+    'Done. Notes captured for the next iteration.',
+    coalesce(t.completed_at, current_timestamp),
+    coalesce(t.completed_at, current_timestamp)
+FROM desk.tasks t
+WHERE t.status = 'completed';
+
+-- A pre-start comment on every critical pending task
+INSERT INTO desk.task_comments (task_id, user_id, content, created_at, updated_at)
+SELECT
+    t.id, t.user_id,
+    'Critical. Need to start this within 24 hours.',
+    current_timestamp - interval '6 hours',
+    current_timestamp - interval '6 hours'
+FROM desk.tasks t
+WHERE t.status = 'pending' AND t.priority = 'critical';

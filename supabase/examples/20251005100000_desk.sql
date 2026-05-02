@@ -43,6 +43,14 @@ alter type supasheet.app_permission add value 'desk.project_list_simple:select';
 alter type supasheet.app_permission add value 'desk.project_task_overview:select';
 alter type supasheet.app_permission add value 'desk.project_status_pie:select';
 alter type supasheet.app_permission add value 'desk.project_priority_bar:select';
+
+-- Task comment permissions
+alter type supasheet.app_permission add value 'desk.task_comments:select';
+alter type supasheet.app_permission add value 'desk.task_comments:insert';
+alter type supasheet.app_permission add value 'desk.task_comments:update';
+alter type supasheet.app_permission add value 'desk.task_comments:delete';
+
+alter type supasheet.app_permission add value 'desk.users:select';
 commit;
 
 
@@ -56,6 +64,7 @@ create table desk.projects (
     description RICH_TEXT,
     status desk.project_status default 'planning',
     priority desk.project_priority default 'medium',
+    cover file,
 
     -- User association
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
@@ -67,6 +76,7 @@ create table desk.projects (
     -- Organization
     tags varchar(500)[],
     color color,
+    notes text,
 
     -- Audit fields
     created_at timestamptz default current_timestamp,
@@ -130,8 +140,22 @@ comment on table desk.projects is
     "query": {
         "sort": [{"id":"title","desc":false}],
         "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    }
+    },
+    "primaryItem": "kanban",
+    "items": [
+        {"id":"kanban","name":"Projects By Status","type":"kanban","group":"status","title":"title","description":"description","date":"start_date","badge":"priority"},
+        {"id":"calendar","name":"Project Timeline","type":"calendar","title":"title","startDate":"start_date","endDate":"end_date","badge":"status"},
+        {"id":"gallery","name":"Project Gallery","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
+    ],
+    "sections": [
+        {"id":"summary","title":"Summary","fields":["title","description","cover"]},
+        {"id":"schedule","title":"Schedule","fields":["status","priority","start_date","end_date"]},
+        {"id":"organization","title":"Organization","fields":["tags","color"]},
+        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
+    ]
 }';
+
+comment on column desk.projects.cover is '{"accept":"image/*"}';
 
 revoke all on table desk.projects from authenticated, service_role;
 
@@ -139,6 +163,7 @@ grant select, insert, update, delete on table desk.projects to authenticated;
 
 create index idx_projects_user_id on desk.projects (user_id);
 create index idx_projects_status on desk.projects (status);
+create index idx_projects_priority on desk.projects (priority);
 
 alter table desk.projects enable row level security;
 
@@ -176,8 +201,9 @@ create table desk.tasks (
     priority desk.task_priority default 'medium',
     cover file,
 
-    -- User association
+    -- User association (creator vs assignee)
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
+    assignee_id uuid references supasheet.users(id) on delete set null,
 
     -- Project association
     project_id uuid references desk.projects(id) on delete set null,
@@ -192,6 +218,7 @@ create table desk.tasks (
 
     -- Progress tracking
     completion percentage,
+    estimated_duration duration,
     duration duration,
 
     -- File tracking
@@ -271,9 +298,9 @@ comment on table desk.tasks is
     ],
     "sections": [
         {"id":"summary","title":"Summary","fields":["title","description","cover"]},
-        {"id":"schedule","title":"Schedule","fields":["status","priority","due_date","completed_at"]},
+        {"id":"schedule","title":"Schedule","fields":["status","priority","assignee_id","due_date","completed_at"]},
         {"id":"organization","title":"Organization","fields":["project_id","tags","is_important"]},
-        {"id":"progress","title":"Progress","fields":["completion","duration"]},
+        {"id":"progress","title":"Progress","fields":["completion","estimated_duration","duration"]},
         {"id":"extras","title":"Attachments & notes","description":"Files, color tag, and free-form notes","collapsible":true,"fields":["attachments","color","notes"]}
     ]
 }';
@@ -286,9 +313,11 @@ revoke all on table desk.tasks from authenticated, service_role;
 grant select, insert, update, delete on table desk.tasks to authenticated;
 
 create index idx_tasks_user_id on desk.tasks (user_id);
+create index idx_tasks_assignee_id on desk.tasks (assignee_id);
 create index idx_tasks_status on desk.tasks (status);
 create index idx_tasks_priority on desk.tasks (priority);
 create index idx_tasks_project_id on desk.tasks (project_id);
+create index idx_tasks_due_date on desk.tasks (due_date);
 
 alter table desk.tasks enable row level security;
 
@@ -312,6 +341,87 @@ create policy tasks_delete on desk.tasks
     for delete
     to authenticated
     using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:delete'));
+
+
+----------------------------------------------------------------
+-- Task comments (threaded discussion on a task)
+----------------------------------------------------------------
+
+create table desk.task_comments (
+    id uuid primary key default extensions.uuid_generate_v4(),
+    task_id uuid not null references desk.tasks(id) on delete cascade,
+    user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
+    content text not null,
+    created_at timestamptz default current_timestamp,
+    updated_at timestamptz default current_timestamp
+);
+
+comment on table desk.task_comments is
+'{
+    "icon": "MessageSquare",
+    "display": "block",
+    "query": {
+        "sort": [{"id":"created_at","desc":true}],
+        "join": [
+            {"table":"tasks","on":"task_id","columns":["title","status"]},
+            {"table":"users","on":"user_id","columns":["name","email"]}
+        ]
+    },
+    "sections": [
+        {"id":"context","title":"Context","fields":["task_id"]},
+        {"id":"body","title":"Comment","fields":["content"]}
+    ]
+}';
+
+revoke all on table desk.task_comments from authenticated, service_role;
+
+grant select, insert, update, delete on table desk.task_comments to authenticated;
+
+create index idx_task_comments_task_id on desk.task_comments (task_id);
+create index idx_task_comments_user_id on desk.task_comments (user_id);
+
+alter table desk.task_comments enable row level security;
+
+-- Owner of the parent task can see all comments on it; comment authors always see their own
+create policy task_comments_select on desk.task_comments
+    for select
+    to authenticated
+    using (
+        supasheet.has_permission('desk.task_comments:select')
+        and (
+            user_id = auth.uid()
+            or exists (select 1 from desk.tasks t where t.id = task_id and t.user_id = auth.uid())
+        )
+    );
+
+create policy task_comments_insert on desk.task_comments
+    for insert
+    to authenticated
+    with check (
+        supasheet.has_permission('desk.task_comments:insert')
+        and user_id = auth.uid()
+        and exists (select 1 from desk.tasks t where t.id = task_id and t.user_id = auth.uid())
+    );
+
+create policy task_comments_update on desk.task_comments
+    for update
+    to authenticated
+    using (
+        supasheet.has_permission('desk.task_comments:update')
+        and user_id = auth.uid()
+    )
+    with check (
+        supasheet.has_permission('desk.task_comments:update')
+        and user_id = auth.uid()
+    );
+
+create policy task_comments_delete on desk.task_comments
+    for delete
+    to authenticated
+    using (
+        supasheet.has_permission('desk.task_comments:delete')
+        and user_id = auth.uid()
+    );
 
 
 -- View of tasks joined with user name
@@ -719,6 +829,13 @@ insert into supasheet.role_permissions (role, permission) values ('x-admin', 'de
 
 insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.project_report:select');
 
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.task_comments:select');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.task_comments:insert');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.task_comments:update');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.task_comments:delete');
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.users:select');
+
 
 ----------------------------------------------------------------
 -- Audit triggers for tasks
@@ -762,5 +879,28 @@ execute function supasheet.audit_trigger_function();
 create trigger audit_projects_delete
     before delete
     on desk.projects
+    for each row
+execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Audit triggers for task comments
+----------------------------------------------------------------
+
+create trigger audit_task_comments_insert
+    after insert
+    on desk.task_comments
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_task_comments_update
+    after update
+    on desk.task_comments
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_task_comments_delete
+    before delete
+    on desk.task_comments
     for each row
 execute function supasheet.audit_trigger_function();
