@@ -315,7 +315,7 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
         <ContextMenuItem
           onClick={() =>
             navigate({
-              to: "/$schema/resource/$resource/view/$",
+              to: "/$schema/resource/$resource/detail/$",
               params: { schema, resource, _splat: pkSplat },
             })
           }

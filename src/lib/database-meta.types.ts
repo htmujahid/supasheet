@@ -70,14 +70,22 @@ export type PaginatedData<T> = {
   perPage: number
 }
 
+export type FormMode = "create" | "update" | "read"
+
+export type FieldSectionFields = string[] | Partial<Record<FormMode, string[]>>
+
+export type FieldSection = {
+  id: string
+  title: string
+  description?: string
+  icon?: string
+  fields: FieldSectionFields
+  collapsible?: boolean
+}
+
 export type TableMetadata = {
   display?: "block" | "none"
   icon?: string
-  columns?: {
-    readOnly: string[],
-    writeOnce: string[],
-    hidden: string[]
-  },
   query?: {
     sort?: { id: string; desc: boolean }[]
     filter?: {
@@ -96,6 +104,7 @@ export type TableMetadata = {
     [key: string]: unknown
     type: "calendar" | "kanban" | "gallery"
   }[]
+  sections?: FieldSection[]
 }
 
 export type ViewMetadata = {

@@ -7,6 +7,8 @@ import type {
 } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
 
+import { getColumnMetadata } from "#/lib/columns"
+
 import { ResourceRowCell } from "../resource-row-cell"
 
 export function getResourceForeignTableColumns({
@@ -35,9 +37,10 @@ export function getResourceForeignTableColumns({
         />
       ),
       size: 150,
-      enableColumnFilter: false,
+      enableColumnFilter: true,
       enableSorting: true,
       enableHiding: true,
+      meta: getColumnMetadata(resourceSchema, c),
     })),
     ...(data.length > 0
       ? Object.keys(data[0]).map((key) => {

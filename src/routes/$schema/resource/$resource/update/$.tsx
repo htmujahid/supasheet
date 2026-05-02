@@ -14,7 +14,7 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
 import { Button } from "#/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
+import { Card, CardContent, CardHeader } from "#/components/ui/card"
 import {
   Empty,
   EmptyDescription,
@@ -79,24 +79,30 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
           ]}
         />
         <div className="flex flex-1 flex-col">
-          <div className="mx-auto w-full max-w-2xl px-4 py-4">
-            <Card>
-              <CardHeader className="border-b">
-                <Skeleton className="h-5 w-24" />
-              </CardHeader>
-              <CardContent className="space-y-4 py-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="space-y-1.5">
-                    <Skeleton className="h-4 w-28" />
-                    <Skeleton className="h-9 w-full" />
-                  </div>
-                ))}
-              </CardContent>
-              <CardFooter className="justify-end gap-2 border-t pt-4">
-                <Skeleton className="h-9 w-20" />
-                <Skeleton className="h-9 w-28" />
-              </CardFooter>
-            </Card>
+          <div className="mx-auto w-full max-w-7xl px-4 py-4">
+            <div className="columns-1 gap-4 lg:columns-2">
+              {Array.from({ length: 2 }).map((_outer, i) => (
+                <div key={i} className="mb-4 break-inside-avoid">
+                  <Card>
+                    <CardHeader>
+                      <Skeleton className="h-5 w-24" />
+                    </CardHeader>
+                    <CardContent className="space-y-4 py-4">
+                      {Array.from({ length: 3 }).map((_inner, j) => (
+                        <div key={j} className="space-y-1.5">
+                          <Skeleton className="h-4 w-28" />
+                          <Skeleton className="h-9 w-full" />
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2 pt-4">
+              <Skeleton className="h-9 w-20" />
+              <Skeleton className="h-9 w-28" />
+            </div>
           </div>
         </div>
       </>
@@ -203,7 +209,7 @@ function RouteComponent() {
         ]}
       />
       <div className="flex flex-1 flex-col">
-        <div className="mx-auto w-full max-w-2xl px-4 py-4">
+        <div className="mx-auto w-full max-w-7xl px-4 py-4">
           <ResourceUpdateForm
             columnsSchema={columnsSchema}
             primaryKeys={primaryKeys}

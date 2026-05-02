@@ -1,3 +1,5 @@
+import { Suspense } from "react"
+
 import {
   Link,
   createFileRoute,
@@ -10,13 +12,16 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { AlertCircleIcon, FileXIcon, PencilIcon } from "lucide-react"
 
+import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { buildLayoutPlan } from "#/components/resource/resource-form-utils"
 import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { ResourceDetailView } from "#/components/resource/view/resource-detail-view"
 import { ResourceForeignTable } from "#/components/resource/view/resource-foreign-table"
 import { ResourceMetadataView } from "#/components/resource/view/resource-metadata-view"
-import { Button } from "#/components/ui/button"
-import { Card, CardContent, CardHeader } from "#/components/ui/card"
+import { ResourceSectionDetail } from "#/components/resource/view/resource-section-detail"
+import { Button, buttonVariants } from "#/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 import {
   Empty,
   EmptyDescription,
@@ -24,6 +29,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import { Field, FieldLabel } from "#/components/ui/field"
+import { Input } from "#/components/ui/input"
 import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs"
@@ -47,7 +54,7 @@ import {
   viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
+export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(
@@ -101,20 +108,35 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
 
     const tables = (relatedTablesSchema ?? []) as RelatedTable[]
 
-    const oneToOneRelationships = tables.filter((table) => {
-      return table.relationships?.some((rel) => {
-        if (
-          rel.source_schema === schema &&
-          rel.source_table_name === resource
-        ) {
-          joins.push({
-            table: rel.target_table_name,
-            on: rel.target_column_name,
-            columns: ["*"],
-          })
-          return true
-        }
-        if (
+    type ManyRelation = RelatedTable & {
+      __parentColumn: string
+      __targetColumn: string
+      __selectClause: string
+    }
+
+    const oneToOneRelationships: RelatedTable[] = []
+    const oneToManyRelationships: ManyRelation[] = []
+    const manyToManyRelationships: ManyRelation[] = []
+
+    for (const table of tables) {
+      // One-to-one: current resource references the other table (FK on current side)
+      const oneToOneAsSource = table.relationships?.find(
+        (rel) =>
+          rel.source_schema === schema && rel.source_table_name === resource
+      )
+      if (oneToOneAsSource) {
+        joins.push({
+          table: oneToOneAsSource.target_table_name,
+          on: oneToOneAsSource.target_column_name,
+          columns: ["*"],
+        })
+        oneToOneRelationships.push(table)
+        continue
+      }
+
+      // One-to-one: other table references us via a unique column / single-col PK
+      const oneToOneAsTarget = table.relationships?.find(
+        (rel) =>
           rel.target_table_schema === schema &&
           rel.target_table_name === resource &&
           (table.columns
@@ -124,21 +146,49 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
               (key) => key.name === rel.source_column_name
             ) &&
               table.primary_keys.length === 1))
-        ) {
-          joins.push({
-            table: rel.source_table_name,
-            on: rel.source_column_name,
-            columns: ["*"],
-          })
-          return true
-        }
-        return false
-      })
-    })
+      )
+      if (oneToOneAsTarget) {
+        joins.push({
+          table: oneToOneAsTarget.source_table_name,
+          on: oneToOneAsTarget.source_column_name,
+          columns: ["*"],
+        })
+        oneToOneRelationships.push(table)
+        continue
+      }
 
-    const oneToManyRelationships = tables.filter((table) => {
-      return table.relationships.some((rel) => {
-        if (
+      // Many-to-many: link table with composite PK referencing two FKs
+      const m2mRel = table.relationships?.find(
+        (rel) =>
+          rel.target_table_schema === schema &&
+          rel.target_table_name === resource &&
+          table.relationships.length >= 2 &&
+          table.primary_keys.length >= 2 &&
+          table.primary_keys.some((key) => key.name === rel.source_column_name)
+      )
+      if (m2mRel) {
+        const otherRel = table.relationships.find(
+          (r) =>
+            table.primary_keys.some((k) => k.name === r.source_column_name) &&
+            !(
+              r.target_table_schema === schema &&
+              r.target_table_name === resource
+            )
+        )
+        manyToManyRelationships.push({
+          ...table,
+          __parentColumn: m2mRel.source_column_name,
+          __targetColumn: m2mRel.target_column_name,
+          __selectClause: otherRel
+            ? `*, ...${otherRel.target_table_name}(*)`
+            : "*",
+        })
+        continue
+      }
+
+      // One-to-many: other table references us, FK is not unique / not PK
+      const oneToManyRel = table.relationships?.find(
+        (rel) =>
           rel.target_table_schema === schema &&
           rel.target_table_name === resource &&
           !(
@@ -149,39 +199,16 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
               (key) => key.name === rel.source_column_name
             )
           )
-        ) {
-          joins.push({
-            table: rel.source_table_name,
-            on: rel.source_column_name,
-            columns: ["*"],
-          })
-          return true
-        }
-        return false
-      })
-    })
-
-    const manyToManyRelationships = tables.filter((table) => {
-      return table.relationships.some((rel) => {
-        if (
-          rel.target_table_schema === schema &&
-          rel.target_table_name === resource &&
-          table.relationships.length >= 2 &&
-          table.primary_keys.length >= 2 &&
-          table.relationships.filter((r) =>
-            table.primary_keys.some((key) => key.name === r.source_column_name)
-          )
-        ) {
-          joins.push({
-            table: rel.source_table_name,
-            on: rel.source_column_name,
-            columns: [`*, ...${rel.target_table_name}(*)`],
-          })
-          return true
-        }
-        return false
-      })
-    })
+      )
+      if (oneToManyRel) {
+        oneToManyRelationships.push({
+          ...table,
+          __parentColumn: oneToManyRel.source_column_name,
+          __targetColumn: oneToManyRel.target_column_name,
+          __selectClause: "*",
+        })
+      }
+    }
 
     const allManyRelationships = [
       ...oneToManyRelationships,
@@ -202,9 +229,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
     }
   },
   head: ({ params }) => ({
-    meta: [
-      { title: `View Record | ${formatTitle(params.resource)} | Supasheet` },
-    ],
+    meta: [{ title: `Detail | ${formatTitle(params.resource)} | Supasheet` }],
   }),
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()
@@ -216,7 +241,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
               title: formatTitle(resource),
               url: `/${schema}/resource/${resource}`,
             },
-            { title: "View record" },
+            { title: "Detail" },
           ]}
         />
         <div className="flex flex-1 flex-col">
@@ -259,7 +284,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
               title: formatTitle(resource),
               url: `/${schema}/resource/${resource}`,
             },
-            { title: "View record" },
+            { title: "Detail" },
           ]}
         />
         <div className="flex flex-1 items-center justify-center p-8">
@@ -299,7 +324,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/view/$")({
               title: formatTitle(resource),
               url: `/${schema}/resource/${resource}`,
             },
-            { title: "View record" },
+            { title: "Detail" },
           ]}
         />
         <div className="flex flex-1 items-center justify-center p-8">
@@ -335,8 +360,9 @@ function RouteComponent() {
     joins,
   } = Route.useLoaderData()
 
+  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (
-    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+    tableSchema ? (tableSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
   const pk = parsePkSplat(_splat ?? "", primaryKeys)
   const { data: record } = useSuspenseQuery(
@@ -349,6 +375,26 @@ function RouteComponent() {
     `${schema}.${resource}:update` as AppPermission
   )
 
+  const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
+  const availableNames = new Set(
+    columnsSchema.map((c) => (c.name as string) ?? c.id ?? "")
+  )
+  const plan = buildLayoutPlan(tableMeta.sections, availableNames, "read")
+  const colByName = new Map(
+    columnsSchema.map((c) => [(c.name as string) ?? c.id ?? "", c])
+  )
+
+  const primaryKeyDisplay = primaryKeys
+    .map((key) => {
+      const col = colByName.get(key.name)
+      if (!col) return null
+      return {
+        name: col.name as string,
+        value: String(record[col.name as string] ?? ""),
+      }
+    })
+    .filter((p): p is { name: string; value: string } => Boolean(p))
+
   return (
     <>
       <DefaultHeader
@@ -357,35 +403,66 @@ function RouteComponent() {
             title: formatTitle(resource),
             url: `/${schema}/resource/${resource}`,
           },
-          { title: "View record" },
+          { title: "Detail" },
         ]}
       >
-        {isTableSchema(resourceSchema) && canUpdate && (
-          <Button
-            size="sm"
-            variant="outline"
-            render={
-              <Link
-                to="/$schema/resource/$resource/update/$"
-                params={{ schema, resource, _splat: _splat ?? "" }}
-              />
-            }
+        {tableSchema && canUpdate && (
+          <Link
+            className={buttonVariants({ size: "sm", variant: "outline" })}
+            to="/$schema/resource/$resource/update/$"
+            params={{ schema, resource, _splat: _splat ?? "" }}
           >
             <PencilIcon className="mr-1.5 size-3.5" />
             Edit
-          </Button>
+          </Link>
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-7xl space-y-4 px-4 py-4">
           <div className="columns-1 gap-4 lg:columns-2">
-            <div className="mb-4 break-inside-avoid">
-              <ResourceDetailView
-                resourceSchema={resourceSchema}
-                columnsSchema={columnsSchema}
-                singleResourceData={record}
-              />
-            </div>
+            {plan ? (
+              <>
+                {primaryKeyDisplay.length > 0 && (
+                  <div className="mb-4 break-inside-avoid">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Identifiers</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4 py-2">
+                        {primaryKeyDisplay.map((p) => (
+                          <Field key={p.name}>
+                            <FieldLabel>{p.name}</FieldLabel>
+                            <Input
+                              value={p.value}
+                              disabled
+                              className="font-mono text-xs text-muted-foreground"
+                            />
+                          </Field>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+                {plan.sections.map((s) => (
+                  <div key={s.id} className="mb-4 break-inside-avoid">
+                    <ResourceSectionDetail
+                      section={s}
+                      colByName={colByName}
+                      tableSchema={tableSchema}
+                      record={record}
+                    />
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className="mb-4 break-inside-avoid">
+                <ResourceDetailView
+                  resourceSchema={resourceSchema}
+                  columnsSchema={columnsSchema}
+                  singleResourceData={record}
+                />
+              </div>
+            )}
             <div className="mb-4 break-inside-avoid">
               <ResourceMetadataView
                 resourceSchema={resourceSchema}
@@ -426,19 +503,21 @@ function RouteComponent() {
                   key={relationship.id}
                   value={relationship.name ?? ""}
                 >
-                  <ResourceForeignTable
-                    relationship={
-                      relationship as unknown as ResourceSchema & {
-                        columns: ColumnSchema[]
+                  <Suspense fallback={<DataTableSkeleton columnCount={10} />}>
+                    <ResourceForeignTable
+                      schema={relationship.schema ?? schema}
+                      table={relationship.name}
+                      parentColumn={relationship.__parentColumn}
+                      parentValue={record[relationship.__targetColumn]}
+                      resourceSchema={
+                        relationship as unknown as ResourceSchema & {
+                          columns: ColumnSchema[]
+                        }
                       }
-                    }
-                    data={
-                      (record[relationship.name as string] as Record<
-                        string,
-                        unknown
-                      >[]) || null
-                    }
-                  />
+                      columnsSchema={relationship.columns ?? []}
+                      selectClause={relationship.__selectClause}
+                    />
+                  </Suspense>
                 </TabsContent>
               ))}
             </Tabs>

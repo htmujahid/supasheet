@@ -4,31 +4,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "sonner"
 
-import { Button } from "#/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card"
-import { Field, FieldLabel } from "#/components/ui/field"
-import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
   PrimaryKey,
-  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
 
-import { ResourceFormField } from "./fields/resource-form-field"
+import { useAppForm } from "./form-hook"
+import { ResourceFormLayout } from "./resource-form-layout"
 import {
   buildUpdatePayload,
   getUpdateInitialValue,
   isSkippedForUpdate,
 } from "./resource-form-utils"
-import { useAppForm } from "./form-hook"
 
 interface ResourceUpdateFormProps {
   columnsSchema: ColumnSchema[]
@@ -53,16 +42,11 @@ export function ResourceUpdateForm({
     primaryKeys.map((k) => [k.name, record[k.name]])
   )
 
-  const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  const columnsMeta = tableMeta.columns
-
   const primaryKeyCols = columnsSchema.filter((col) =>
     primaryKeys.some((key) => key.name === col.name)
   )
   const editableCols = columnsSchema.filter(
-    (col) =>
-      !isSkippedForUpdate(col, primaryKeys, columnsMeta) &&
-      (col.is_updatable ?? true)
+    (col) => !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)
   )
 
   const defaultValues = Object.fromEntries(
@@ -102,68 +86,34 @@ export function ResourceUpdateForm({
     },
   })
 
-  return (
-    <Card>
-      <CardHeader className="border-b">
-        <CardTitle>Edit record</CardTitle>
-      </CardHeader>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
-        }}
-      >
-        <CardContent className="space-y-4 py-4">
-          {primaryKeyCols.map((col) => {
-            const name = col.name ?? col.id
-            return (
-              <Field key={name}>
-                <FieldLabel>{name}</FieldLabel>
-                <Input
-                  value={String(record[name] ?? "")}
-                  disabled
-                  className="font-mono text-xs text-muted-foreground"
-                />
-              </Field>
-            )
-          })}
-          {editableCols.map((col) => (
-            <ResourceFormField
-              key={col.id}
-              columnSchema={col}
-              tableSchema={tableSchema}
-              form={form}
-            />
-          ))}
-        </CardContent>
+  const primaryKeyDisplay = primaryKeyCols.map((col) => {
+    const name = col.name ?? col.id ?? ""
+    return { name, value: String(record[name] ?? "") }
+  })
 
-        <CardFooter className="justify-end gap-2 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() =>
-              navigate({
-                to: "/$schema/resource/$resource",
-                params: { schema, resource },
-              })
-            }
-          >
-            Cancel
-          </Button>
-          <form.Subscribe
-            selector={(s) => ({
-              isSubmitting: s.isSubmitting,
-              canSubmit: s.canSubmit,
-            })}
-          >
-            {({ isSubmitting, canSubmit }) => (
-              <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                {isSubmitting ? "Saving…" : "Save changes"}
-              </Button>
-            )}
-          </form.Subscribe>
-        </CardFooter>
-      </form>
-    </Card>
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
+      <ResourceFormLayout
+        tableSchema={tableSchema}
+        writableCols={editableCols}
+        form={form}
+        mode="update"
+        primaryKeyDisplay={primaryKeyDisplay}
+        headerTitle="Edit record"
+        onCancel={() =>
+          navigate({
+            to: "/$schema/resource/$resource",
+            params: { schema, resource },
+          })
+        }
+        submitLabel="Save changes"
+        submittingLabel="Saving…"
+      />
+    </form>
   )
 }

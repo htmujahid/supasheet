@@ -71,7 +71,7 @@ export function getResourceTableColumns({
             aria-label="Select row"
           />
           <Link
-            to="/$schema/resource/$resource/view/$"
+            to="/$schema/resource/$resource/detail/$"
             params={{
               schema,
               resource,

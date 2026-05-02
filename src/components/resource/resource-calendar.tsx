@@ -145,7 +145,7 @@ export function ResourceCalendar({
   function onEventView(event: IEvent) {
     const splat = buildPkSplat(event.data ?? {}, primaryKeys)
     void navigate({
-      to: "/$schema/resource/$resource/view/$",
+      to: "/$schema/resource/$resource/detail/$",
       params: { schema, resource, _splat: splat },
     })
   }

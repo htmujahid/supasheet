@@ -4,24 +4,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "sonner"
 
-import { Button } from "#/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card"
-import type { ColumnSchema, TableMetadata, TableSchema } from "#/lib/database-meta.types"
+import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
 import { insertResourceMutationOptions } from "#/lib/supabase/data/resource"
 
-import { ResourceFormField } from "./fields/resource-form-field"
+import { useAppForm } from "./form-hook"
+import { ResourceFormLayout } from "./resource-form-layout"
 import {
   buildCreatePayload,
   getCreateInitialValue,
   isSkippedForCreate,
 } from "./resource-form-utils"
-import { useAppForm } from "./form-hook"
 
 export function ResourceNewForm({
   columnsSchema,
@@ -36,12 +28,7 @@ export function ResourceNewForm({
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  const columnsMeta = tableMeta.columns
-
-  const writableCols = columnsSchema.filter(
-    (col) => !isSkippedForCreate(col, columnsMeta)
-  )
+  const writableCols = columnsSchema.filter((col) => !isSkippedForCreate(col))
 
   const defaultValues = Object.fromEntries(
     writableCols.map((col) => [col.name ?? col.id, getCreateInitialValue(col)])
@@ -74,56 +61,27 @@ export function ResourceNewForm({
   })
 
   return (
-    <Card>
-      <CardHeader className="border-b">
-        <CardTitle>New record</CardTitle>
-      </CardHeader>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
-        }}
-      >
-        <CardContent className="space-y-4 py-4">
-          {writableCols.map((col) => (
-            <ResourceFormField
-              key={col.id}
-              columnSchema={col}
-              tableSchema={tableSchema}
-              form={form}
-            />
-          ))}
-        </CardContent>
-        <CardFooter className="justify-end gap-2 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() =>
-              navigate({
-                to: "/$schema/resource/$resource",
-                params: {
-                  schema: tableSchema.schema,
-                  resource: tableSchema.name,
-                },
-              })
-            }
-          >
-            Cancel
-          </Button>
-          <form.Subscribe
-            selector={(s) => ({
-              isSubmitting: s.isSubmitting,
-              canSubmit: s.canSubmit,
-            })}
-          >
-            {({ isSubmitting, canSubmit }) => (
-              <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                {isSubmitting ? "Creating…" : "Create"}
-              </Button>
-            )}
-          </form.Subscribe>
-        </CardFooter>
-      </form>
-    </Card>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
+      <ResourceFormLayout
+        tableSchema={tableSchema}
+        writableCols={writableCols}
+        form={form}
+        mode="create"
+        headerTitle="New record"
+        onCancel={() =>
+          navigate({
+            to: "/$schema/resource/$resource",
+            params: { schema, resource: table },
+          })
+        }
+        submitLabel="Create"
+        submittingLabel="Creating…"
+      />
+    </form>
   )
 }

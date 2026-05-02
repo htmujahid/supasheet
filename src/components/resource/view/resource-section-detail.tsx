@@ -1,0 +1,119 @@
+import { ChevronDownIcon } from "lucide-react"
+
+import { Editor } from "#/components/blocks/editor-md/editor"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "#/components/ui/collapsible"
+import { Label } from "#/components/ui/label"
+import { Separator } from "#/components/ui/separator"
+import { getColumnMetadata } from "#/lib/columns"
+import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import { formatTitle } from "#/lib/format"
+
+import { AllCells } from "../cells/all-cells"
+import type { ResolvedFieldSection } from "../resource-form-utils"
+
+type Props = {
+  section: ResolvedFieldSection
+  colByName: Map<string, ColumnSchema>
+  tableSchema: TableSchema | null
+  record: Record<string, unknown>
+}
+
+export function ResourceSectionDetail({
+  section,
+  colByName,
+  tableSchema,
+  record,
+}: Props) {
+  const cols = section.fields
+    .map((name) => colByName.get(name))
+    .filter((col): col is ColumnSchema => Boolean(col))
+
+  if (!cols.length) return null
+
+  const body = (
+    <CardContent className="space-y-0">
+      {cols.map((column, index) => {
+        const value = record[column.name as keyof typeof record]
+        const columnMetadata = getColumnMetadata(tableSchema, column)
+        return (
+          <div key={column.id}>
+            <div className="flex items-start gap-4 py-2">
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+                  {columnMetadata.icon} {formatTitle(column.name as string)}
+                </Label>
+                <div className="text-sm text-muted-foreground">
+                  {value ? (
+                    columnMetadata.variant === "rich_text" ? (
+                      <Editor
+                        name={columnMetadata.label}
+                        value={value as string}
+                        disabled
+                      />
+                    ) : (
+                      <AllCells columnMetadata={columnMetadata} value={value} />
+                    )
+                  ) : (
+                    <div className="text-muted">N/A</div>
+                  )}
+                </div>
+              </div>
+            </div>
+            {index < cols.length - 1 && <Separator />}
+          </div>
+        )
+      })}
+    </CardContent>
+  )
+
+  if (!section.collapsible) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{section.title}</CardTitle>
+          {section.description ? (
+            <CardDescription>{section.description}</CardDescription>
+          ) : null}
+        </CardHeader>
+        {body}
+      </Card>
+    )
+  }
+
+  return (
+    <Collapsible defaultOpen={false}>
+      <Card>
+        <CollapsibleTrigger
+          render={
+            <button
+              type="button"
+              className="group/section-trigger w-full cursor-pointer text-left"
+            />
+          }
+        >
+          <CardHeader className="flex flex-row items-start justify-between gap-2">
+            <div className="flex flex-col gap-1">
+              <CardTitle>{section.title}</CardTitle>
+              {section.description ? (
+                <CardDescription>{section.description}</CardDescription>
+              ) : null}
+            </div>
+            <ChevronDownIcon className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section-trigger:rotate-180" />
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>{body}</CollapsibleContent>
+      </Card>
+    </Collapsible>
+  )
+}

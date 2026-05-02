@@ -1,27 +1,21 @@
 import type {
   ColumnSchema,
+  FieldSection,
+  FieldSectionFields,
+  FormMode,
   PrimaryKey,
-  TableMetadata,
 } from "#/lib/database-meta.types"
 
 export function isSkippedForUpdate(
   col: ColumnSchema,
-  primaryKeys: PrimaryKey[],
-  columnsMeta: TableMetadata["columns"]
+  primaryKeys: PrimaryKey[]
 ): boolean {
   if (primaryKeys.some((pk) => pk.name === col.name)) return true
-  const name = col.name ?? col.id
-  if (columnsMeta?.readOnly?.includes(name)) return true
-  if (columnsMeta?.writeOnce?.includes(name)) return true
   return false
 }
 
-export function isSkippedForCreate(
-  col: ColumnSchema,
-  columnsMeta: TableMetadata["columns"]
-): boolean {
+export function isSkippedForCreate(col: ColumnSchema): boolean {
   if (col.is_identity ?? false) return true
-  if (columnsMeta?.readOnly?.includes(col.name ?? col.id)) return true
   return false
 }
 
@@ -92,4 +86,57 @@ export function buildCreatePayload(
     }
   }
   return payload
+}
+
+export function getSectionFields(
+  fields: FieldSectionFields,
+  mode: FormMode
+): string[] {
+  if (Array.isArray(fields)) return fields
+  return fields[mode] ?? []
+}
+
+export type ResolvedFieldSection = Omit<FieldSection, "fields"> & {
+  fields: string[]
+}
+
+export type LayoutPlan = {
+  sections: ResolvedFieldSection[]
+}
+
+export function buildLayoutPlan(
+  sectionsInput: FieldSection[] | undefined,
+  availableNames: Set<string>,
+  mode: FormMode
+): LayoutPlan | null {
+  if (!sectionsInput?.length) return null
+
+  const seen = new Set<string>()
+  const sections: ResolvedFieldSection[] = sectionsInput
+    .map((s) => {
+      const rawFields = getSectionFields(s.fields, mode)
+      const fields: string[] = []
+      for (const name of rawFields) {
+        if (!availableNames.has(name)) {
+          console.warn(
+            `[layout] field "${name}" referenced in section "${s.id}" is not available in mode "${mode}"; skipping`
+          )
+          continue
+        }
+        if (seen.has(name)) {
+          console.warn(
+            `[layout] field "${name}" assigned to multiple sections; keeping first`
+          )
+          continue
+        }
+        seen.add(name)
+        fields.push(name)
+      }
+      return { ...s, fields }
+    })
+    .filter((s) => s.fields.length > 0)
+
+  if (!sections.length) return null
+
+  return { sections }
 }

@@ -1,44 +1,114 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 import type {
-  ColumnSchema,
-  ResourceDataSchema,
-  ResourceSchema,
-} from "@/lib/database-meta.types"
+  ColumnFiltersState,
+  PaginationState,
+  RowSelectionState,
+  SortingState,
+  VisibilityState,
+} from "@tanstack/react-table"
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 import { DataTable } from "#/components/data-table/data-table"
+import type {
+  ColumnSchema,
+  DatabaseSchemas,
+  DatabaseTables,
+  DatabaseViews,
+  ResourceSchema,
+} from "#/lib/database-meta.types"
+import { foreignTableDataQueryOptions } from "#/lib/supabase/data/resource"
 
 import { getResourceForeignTableColumns } from "./resource-foriegn-table-columns"
 
-type ResourceForeignTableProps = {
-  relationship: ResourceSchema & { columns: ColumnSchema[] }
-  data: ResourceDataSchema[] | null
+type ResourceForeignTableProps<S extends DatabaseSchemas> = {
+  schema: S
+  table: DatabaseTables<S> | DatabaseViews<S>
+  parentColumn: string
+  parentValue: unknown
+  resourceSchema: ResourceSchema & { columns: ColumnSchema[] }
+  columnsSchema: ColumnSchema[]
+  selectClause?: string
 }
 
-export function ResourceForeignTable({
-  relationship,
-  data,
-}: ResourceForeignTableProps) {
+export function ResourceForeignTable<S extends DatabaseSchemas>({
+  schema,
+  table,
+  parentColumn,
+  parentValue,
+  resourceSchema,
+  columnsSchema,
+  selectClause = "*",
+}: ResourceForeignTableProps<S>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+  const sortId = sorting[0]?.id
+  const sortDesc = sorting[0]?.desc ?? false
+
+  const hasParentValue =
+    parentValue !== undefined && parentValue !== null && parentValue !== ""
+
+  const { data: queryResult } = useSuspenseQuery(
+    foreignTableDataQueryOptions(
+      schema,
+      table,
+      parentColumn,
+      hasParentValue ? parentValue : "__noop__",
+      selectClause,
+      pagination.pageIndex + 1,
+      pagination.pageSize,
+      sortId,
+      sortDesc,
+      columnFilters
+    )
+  )
+
+  const data = hasParentValue ? (queryResult?.result ?? []) : []
+  const totalCount = hasParentValue ? (queryResult?.count ?? 0) : 0
+  const pageCount = Math.max(1, Math.ceil(totalCount / pagination.pageSize))
+
   const columns = useMemo(
     () =>
       getResourceForeignTableColumns({
-        data: data ?? [],
-        columnsSchema: relationship.columns ?? [],
-        resourceSchema: relationship,
+        data,
+        columnsSchema,
+        resourceSchema,
       }),
-    [relationship, data]
+    [data, columnsSchema, resourceSchema]
   )
 
-  const table = useReactTable({
-    data: data ?? [],
+  const tableInstance = useReactTable({
+    data,
     columns,
+    pageCount,
+    state: {
+      sorting,
+      pagination,
+      columnFilters,
+      rowSelection,
+      columnVisibility,
+    },
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
+    onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
+    manualSorting: true,
+    manualPagination: true,
+    manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
-    rowCount: data?.length ?? 0,
   })
 
-  return <DataTable table={table} />
+  return <DataTable table={tableInstance} />
 }

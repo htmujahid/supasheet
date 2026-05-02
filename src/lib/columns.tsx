@@ -19,10 +19,12 @@ import {
 } from "lucide-react"
 
 import { METADATA_COLUMNS } from "#/config/database.config"
+import { isTableSchema } from "#/lib/database-meta.types"
 import type {
   ColumnSchema,
   PrimaryKey,
   TableSchema,
+  ViewSchema,
 } from "#/lib/database-meta.types"
 import type { ColumnMetadata } from "#/types/fields"
 
@@ -41,7 +43,7 @@ export function getColumnCell(columnSchema: ColumnSchema) {
 }
 
 export function getColumnMetadata(
-  tableSchema: TableSchema | null,
+  tableSchema: TableSchema | ViewSchema | null,
   columnSchema: ColumnSchema
 ): ColumnMetadata {
   const format = columnSchema.format?.startsWith("_")
@@ -71,10 +73,12 @@ export function getColumnMetadata(
   //     rel.source_schema === columnSchema.schema
   // )
 
-  const isPrimaryKey = (tableSchema?.primary_keys as PrimaryKey[])?.some(
-    (key) =>
-      key.name === columnSchema.name && key.schema === columnSchema.schema
-  )
+  const isPrimaryKey = isTableSchema(tableSchema!)
+    ? (tableSchema?.primary_keys as PrimaryKey[])?.some(
+        (key) =>
+          key.name === columnSchema.name && key.schema === columnSchema.schema
+      )
+    : false
 
   const baseOptions = {
     label,

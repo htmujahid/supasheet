@@ -268,6 +268,13 @@ comment on table desk.tasks is
         {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"created_at","badge":"status"},
         {"id":"calendar","name":"Calendar View","type":"calendar", "title": "title", "startDate": "created_at", "endDate": "due_date", "badge": "status"},
         {"id":"gallery","name":"Gallery View","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
+    ],
+    "sections": [
+        {"id":"summary","title":"Summary","fields":["title","description","cover"]},
+        {"id":"schedule","title":"Schedule","fields":["status","priority","due_date","completed_at"]},
+        {"id":"organization","title":"Organization","fields":["project_id","tags","is_important"]},
+        {"id":"progress","title":"Progress","fields":["completion","duration"]},
+        {"id":"extras","title":"Attachments & notes","description":"Files, color tag, and free-form notes","collapsible":true,"fields":["attachments","color","notes"]}
     ]
 }';
 

@@ -109,7 +109,7 @@ export const tableSchemaQueryOptions = <S extends DatabaseSchemas>(
       const { data, error } = await supabase
         .schema("supasheet")
         .rpc("get_tables", { schema_name: schema, table_name: id })
-      console.log("tableSchemaQueryOptions", { data, error })
+
       if (error) throw error
       return (data[0] ?? null) as unknown as TableSchema<S> | null
     },
@@ -177,6 +177,60 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
         .schema(schema)
         .from(resource)
         .select("*" + joins.join(""), { count: "exact" })
+
+      if (page && pageSize) {
+        query = query.range((page - 1) * pageSize, page * pageSize - 1)
+      }
+
+      if (sortId) query = query.order(sortId, { ascending: !sortDesc })
+
+      query = applyFilters(query, filters)
+
+      const { data, count, error } = await query
+      if (error) throw error
+
+      return {
+        result: (data ?? []) as unknown as Record<string, unknown>[],
+        count: count,
+      }
+    },
+    staleTime: 1000 * 60 * 2,
+  })
+
+export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>,
+  parentColumn: string,
+  parentValue: unknown,
+  selectClause: string = "*",
+  page?: number,
+  pageSize?: number,
+  sortId?: string,
+  sortDesc?: boolean,
+  filters: ColumnFiltersState = []
+) =>
+  queryOptions({
+    queryKey: [
+      "supasheet",
+      "resource-data",
+      schema,
+      resource,
+      "foreign",
+      parentColumn,
+      parentValue,
+      selectClause,
+      page,
+      pageSize,
+      sortId,
+      sortDesc,
+      filters,
+    ],
+    queryFn: async () => {
+      let query = supabase
+        .schema(schema)
+        .from(resource)
+        .select(selectClause, { count: "exact" })
+        .eq(parentColumn, parentValue as never)
 
       if (page && pageSize) {
         query = query.range((page - 1) * pageSize, page * pageSize - 1)

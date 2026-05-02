@@ -26,7 +26,9 @@ export function FieldOptionDropdown({
   return (
     <ButtonGroup>
       <DropdownMenu>
-        <DropdownMenuTrigger className={buttonVariants({ variant: "outline", size: "icon" })}>
+        <DropdownMenuTrigger
+          className={buttonVariants({ variant: "outline", size: "icon" })}
+        >
           <EllipsisIcon size={16} aria-hidden="true" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end">
