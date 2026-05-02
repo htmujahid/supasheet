@@ -1,10 +1,16 @@
+import { Link } from "@tanstack/react-router"
+
 import type { ColumnDef, Row } from "@tanstack/react-table"
+
+import { ArrowUpRightIcon } from "lucide-react"
 
 import type {
   ColumnSchema,
+  PrimaryKey,
   ResourceDataSchema,
   ResourceSchema,
 } from "@/lib/database-meta.types"
+import { isTableSchema } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
 
 import { getColumnMetadata } from "#/lib/columns"
@@ -20,7 +26,40 @@ export function getResourceForeignTableColumns({
   resourceSchema: ResourceSchema
   data: ResourceDataSchema[]
 }) {
+  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
+  const hasPrimaryKeys =
+    !!tableSchema && (tableSchema.primary_keys as PrimaryKey[] | null)?.length
+      ? true
+      : false
+
+  const linkColumn: ColumnDef<ResourceDataSchema, unknown> | null =
+    hasPrimaryKeys
+      ? {
+          id: "detail-link",
+          header: () => null,
+          cell: ({ row }) => (
+            <Link
+              to="/$schema/resource/$resource/detail/$"
+              params={{
+                schema: resourceSchema.schema,
+                resource: resourceSchema.name,
+                _splat: row.id,
+              }}
+              className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ArrowUpRightIcon className="size-3" />
+            </Link>
+          ),
+          size: 40,
+          enableSorting: false,
+          enableHiding: false,
+          enableColumnFilter: false,
+        }
+      : null
+
   return [
+    ...(linkColumn ? [linkColumn] : []),
     ...(columnsSchema ?? []).map((c) => ({
       id: c.name,
       accessorKey: c.name as string,

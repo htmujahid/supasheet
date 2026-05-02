@@ -19,8 +19,10 @@ import type {
   DatabaseSchemas,
   DatabaseTables,
   DatabaseViews,
+  PrimaryKey,
   ResourceSchema,
 } from "#/lib/database-meta.types"
+import { isTableSchema } from "#/lib/database-meta.types"
 import { foreignTableDataQueryOptions } from "#/lib/supabase/data/resource"
 
 import { getResourceForeignTableColumns } from "./resource-foriegn-table-columns"
@@ -55,6 +57,10 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
 
   const sortId = sorting[0]?.id
   const sortDesc = sorting[0]?.desc ?? false
+
+  const primaryKeys = (
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+  ) as PrimaryKey[]
 
   const hasParentValue =
     parentValue !== undefined && parentValue !== null && parentValue !== ""
@@ -99,6 +105,12 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
       rowSelection,
       columnVisibility,
     },
+    getRowId: primaryKeys.length
+      ? (row) =>
+          primaryKeys
+            .map((key) => (row)[key.name])
+            .join("/")
+      : undefined,
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
