@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react"
 
+import { useLocation } from "@tanstack/react-router"
+
 import {
   useMutation,
   useQueryClient,
@@ -59,6 +61,8 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
   selectClause = "*",
 }: ResourceForeignTableProps<S>) {
   const queryClient = useQueryClient()
+  const location = useLocation()
+  const redirectTo = location.href
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -141,8 +145,9 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
         columnsSchema,
         resourceSchema,
         canUpdate,
+        redirect: redirectTo,
       }),
-    [data, columnsSchema, resourceSchema, canUpdate]
+    [data, columnsSchema, resourceSchema, canUpdate, redirectTo]
   )
 
   const tableInstance = useReactTable({
@@ -174,7 +179,7 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
   })
 
   const newRecordUrl = canInsert
-    ? `/${schema}/resource/${table}/new`
+    ? `/${schema}/resource/${table}/new?redirect=${encodeURIComponent(redirectTo)}`
     : undefined
 
   return (

@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router"
+import { getRouteApi, useNavigate } from "@tanstack/react-router"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
@@ -19,6 +19,8 @@ import {
   isSkippedForUpdate,
 } from "./resource-form-utils"
 
+const routeApi = getRouteApi("/$schema/resource/$resource/update/$")
+
 interface ResourceUpdateFormProps {
   columnsSchema: ColumnSchema[]
   primaryKeys: PrimaryKey[]
@@ -37,6 +39,11 @@ export function ResourceUpdateForm({
 
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { redirect } = routeApi.useSearch()
+  const safeRedirect =
+    redirect?.startsWith("/") && !redirect.startsWith("//")
+      ? redirect
+      : undefined
 
   const pk = Object.fromEntries(
     primaryKeys.map((k) => [k.name, record[k.name]])
@@ -80,10 +87,14 @@ export function ResourceUpdateForm({
       })
       toast.success("Record updated")
       if ((meta as { target?: string } | undefined)?.target === "close") {
-        navigate({
-          to: "/$schema/resource/$resource",
-          params: { schema, resource },
-        })
+        if (safeRedirect) {
+          navigate({ to: safeRedirect })
+        } else {
+          navigate({
+            to: "/$schema/resource/$resource",
+            params: { schema, resource },
+          })
+        }
       }
     },
   })
@@ -107,6 +118,7 @@ export function ResourceUpdateForm({
         mode="update"
         primaryKeyDisplay={primaryKeyDisplay}
         headerTitle="Edit record"
+        redirect={safeRedirect}
       />
     </form>
   )

@@ -4,7 +4,10 @@ import {
   notFound,
   useRouter,
 } from "@tanstack/react-router"
-import type { ErrorComponentProps } from "@tanstack/react-router"
+import type {
+  ErrorComponentProps,
+  SearchSchemaInput,
+} from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
@@ -32,6 +35,9 @@ import {
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
+  validateSearch: (search: { redirect?: string } & SearchSchemaInput) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(

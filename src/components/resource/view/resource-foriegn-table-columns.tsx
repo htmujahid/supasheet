@@ -23,11 +23,13 @@ export function getResourceForeignTableColumns({
   resourceSchema,
   data,
   canUpdate = false,
+  redirect,
 }: {
   columnsSchema: ColumnSchema[]
   resourceSchema: ResourceSchema
   data: ResourceDataSchema[]
   canUpdate?: boolean
+  redirect?: string
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const hasPrimaryKeys =
@@ -67,6 +69,7 @@ export function getResourceForeignTableColumns({
                     resource: resourceSchema.name,
                     _splat: row.id,
                   }}
+                  search={redirect ? { redirect } : undefined}
                   className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
                   onClick={(e) => e.stopPropagation()}
                 >

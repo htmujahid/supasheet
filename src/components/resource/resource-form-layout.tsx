@@ -40,6 +40,7 @@ type ResourceFormLayoutProps = {
   mode: FormMode
   primaryKeyDisplay?: PrimaryKeyDisplay[]
   headerTitle: string
+  redirect?: string
 }
 
 export function ResourceFormLayout({
@@ -49,6 +50,7 @@ export function ResourceFormLayout({
   mode,
   primaryKeyDisplay,
   headerTitle,
+  redirect,
 }: ResourceFormLayoutProps) {
   const navigate = useNavigate()
   const schema = tableSchema?.schema
@@ -62,6 +64,10 @@ export function ResourceFormLayout({
   const colByName = new Map(writableCols.map((c) => [c.name ?? c.id ?? "", c]))
 
   const handleCancel = () => {
+    if (redirect) {
+      navigate({ to: redirect })
+      return
+    }
     if (!schema || !resource) return
     navigate({
       to: "/$schema/resource/$resource",

@@ -4,7 +4,10 @@ import {
   notFound,
   useRouter,
 } from "@tanstack/react-router"
-import type { ErrorComponentProps } from "@tanstack/react-router"
+import type {
+  ErrorComponentProps,
+  SearchSchemaInput,
+} from "@tanstack/react-router"
 
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
@@ -27,6 +30,9 @@ import {
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/new")({
+  validateSearch: (search: { redirect?: string } & SearchSchemaInput) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(
