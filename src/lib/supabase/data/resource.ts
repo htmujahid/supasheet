@@ -23,9 +23,10 @@ export const schemasQueryOptions = queryOptions({
       .schema("supasheet")
       .rpc("get_schemas")
     if (error) throw error
-    return data.map((s) =>
-      s.schema === SYSTEM_SCHEMAS[0] ? { schema: "core" } : s
-    ) as { schema: DatabaseSchemas }[]
+    return [
+      ...data.filter((s) => !SYSTEM_SCHEMAS.includes(s.schema)),
+      { schema: "core" },
+    ] as { schema: DatabaseSchemas }[]
   },
   staleTime: 1000 * 60 * 5,
 })

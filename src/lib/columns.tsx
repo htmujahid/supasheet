@@ -73,12 +73,14 @@ export function getColumnMetadata(
   //     rel.source_schema === columnSchema.schema
   // )
 
-  const isPrimaryKey = isTableSchema(tableSchema!)
-    ? (tableSchema?.primary_keys as PrimaryKey[])?.some(
-        (key) =>
-          key.name === columnSchema.name && key.schema === columnSchema.schema
-      )
-    : false
+  const isPrimaryKey =
+    tableSchema && isTableSchema(tableSchema)
+      ? (tableSchema.primary_keys as PrimaryKey[])?.some(
+          (key) =>
+            key.name === columnSchema.name &&
+            key.schema === columnSchema.schema
+        )
+      : false
 
   const baseOptions = {
     label,
