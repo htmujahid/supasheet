@@ -63,7 +63,7 @@ create table store.products (
     id uuid primary key default extensions.uuid_generate_v4(),
     sku varchar(100) unique,
     name varchar(500) not null,
-    description RICH_TEXT,
+    description supasheet.RICH_TEXT,
     price numeric(10, 2) not null default 0,
     stock integer not null default 0,
     status store.product_status default 'draft',

@@ -61,7 +61,7 @@ commit;
 create table desk.projects (
     id uuid primary key default extensions.uuid_generate_v4(),
     title varchar(500) not null,
-    description RICH_TEXT,
+    description supasheet.RICH_TEXT,
     status desk.project_status default 'planning',
     priority desk.project_priority default 'medium',
     cover file,
@@ -196,7 +196,7 @@ create policy projects_delete on desk.projects
 create table desk.tasks (
     id uuid primary key default extensions.uuid_generate_v4(),
     title varchar(500) not null,
-    description RICH_TEXT,
+    description supasheet.RICH_TEXT,
     status desk.task_status default 'pending',
     priority desk.task_priority default 'medium',
     cover file,
