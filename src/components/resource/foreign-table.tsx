@@ -18,6 +18,7 @@ import type {
 } from "@/lib/database-meta.types"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import {
   Empty,
   EmptyContent,
@@ -143,7 +144,9 @@ export function ForeignTableSheet({
             <DataTable
               table={table}
               className="[&>div:nth-child(2)]:h-[calc(100svh-174px)]"
-            />
+            >
+              <DataTableToolbar table={table} />
+            </DataTable>
           )}
         </div>
       </SheetContent>

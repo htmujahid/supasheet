@@ -1,3 +1,5 @@
+import type { ReactNode } from "react"
+
 import type { Table } from "@tanstack/react-table"
 import { flexRender } from "@tanstack/react-table"
 
@@ -12,30 +14,23 @@ import {
 import { cn } from "#/lib/utils"
 
 import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData> {
   table: Table<TData>
-  onDelete?: (rows: TData[]) => void | Promise<void>
-  newRecordUrl?: string
   className?: string
+  children?: ReactNode
 }
 
 export function DataTable<TData>({
   table,
-  onDelete,
-  newRecordUrl,
   className,
+  children,
 }: DataTableProps<TData>) {
   const colCount = table.getAllColumns().length
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
-      <DataTableToolbar
-        table={table}
-        onDelete={onDelete}
-        newRecordUrl={newRecordUrl}
-      />
+      {children}
       <div className="overflow-auto rounded-md border">
         <TableRoot>
           <TableHeader>

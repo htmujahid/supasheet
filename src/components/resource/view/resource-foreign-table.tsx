@@ -20,6 +20,7 @@ import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
@@ -177,10 +178,12 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
     : undefined
 
   return (
-    <DataTable
-      table={tableInstance}
-      onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
-      newRecordUrl={newRecordUrl}
-    />
+    <DataTable table={tableInstance}>
+      <DataTableToolbar
+        table={tableInstance}
+        onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
+        newRecordUrl={newRecordUrl}
+      />
+    </DataTable>
   )
 }

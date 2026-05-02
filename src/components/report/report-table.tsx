@@ -7,6 +7,7 @@ import type {
 } from "@tanstack/react-table"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
 import type { ColumnSchema } from "#/lib/database-meta.types"
 
@@ -41,5 +42,9 @@ export function ReportTable({
     state: { sorting, pagination, columnFilters },
   })
 
-  return <DataTable table={table} />
+  return (
+    <DataTable table={table}>
+      <DataTableToolbar table={table} />
+    </DataTable>
+  )
 }

@@ -11,6 +11,7 @@ import type {
 import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { ColumnSchema } from "#/lib/database-meta.types"
@@ -63,11 +64,15 @@ export function UserRolesTable({
   })
 
   return (
-    <DataTable
-      table={table}
-      onDelete={
-        canDelete ? (rows) => deleteUserRoles(rows.map((r) => r.id)) : undefined
-      }
-    />
+    <DataTable table={table}>
+      <DataTableToolbar
+        table={table}
+        onDelete={
+          canDelete
+            ? (rows) => deleteUserRoles(rows.map((r) => r.id))
+            : undefined
+        }
+      />
+    </DataTable>
   )
 }
