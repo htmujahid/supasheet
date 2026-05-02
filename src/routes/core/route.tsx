@@ -61,7 +61,11 @@ function RouteComponent() {
     >
       <Sidebar collapsible="offcanvas" variant="inset">
         <SidebarHeader>
-          <ModuleSwitcher modules={modules} />
+          <div className="flex items-center gap-1">
+            <div className="min-w-0 flex-1">
+              <ModuleSwitcher modules={modules} />
+            </div>
+          </div>
         </SidebarHeader>
         <SidebarContent>
           <NavMain

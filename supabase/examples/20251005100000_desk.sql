@@ -904,3 +904,141 @@ create trigger audit_task_comments_delete
     on desk.task_comments
     for each row
 execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Notifications
+----------------------------------------------------------------
+
+-- Project trigger: notify owner and project admins on creation / status change
+create or replace function desk.trg_projects_notify()
+returns trigger as $$
+declare
+    v_recipients uuid[];
+    v_type       text;
+    v_title      text;
+    v_body       text;
+begin
+    v_recipients := array_remove(
+        supasheet.get_users_with_permission('desk.projects:select') || array[new.user_id],
+        null
+    );
+
+    if tg_op = 'INSERT' then
+        v_type  := 'project_created';
+        v_title := 'Project created';
+        v_body  := 'Project "' || new.title || '" was created.';
+    elsif new.status is distinct from old.status then
+        v_type  := 'project_status_changed';
+        v_title := 'Project status updated';
+        v_body  := 'Project "' || new.title || '" is now ' || new.status::text || '.';
+    else
+        return new;
+    end if;
+
+    perform supasheet.create_notification(
+        v_type, v_title, v_body, v_recipients,
+        jsonb_build_object('project_id', new.id, 'status', new.status),
+        '/desk/resource/projects/detail/' || new.id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists projects_notify on desk.projects;
+create trigger projects_notify
+    after insert or update of status
+    on desk.projects
+    for each row
+execute function desk.trg_projects_notify();
+
+
+-- Task trigger: notify owner and assignee on creation, status change, or reassignment
+create or replace function desk.trg_tasks_notify()
+returns trigger as $$
+declare
+    v_recipients uuid[];
+    v_type       text;
+    v_title      text;
+    v_body       text;
+begin
+    v_recipients := array_remove(array[new.user_id, new.assignee_id], null);
+
+    if tg_op = 'INSERT' then
+        v_type  := 'task_created';
+        v_title := 'Task created';
+        v_body  := 'Task "' || new.title || '" was created.';
+    elsif new.status is distinct from old.status then
+        v_type  := 'task_status_changed';
+        v_title := 'Task status updated';
+        v_body  := 'Task "' || new.title || '" is now ' || new.status::text || '.';
+    elsif new.assignee_id is distinct from old.assignee_id then
+        v_type  := 'task_assigned';
+        v_title := 'Task assignment changed';
+        v_body  := 'Task "' || new.title || '" was reassigned.';
+        -- Include the previous assignee so they know they were unassigned
+        v_recipients := array_remove(
+            array[new.user_id, new.assignee_id, old.assignee_id], null
+        );
+    else
+        return new;
+    end if;
+
+    perform supasheet.create_notification(
+        v_type, v_title, v_body, v_recipients,
+        jsonb_build_object(
+            'task_id',     new.id,
+            'project_id',  new.project_id,
+            'status',      new.status,
+            'assignee_id', new.assignee_id
+        ),
+        '/desk/resource/tasks/detail/' || new.id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists tasks_notify on desk.tasks;
+create trigger tasks_notify
+    after insert or update of status, assignee_id
+    on desk.tasks
+    for each row
+execute function desk.trg_tasks_notify();
+
+
+-- Task comment trigger: notify task owner + assignee, excluding the commenter
+create or replace function desk.trg_task_comments_notify()
+returns trigger as $$
+declare
+    v_task       desk.tasks%rowtype;
+    v_recipients uuid[];
+begin
+    select * into v_task from desk.tasks where id = new.task_id;
+
+    v_recipients := array_remove(
+        array_remove(array[v_task.user_id, v_task.assignee_id], null),
+        new.user_id
+    );
+
+    perform supasheet.create_notification(
+        'task_comment_added',
+        'New comment',
+        'A new comment was added to task "' || v_task.title || '".',
+        v_recipients,
+        jsonb_build_object(
+            'task_id',      new.task_id,
+            'comment_id',   new.id,
+            'commenter_id', new.user_id
+        ),
+        '/desk/resource/tasks/detail/' || new.task_id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists task_comments_notify on desk.task_comments;
+create trigger task_comments_notify
+    after insert
+    on desk.task_comments
+    for each row
+execute function desk.trg_task_comments_notify();

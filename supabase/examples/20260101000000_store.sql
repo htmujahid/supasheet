@@ -757,3 +757,152 @@ create trigger audit_store_reviews_update
 create trigger audit_store_reviews_delete
     before delete on store.reviews
     for each row execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Notifications
+----------------------------------------------------------------
+
+-- Order trigger:
+--   * INSERT  → notify the customer + everyone who can manage orders
+--   * status / tracking_number updates → notify the customer
+create or replace function store.trg_orders_notify()
+returns trigger as $$
+declare
+    v_recipients uuid[];
+    v_type       text;
+    v_title      text;
+    v_body       text;
+    v_order_ref  text;
+begin
+    v_order_ref := coalesce(new.order_number, new.id::text);
+
+    if tg_op = 'INSERT' then
+        v_type  := 'order_placed';
+        v_title := 'New order placed';
+        v_body  := 'Order ' || v_order_ref || ' was placed.';
+        v_recipients := array_remove(
+            supasheet.get_users_with_permission('store.orders:select') || array[new.user_id],
+            null
+        );
+    elsif new.status is distinct from old.status then
+        v_type  := 'order_status_changed';
+        v_title := 'Order status updated';
+        v_body  := 'Order ' || v_order_ref || ' is now ' || new.status::text || '.';
+        v_recipients := array_remove(array[new.user_id], null);
+    elsif new.tracking_number is distinct from old.tracking_number
+          and new.tracking_number is not null then
+        v_type  := 'order_tracking_added';
+        v_title := 'Tracking number added';
+        v_body  := 'Tracking is now available for order ' || v_order_ref || '.';
+        v_recipients := array_remove(array[new.user_id], null);
+    else
+        return new;
+    end if;
+
+    perform supasheet.create_notification(
+        v_type, v_title, v_body, v_recipients,
+        jsonb_build_object(
+            'order_id',     new.id,
+            'order_number', new.order_number,
+            'status',       new.status,
+            'total',        new.total
+        ),
+        '/store/resource/orders/detail/' || new.id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists orders_notify on store.orders;
+create trigger orders_notify
+    after insert or update of status, tracking_number
+    on store.orders
+    for each row
+execute function store.trg_orders_notify();
+
+
+-- Product trigger: alert product admins when stock crosses below the low-stock threshold
+create or replace function store.trg_products_notify()
+returns trigger as $$
+declare
+    v_recipients uuid[];
+begin
+    if new.stock < 10
+       and (tg_op = 'INSERT' or old.stock >= 10)
+    then
+        v_recipients := supasheet.get_users_with_permission('store.products:update');
+
+        perform supasheet.create_notification(
+            'product_low_stock',
+            case when new.stock = 0 then 'Product out of stock' else 'Low stock' end,
+            'Product "' || new.name || '" has ' || new.stock::text || ' unit(s) left.',
+            v_recipients,
+            jsonb_build_object(
+                'product_id', new.id,
+                'sku',        new.sku,
+                'stock',      new.stock
+            ),
+            '/store/resource/products/detail/' || new.id::text
+        );
+    end if;
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists products_notify on store.products;
+create trigger products_notify
+    after insert or update of stock
+    on store.products
+    for each row
+execute function store.trg_products_notify();
+
+
+-- Review trigger:
+--   * INSERT  → notify moderators that a review needs review
+--   * status update → notify the reviewer of the moderation decision
+create or replace function store.trg_reviews_notify()
+returns trigger as $$
+declare
+    v_product    store.products%rowtype;
+    v_recipients uuid[];
+    v_type       text;
+    v_title      text;
+    v_body       text;
+begin
+    select * into v_product from store.products where id = new.product_id;
+
+    if tg_op = 'INSERT' then
+        v_recipients := supasheet.get_users_with_permission('store.reviews:update');
+        v_type       := 'review_submitted';
+        v_title      := 'New review submitted';
+        v_body       := 'A review for "' || v_product.name || '" is awaiting moderation.';
+    elsif new.status is distinct from old.status then
+        v_recipients := array_remove(array[new.user_id], null);
+        v_type       := 'review_' || new.status::text;
+        v_title      := 'Review ' || new.status::text;
+        v_body       := 'Your review of "' || v_product.name || '" was ' || new.status::text || '.';
+    else
+        return new;
+    end if;
+
+    perform supasheet.create_notification(
+        v_type, v_title, v_body, v_recipients,
+        jsonb_build_object(
+            'review_id',  new.id,
+            'product_id', new.product_id,
+            'rating',     new.rating,
+            'status',     new.status
+        ),
+        '/store/resource/reviews/detail/' || new.id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists reviews_notify on store.reviews;
+create trigger reviews_notify
+    after insert or update of status
+    on store.reviews
+    for each row
+execute function store.trg_reviews_notify();

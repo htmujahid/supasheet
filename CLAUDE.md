@@ -69,7 +69,7 @@ TanStack Router file-based pages, organized by module:
 
 The main data module, scoped to a Supabase schema:
 
-- `resource/$resource/` — CRUD for any table: list (`index`), create (`new`), update (`update/`), detail (`view/`), plus alternate views: `kanban/`, `calendar/`, `gallery/`, `report`
+- `resource/$resource/` — CRUD for any table: list (`index`), create (`new`), update (`update/`), detail (`detail/`), plus alternate views: `kanban/`, `calendar/`, `gallery/`, `report`
 - `dashboard/` — dashboard page
 - `chart/` — charts page
 - `report/$report/` — report page

@@ -77,8 +77,7 @@ export function getColumnMetadata(
     tableSchema && isTableSchema(tableSchema)
       ? (tableSchema.primary_keys as PrimaryKey[])?.some(
           (key) =>
-            key.name === columnSchema.name &&
-            key.schema === columnSchema.schema
+            key.name === columnSchema.name && key.schema === columnSchema.schema
         )
       : false
 

@@ -3,7 +3,7 @@ import { mutationOptions, queryOptions } from "@tanstack/react-query"
 import type { ColumnFiltersState } from "@tanstack/react-table"
 
 import type { DatabaseSchemas } from "#/lib/database-meta.types"
-import type { Database } from "#/lib/database.types"
+import type { Database, Json } from "#/lib/database.types"
 
 import { supabase } from "../client"
 import { applyFilters } from "../filter"
@@ -333,3 +333,100 @@ export const userPermissionsQueryOptions = (schema?: DatabaseSchemas) =>
     },
     staleTime: 1000 * 60 * 5,
   })
+
+// ─────────────────────────────────────────────
+// Notifications
+// ─────────────────────────────────────────────
+
+export type NotificationRow = {
+  id: string
+  type: string
+  title: string
+  body: string | null
+  link: string | null
+  metadata: Json | null
+  created_by: string | null
+  created_at: string
+}
+
+export type UserNotificationRow = {
+  id: string
+  notification_id: string
+  user_id: string
+  read_at: string | null
+  archived_at: string | null
+  created_at: string
+  notification: NotificationRow
+}
+
+export const notificationsQueryOptions = queryOptions({
+  queryKey: ["supasheet", "notifications", "me"] as const,
+  queryFn: async (): Promise<UserNotificationRow[]> => {
+    const { data, error } = await supabase
+      .schema("supasheet")
+      .from("user_notifications" as never)
+      .select(
+        "id, notification_id, user_id, read_at, archived_at, created_at, notification:notification_id ( id, type, title, body, link, metadata, created_by, created_at )"
+      )
+      .is("archived_at", null)
+      .order("created_at", { ascending: false })
+
+    if (error) throw error
+    return (data ?? []) as unknown as UserNotificationRow[]
+  },
+  staleTime: 1000 * 30,
+})
+
+export const unreadNotificationsCountQueryOptions = queryOptions({
+  queryKey: ["supasheet", "notifications", "me", "unread-count"] as const,
+  queryFn: async (): Promise<number> => {
+    const { data, error } = await supabase
+      .schema("supasheet")
+      .rpc("unread_notifications_count" as never)
+    if (error) throw error
+    return (data as number) ?? 0
+  },
+  staleTime: 1000 * 30,
+})
+
+export const markNotificationReadMutationOptions = mutationOptions({
+  mutationFn: async (id: string) => {
+    const { error } = await supabase
+      .schema("supasheet")
+      .from("user_notifications" as never)
+      .update({ read_at: new Date().toISOString() } as never)
+      .eq("id", id)
+    if (error) throw error
+  },
+})
+
+export const markAllNotificationsReadMutationOptions = mutationOptions({
+  mutationFn: async () => {
+    const { error } = await supabase
+      .schema("supasheet")
+      .rpc("mark_all_notifications_read" as never)
+    if (error) throw error
+  },
+})
+
+export const archiveNotificationMutationOptions = mutationOptions({
+  mutationFn: async (id: string) => {
+    const { error } = await supabase
+      .schema("supasheet")
+      .from("user_notifications" as never)
+      .update({ archived_at: new Date().toISOString() } as never)
+      .eq("id", id)
+    if (error) throw error
+  },
+})
+
+export const deleteNotificationMutationOptions = mutationOptions({
+  mutationFn: async (id: string) => {
+    const { error } = await supabase
+      .schema("supasheet")
+      .from("user_notifications" as never)
+      .delete()
+      .eq("id", id)
+    if (error) throw error
+  },
+})

@@ -162,10 +162,7 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
       columnVisibility,
     },
     getRowId: primaryKeys.length
-      ? (row) =>
-          primaryKeys
-            .map((key) => (row)[key.name])
-            .join("/")
+      ? (row) => primaryKeys.map((key) => row[key.name]).join("/")
       : undefined,
     onSortingChange: setSorting,
     onPaginationChange: setPagination,

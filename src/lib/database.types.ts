@@ -46,13 +46,7 @@ export type Database = {
       [_ in never]: never
     }
     CompositeTypes: {
-      file_object: {
-        name: string | null
-        type: string | null
-        size: number | null
-        url: string | null
-        last_modified: string | null
-      }
+      [_ in never]: never
     }
   }
   supasheet: {
@@ -212,6 +206,44 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          metadata: Json
+          title: string
+          type: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          metadata?: Json
+          title: string
+          type: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          metadata?: Json
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           id: number
@@ -277,6 +309,48 @@ export type Database = {
           size?: string | null
         }
         Relationships: []
+      }
+      user_notifications: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          id: string
+          notification_id: string
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          notification_id: string
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          notification_id?: string
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -378,6 +452,16 @@ export type Database = {
           p_record_id?: string
           p_schema_name: string
           p_table_name: string
+        }
+        Returns: string
+      }
+      create_notification: {
+        Args: {
+          p_body: string
+          p_metadata?: Json
+          p_title: string
+          p_type: string
+          p_user_ids: string[]
         }
         Returns: string
       }
@@ -591,6 +675,14 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_users_with_permission: {
+        Args: { p_permission: Database["supasheet"]["Enums"]["app_permission"] }
+        Returns: string[]
+      }
+      get_users_with_role: {
+        Args: { p_role: Database["supasheet"]["Enums"]["app_role"] }
+        Returns: string[]
+      }
       get_views: {
         Args: { schema_name?: string; view_name?: string }
         Returns: {
@@ -627,6 +719,8 @@ export type Database = {
         Args: { requested_role: Database["supasheet"]["Enums"]["app_role"] }
         Returns: boolean
       }
+      mark_all_notifications_read: { Args: never; Returns: number }
+      unread_notifications_count: { Args: never; Returns: number }
     }
     Enums: {
       app_permission:
@@ -644,10 +738,18 @@ export type Database = {
         | "supasheet.role_permissions:insert"
         | "supasheet.role_permissions:delete"
         | "supasheet.audit_logs:select"
+        | "supasheet.notifications:select"
+        | "supasheet.user_notifications:select"
       app_role: "x-admin" | "admin" | "user"
     }
     CompositeTypes: {
-      [_ in never]: never
+      file_object: {
+        name: string | null
+        type: string | null
+        size: number | null
+        url: string | null
+        last_modified: string | null
+      }
     }
   }
 }
@@ -793,6 +895,8 @@ export const Constants = {
         "supasheet.role_permissions:insert",
         "supasheet.role_permissions:delete",
         "supasheet.audit_logs:select",
+        "supasheet.notifications:select",
+        "supasheet.user_notifications:select",
       ],
       app_role: ["x-admin", "admin", "user"],
     },

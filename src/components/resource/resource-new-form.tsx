@@ -75,8 +75,7 @@ export function ResourceNewForm({
               .join("/")
           : ""
 
-      const target =
-        (meta as { target?: string } | undefined)?.target ?? "stay"
+      const target = (meta as { target?: string } | undefined)?.target ?? "stay"
 
       if (target === "stay" && splat) {
         navigate({

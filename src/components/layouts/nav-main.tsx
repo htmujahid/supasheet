@@ -6,9 +6,8 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router"
 
 import * as LucideIcons from "lucide-react"
 import type { LucideIcon } from "lucide-react"
-import { BellIcon, SearchIcon } from "lucide-react"
+import { SearchIcon } from "lucide-react"
 
-import { Button } from "#/components/ui/button"
 import {
   Command,
   CommandDialog,
@@ -26,6 +25,8 @@ import {
   SidebarMenuItem,
 } from "#/components/ui/sidebar"
 import { formatTitle } from "#/lib/format"
+
+import { NotificationsBell } from "./notifications-bell"
 
 type ResourceItem = {
   id: string
@@ -93,16 +94,7 @@ export function NavMain({
               <SearchIcon />
               <span>Quick Search</span>
             </SidebarMenuButton>
-            <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-              nativeButton={false}
-              render={<Link to="/core/notifications" />}
-            >
-              <BellIcon />
-              <span className="sr-only">Notifications</span>
-            </Button>
+            <NotificationsBell />
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu className="flex flex-col gap-1">

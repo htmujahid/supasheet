@@ -856,3 +856,110 @@ create trigger audit_blog_comments_update
 create trigger audit_blog_comments_delete
     before delete on blog.comments
     for each row execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Notifications
+----------------------------------------------------------------
+
+-- Resolver: the supasheet user behind a post (post → author → user)
+create or replace function blog.get_post_author_user_id(p_post_id uuid)
+returns uuid as $$
+    select a.user_id
+    from blog.posts p
+    join blog.authors a on a.id = p.author_id
+    where p.id = p_post_id
+$$ language sql stable security definer;
+
+
+-- Post trigger: notify the author and post readers when a post is published
+create or replace function blog.trg_posts_notify()
+returns trigger as $$
+declare
+    v_author_user uuid;
+    v_recipients  uuid[];
+begin
+    if tg_op = 'UPDATE'
+       and new.status = 'published'
+       and old.status is distinct from 'published'
+    then
+        v_author_user := blog.get_post_author_user_id(new.id);
+        v_recipients  := array_remove(
+            supasheet.get_users_with_permission('blog.posts:select') || array[v_author_user],
+            null
+        );
+
+        perform supasheet.create_notification(
+            'post_published',
+            'Post published',
+            '"' || new.title || '" was published.',
+            v_recipients,
+            jsonb_build_object(
+                'post_id',   new.id,
+                'slug',      new.slug,
+                'author_id', new.author_id
+            ),
+            '/blog/resource/posts/detail/' || new.id::text
+        );
+    end if;
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists posts_notify on blog.posts;
+create trigger posts_notify
+    after update of status
+    on blog.posts
+    for each row
+execute function blog.trg_posts_notify();
+
+
+-- Comment trigger:
+--   * INSERT          → notify the post's author (excluding the commenter)
+--   * status update   → notify the commenter of the moderation decision
+create or replace function blog.trg_comments_notify()
+returns trigger as $$
+declare
+    v_post        blog.posts%rowtype;
+    v_author_user uuid;
+    v_recipients  uuid[];
+    v_type        text;
+    v_title       text;
+    v_body        text;
+begin
+    select * into v_post from blog.posts where id = new.post_id;
+    v_author_user := blog.get_post_author_user_id(new.post_id);
+
+    if tg_op = 'INSERT' then
+        v_type       := 'comment_posted';
+        v_title      := 'New comment';
+        v_body       := 'New comment on "' || v_post.title || '" awaiting your review.';
+        v_recipients := array_remove(array[v_author_user], new.user_id);
+    elsif new.status is distinct from old.status and new.user_id is not null then
+        v_type       := 'comment_' || new.status::text;
+        v_title      := 'Comment ' || new.status::text;
+        v_body       := 'Your comment on "' || v_post.title || '" was ' || new.status::text || '.';
+        v_recipients := array_remove(array[new.user_id], null);
+    else
+        return new;
+    end if;
+
+    perform supasheet.create_notification(
+        v_type, v_title, v_body, v_recipients,
+        jsonb_build_object(
+            'post_id',    new.post_id,
+            'comment_id', new.id,
+            'status',     new.status
+        ),
+        '/blog/resource/posts/detail/' || new.post_id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists comments_notify on blog.comments;
+create trigger comments_notify
+    after insert or update of status
+    on blog.comments
+    for each row
+execute function blog.trg_comments_notify();

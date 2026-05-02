@@ -3,7 +3,6 @@ import { Link, useNavigate } from "@tanstack/react-router"
 import { useQueryClient } from "@tanstack/react-query"
 
 import {
-  BellIcon,
   HomeIcon,
   LogOutIcon,
   MonitorIcon,
@@ -14,10 +13,10 @@ import {
   UserIcon,
 } from "lucide-react"
 
+import { NotificationsBell } from "#/components/layouts/notifications-bell"
 import { useTheme } from "#/components/theme-provider"
 import type { ThemeMode } from "#/components/theme-provider"
 import { Avatar, AvatarFallback } from "#/components/ui/avatar"
-import { Button } from "#/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,15 +68,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            nativeButton={false}
-            render={<Link to="/core/notifications" />}
-            aria-label="Notifications"
-          >
-            <BellIcon className="size-4" />
-          </Button>
+          <NotificationsBell />
 
           <DropdownMenu>
             <DropdownMenuTrigger className="rounded-full ring-offset-background outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">

@@ -2,9 +2,6 @@ import { Link } from "@tanstack/react-router"
 
 import type { ColumnDef, Row } from "@tanstack/react-table"
 
-import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
-
-import { Checkbox } from "#/components/ui/checkbox"
 import type {
   ColumnSchema,
   PrimaryKey,
@@ -13,7 +10,9 @@ import type {
 } from "@/lib/database-meta.types"
 import { isTableSchema } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
+import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
 
+import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 
 import { ResourceRowCell } from "../resource-row-cell"

@@ -45,12 +45,14 @@ function RouteComponent() {
     >
       <Sidebar collapsible="offcanvas" variant="inset">
         <SidebarHeader>
-          <SidebarMenuButton className="px-2">
-            <div className="flex aspect-square size-5 items-center justify-center rounded bg-primary text-primary-foreground">
-              <FolderIcon className="size-4" />
-            </div>
-            <span className="truncate font-medium">Storage</span>
-          </SidebarMenuButton>
+          <div className="flex items-center gap-1">
+            <SidebarMenuButton className="min-w-0 flex-1 px-2">
+              <div className="flex aspect-square size-5 items-center justify-center rounded bg-primary text-primary-foreground">
+                <FolderIcon className="size-4" />
+              </div>
+              <span className="truncate font-medium">Storage</span>
+            </SidebarMenuButton>
+          </div>
         </SidebarHeader>
         <SidebarContent>
           <NavMain
