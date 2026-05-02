@@ -17,19 +17,25 @@ import { DataTableToolbar } from "./data-table-toolbar"
 interface DataTableProps<TData> {
   table: Table<TData>
   onDelete?: (rows: TData[]) => void | Promise<void>
+  newRecordUrl?: string
   className?: string
 }
 
 export function DataTable<TData>({
   table,
   onDelete,
+  newRecordUrl,
   className,
 }: DataTableProps<TData>) {
   const colCount = table.getAllColumns().length
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
-      <DataTableToolbar table={table} onDelete={onDelete} />
+      <DataTableToolbar
+        table={table}
+        onDelete={onDelete}
+        newRecordUrl={newRecordUrl}
+      />
       <div className="overflow-auto rounded-md border">
         <TableRoot>
           <TableHeader>

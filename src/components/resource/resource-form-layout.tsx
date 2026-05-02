@@ -1,3 +1,5 @@
+import { useNavigate } from "@tanstack/react-router"
+
 import { ChevronDownIcon } from "lucide-react"
 
 import { Button } from "#/components/ui/button"
@@ -19,6 +21,7 @@ import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
   FormMode,
+  PrimaryKey,
   TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
@@ -37,9 +40,6 @@ type ResourceFormLayoutProps = {
   mode: FormMode
   primaryKeyDisplay?: PrimaryKeyDisplay[]
   headerTitle: string
-  onCancel: () => void
-  submitLabel: string
-  submittingLabel: string
 }
 
 export function ResourceFormLayout({
@@ -49,32 +49,71 @@ export function ResourceFormLayout({
   mode,
   primaryKeyDisplay,
   headerTitle,
-  onCancel,
-  submitLabel,
-  submittingLabel,
 }: ResourceFormLayoutProps) {
+  const navigate = useNavigate()
+  const schema = tableSchema?.schema
+  const resource = tableSchema?.name
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const showSecondary = primaryKeys.length > 0
+
   const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
   const writableNames = new Set(writableCols.map((c) => c.name ?? c.id ?? ""))
   const plan = buildLayoutPlan(tableMeta.sections, writableNames, mode)
   const colByName = new Map(writableCols.map((c) => [c.name ?? c.id ?? "", c]))
 
+  const handleCancel = () => {
+    if (!schema || !resource) return
+    navigate({
+      to: "/$schema/resource/$resource",
+      params: { schema, resource },
+    })
+  }
+
+  const handlePrimary = () => {
+    void form.handleSubmit({ target: "stay" } as never)
+  }
+
+  const handleSecondary = () => {
+    void form.handleSubmit({ target: "close" } as never)
+  }
+
+  const submitButtons = (
+    <form.Subscribe
+      selector={(s) => ({
+        isSubmitting: s.isSubmitting,
+        canSubmit: s.canSubmit,
+      })}
+    >
+      {({ isSubmitting, canSubmit }) => (
+        <>
+          <Button
+            type="button"
+            variant={showSecondary ? "outline" : "default"}
+            disabled={!canSubmit || isSubmitting}
+            onClick={handlePrimary}
+          >
+            {isSubmitting ? "Saving…" : "Save"}
+          </Button>
+          {showSecondary ? (
+            <Button
+              type="button"
+              disabled={!canSubmit || isSubmitting}
+              onClick={handleSecondary}
+            >
+              {isSubmitting ? "Saving…" : "Save & Close"}
+            </Button>
+          ) : null}
+        </>
+      )}
+    </form.Subscribe>
+  )
+
   const footer = (
-    <div className="flex justify-end gap-2 pt-4">
-      <Button type="button" variant="outline" onClick={onCancel}>
+    <div className="flex flex-wrap justify-end gap-2 pt-4">
+      <Button type="button" variant="outline" onClick={handleCancel}>
         Cancel
       </Button>
-      <form.Subscribe
-        selector={(s) => ({
-          isSubmitting: s.isSubmitting,
-          canSubmit: s.canSubmit,
-        })}
-      >
-        {({ isSubmitting, canSubmit }) => (
-          <Button type="submit" disabled={!canSubmit || isSubmitting}>
-            {isSubmitting ? submittingLabel : submitLabel}
-          </Button>
-        )}
-      </form.Subscribe>
+      {submitButtons}
     </div>
   )
 
@@ -106,22 +145,11 @@ export function ResourceFormLayout({
             />
           ))}
         </CardContent>
-        <CardFooter className="justify-end gap-2 border-t pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
+        <CardFooter className="flex-wrap justify-end gap-2 border-t pt-4">
+          <Button type="button" variant="outline" onClick={handleCancel}>
             Cancel
           </Button>
-          <form.Subscribe
-            selector={(s) => ({
-              isSubmitting: s.isSubmitting,
-              canSubmit: s.canSubmit,
-            })}
-          >
-            {({ isSubmitting, canSubmit }) => (
-              <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                {isSubmitting ? submittingLabel : submitLabel}
-              </Button>
-            )}
-          </form.Subscribe>
+          {submitButtons}
         </CardFooter>
       </Card>
     )

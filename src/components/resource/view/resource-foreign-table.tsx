@@ -2,7 +2,11 @@
 
 import { useMemo, useState } from "react"
 
-import { useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import type {
   ColumnFiltersState,
@@ -13,7 +17,10 @@ import type {
 } from "@tanstack/react-table"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
+import { toast } from "sonner"
+
 import { DataTable } from "#/components/data-table/data-table"
+import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
   DatabaseSchemas,
@@ -23,7 +30,11 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import { foreignTableDataQueryOptions } from "#/lib/supabase/data/resource"
+import type { AppPermission } from "#/lib/supabase/data/core"
+import {
+  deleteResourceMutationOptions,
+  foreignTableDataQueryOptions,
+} from "#/lib/supabase/data/resource"
 
 import { getResourceForeignTableColumns } from "./resource-foriegn-table-columns"
 
@@ -46,6 +57,7 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
   columnsSchema,
   selectClause = "*",
 }: ResourceForeignTableProps<S>) {
+  const queryClient = useQueryClient()
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -61,6 +73,16 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
+
+  const canUpdate = useHasPermission(
+    `${schema}.${table}:update` as AppPermission
+  )
+  const canDelete = useHasPermission(
+    `${schema}.${table}:delete` as AppPermission
+  )
+  const canInsert = useHasPermission(
+    `${schema}.${table}:insert` as AppPermission
+  )
 
   const hasParentValue =
     parentValue !== undefined && parentValue !== null && parentValue !== ""
@@ -84,14 +106,42 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
   const totalCount = hasParentValue ? (queryResult?.count ?? 0) : 0
   const pageCount = Math.max(1, Math.ceil(totalCount / pagination.pageSize))
 
+  const { mutateAsync: deleteRow } = useMutation(
+    deleteResourceMutationOptions(schema, table)
+  )
+
+  const handleDelete = async (rows: Record<string, unknown>[]) => {
+    try {
+      await Promise.all(
+        rows.map((row) => {
+          const pk = Object.fromEntries(
+            primaryKeys.map((key) => [key.name, row[key.name]])
+          )
+          return deleteRow(pk)
+        })
+      )
+      queryClient.invalidateQueries({
+        queryKey: ["supasheet", "resource-data", schema, table],
+      })
+      toast.success(
+        rows.length === 1 ? "Record deleted" : `${rows.length} records deleted`
+      )
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete record"
+      )
+    }
+  }
+
   const columns = useMemo(
     () =>
       getResourceForeignTableColumns({
         data,
         columnsSchema,
         resourceSchema,
+        canUpdate,
       }),
-    [data, columnsSchema, resourceSchema]
+    [data, columnsSchema, resourceSchema, canUpdate]
   )
 
   const tableInstance = useReactTable({
@@ -122,5 +172,15 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
     getCoreRowModel: getCoreRowModel(),
   })
 
-  return <DataTable table={tableInstance} />
+  const newRecordUrl = canInsert
+    ? `/${schema}/resource/${table}/new`
+    : undefined
+
+  return (
+    <DataTable
+      table={tableInstance}
+      onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
+      newRecordUrl={newRecordUrl}
+    />
+  )
 }

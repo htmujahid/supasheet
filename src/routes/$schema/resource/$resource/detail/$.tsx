@@ -488,7 +488,7 @@ function RouteComponent() {
 
           {allManyRelationships.length > 0 && (
             <Tabs defaultValue={allManyRelationships[0]?.name ?? ""}>
-              <TabsList className="w-full">
+              <TabsList className="mx-auto">
                 {allManyRelationships.map((relationship) => (
                   <TabsTrigger
                     key={relationship.id}

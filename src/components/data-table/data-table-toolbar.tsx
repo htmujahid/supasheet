@@ -1,8 +1,10 @@
 import { useState } from "react"
 
+import { Link } from "@tanstack/react-router"
+
 import type { Table } from "@tanstack/react-table"
 
-import { DownloadIcon, Trash2Icon } from "lucide-react"
+import { DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
 import {
   AlertDialog,
@@ -25,6 +27,7 @@ interface DataTableToolbarProps<TData> {
   onDelete?: (rows: TData[]) => void | Promise<void>
   exportFilename?: string
   excludeColumns?: (keyof TData | "select" | "actions")[]
+  newRecordUrl?: string
 }
 
 export function DataTableToolbar<TData>({
@@ -32,6 +35,7 @@ export function DataTableToolbar<TData>({
   onDelete,
   exportFilename,
   excludeColumns,
+  newRecordUrl,
 }: DataTableToolbarProps<TData>) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const selectedRows = table.getSelectedRowModel().rows
@@ -60,20 +64,31 @@ export function DataTableToolbar<TData>({
               Delete ({selectedCount})
             </Button>
           )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              exportTableToCSV(table, {
-                filename: exportFilename,
-                excludeColumns,
-                onlySelected: selectedCount > 0,
-              })
-            }
-          >
-            <DownloadIcon className="size-4" />
-            Export
-          </Button>
+          {newRecordUrl ? (
+            <Button
+              size="sm"
+              nativeButton={false}
+              render={<Link to={newRecordUrl as never} />}
+            >
+              <PlusIcon className="size-4" />
+              New record
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                exportTableToCSV(table, {
+                  filename: exportFilename,
+                  excludeColumns,
+                  onlySelected: selectedCount > 0,
+                })
+              }
+            >
+              <DownloadIcon className="size-4" />
+              Export
+            </Button>
+          )}
           <DataTableColumnVisibility table={table} />
         </div>
       </div>

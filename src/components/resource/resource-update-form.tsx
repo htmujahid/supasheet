@@ -62,7 +62,7 @@ export function ResourceUpdateForm({
 
   const form = useAppForm({
     defaultValues,
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, meta }) => {
       const data = buildUpdatePayload(value, editableCols)
       await updateRow({ pk, data })
       queryClient.invalidateQueries({
@@ -79,10 +79,12 @@ export function ResourceUpdateForm({
         ],
       })
       toast.success("Record updated")
-      navigate({
-        to: "/$schema/resource/$resource",
-        params: { schema, resource },
-      })
+      if ((meta as { target?: string } | undefined)?.target === "close") {
+        navigate({
+          to: "/$schema/resource/$resource",
+          params: { schema, resource },
+        })
+      }
     },
   })
 
@@ -105,14 +107,6 @@ export function ResourceUpdateForm({
         mode="update"
         primaryKeyDisplay={primaryKeyDisplay}
         headerTitle="Edit record"
-        onCancel={() =>
-          navigate({
-            to: "/$schema/resource/$resource",
-            params: { schema, resource },
-          })
-        }
-        submitLabel="Save changes"
-        submittingLabel="Saving…"
       />
     </form>
   )

@@ -4,7 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "sonner"
 
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  PrimaryKey,
+  TableSchema,
+} from "#/lib/database-meta.types"
 import { insertResourceMutationOptions } from "#/lib/supabase/data/resource"
 
 import { useAppForm } from "./form-hook"
@@ -38,12 +42,15 @@ export function ResourceNewForm({
     insertResourceMutationOptions(schema, table)
   )
 
+  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+
   const form = useAppForm({
     defaultValues,
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, meta }) => {
       const payload = buildCreatePayload(value, writableCols)
+      let inserted: Record<string, unknown> | null = null
       try {
-        await insertRow(payload)
+        inserted = await insertRow(payload)
       } catch (error: any) {
         toast.error(error?.message || "An error occurred")
         console.error(error)
@@ -53,10 +60,28 @@ export function ResourceNewForm({
         queryKey: ["supasheet", "resource-data", schema, table],
       })
       toast.success("Record created")
-      navigate({
-        to: "/$schema/resource/$resource",
-        params: { schema: schema, resource: table },
-      })
+
+      const splat =
+        inserted && primaryKeys.length
+          ? primaryKeys
+              .map((key) => encodeURIComponent(String(inserted![key.name])))
+              .join("/")
+          : ""
+
+      const target =
+        (meta as { target?: string } | undefined)?.target ?? "stay"
+
+      if (target === "stay" && splat) {
+        navigate({
+          to: "/$schema/resource/$resource/update/$",
+          params: { schema, resource: table, _splat: splat },
+        })
+      } else {
+        navigate({
+          to: "/$schema/resource/$resource",
+          params: { schema, resource: table },
+        })
+      }
     },
   })
 
@@ -73,14 +98,6 @@ export function ResourceNewForm({
         form={form}
         mode="create"
         headerTitle="New record"
-        onCancel={() =>
-          navigate({
-            to: "/$schema/resource/$resource",
-            params: { schema, resource: table },
-          })
-        }
-        submitLabel="Create"
-        submittingLabel="Creating…"
       />
     </form>
   )

@@ -286,11 +286,14 @@ export const insertResourceMutationOptions = <S extends DatabaseSchemas>(
 ) =>
   mutationOptions({
     mutationFn: async (row: Record<string, unknown>) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .schema(schema)
         .from(resource)
         .insert(row as never)
+        .select()
+        .single()
       if (error) throw error
+      return data as Record<string, unknown> | null
     },
   })
 
