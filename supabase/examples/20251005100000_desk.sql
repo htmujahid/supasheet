@@ -64,7 +64,7 @@ create table desk.projects (
     description supasheet.RICH_TEXT,
     status desk.project_status default 'planning',
     priority desk.project_priority default 'medium',
-    cover file,
+    cover supasheet.file,
 
     -- User association
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
@@ -75,7 +75,7 @@ create table desk.projects (
 
     -- Organization
     tags varchar(500)[],
-    color color,
+    color supasheet.color,
     notes text,
 
     -- Audit fields
@@ -199,7 +199,7 @@ create table desk.tasks (
     description supasheet.RICH_TEXT,
     status desk.task_status default 'pending',
     priority desk.task_priority default 'medium',
-    cover file,
+    cover supasheet.file,
 
     -- User association (creator vs assignee)
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
@@ -217,15 +217,15 @@ create table desk.tasks (
     is_important boolean default false,
 
     -- Progress tracking
-    completion percentage,
-    estimated_duration duration,
-    duration duration,
+    completion supasheet.percentage,
+    estimated_duration supasheet.duration,
+    duration supasheet.duration,
 
     -- File tracking
-    attachments file,
+    attachments supasheet.file,
 
     -- Customization
-    color color,
+    color supasheet.color,
     notes text,
 
     -- Audit fields

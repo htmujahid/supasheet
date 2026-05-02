@@ -70,7 +70,7 @@ create table store.products (
     category varchar(100),
     tags varchar(100)[],
     featured boolean not null default false,
-    image file,
+    image supasheet.file,
 
     created_at timestamptz default current_timestamp,
     updated_at timestamptz default current_timestamp
@@ -336,7 +336,7 @@ create table store.reviews (
     id uuid primary key default extensions.uuid_generate_v4(),
     product_id uuid not null references store.products(id) on delete cascade,
     user_id uuid default auth.uid() references supasheet.users(id) on delete cascade,
-    rating rating not null,
+    rating supasheet.rating not null,
     title varchar(255),
     content text,
     status store.review_status not null default 'pending',
