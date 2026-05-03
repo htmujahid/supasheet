@@ -18,9 +18,12 @@ import { Separator } from "#/components/ui/separator"
 import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import type { FileObject } from "#/types/fields"
 
 import { AllCells } from "../cells/all-cells"
 import type { ResolvedFieldSection } from "../resource-form-utils"
+import { ResourceAvatarDisplay } from "./resource-avatar-display"
+import { ResourceFileDisplay } from "./resource-file-display"
 
 type Props = {
   section: ResolvedFieldSection
@@ -46,6 +49,20 @@ export function ResourceSectionDetail({
       {cols.map((column, index) => {
         const value = record[column.name as keyof typeof record]
         const columnMetadata = getColumnMetadata(tableSchema, column)
+
+        if (columnMetadata.variant === "avatar") {
+          return (
+            <div key={column.id}>
+              <ResourceAvatarDisplay
+                column={column}
+                columnMetadata={columnMetadata}
+                value={(value as FileObject | null) ?? null}
+              />
+              {index < cols.length - 1 && <Separator />}
+            </div>
+          )
+        }
+
         return (
           <div key={column.id}>
             <div className="flex items-start gap-4 py-2">
@@ -61,6 +78,8 @@ export function ResourceSectionDetail({
                         value={value as string}
                         disabled
                       />
+                    ) : columnMetadata.variant === "file" ? (
+                      <ResourceFileDisplay value={value as FileObject[]} />
                     ) : (
                       <AllCells columnMetadata={columnMetadata} value={value} />
                     )

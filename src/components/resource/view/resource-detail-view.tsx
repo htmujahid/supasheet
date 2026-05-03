@@ -13,8 +13,11 @@ import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import type { FileObject } from "#/types/fields"
 
 import { AllCells } from "../cells/all-cells"
+import { ResourceAvatarDisplay } from "./resource-avatar-display"
+import { ResourceFileDisplay } from "./resource-file-display"
 
 export function ResourceDetailView({
   resourceSchema,
@@ -52,6 +55,21 @@ export function ResourceDetailView({
 
           const columnMetadata = getColumnMetadata(tableSchema, column)
 
+          if (columnMetadata.variant === "avatar") {
+            return (
+              <div key={column.id}>
+                <ResourceAvatarDisplay
+                  column={column}
+                  columnMetadata={columnMetadata}
+                  value={(value as FileObject | null) ?? null}
+                />
+                {index < detailColumns.length - 1 && (
+                  <Separator className="my-2" />
+                )}
+              </div>
+            )
+          }
+
           return (
             <div key={column.id}>
               <div className="flex items-start gap-4">
@@ -67,6 +85,8 @@ export function ResourceDetailView({
                           value={value as string}
                           disabled
                         />
+                      ) : columnMetadata.variant === "file" ? (
+                        <ResourceFileDisplay value={value as FileObject[]} />
                       ) : (
                         <AllCells
                           columnMetadata={columnMetadata}

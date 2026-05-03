@@ -138,7 +138,7 @@ export function AvatarField({ columnMetadata, columnSchema }: FileFieldProps) {
       <div className="relative inline-flex">
         <button
           type="button"
-          className="relative flex size-16 items-center justify-center overflow-hidden rounded-full border border-dashed border-input transition-colors outline-none hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[img]:border-none data-[dragging=true]:bg-accent/50"
+          className="relative flex size-24 items-center justify-center overflow-hidden rounded-full border border-dashed border-input transition-colors outline-none hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[img]:border-none data-[dragging=true]:bg-accent/50"
           onClick={openFileDialog}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
@@ -153,13 +153,13 @@ export function AvatarField({ columnMetadata, columnSchema }: FileFieldProps) {
               className="size-full object-cover"
               src={previewUrl}
               alt="Avatar"
-              width={64}
-              height={64}
+              width={96}
+              height={96}
               style={{ objectFit: "cover" }}
             />
           ) : (
             <div aria-hidden="true">
-              <CircleUserRoundIcon className="size-4 opacity-60" />
+              <CircleUserRoundIcon className="size-6 opacity-60" />
             </div>
           )}
 

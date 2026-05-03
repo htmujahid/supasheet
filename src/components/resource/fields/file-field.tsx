@@ -251,15 +251,24 @@ export function FileField({ columnMetadata, columnSchema }: FileFieldProps) {
           <div className="max-h-[200px] space-y-1 overflow-y-auto">
             {files.map((file) => {
               const FileIcon = getFileIcon(file.file.type)
+              const isImage = file.file.type?.startsWith("image/")
 
               return (
                 <div
                   key={file.id}
                   className="flex items-center gap-2 rounded-md border bg-muted/50 px-2 py-1.5"
                 >
-                  {FileIcon && (
-                    <FileIcon className="size-4 shrink-0 text-muted-foreground" />
-                  )}
+                  <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-background">
+                    {isImage && file.preview ? (
+                      <img
+                        src={file.preview}
+                        alt={file.file.name}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <FileIcon className="size-4 text-muted-foreground" />
+                    )}
+                  </div>
                   <div className="flex-1 overflow-hidden">
                     <p className="truncate text-sm">{file.file.name}</p>
                     <p className="text-xs text-muted-foreground">
