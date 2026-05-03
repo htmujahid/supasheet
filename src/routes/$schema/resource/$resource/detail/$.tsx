@@ -19,6 +19,7 @@ import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { ResourceDetailView } from "#/components/resource/view/resource-detail-view"
 import { ResourceForeignTable } from "#/components/resource/view/resource-foreign-table"
 import { ResourceMetadataView } from "#/components/resource/view/resource-metadata-view"
+import { ResourceProgressField } from "#/components/resource/view/resource-progress-field"
 import { ResourceSectionDetail } from "#/components/resource/view/resource-section-detail"
 import { Button, buttonVariants } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
@@ -37,6 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
+  EnumMetadata,
   PrimaryKey,
   Relationship,
   ResourceSchema,
@@ -406,6 +408,30 @@ function RouteComponent() {
     columnsSchema.map((c) => [(c.name as string) ?? c.id ?? "", c])
   )
 
+  const progressFields = columnsSchema
+    .map((col) => {
+      const meta = JSON.parse(col.comment ?? "{}") as EnumMetadata
+      if (!meta?.progress || !meta.enums) return null
+      return { col, meta }
+    })
+    .filter((x): x is { col: ColumnSchema; meta: EnumMetadata } => Boolean(x))
+
+  const progressNames = new Set(
+    progressFields.map(({ col }) => col.name as string)
+  )
+
+  const filteredPlan = plan
+    ? {
+        ...plan,
+        sections: plan.sections
+          .map((s) => ({
+            ...s,
+            fields: s.fields.filter((f) => !progressNames.has(f)),
+          }))
+          .filter((s) => s.fields.length > 0),
+      }
+    : plan
+
   const primaryKeyDisplay = primaryKeys
     .map((key) => {
       const col = colByName.get(key.name)
@@ -441,8 +467,20 @@ function RouteComponent() {
       </DefaultHeader>
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-7xl space-y-4 px-4 py-4">
+          {progressFields.length > 0 && (
+            <div className="space-y-4">
+              {progressFields.map(({ col, meta }) => (
+                <ResourceProgressField
+                  key={col.id}
+                  column={col}
+                  value={(record[col.name as string] as string | null) ?? null}
+                  enumMeta={meta}
+                />
+              ))}
+            </div>
+          )}
           <div className="columns-1 gap-4 lg:columns-2">
-            {plan ? (
+            {filteredPlan ? (
               <>
                 {primaryKeyDisplay.length > 0 && (
                   <div className="mb-4 break-inside-avoid">
@@ -465,7 +503,7 @@ function RouteComponent() {
                     </Card>
                   </div>
                 )}
-                {plan.sections.map((s) => (
+                {filteredPlan.sections.map((s) => (
                   <div key={s.id} className="mb-4 break-inside-avoid">
                     <ResourceSectionDetail
                       section={s}
