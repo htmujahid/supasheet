@@ -120,20 +120,20 @@ alter table blog.authors enable row level security;
 
 create policy authors_select on blog.authors
     for select to authenticated
-    using (supasheet.has_permission('blog.authors:select') and user_id = auth.uid());
+    using (supasheet.has_permission('blog.authors:select') and user_id = (select auth.uid()));
 
 create policy authors_insert on blog.authors
     for insert to authenticated
-    with check (supasheet.has_permission('blog.authors:insert') and user_id = auth.uid());
+    with check (supasheet.has_permission('blog.authors:insert') and user_id = (select auth.uid()));
 
 create policy authors_update on blog.authors
     for update to authenticated
-    using (supasheet.has_permission('blog.authors:update') and user_id = auth.uid())
-    with check (supasheet.has_permission('blog.authors:update') and user_id = auth.uid());
+    using (supasheet.has_permission('blog.authors:update') and user_id = (select auth.uid()))
+    with check (supasheet.has_permission('blog.authors:update') and user_id = (select auth.uid()));
 
 create policy authors_delete on blog.authors
     for delete to authenticated
-    using (supasheet.has_permission('blog.authors:delete') and user_id = auth.uid());
+    using (supasheet.has_permission('blog.authors:delete') and user_id = (select auth.uid()));
 
 
 ----------------------------------------------------------------
@@ -163,32 +163,32 @@ create policy social_links_select on blog.social_links
     for select to authenticated
     using (
         supasheet.has_permission('blog.social_links:select')
-        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = auth.uid())
+        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = (select auth.uid()))
     );
 
 create policy social_links_insert on blog.social_links
     for insert to authenticated
     with check (
         supasheet.has_permission('blog.social_links:insert')
-        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = auth.uid())
+        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = (select auth.uid()))
     );
 
 create policy social_links_update on blog.social_links
     for update to authenticated
     using (
         supasheet.has_permission('blog.social_links:update')
-        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = auth.uid())
+        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = (select auth.uid()))
     )
     with check (
         supasheet.has_permission('blog.social_links:update')
-        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = auth.uid())
+        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = (select auth.uid()))
     );
 
 create policy social_links_delete on blog.social_links
     for delete to authenticated
     using (
         supasheet.has_permission('blog.social_links:delete')
-        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = auth.uid())
+        and exists (select 1 from blog.authors a where a.id = author_id and a.user_id = (select auth.uid()))
     );
 
 
@@ -229,32 +229,32 @@ create policy categories_select on blog.categories
     for select to authenticated
     using (
         supasheet.has_permission('blog.categories:select')
-        and (user_id is null or user_id = auth.uid())
+        and (user_id is null or user_id = (select auth.uid()))
     );
 
 create policy categories_insert on blog.categories
     for insert to authenticated
     with check (
         supasheet.has_permission('blog.categories:insert')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 create policy categories_update on blog.categories
     for update to authenticated
     using (
         supasheet.has_permission('blog.categories:update')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     )
     with check (
         supasheet.has_permission('blog.categories:update')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 create policy categories_delete on blog.categories
     for delete to authenticated
     using (
         supasheet.has_permission('blog.categories:delete')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 
@@ -345,7 +345,7 @@ create policy posts_select on blog.posts
             published_at is not null
             or exists (
                 select 1 from blog.authors a
-                where a.id = author_id and a.user_id = auth.uid()
+                where a.id = author_id and a.user_id = (select auth.uid())
             )
         )
     );
@@ -356,7 +356,7 @@ create policy posts_insert on blog.posts
         supasheet.has_permission('blog.posts:insert')
         and exists (
             select 1 from blog.authors a
-            where a.id = author_id and a.user_id = auth.uid()
+            where a.id = author_id and a.user_id = (select auth.uid())
         )
     );
 
@@ -366,14 +366,14 @@ create policy posts_update on blog.posts
         supasheet.has_permission('blog.posts:update')
         and exists (
             select 1 from blog.authors a
-            where a.id = author_id and a.user_id = auth.uid()
+            where a.id = author_id and a.user_id = (select auth.uid())
         )
     )
     with check (
         supasheet.has_permission('blog.posts:update')
         and exists (
             select 1 from blog.authors a
-            where a.id = author_id and a.user_id = auth.uid()
+            where a.id = author_id and a.user_id = (select auth.uid())
         )
     );
 
@@ -383,7 +383,7 @@ create policy posts_delete on blog.posts
         supasheet.has_permission('blog.posts:delete')
         and exists (
             select 1 from blog.authors a
-            where a.id = author_id and a.user_id = auth.uid()
+            where a.id = author_id and a.user_id = (select auth.uid())
         )
     );
 
@@ -420,7 +420,7 @@ create policy post_categories_insert on blog.post_categories
         and exists (
             select 1 from blog.posts p
             join blog.authors a on a.id = p.author_id
-            where p.id = post_id and a.user_id = auth.uid()
+            where p.id = post_id and a.user_id = (select auth.uid())
         )
     );
 
@@ -431,7 +431,7 @@ create policy post_categories_delete on blog.post_categories
         and exists (
             select 1 from blog.posts p
             join blog.authors a on a.id = p.author_id
-            where p.id = post_id and a.user_id = auth.uid()
+            where p.id = post_id and a.user_id = (select auth.uid())
         )
     );
 
@@ -511,11 +511,11 @@ create policy comments_select on blog.comments
         supasheet.has_permission('blog.comments:select')
         and (
             status = 'approved'
-            or user_id = auth.uid()
+            or user_id = (select auth.uid())
             or exists (
                 select 1 from blog.posts p
                 join blog.authors a on a.id = p.author_id
-                where p.id = post_id and a.user_id = auth.uid()
+                where p.id = post_id and a.user_id = (select auth.uid())
             )
         )
     );
@@ -524,7 +524,7 @@ create policy comments_insert on blog.comments
     for insert to authenticated
     with check (
         supasheet.has_permission('blog.comments:insert')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 -- Comment authors edit their own; post authors moderate (e.g. flip to approved/spam)
@@ -533,22 +533,22 @@ create policy comments_update on blog.comments
     using (
         supasheet.has_permission('blog.comments:update')
         and (
-            user_id = auth.uid()
+            user_id = (select auth.uid())
             or exists (
                 select 1 from blog.posts p
                 join blog.authors a on a.id = p.author_id
-                where p.id = post_id and a.user_id = auth.uid()
+                where p.id = post_id and a.user_id = (select auth.uid())
             )
         )
     )
     with check (
         supasheet.has_permission('blog.comments:update')
         and (
-            user_id = auth.uid()
+            user_id = (select auth.uid())
             or exists (
                 select 1 from blog.posts p
                 join blog.authors a on a.id = p.author_id
-                where p.id = post_id and a.user_id = auth.uid()
+                where p.id = post_id and a.user_id = (select auth.uid())
             )
         )
     );
@@ -558,11 +558,11 @@ create policy comments_delete on blog.comments
     using (
         supasheet.has_permission('blog.comments:delete')
         and (
-            user_id = auth.uid()
+            user_id = (select auth.uid())
             or exists (
                 select 1 from blog.posts p
                 join blog.authors a on a.id = p.author_id
-                where p.id = post_id and a.user_id = auth.uid()
+                where p.id = post_id and a.user_id = (select auth.uid())
             )
         )
     );

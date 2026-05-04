@@ -170,23 +170,23 @@ alter table desk.projects enable row level security;
 create policy projects_select on desk.projects
     for select
     to authenticated
-    using (user_id = auth.uid() and supasheet.has_permission('desk.projects:select'));
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.projects:select'));
 
 create policy projects_insert on desk.projects
     for insert
     to authenticated
-    with check (user_id = auth.uid() and supasheet.has_permission('desk.projects:insert'));
+    with check (user_id = (select auth.uid()) and supasheet.has_permission('desk.projects:insert'));
 
 create policy projects_update on desk.projects
     for update
     to authenticated
-    using (user_id = auth.uid() and supasheet.has_permission('desk.projects:update'))
-    with check (user_id = auth.uid() and supasheet.has_permission('desk.projects:update'));
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.projects:update'))
+    with check (user_id = (select auth.uid()) and supasheet.has_permission('desk.projects:update'));
 
 create policy projects_delete on desk.projects
     for delete
     to authenticated
-    using (user_id = auth.uid() and supasheet.has_permission('desk.projects:delete'));
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.projects:delete'));
 
 
 ----------------------------------------------------------------
@@ -324,23 +324,23 @@ alter table desk.tasks enable row level security;
 create policy tasks_select on desk.tasks
     for select
     to authenticated
-    using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:select'));
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.tasks:select'));
 
 create policy tasks_insert on desk.tasks
     for insert
     to authenticated
-    with check (user_id = auth.uid() and supasheet.has_permission('desk.tasks:insert'));
+    with check (user_id = (select auth.uid()) and supasheet.has_permission('desk.tasks:insert'));
 
 create policy tasks_update on desk.tasks
     for update
     to authenticated
-    using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:update'))
-    with check (user_id = auth.uid() and supasheet.has_permission('desk.tasks:update'));
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.tasks:update'))
+    with check (user_id = (select auth.uid()) and supasheet.has_permission('desk.tasks:update'));
 
 create policy tasks_delete on desk.tasks
     for delete
     to authenticated
-    using (user_id = auth.uid() and supasheet.has_permission('desk.tasks:delete'));
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.tasks:delete'));
 
 
 ----------------------------------------------------------------
@@ -389,8 +389,8 @@ create policy task_comments_select on desk.task_comments
     using (
         supasheet.has_permission('desk.task_comments:select')
         and (
-            user_id = auth.uid()
-            or exists (select 1 from desk.tasks t where t.id = task_id and t.user_id = auth.uid())
+            user_id = (select auth.uid())
+            or exists (select 1 from desk.tasks t where t.id = task_id and t.user_id = (select auth.uid()))
         )
     );
 
@@ -399,8 +399,8 @@ create policy task_comments_insert on desk.task_comments
     to authenticated
     with check (
         supasheet.has_permission('desk.task_comments:insert')
-        and user_id = auth.uid()
-        and exists (select 1 from desk.tasks t where t.id = task_id and t.user_id = auth.uid())
+        and user_id = (select auth.uid())
+        and exists (select 1 from desk.tasks t where t.id = task_id and t.user_id = (select auth.uid()))
     );
 
 create policy task_comments_update on desk.task_comments
@@ -408,11 +408,11 @@ create policy task_comments_update on desk.task_comments
     to authenticated
     using (
         supasheet.has_permission('desk.task_comments:update')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     )
     with check (
         supasheet.has_permission('desk.task_comments:update')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 create policy task_comments_delete on desk.task_comments
@@ -420,7 +420,7 @@ create policy task_comments_delete on desk.task_comments
     to authenticated
     using (
         supasheet.has_permission('desk.task_comments:delete')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 

@@ -164,9 +164,9 @@ ALTER TABLE supasheet.audit_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their own audit logs" ON supasheet.audit_logs
     FOR SELECT
     TO authenticated
-    USING (created_by = auth.uid() OR EXISTS (
+    USING (created_by = (select auth.uid()) OR EXISTS (
         SELECT 1 FROM supasheet.user_roles
-        WHERE user_id = auth.uid() AND supasheet.has_permission('supasheet.audit_logs:select')
+        WHERE user_id = (select auth.uid()) AND supasheet.has_permission('supasheet.audit_logs:select')
     ));
 
 insert into supasheet.role_permissions (role, permission) values ('x-admin', 'supasheet.audit_logs:select');

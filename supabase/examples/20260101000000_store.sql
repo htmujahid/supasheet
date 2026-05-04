@@ -402,14 +402,14 @@ create policy reviews_select on store.reviews
     for select to authenticated
     using (
         supasheet.has_permission('store.reviews:select')
-        and (status = 'approved' or user_id = auth.uid())
+        and (status = 'approved' or user_id = (select auth.uid()))
     );
 
 create policy reviews_insert on store.reviews
     for insert to authenticated
     with check (
         supasheet.has_permission('store.reviews:insert')
-        and user_id = auth.uid()
+        and user_id = (select auth.uid())
     );
 
 create policy reviews_update on store.reviews
