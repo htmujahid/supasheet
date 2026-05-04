@@ -134,7 +134,7 @@ export function AvatarField({ columnMetadata, columnSchema }: FileFieldProps) {
   const previewUrl = files[0]?.preview || currentValue?.url || null
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-start gap-2">
       <div className="relative inline-flex">
         <button
           type="button"

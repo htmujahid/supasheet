@@ -50,18 +50,18 @@ export function ResourceSectionDetail({
         const value = record[column.name as keyof typeof record]
         const columnMetadata = getColumnMetadata(tableSchema, column)
 
-        if (columnMetadata.variant === "avatar") {
-          return (
-            <div key={column.id}>
-              <ResourceAvatarDisplay
-                column={column}
-                columnMetadata={columnMetadata}
-                value={(value as FileObject | null) ?? null}
-              />
-              {index < cols.length - 1 && <Separator />}
-            </div>
-          )
-        }
+        // if (columnMetadata.variant === "avatar") {
+        //   return (
+        //     <div key={column.id}>
+        //       <ResourceAvatarDisplay
+        //         column={column}
+        //         columnMetadata={columnMetadata}
+        //         value={(value as FileObject | null) ?? null}
+        //       />
+        //       {index < cols.length - 1 && <Separator />}
+        //     </div>
+        //   )
+        // }
 
         return (
           <div key={column.id}>
@@ -80,6 +80,10 @@ export function ResourceSectionDetail({
                       />
                     ) : columnMetadata.variant === "file" ? (
                       <ResourceFileDisplay value={value as FileObject[]} />
+                    ) : columnMetadata.variant === "avatar" ? (
+                      <ResourceAvatarDisplay
+                        value={(value as FileObject | null) ?? null}
+                      />
                     ) : (
                       <AllCells columnMetadata={columnMetadata} value={value} />
                     )

@@ -35,13 +35,7 @@ export function ResourceFileDisplay({ value }: { value: FileObject[] | null }) {
   )
 }
 
-function FileCard({
-  file,
-  onOpen,
-}: {
-  file: FileObject
-  onOpen: () => void
-}) {
+function FileCard({ file, onOpen }: { file: FileObject; onOpen: () => void }) {
   const type = file.type ?? ""
   const isImage = type.startsWith("image/")
   const Icon = getFileIcon(type)

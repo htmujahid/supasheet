@@ -25,7 +25,8 @@ export function ResourceFilePreviewDialog({
   const type = file.type ?? ""
   const isImage = type.startsWith("image/")
   const isVideo = type.startsWith("video/")
-  const isPdf = type === "application/pdf" || file.name?.toLowerCase().endsWith(".pdf")
+  const isPdf =
+    type === "application/pdf" || file.name?.toLowerCase().endsWith(".pdf")
   const Icon = getFileIcon(type)
 
   return (

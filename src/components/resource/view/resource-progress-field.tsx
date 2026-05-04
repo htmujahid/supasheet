@@ -56,9 +56,9 @@ export function ResourceProgressField({
             const isActive = currentIndex >= 0 && i === currentIndex
             const filled = isCompleted || isActive
             const Icon = cfg.icon
-              ? (LucideIcons[
-                  cfg.icon as keyof typeof LucideIcons
-                ] as LucideIcon | undefined)
+              ? (LucideIcons[cfg.icon as keyof typeof LucideIcons] as
+                  | LucideIcon
+                  | undefined)
               : null
             const isLast = i === steps.length - 1
             return (
@@ -84,9 +84,7 @@ export function ResourceProgressField({
                   <span
                     className={cn(
                       "text-center text-xs font-medium",
-                      isActive
-                        ? "text-foreground"
-                        : "text-muted-foreground"
+                      isActive ? "text-foreground" : "text-muted-foreground"
                     )}
                   >
                     {formatTitle(key)}
