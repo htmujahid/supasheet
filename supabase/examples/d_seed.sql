@@ -752,3 +752,341 @@
         current_timestamp - interval '6 hours'
     FROM desk.tasks t
     WHERE t.status = 'pending' AND t.priority = 'critical';
+
+
+    ----------------------------------------------------------------
+    -- Timesheets
+    -- 20 entries across both users over the last 21 days
+    -- Distribution: 8 approved, 5 submitted, 4 draft, 3 rejected
+    -- Project IDs reference the hardcoded projects seeded above
+    ----------------------------------------------------------------
+
+    INSERT INTO desk.timesheets (
+        id, title, description, task_id, project_id, user_id,
+        started_at, ended_at, duration, status, billable, tags, notes,
+        created_at, updated_at
+    ) VALUES
+
+    -- ── User 1 (b73eb03e-fb7a-424d-84ff-18e2791ce0b1) ──────────────────────
+
+    -- approved, 2 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Campaign copy drafting',
+        'Wrote and revised copy for Q4 social media ads',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1' and title = 'Complete project proposal' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '21 days' + interval '9 hours',
+        current_timestamp - interval '21 days' + interval '11 hours',
+        7200000, 'approved', true,
+        ARRAY['marketing', 'copy'],
+        'Client approved all three variants',
+        current_timestamp - interval '21 days', current_timestamp - interval '18 days'
+    ),
+
+    -- approved, 1 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Stakeholder review meeting',
+        'Presented Q4 proposal to stakeholders',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1' and title = 'Review team performance reports' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '19 days' + interval '14 hours',
+        current_timestamp - interval '19 days' + interval '15 hours',
+        3600000, 'approved', true,
+        ARRAY['meeting', 'marketing'],
+        'Good feedback, minor revisions requested',
+        current_timestamp - interval '19 days', current_timestamp - interval '16 days'
+    ),
+
+    -- approved, 1.5 hr, not billable
+    (
+        extensions.uuid_generate_v4(),
+        'Competitor research',
+        'Analyzed competitor campaigns for Q4 benchmarking',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1' and title = 'Research investment options' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '17 days' + interval '10 hours',
+        current_timestamp - interval '17 days' + interval '11 hours' + interval '30 minutes',
+        5400000, 'approved', false,
+        ARRAY['research', 'marketing'],
+        'Identified three key opportunities',
+        current_timestamp - interval '17 days', current_timestamp - interval '14 days'
+    ),
+
+    -- approved, 30 min, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Campaign performance check',
+        'Quick review of ad metrics for the week',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '14 days' + interval '9 hours',
+        current_timestamp - interval '14 days' + interval '9 hours' + interval '30 minutes',
+        1800000, 'approved', true,
+        ARRAY['analytics', 'marketing'],
+        'CTR up 8% from last week',
+        current_timestamp - interval '14 days', current_timestamp - interval '11 days'
+    ),
+
+    -- submitted, 3 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Proposal revision pass',
+        'Incorporated stakeholder feedback into draft proposal',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1' and title = 'Complete project proposal' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '10 days' + interval '13 hours',
+        current_timestamp - interval '10 days' + interval '16 hours',
+        10800000, 'submitted', true,
+        ARRAY['proposal', 'marketing'],
+        'Final draft ready for sign-off',
+        current_timestamp - interval '10 days', current_timestamp - interval '8 days'
+    ),
+
+    -- submitted, 1 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Email campaign setup',
+        'Configured drip sequences for Q4 launch',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '3 days' + interval '11 hours',
+        current_timestamp - interval '3 days' + interval '12 hours',
+        3600000, 'submitted', true,
+        ARRAY['email', 'marketing'],
+        'All sequences live and tested',
+        current_timestamp - interval '3 days', current_timestamp - interval '2 days'
+    ),
+
+    -- draft, 2 hr, not billable
+    (
+        extensions.uuid_generate_v4(),
+        'Renovation quote comparison',
+        'Reviewed and tabulated contractor quotes',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1' and title = 'Plan weekend trip' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560002',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '7 days' + interval '10 hours',
+        current_timestamp - interval '7 days' + interval '12 hours',
+        7200000, 'draft', false,
+        ARRAY['personal', 'planning'],
+        'Three quotes collected, one more expected',
+        current_timestamp - interval '7 days', current_timestamp - interval '7 days'
+    ),
+
+    -- draft, 30 min, not billable
+    (
+        extensions.uuid_generate_v4(),
+        'Contractor follow-up calls',
+        'Called two contractors about renovation timeline',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560002',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '1 day' + interval '14 hours',
+        current_timestamp - interval '1 day' + interval '14 hours' + interval '30 minutes',
+        1800000, 'draft', false,
+        ARRAY['personal', 'renovation'],
+        'One contractor confirmed availability for next month',
+        current_timestamp - interval '1 day', current_timestamp - interval '1 day'
+    ),
+
+    -- rejected, 4 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Social media scheduling',
+        'Scheduled and queued 30 posts across channels',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1' and title = 'Complete project proposal' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560001',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b1',
+        current_timestamp - interval '5 days' + interval '9 hours',
+        current_timestamp - interval '5 days' + interval '13 hours',
+        14400000, 'rejected', true,
+        ARRAY['social-media', 'marketing'],
+        'Rejected — duration too high, resubmit after verification',
+        current_timestamp - interval '5 days', current_timestamp - interval '3 days'
+    ),
+
+    -- ── User 2 (b73eb03e-fb7a-424d-84ff-18e2791ce0b4) ──────────────────────
+
+    -- approved, 3 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'App architecture design',
+        'Designed module structure for the new mobile app',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Fix database performance issue' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560003',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '20 days' + interval '9 hours',
+        current_timestamp - interval '20 days' + interval '12 hours',
+        10800000, 'approved', true,
+        ARRAY['architecture', 'mobile'],
+        'Module map approved by tech lead',
+        current_timestamp - interval '20 days', current_timestamp - interval '17 days'
+    ),
+
+    -- approved, 2 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Database schema review',
+        'Reviewed production schema for performance bottlenecks',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Fix database performance issue' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560005',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '18 days' + interval '10 hours',
+        current_timestamp - interval '18 days' + interval '12 hours',
+        7200000, 'approved', true,
+        ARRAY['database', 'performance'],
+        'Found 4 unindexed FK columns — added indexes',
+        current_timestamp - interval '18 days', current_timestamp - interval '15 days'
+    ),
+
+    -- approved, 4 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'CI/CD pipeline configuration',
+        'Set up GitHub Actions for automated build and deploy',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560003',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '15 days' + interval '9 hours',
+        current_timestamp - interval '15 days' + interval '13 hours',
+        14400000, 'approved', true,
+        ARRAY['devops', 'ci-cd'],
+        'Pipeline green on first real run',
+        current_timestamp - interval '15 days', current_timestamp - interval '12 days'
+    ),
+
+    -- approved, 1 hr, not billable
+    (
+        extensions.uuid_generate_v4(),
+        'Tech talk preparation',
+        'Rehearsed microservices presentation with team',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Prepare presentation for tech talk' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560006',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '12 days' + interval '16 hours',
+        current_timestamp - interval '12 days' + interval '17 hours',
+        3600000, 'approved', false,
+        ARRAY['presentation', 'learning'],
+        'Good run-through, trimmed 5 slides',
+        current_timestamp - interval '12 days', current_timestamp - interval '9 days'
+    ),
+
+    -- submitted, 2 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Query optimisation session',
+        'Profiled and rewrote three slow dashboard queries',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Fix database performance issue' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560005',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '9 days' + interval '13 hours',
+        current_timestamp - interval '9 days' + interval '15 hours',
+        7200000, 'submitted', true,
+        ARRAY['database', 'optimization'],
+        'Reduced avg query time from 800 ms to 90 ms',
+        current_timestamp - interval '9 days', current_timestamp - interval '7 days'
+    ),
+
+    -- submitted, 1.5 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Mobile screen mockups',
+        'Built interactive Figma mockups for login and dashboard screens',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560003',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '7 days' + interval '10 hours',
+        current_timestamp - interval '7 days' + interval '11 hours' + interval '30 minutes',
+        5400000, 'submitted', true,
+        ARRAY['design', 'mobile'],
+        'Client review scheduled for next week',
+        current_timestamp - interval '7 days', current_timestamp - interval '5 days'
+    ),
+
+    -- submitted, 30 min, not billable
+    (
+        extensions.uuid_generate_v4(),
+        'AWS certification study',
+        'Completed two practice exams for Solutions Architect',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Finish reading "Clean Code"' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560004',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '5 days' + interval '19 hours',
+        current_timestamp - interval '5 days' + interval '19 hours' + interval '30 minutes',
+        1800000, 'submitted', false,
+        ARRAY['learning', 'aws'],
+        'Scored 78% — need more practice on networking',
+        current_timestamp - interval '5 days', current_timestamp - interval '4 days'
+    ),
+
+    -- draft, 3 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Redis caching implementation',
+        'Implemented caching layer for user session data',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Fix database performance issue' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560003',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '3 days' + interval '9 hours',
+        current_timestamp - interval '3 days' + interval '12 hours',
+        10800000, 'draft', true,
+        ARRAY['backend', 'performance'],
+        'Cache hit rate at 85% in staging',
+        current_timestamp - interval '3 days', current_timestamp - interval '3 days'
+    ),
+
+    -- draft, 1 hr, not billable
+    (
+        extensions.uuid_generate_v4(),
+        'GraphQL schema draft',
+        'Sketched initial GraphQL type definitions for product API',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560003',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '2 days' + interval '14 hours',
+        current_timestamp - interval '2 days' + interval '15 hours',
+        3600000, 'draft', false,
+        ARRAY['api', 'graphql'],
+        'First pass only — needs review against REST endpoints',
+        current_timestamp - interval '2 days', current_timestamp - interval '2 days'
+    ),
+
+    -- rejected, 4 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Load balancer configuration',
+        'Configured nginx upstream and health checks',
+        null,
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560005',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '11 days' + interval '9 hours',
+        current_timestamp - interval '11 days' + interval '13 hours',
+        14400000, 'rejected', true,
+        ARRAY['infrastructure', 'devops'],
+        'Rejected — please split across two separate log entries',
+        current_timestamp - interval '11 days', current_timestamp - interval '9 days'
+    ),
+
+    -- rejected, 2 hr, billable
+    (
+        extensions.uuid_generate_v4(),
+        'Security audit remediation',
+        'Patched vulnerabilities identified in the security audit report',
+        (select id from desk.tasks where user_id = 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4' and title = 'Fix database performance issue' limit 1),
+        'a1b2c3d4-e5f6-7890-abcd-ef1234560005',
+        'b73eb03e-fb7a-424d-84ff-18e2791ce0b4',
+        current_timestamp - interval '4 days' + interval '15 hours',
+        current_timestamp - interval '4 days' + interval '17 hours',
+        7200000, 'rejected', true,
+        ARRAY['security', 'maintenance'],
+        'Rejected — task_id is incorrect, please correct and resubmit',
+        current_timestamp - interval '4 days', current_timestamp - interval '2 days'
+    );

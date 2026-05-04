@@ -1042,3 +1042,482 @@ create trigger task_comments_notify
     on desk.task_comments
     for each row
 execute function desk.trg_task_comments_notify();
+
+
+----------------------------------------------------------------
+-- Timesheets
+----------------------------------------------------------------
+
+begin;
+create type desk.timesheet_status as enum ('draft', 'submitted', 'approved', 'rejected');
+
+-- Timesheet CRUD permissions
+alter type supasheet.app_permission add value 'desk.timesheets:select';
+alter type supasheet.app_permission add value 'desk.timesheets:insert';
+alter type supasheet.app_permission add value 'desk.timesheets:update';
+alter type supasheet.app_permission add value 'desk.timesheets:delete';
+
+-- Dashboard widget permissions
+alter type supasheet.app_permission add value 'desk.timesheet_hours_this_week:select';
+alter type supasheet.app_permission add value 'desk.timesheet_approval_status:select';
+alter type supasheet.app_permission add value 'desk.timesheet_billable_rate:select';
+alter type supasheet.app_permission add value 'desk.timesheet_status_breakdown:select';
+alter type supasheet.app_permission add value 'desk.timesheet_recent_entries:select';
+alter type supasheet.app_permission add value 'desk.timesheet_top_tasks:select';
+
+-- Chart permissions
+alter type supasheet.app_permission add value 'desk.timesheet_hours_by_project:select';
+alter type supasheet.app_permission add value 'desk.timesheet_daily_hours_line:select';
+alter type supasheet.app_permission add value 'desk.timesheet_status_pie:select';
+alter type supasheet.app_permission add value 'desk.timesheet_weekday_radar:select';
+
+-- Report permission
+alter type supasheet.app_permission add value 'desk.timesheet_report:select';
+commit;
+
+
+create table desk.timesheets (
+    id          uuid primary key default extensions.uuid_generate_v4(),
+    title       varchar(500) not null,
+    description supasheet.RICH_TEXT,
+
+    -- Associations
+    task_id     uuid references desk.tasks(id) on delete set null,
+    project_id  uuid references desk.projects(id) on delete set null,
+
+    -- Who logged time
+    user_id     uuid default auth.uid() references supasheet.users(id) on delete cascade,
+
+    -- Time window
+    started_at  timestamptz not null,
+    ended_at    timestamptz,
+
+    -- Duration in milliseconds (matches desk.tasks.duration type)
+    duration    supasheet.DURATION,
+
+    -- Approval workflow
+    status      desk.timesheet_status default 'draft',
+
+    -- Billing
+    billable    boolean default false,
+
+    -- Organization
+    tags        varchar(500)[],
+    notes       text,
+
+    -- Audit fields
+    created_at  timestamptz default current_timestamp,
+    updated_at  timestamptz default current_timestamp
+);
+
+comment on column desk.timesheets.status is
+'{
+    "progress": true,
+    "enums": {
+        "draft": {
+            "variant": "outline",
+            "icon": "FileText"
+        },
+        "submitted": {
+            "variant": "info",
+            "icon": "Send"
+        },
+        "approved": {
+            "variant": "success",
+            "icon": "CircleCheck"
+        },
+        "rejected": {
+            "variant": "destructive",
+            "icon": "XCircle"
+        }
+    }
+}';
+
+comment on table desk.timesheets is
+'{
+    "icon": "Clock",
+    "display": "block",
+    "query": {
+        "sort": [{"id":"started_at","desc":true}],
+        "join": [
+            {"table":"users","on":"user_id","columns":["name","email"]},
+            {"table":"tasks","on":"task_id","columns":["title","status"]},
+            {"table":"projects","on":"project_id","columns":["title"]}
+        ]
+    },
+    "items": [
+        {"id":"calendar","name":"Time Calendar","type":"calendar","title":"title","startDate":"started_at","endDate":"ended_at","badge":"status"}
+    ],
+    "sections": [
+        {"id":"summary","title":"Summary","fields":["title","description","task_id","project_id"]},
+        {"id":"time","title":"Time","fields":["status","started_at","ended_at","duration"]},
+        {"id":"billing","title":"Billing","fields":["billable"]},
+        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","notes"]}
+    ]
+}';
+
+revoke all on table desk.timesheets from authenticated, service_role;
+
+grant select, insert, update, delete on table desk.timesheets to authenticated;
+
+create index idx_timesheets_user_id    on desk.timesheets (user_id);
+create index idx_timesheets_task_id    on desk.timesheets (task_id);
+create index idx_timesheets_project_id on desk.timesheets (project_id);
+create index idx_timesheets_status     on desk.timesheets (status);
+create index idx_timesheets_started_at on desk.timesheets (started_at);
+create index idx_timesheets_billable   on desk.timesheets (billable);
+
+alter table desk.timesheets enable row level security;
+
+create policy timesheets_select on desk.timesheets
+    for select
+    to authenticated
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.timesheets:select'));
+
+create policy timesheets_insert on desk.timesheets
+    for insert
+    to authenticated
+    with check (user_id = (select auth.uid()) and supasheet.has_permission('desk.timesheets:insert'));
+
+create policy timesheets_update on desk.timesheets
+    for update
+    to authenticated
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.timesheets:update'))
+    with check (user_id = (select auth.uid()) and supasheet.has_permission('desk.timesheets:update'));
+
+create policy timesheets_delete on desk.timesheets
+    for delete
+    to authenticated
+    using (user_id = (select auth.uid()) and supasheet.has_permission('desk.timesheets:delete'));
+
+
+----------------------------------------------------------------
+-- Dashboard widget views for timesheets
+----------------------------------------------------------------
+
+-- Card1: total hours logged this week
+create or replace view desk.timesheet_hours_this_week
+with (security_invoker = true) as
+select
+    round(
+        coalesce(sum(duration), 0)::numeric / 3600000,
+        1
+    ) as value,
+    'timer' as icon,
+    'hours logged this week' as label
+from desk.timesheets
+where started_at >= date_trunc('week', current_timestamp);
+
+revoke all on desk.timesheet_hours_this_week from authenticated, service_role;
+grant select on desk.timesheet_hours_this_week to authenticated;
+
+-- Card2: approved vs pending entries
+create or replace view desk.timesheet_approval_status
+with (security_invoker = true) as
+select
+    count(*) filter (where status = 'approved')  as primary,
+    count(*) filter (where status = 'submitted') as secondary,
+    'Approved'       as primary_label,
+    'Pending Review' as secondary_label
+from desk.timesheets;
+
+revoke all on desk.timesheet_approval_status from authenticated, service_role;
+grant select on desk.timesheet_approval_status to authenticated;
+
+-- Card3: billable hours with percentage of total
+create or replace view desk.timesheet_billable_rate
+with (security_invoker = true) as
+select
+    round(
+        coalesce(sum(duration) filter (where billable = true), 0)::numeric / 3600000,
+        1
+    ) as value,
+    case
+        when coalesce(sum(duration), 0) > 0
+        then round(
+            (coalesce(sum(duration) filter (where billable = true), 0)::numeric
+             / sum(duration)::numeric) * 100,
+            1
+        )
+        else 0
+    end as percent
+from desk.timesheets;
+
+revoke all on desk.timesheet_billable_rate from authenticated, service_role;
+grant select on desk.timesheet_billable_rate to authenticated;
+
+-- Card4: status breakdown with segments
+create or replace view desk.timesheet_status_breakdown
+with (security_invoker = true) as
+select
+    count(*) filter (where status in ('submitted', 'approved')) as current,
+    count(*) as total,
+    json_build_array(
+        json_build_object('label', 'Approved',  'value', count(*) filter (where status = 'approved')),
+        json_build_object('label', 'Submitted', 'value', count(*) filter (where status = 'submitted')),
+        json_build_object('label', 'Rejected',  'value', count(*) filter (where status = 'rejected'))
+    ) as segments
+from desk.timesheets;
+
+revoke all on desk.timesheet_status_breakdown from authenticated, service_role;
+grant select on desk.timesheet_status_breakdown to authenticated;
+
+-- Table widget: recent time entries
+create or replace view desk.timesheet_recent_entries
+with (security_invoker = true) as
+select
+    title,
+    status,
+    round(duration::numeric / 3600000, 1) as hours,
+    to_char(started_at, 'MM/DD') as date
+from desk.timesheets
+order by started_at desc
+limit 10;
+
+revoke all on desk.timesheet_recent_entries from authenticated, service_role;
+grant select on desk.timesheet_recent_entries to authenticated;
+
+-- Table widget: top tasks by time logged
+create or replace view desk.timesheet_top_tasks
+with (security_invoker = true) as
+select
+    coalesce(t.title, '(no task)') as task,
+    count(ts.id) as entries,
+    round(sum(ts.duration)::numeric / 3600000, 1) as total_hours
+from desk.timesheets ts
+left join desk.tasks t on ts.task_id = t.id
+group by t.title
+order by sum(ts.duration) desc nulls last
+limit 10;
+
+revoke all on desk.timesheet_top_tasks from authenticated, service_role;
+grant select on desk.timesheet_top_tasks to authenticated;
+
+comment on view desk.timesheet_hours_this_week  is '{"type": "dashboard_widget", "name": "Hours This Week",       "description": "Total hours logged in the current week",          "widget_type": "card_1"}';
+comment on view desk.timesheet_approval_status  is '{"type": "dashboard_widget", "name": "Approval Status",       "description": "Approved vs pending timesheet entries",           "widget_type": "card_2"}';
+comment on view desk.timesheet_billable_rate    is '{"type": "dashboard_widget", "name": "Billable Hours",        "description": "Billable hours and percentage of total",           "widget_type": "card_3"}';
+comment on view desk.timesheet_status_breakdown is '{"type": "dashboard_widget", "name": "Status Breakdown",      "description": "Submitted and approved vs total entries",          "widget_type": "card_4"}';
+comment on view desk.timesheet_recent_entries   is '{"type": "dashboard_widget", "name": "Recent Time Entries",   "description": "Latest timesheet entries",                         "widget_type": "table_1"}';
+comment on view desk.timesheet_top_tasks        is '{"type": "dashboard_widget", "name": "Top Tasks by Time",     "description": "Tasks with the most logged time",                  "widget_type": "table_2"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'desk.timesheet_hours_this_week:select'),
+    ('x-admin', 'desk.timesheet_approval_status:select'),
+    ('x-admin', 'desk.timesheet_billable_rate:select'),
+    ('x-admin', 'desk.timesheet_status_breakdown:select'),
+    ('x-admin', 'desk.timesheet_recent_entries:select'),
+    ('x-admin', 'desk.timesheet_top_tasks:select');
+
+
+----------------------------------------------------------------
+-- Chart views for timesheets
+----------------------------------------------------------------
+
+-- Bar chart: hours by project
+create or replace view desk.timesheet_hours_by_project
+with (security_invoker = true) as
+select
+    coalesce(p.title, '(no project)') as label,
+    round(sum(ts.duration)::numeric / 3600000, 1) as total_hours,
+    round(coalesce(sum(ts.duration) filter (where ts.billable = true), 0)::numeric / 3600000, 1) as billable_hours
+from desk.timesheets ts
+left join desk.projects p on ts.project_id = p.id
+group by p.title
+order by sum(ts.duration) desc nulls last;
+
+revoke all on desk.timesheet_hours_by_project from authenticated, service_role;
+grant select on desk.timesheet_hours_by_project to authenticated;
+
+-- Line chart: daily hours over last 14 days
+create or replace view desk.timesheet_daily_hours_line
+with (security_invoker = true) as
+select
+    to_char(date_trunc('day', started_at), 'Mon DD') as date,
+    round(sum(duration)::numeric / 3600000, 1) as total_hours,
+    round(coalesce(sum(duration) filter (where billable = true), 0)::numeric / 3600000, 1) as billable_hours
+from desk.timesheets
+where started_at >= current_date - interval '14 days'
+group by date_trunc('day', started_at)
+order by date_trunc('day', started_at);
+
+revoke all on desk.timesheet_daily_hours_line from authenticated, service_role;
+grant select on desk.timesheet_daily_hours_line to authenticated;
+
+-- Pie chart: entry count by status
+create or replace view desk.timesheet_status_pie
+with (security_invoker = true) as
+select
+    status as label,
+    count(*) as value
+from desk.timesheets
+group by status;
+
+revoke all on desk.timesheet_status_pie from authenticated, service_role;
+grant select on desk.timesheet_status_pie to authenticated;
+
+-- Radar chart: hours by day of week
+create or replace view desk.timesheet_weekday_radar
+with (security_invoker = true) as
+select
+    to_char(started_at, 'Day') as metric,
+    round(sum(duration)::numeric / 3600000, 1) as total_hours,
+    round(coalesce(sum(duration) filter (where billable = true), 0)::numeric / 3600000, 1) as billable_hours
+from desk.timesheets
+group by to_char(started_at, 'Day'), extract(isodow from started_at)
+order by extract(isodow from started_at);
+
+revoke all on desk.timesheet_weekday_radar from authenticated, service_role;
+grant select on desk.timesheet_weekday_radar to authenticated;
+
+comment on view desk.timesheet_hours_by_project  is '{"type": "chart", "name": "Hours by Project",        "description": "Total and billable hours grouped by project",          "chart_type": "bar"}';
+comment on view desk.timesheet_daily_hours_line  is '{"type": "chart", "name": "Daily Hours",              "description": "Hours logged per day over the last 14 days",           "chart_type": "line"}';
+comment on view desk.timesheet_status_pie        is '{"type": "chart", "name": "Timesheet Status",         "description": "Entry count grouped by status",                        "chart_type": "pie"}';
+comment on view desk.timesheet_weekday_radar     is '{"type": "chart", "name": "Hours by Weekday",         "description": "Total and billable hours per day of the week",         "chart_type": "radar"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'desk.timesheet_hours_by_project:select'),
+    ('x-admin', 'desk.timesheet_daily_hours_line:select'),
+    ('x-admin', 'desk.timesheet_status_pie:select'),
+    ('x-admin', 'desk.timesheet_weekday_radar:select');
+
+
+----------------------------------------------------------------
+-- Report view for timesheets
+----------------------------------------------------------------
+
+create or replace view desk.timesheet_report
+with (security_invoker = true) as
+select
+    u.name                                          as user_name,
+    u.email                                         as user_email,
+    ts.id,
+    ts.title,
+    ts.description,
+    ts.status,
+    ts.billable,
+    ts.started_at,
+    ts.ended_at,
+    round(ts.duration::numeric / 3600000, 2)        as hours,
+    ts.tags,
+    ts.notes,
+    t.title                                         as task_title,
+    t.status                                        as task_status,
+    p.title                                         as project_title,
+    p.status                                        as project_status,
+    ts.created_at,
+    ts.updated_at
+from desk.timesheets ts
+join  supasheet.users  u on ts.user_id    = u.id
+left join desk.tasks   t on ts.task_id    = t.id
+left join desk.projects p on ts.project_id = p.id;
+
+revoke all on desk.timesheet_report from authenticated, service_role;
+grant select on desk.timesheet_report to authenticated;
+
+comment on view desk.timesheet_report is '{"type": "report", "name": "Timesheet Report", "description": "Full time entry detail with user, task, and project context"}';
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.timesheet_report:select');
+
+
+----------------------------------------------------------------
+-- Role permissions for timesheets
+----------------------------------------------------------------
+
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.timesheets:select');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.timesheets:insert');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.timesheets:update');
+insert into supasheet.role_permissions (role, permission) values ('x-admin', 'desk.timesheets:delete');
+
+
+----------------------------------------------------------------
+-- Audit triggers for timesheets
+----------------------------------------------------------------
+
+create trigger audit_timesheets_insert
+    after insert
+    on desk.timesheets
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_timesheets_update
+    after update
+    on desk.timesheets
+    for each row
+execute function supasheet.audit_trigger_function();
+
+create trigger audit_timesheets_delete
+    before delete
+    on desk.timesheets
+    for each row
+execute function supasheet.audit_trigger_function();
+
+
+----------------------------------------------------------------
+-- Notifications for timesheets
+----------------------------------------------------------------
+
+create or replace function desk.trg_timesheets_notify()
+returns trigger as $$
+declare
+    v_recipients uuid[];
+    v_type       text;
+    v_title      text;
+    v_body       text;
+begin
+    if tg_op = 'INSERT' then
+        v_type       := 'timesheet_created';
+        v_title      := 'Time entry created';
+        v_body       := 'Your time entry "' || new.title || '" has been saved as draft.';
+        v_recipients := array[new.user_id];
+
+    elsif new.status is distinct from old.status then
+
+        if new.status = 'submitted' then
+            v_type       := 'timesheet_submitted';
+            v_title      := 'Timesheet submitted for review';
+            v_body       := '"' || new.title || '" was submitted and is awaiting approval.';
+            v_recipients := array_remove(
+                supasheet.get_users_with_permission('desk.timesheets:select'),
+                null
+            );
+
+        elsif new.status = 'approved' then
+            v_type       := 'timesheet_approved';
+            v_title      := 'Timesheet approved';
+            v_body       := 'Your time entry "' || new.title || '" has been approved.';
+            v_recipients := array[new.user_id];
+
+        elsif new.status = 'rejected' then
+            v_type       := 'timesheet_rejected';
+            v_title      := 'Timesheet rejected';
+            v_body       := 'Your time entry "' || new.title || '" was rejected. Please review and resubmit.';
+            v_recipients := array[new.user_id];
+
+        else
+            return new;
+        end if;
+
+    else
+        return new;
+    end if;
+
+    perform supasheet.create_notification(
+        v_type, v_title, v_body, v_recipients,
+        jsonb_build_object(
+            'timesheet_id', new.id,
+            'task_id',      new.task_id,
+            'project_id',   new.project_id,
+            'status',       new.status
+        ),
+        '/desk/resource/timesheets/detail/' || new.id::text
+    );
+    return new;
+end;
+$$ language plpgsql security definer set search_path = '';
+
+drop trigger if exists timesheets_notify on desk.timesheets;
+create trigger timesheets_notify
+    after insert or update of status
+    on desk.timesheets
+    for each row
+execute function desk.trg_timesheets_notify();
