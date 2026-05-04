@@ -943,7 +943,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists projects_notify on desk.projects;
 create trigger projects_notify
@@ -996,7 +996,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists tasks_notify on desk.tasks;
 create trigger tasks_notify
@@ -1034,7 +1034,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists task_comments_notify on desk.task_comments;
 create trigger task_comments_notify

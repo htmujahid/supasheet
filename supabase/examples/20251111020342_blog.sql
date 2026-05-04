@@ -869,7 +869,7 @@ returns uuid as $$
     from blog.posts p
     join blog.authors a on a.id = p.author_id
     where p.id = p_post_id
-$$ language sql stable security definer;
+$$ language sql stable security definer set search_path = '';
 
 
 -- Post trigger: notify the author and post readers when a post is published
@@ -904,7 +904,7 @@ begin
     end if;
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists posts_notify on blog.posts;
 create trigger posts_notify
@@ -955,7 +955,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists comments_notify on blog.comments;
 create trigger comments_notify

@@ -108,7 +108,7 @@ BEGIN
     
     RETURN v_audit_id;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 CREATE OR REPLACE FUNCTION supasheet.audit_trigger_function() RETURNS TRIGGER AS $$
 DECLARE
@@ -155,7 +155,7 @@ BEGIN
         RETURN NEW;
     END IF;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 GRANT SELECT ON supasheet.audit_logs TO authenticated;
 

@@ -32,6 +32,7 @@ RETURNS TABLE(
   relationships JSONB
 )
 LANGUAGE SQL
+SET search_path = ''
 AS $$
 SELECT
   c.oid :: int8 AS id,
@@ -189,6 +190,7 @@ RETURNS TABLE (
     "comment" TEXT
 )
 LANGUAGE SQL
+SET search_path = ''
 AS $$
 -- Adapted from information_schema.columns
 
@@ -342,6 +344,7 @@ RETURNS TABLE(
   comment TEXT
 )
 LANGUAGE SQL
+SET search_path = ''
 AS $$
 SELECT
   c.oid :: int8 AS id,
@@ -402,6 +405,7 @@ RETURNS TABLE(
     comment TEXT
 )
 LANGUAGE SQL
+SET search_path = ''
 AS $$
 SELECT
   c.oid :: int8 AS id,
@@ -492,7 +496,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER table_creation_trigger
 ON ddl_command_end
@@ -527,7 +531,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER table_deletion_trigger
 ON sql_drop
@@ -576,7 +580,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER table_alteration_trigger
 ON ddl_command_end
@@ -645,7 +649,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER comment_trigger
 ON ddl_command_end
@@ -694,7 +698,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER enum_alteration_trigger
 ON ddl_command_end
@@ -730,7 +734,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER schema_creation_trigger
 ON ddl_command_end
@@ -771,7 +775,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER schema_alteration_trigger
 ON ddl_command_end
@@ -800,7 +804,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = '';
 
 CREATE EVENT TRIGGER schema_deletion_trigger
 ON sql_drop

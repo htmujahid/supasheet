@@ -7,6 +7,7 @@ CREATE OR REPLACE FUNCTION supasheet.get_schemas()
 RETURNS TABLE(schema text)
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY
@@ -33,6 +34,7 @@ CREATE OR REPLACE FUNCTION supasheet.get_tables(schema_name text DEFAULT NULL, t
 RETURNS SETOF supasheet.tables
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY
@@ -61,6 +63,7 @@ CREATE OR REPLACE FUNCTION supasheet.get_views(schema_name text DEFAULT NULL, vi
 RETURNS SETOF supasheet.views
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY
@@ -90,6 +93,7 @@ CREATE OR REPLACE FUNCTION supasheet.get_materialized_views(schema_name text DEF
 RETURNS SETOF supasheet.materialized_views
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY
@@ -117,6 +121,7 @@ CREATE OR REPLACE FUNCTION supasheet.get_columns(schema_name text DEFAULT NULL, 
 RETURNS SETOF supasheet.columns
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY
@@ -160,6 +165,7 @@ RETURNS TABLE(
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY
@@ -215,6 +221,7 @@ CREATE OR REPLACE FUNCTION supasheet.get_permissions(schema_name text DEFAULT NU
 RETURNS TABLE(permission supasheet.app_permission)
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
     RETURN QUERY

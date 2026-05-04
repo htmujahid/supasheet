@@ -17,6 +17,7 @@ returns table(
 )
 language plpgsql
 security definer
+set search_path = ''
 as $$
 begin
   return query

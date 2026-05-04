@@ -1135,7 +1135,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists companies_notify on crm.companies;
 create trigger companies_notify
@@ -1192,7 +1192,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists deals_notify on crm.deals;
 create trigger deals_notify
@@ -1251,7 +1251,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists activities_notify on crm.activities;
 create trigger activities_notify

@@ -812,7 +812,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists orders_notify on store.orders;
 create trigger orders_notify
@@ -848,7 +848,7 @@ begin
     end if;
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists products_notify on store.products;
 create trigger products_notify
@@ -898,7 +898,7 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = '';
 
 drop trigger if exists reviews_notify on store.reviews;
 create trigger reviews_notify
