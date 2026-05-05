@@ -288,6 +288,7 @@ create table store.order_items (
 comment on table store.order_items is
 '{
     "icon": "ShoppingBag",
+    "inlineForm": true,
     "display": "block",
     "query": {
         "sort": [{"id": "created_at", "desc": true}],

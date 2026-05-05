@@ -21,7 +21,8 @@ import { ResourceForeignTable } from "#/components/resource/view/resource-foreig
 import { ResourceMetadataView } from "#/components/resource/view/resource-metadata-view"
 import { ResourceProgressField } from "#/components/resource/view/resource-progress-field"
 import { ResourceSectionDetail } from "#/components/resource/view/resource-section-detail"
-import { Button, buttonVariants } from "#/components/ui/button"
+import { EditRecordTrigger } from "#/components/resource/triggers/edit-record-trigger"
+import { Button } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 import {
   Empty,
@@ -449,14 +450,15 @@ function RouteComponent() {
         ]}
       >
         {tableSchema && canUpdate && (
-          <Link
-            className={buttonVariants({ size: "sm", variant: "outline" })}
-            to="/$schema/resource/$resource/update/$"
-            params={{ schema, resource, _splat: _splat ?? "" }}
+          <EditRecordTrigger
+            pk={pk}
+            primaryKeyNames={primaryKeys.map((k) => k.name)}
+            size="sm"
+            variant="outline"
           >
             <PencilIcon className="mr-1.5 size-3.5" />
             Edit
-          </Link>
+          </EditRecordTrigger>
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col">

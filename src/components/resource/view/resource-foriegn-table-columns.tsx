@@ -13,6 +13,7 @@ import { formatTitle } from "@/lib/format"
 import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
 
 import { Checkbox } from "#/components/ui/checkbox"
+import { EditRecordTrigger } from "#/components/resource/triggers/edit-record-trigger"
 import { getColumnMetadata } from "#/lib/columns"
 
 import { ResourceRowCell } from "../resource-row-cell"
@@ -31,10 +32,9 @@ export function getResourceForeignTableColumns({
   redirect?: string
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const hasPrimaryKeys =
-    !!tableSchema && (tableSchema.primary_keys as PrimaryKey[] | null)?.length
-      ? true
-      : false
+  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeyNames = primaryKeys.map((k) => k.name)
+  const hasPrimaryKeys = primaryKeys.length > 0
 
   const selectColumn: ColumnDef<ResourceDataSchema, unknown> | null =
     hasPrimaryKeys
@@ -53,43 +53,48 @@ export function getResourceForeignTableColumns({
               aria-label="Select all"
             />
           ),
-          cell: ({ row }) => (
-            <div className="flex items-center gap-1.5">
-              <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(checked) => row.toggleSelected(!!checked)}
-                aria-label="Select row"
-              />
-              {canUpdate ? (
-                <Link
-                  to="/$schema/resource/$resource/update/$"
-                  params={{
-                    schema: resourceSchema.schema,
-                    resource: resourceSchema.name,
-                    _splat: row.id,
-                  }}
-                  search={redirect ? { redirect } : undefined}
-                  className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <PencilIcon className="size-3" />
-                </Link>
-              ) : (
-                <Link
-                  to="/$schema/resource/$resource/detail/$"
-                  params={{
-                    schema: resourceSchema.schema,
-                    resource: resourceSchema.name,
-                    _splat: row.id,
-                  }}
-                  className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ArrowUpRightIcon className="size-3" />
-                </Link>
-              )}
-            </div>
-          ),
+          cell: ({ row }) => {
+            const pk = Object.fromEntries(
+              primaryKeys.map((k) => [k.name, row.original[k.name]])
+            )
+            return (
+              <div className="flex items-center gap-1.5">
+                <Checkbox
+                  checked={row.getIsSelected()}
+                  onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+                  aria-label="Select row"
+                />
+                {canUpdate ? (
+                  <EditRecordTrigger
+                    pk={pk}
+                    primaryKeyNames={primaryKeyNames}
+                    schema={resourceSchema.schema}
+                    resource={resourceSchema.name}
+                    redirect={redirect}
+                    size="icon-xs"
+                    variant="outline"
+                    className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3"
+                    stopPropagation
+                  >
+                    <PencilIcon />
+                  </EditRecordTrigger>
+                ) : (
+                  <Link
+                    to="/$schema/resource/$resource/detail/$"
+                    params={{
+                      schema: resourceSchema.schema,
+                      resource: resourceSchema.name,
+                      _splat: row.id,
+                    }}
+                    className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ArrowUpRightIcon className="size-3" />
+                  </Link>
+                )}
+              </div>
+            )
+          },
           size: 60,
           enableSorting: false,
           enableHiding: false,

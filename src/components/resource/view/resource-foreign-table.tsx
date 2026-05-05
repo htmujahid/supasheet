@@ -185,6 +185,8 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
         table={tableInstance}
         onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
         newRecordUrl={newRecordUrl}
+        newRecordSchema={canInsert ? schema : undefined}
+        newRecordResource={canInsert ? table : undefined}
       />
     </DataTable>
   )

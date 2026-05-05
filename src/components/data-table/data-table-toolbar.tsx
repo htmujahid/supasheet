@@ -6,6 +6,7 @@ import type { Table } from "@tanstack/react-table"
 
 import { DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
+import { NewRecordTrigger } from "#/components/resource/triggers/new-record-trigger"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,8 @@ interface DataTableToolbarProps<TData> {
   exportFilename?: string
   excludeColumns?: (keyof TData | "select" | "actions")[]
   newRecordUrl?: string
+  newRecordSchema?: string
+  newRecordResource?: string
   hideColumnVisibility?: boolean
 }
 
@@ -37,11 +40,17 @@ export function DataTableToolbar<TData>({
   exportFilename,
   excludeColumns,
   newRecordUrl,
+  newRecordSchema,
+  newRecordResource,
   hideColumnVisibility,
 }: DataTableToolbarProps<TData>) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const selectedRows = table.getSelectedRowModel().rows
   const selectedCount = selectedRows.length
+
+  const showResourceTrigger = Boolean(newRecordSchema && newRecordResource)
+  const showLinkNewButton = !showResourceTrigger && Boolean(newRecordUrl)
+  const showAnyNewButton = showResourceTrigger || showLinkNewButton
 
   async function handleConfirm() {
     await onDelete?.(selectedRows.map((r) => r.original))
@@ -66,7 +75,17 @@ export function DataTableToolbar<TData>({
               Delete ({selectedCount})
             </Button>
           )}
-          {newRecordUrl ? (
+          {showResourceTrigger && newRecordSchema && newRecordResource && (
+            <NewRecordTrigger
+              schema={newRecordSchema}
+              resource={newRecordResource}
+              size="sm"
+            >
+              <PlusIcon className="size-4" />
+              New record
+            </NewRecordTrigger>
+          )}
+          {showLinkNewButton && (
             <Button
               size="sm"
               nativeButton={false}
@@ -75,7 +94,8 @@ export function DataTableToolbar<TData>({
               <PlusIcon className="size-4" />
               New record
             </Button>
-          ) : (
+          )}
+          {!showAnyNewButton && (
             <Button
               variant="outline"
               size="sm"

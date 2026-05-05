@@ -86,6 +86,7 @@ export type FieldSection = {
 export type TableMetadata = {
   display?: "block" | "none"
   icon?: string
+  inlineForm?: boolean
   query?: {
     sort?: { id: string; desc: boolean }[]
     filter?: {

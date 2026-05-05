@@ -155,7 +155,8 @@ create table if not exists blog.social_links (
 comment on table blog.social_links is
 '{
     "display": "none",
-    "icon": "Link"
+    "icon": "Link",
+    "inlineForm": true
 }';
 
 revoke all on table blog.social_links from authenticated, service_role;

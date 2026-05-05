@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import type { Row } from "@tanstack/react-table"
 
 import { Checkbox } from "#/components/ui/checkbox"
+import { useEditRecordSheet } from "#/components/resource/resource-form-sheet-provider"
 import type {
   DatabaseSchemas,
   DatabaseTables,
@@ -33,6 +34,7 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   canUpdate,
 }: ResourceListRowProps<S>) {
   const navigate = useNavigate()
+  const { inlineForm, open: openEdit } = useEditRecordSheet()
   const data = row.original
 
   const titleValue = readField(data, listView.title)
@@ -41,6 +43,13 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   const field2Value = readField(data, listView.field2)
 
   function handleClick() {
+    if (canUpdate && inlineForm) {
+      const pk = Object.fromEntries(
+        primaryKeys.map((k) => [k.name, data[k.name]])
+      )
+      openEdit(pk)
+      return
+    }
     const pkSplat = buildPkSplat(data, primaryKeys)
     if (canUpdate) {
       navigate({

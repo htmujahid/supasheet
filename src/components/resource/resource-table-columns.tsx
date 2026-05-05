@@ -5,6 +5,7 @@ import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 import { ArrowUpRightIcon, Link2Icon, PencilIcon } from "lucide-react"
 
 import { Checkbox } from "#/components/ui/checkbox"
+import { EditRecordTrigger } from "#/components/resource/triggers/edit-record-trigger"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
@@ -51,6 +52,8 @@ export function getResourceTableColumns({
   const cols: ColumnDef<Record<string, unknown>, unknown>[] = []
 
   if (tableSchema?.primary_keys) {
+    const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+    const primaryKeyNames = primaryKeys.map((k) => k.name)
     cols.push({
       id: "select",
       header: ({ table }) => (
@@ -66,42 +69,45 @@ export function getResourceTableColumns({
           aria-label="Select all"
         />
       ),
-      cell: ({ row }) => (
-        <div className="flex items-center gap-1.5">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(checked) => row.toggleSelected(!!checked)}
-            aria-label="Select row"
-          />
-          {canUpdate ? (
-            <Link
-              to="/$schema/resource/$resource/update/$"
-              params={{
-                schema,
-                resource,
-                _splat: row.id,
-              }}
-              className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <PencilIcon className="size-3" />
-            </Link>
-          ) : (
-            <Link
-              to="/$schema/resource/$resource/detail/$"
-              params={{
-                schema,
-                resource,
-                _splat: row.id,
-              }}
-              className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <ArrowUpRightIcon className="size-3" />
-            </Link>
-          )}
-        </div>
-      ),
+      cell: ({ row }) => {
+        const pk = Object.fromEntries(
+          primaryKeys.map((k) => [k.name, row.original[k.name]])
+        )
+        return (
+          <div className="flex items-center gap-1.5">
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+              aria-label="Select row"
+            />
+            {canUpdate ? (
+              <EditRecordTrigger
+                pk={pk}
+                primaryKeyNames={primaryKeyNames}
+                size="icon-xs"
+                variant="outline"
+                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3"
+                stopPropagation
+              >
+                <PencilIcon />
+              </EditRecordTrigger>
+            ) : (
+              <Link
+                to="/$schema/resource/$resource/detail/$"
+                params={{
+                  schema,
+                  resource,
+                  _splat: row.id,
+                }}
+                className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ArrowUpRightIcon className="size-3" />
+              </Link>
+            )}
+          </div>
+        )
+      },
       enableSorting: false,
       enableHiding: false,
     })

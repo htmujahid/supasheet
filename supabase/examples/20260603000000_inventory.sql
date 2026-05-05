@@ -454,6 +454,7 @@ comment on column inventory.stock_levels.status is
 comment on table inventory.stock_levels is
 '{
     "icon": "Boxes",
+    "inlineForm": true,
     "display": "block",
     "query": {
         "sort": [{"id":"updated_at","desc":true}],
@@ -626,6 +627,7 @@ create table inventory.purchase_order_items (
 comment on table inventory.purchase_order_items is
 '{
     "icon": "ListChecks",
+    "inlineForm": true,
     "display": "none",
     "query": {
         "sort": [{"id":"created_at","desc":false}],
@@ -812,6 +814,7 @@ create table inventory.shipment_items (
 comment on table inventory.shipment_items is
 '{
     "icon": "ListChecks",
+    "inlineForm": true,
     "display": "none",
     "query": {
         "sort": [{"id":"created_at","desc":false}],

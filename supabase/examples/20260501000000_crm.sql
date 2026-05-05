@@ -367,6 +367,7 @@ create index idx_crm_contact_companies_company_id on crm.contact_companies (comp
 comment on table crm.contact_companies is
 '{
     "icon": "Briefcase",
+    "inlineForm": true,
     "display": "none",
     "query": {
         "sort": [{"id":"created_at","desc":true}],

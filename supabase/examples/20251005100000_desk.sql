@@ -359,6 +359,7 @@ create table desk.task_comments (
 comment on table desk.task_comments is
 '{
     "icon": "MessageSquare",
+    "inlineForm": true,
     "display": "block",
     "query": {
         "sort": [{"id":"created_at","desc":true}],

@@ -14,6 +14,7 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceGallery } from "#/components/resource/resource-gallery"
 import type { GalleryViewData } from "#/components/resource/resource-gallery"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
+import { NewRecordTrigger } from "#/components/resource/triggers/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -241,19 +242,10 @@ function RouteComponent() {
           currentViewId={galleryView.id}
         />
         {isTable && canInsert && (
-          <Button
-            size="sm"
-            nativeButton={false}
-            render={
-              <Link
-                to="/$schema/resource/$resource/new"
-                params={{ schema, resource }}
-              />
-            }
-          >
+          <NewRecordTrigger size="sm">
             <PlusIcon className="mr-1.5 size-3.5" />
             New record
-          </Button>
+          </NewRecordTrigger>
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">
