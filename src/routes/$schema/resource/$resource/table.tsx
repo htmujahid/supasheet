@@ -23,7 +23,7 @@ import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceTable } from "#/components/resource/resource-table"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/triggers/new-record-trigger"
+import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import {
   Empty,

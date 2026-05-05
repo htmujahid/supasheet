@@ -5,36 +5,31 @@ import { Link } from "@tanstack/react-router"
 import { Button } from "#/components/ui/button"
 
 import {
-  useEditRecordSheet,
+  useNewRecordSheet,
   useResourceFormSheet,
-} from "../resource-form-sheet-provider"
+} from "./resource-form-sheet-provider"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
 type Props = {
-  pk: Record<string, unknown>
-  primaryKeyNames: string[]
   size?: ButtonProps["size"]
   variant?: ButtonProps["variant"]
   className?: string
   stopPropagation?: boolean
   children: ReactNode
-  // Optional overrides — when set, the trigger targets this schema/resource
-  // instead of the route-level default (e.g. foreign-table rows).
   schema?: string
   resource?: string
-  redirect?: string
+  // Pre-filled field values. Applied to both inline (sheet) and full-page
+  // flows. For the link path, callers can either pass `defaults` and let the
+  // trigger build the URL, or pass a fully-formed `url`.
+  defaults?: Record<string, string>
+  // Full URL used for the link (non-inline) path. Defaults to
+  // `/<schema>/resource/<resource>/new`. Caller may include query strings
+  // (e.g. `?redirect=...&defaults=...`).
+  url?: string
 }
 
-function encodePkSplat(pk: Record<string, unknown>, primaryKeyNames: string[]) {
-  return primaryKeyNames
-    .map((name) => encodeURIComponent(String(pk[name])))
-    .join("/")
-}
-
-export function EditRecordTrigger({
-  pk,
-  primaryKeyNames,
+export function NewRecordTrigger({
   size,
   variant,
   className,
@@ -42,10 +37,11 @@ export function EditRecordTrigger({
   children,
   schema: schemaOverride,
   resource: resourceOverride,
-  redirect,
+  defaults,
+  url,
 }: Props) {
   const ctx = useResourceFormSheet()
-  const { inlineForm, open } = useEditRecordSheet(
+  const { inlineForm, open } = useNewRecordSheet(
     schemaOverride,
     resourceOverride
   )
@@ -61,7 +57,7 @@ export function EditRecordTrigger({
         className={className}
         onClick={(e: MouseEvent) => {
           if (stopPropagation) e.stopPropagation()
-          open(pk)
+          open(defaults)
         }}
       >
         {children}
@@ -69,7 +65,12 @@ export function EditRecordTrigger({
     )
   }
 
-  const splat = encodePkSplat(pk, primaryKeyNames)
+  let href = url ?? `/${schema}/resource/${resource}/new`
+  if (!url && defaults) {
+    const params = new URLSearchParams()
+    params.set("defaults", JSON.stringify(defaults))
+    href = `${href}?${params.toString()}`
+  }
 
   return (
     <Button
@@ -79,9 +80,7 @@ export function EditRecordTrigger({
       nativeButton={false}
       render={
         <Link
-          to="/$schema/resource/$resource/update/$"
-          params={{ schema, resource, _splat: splat } as never}
-          search={redirect ? { redirect } : undefined}
+          to={href as never}
           onClick={(e) => {
             if (stopPropagation) e.stopPropagation()
           }}

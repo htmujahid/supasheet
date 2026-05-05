@@ -17,6 +17,7 @@ type SheetState =
       mode: "create"
       schema: string
       resource: string
+      defaults?: Record<string, string>
     }
   | {
       open: true
@@ -26,15 +27,23 @@ type SheetState =
       pk: Record<string, unknown>
     }
 
+type OpenNewOptions = {
+  schema?: string
+  resource?: string
+  defaults?: Record<string, string>
+}
+
+type OpenEditOptions = {
+  pk: Record<string, unknown>
+  schema?: string
+  resource?: string
+}
+
 type ContextValue = {
   schema: string
   resource: string
-  openNew: (schema?: string, resource?: string) => void
-  openEdit: (
-    pk: Record<string, unknown>,
-    schema?: string,
-    resource?: string
-  ) => void
+  openNew: (options?: OpenNewOptions) => void
+  openEdit: (options: OpenEditOptions) => void
   close: () => void
 }
 
@@ -55,20 +64,21 @@ export function ResourceFormSheetProvider({
     () => ({
       schema: defaultSchema,
       resource: defaultResource,
-      openNew: (schemaOverride, resourceOverride) =>
+      openNew: (options) =>
         setState({
           open: true,
           mode: "create",
-          schema: schemaOverride ?? defaultSchema,
-          resource: resourceOverride ?? defaultResource,
+          schema: options?.schema ?? defaultSchema,
+          resource: options?.resource ?? defaultResource,
+          defaults: options?.defaults,
         }),
-      openEdit: (pk, schemaOverride, resourceOverride) =>
+      openEdit: (options) =>
         setState({
           open: true,
           mode: "update",
-          schema: schemaOverride ?? defaultSchema,
-          resource: resourceOverride ?? defaultResource,
-          pk,
+          schema: options.schema ?? defaultSchema,
+          resource: options.resource ?? defaultResource,
+          pk: options.pk,
         }),
       close: () => setState({ open: false }),
     }),
@@ -87,6 +97,7 @@ export function ResourceFormSheetProvider({
           mode="create"
           schema={state.schema}
           resource={state.resource}
+          defaults={state.defaults}
           open
           onOpenChange={onOpenChange}
         />
@@ -137,7 +148,8 @@ export function useNewRecordSheet(schema?: string, resource?: string) {
   const inlineForm = useInlineFormFlag(targetSchema, targetResource)
   return {
     inlineForm,
-    open: () => ctx.openNew(schema, resource),
+    open: (defaults?: Record<string, string>) =>
+      ctx.openNew({ schema, resource, defaults }),
   }
 }
 
@@ -148,6 +160,7 @@ export function useEditRecordSheet(schema?: string, resource?: string) {
   const inlineForm = useInlineFormFlag(targetSchema, targetResource)
   return {
     inlineForm,
-    open: (pk: Record<string, unknown>) => ctx.openEdit(pk, schema, resource),
+    open: (pk: Record<string, unknown>) =>
+      ctx.openEdit({ pk, schema, resource }),
   }
 }

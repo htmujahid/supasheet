@@ -1,12 +1,10 @@
 import { useState } from "react"
-
-import { Link } from "@tanstack/react-router"
+import type { ReactNode } from "react"
 
 import type { Table } from "@tanstack/react-table"
 
-import { DownloadIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import { DownloadIcon, Trash2Icon } from "lucide-react"
 
-import { NewRecordTrigger } from "#/components/resource/triggers/new-record-trigger"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,31 +24,21 @@ import { DataTableFilter } from "./data-table-filter"
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
   onDelete?: (rows: TData[]) => void | Promise<void>
-  exportFilename?: string
-  excludeColumns?: (keyof TData | "select" | "actions")[]
-  newRecordUrl?: string
-  newRecordSchema?: string
-  newRecordResource?: string
   hideColumnVisibility?: boolean
+  // Action buttons rendered between the delete button and column visibility.
+  // When omitted, a default Export button is rendered.
+  children?: ReactNode
 }
 
 export function DataTableToolbar<TData>({
   table,
   onDelete,
-  exportFilename,
-  excludeColumns,
-  newRecordUrl,
-  newRecordSchema,
-  newRecordResource,
   hideColumnVisibility,
+  children,
 }: DataTableToolbarProps<TData>) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const selectedRows = table.getSelectedRowModel().rows
   const selectedCount = selectedRows.length
-
-  const showResourceTrigger = Boolean(newRecordSchema && newRecordResource)
-  const showLinkNewButton = !showResourceTrigger && Boolean(newRecordUrl)
-  const showAnyNewButton = showResourceTrigger || showLinkNewButton
 
   async function handleConfirm() {
     await onDelete?.(selectedRows.map((r) => r.original))
@@ -75,42 +63,7 @@ export function DataTableToolbar<TData>({
               Delete ({selectedCount})
             </Button>
           )}
-          {showResourceTrigger && newRecordSchema && newRecordResource && (
-            <NewRecordTrigger
-              schema={newRecordSchema}
-              resource={newRecordResource}
-              size="sm"
-            >
-              <PlusIcon className="size-4" />
-              New record
-            </NewRecordTrigger>
-          )}
-          {showLinkNewButton && (
-            <Button
-              size="sm"
-              nativeButton={false}
-              render={<Link to={newRecordUrl as never} />}
-            >
-              <PlusIcon className="size-4" />
-              New record
-            </Button>
-          )}
-          {!showAnyNewButton && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                exportTableToCSV(table, {
-                  filename: exportFilename,
-                  excludeColumns,
-                  onlySelected: selectedCount > 0,
-                })
-              }
-            >
-              <DownloadIcon className="size-4" />
-              Export
-            </Button>
-          )}
+          {children ?? <DataTableExportButton table={table} />}
           {!hideColumnVisibility && <DataTableColumnVisibility table={table} />}
         </div>
       </div>
@@ -134,5 +87,33 @@ export function DataTableToolbar<TData>({
         </AlertDialogContent>
       </AlertDialog>
     </>
+  )
+}
+
+export function DataTableExportButton<TData>({
+  table,
+  filename,
+  excludeColumns,
+}: {
+  table: Table<TData>
+  filename?: string
+  excludeColumns?: (keyof TData | "select" | "actions")[]
+}) {
+  const onlySelected = table.getSelectedRowModel().rows.length > 0
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() =>
+        exportTableToCSV(table, {
+          filename,
+          excludeColumns,
+          onlySelected,
+        })
+      }
+    >
+      <DownloadIcon className="size-4" />
+      Export
+    </Button>
   )
 }

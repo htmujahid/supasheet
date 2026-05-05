@@ -4,7 +4,7 @@ import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
 import { ArrowUpRightIcon, Link2Icon, PencilIcon } from "lucide-react"
 
-import { EditRecordTrigger } from "#/components/resource/triggers/edit-record-trigger"
+import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 import type {

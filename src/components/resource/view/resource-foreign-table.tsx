@@ -19,10 +19,12 @@ import type {
 } from "@tanstack/react-table"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
+import { PlusIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
+import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
@@ -175,19 +177,36 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const newRecordUrl = canInsert
-    ? `/${schema}/resource/${table}/new?redirect=${encodeURIComponent(redirectTo)}`
+  const defaults = hasParentValue
+    ? { [parentColumn]: String(parentValue) }
     : undefined
+
+  const newRecordUrl = (() => {
+    const params = new URLSearchParams()
+    params.set("redirect", redirectTo)
+    if (defaults) params.set("defaults", JSON.stringify(defaults))
+    return `/${schema}/resource/${table}/new?${params.toString()}`
+  })()
 
   return (
     <DataTable table={tableInstance}>
       <DataTableToolbar
         table={tableInstance}
         onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
-        newRecordUrl={newRecordUrl}
-        newRecordSchema={canInsert ? schema : undefined}
-        newRecordResource={canInsert ? table : undefined}
-      />
+      >
+        {canInsert && (
+          <NewRecordTrigger
+            schema={schema}
+            resource={table}
+            defaults={defaults}
+            url={newRecordUrl}
+            size="sm"
+          >
+            <PlusIcon className="size-4" />
+            New record
+          </NewRecordTrigger>
+        )}
+      </DataTableToolbar>
     </DataTable>
   )
 }

@@ -30,9 +30,36 @@ import {
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/new")({
-  validateSearch: (search: { redirect?: string } & SearchSchemaInput) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-  }),
+  validateSearch: (
+    search: {
+      redirect?: string
+      defaults?: string | Record<string, string>
+    } & SearchSchemaInput
+  ) => {
+    const raw = search.defaults
+    let defaults: Record<string, string> | undefined
+    let source: Record<string, unknown> | undefined
+    if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+      source = raw as Record<string, unknown>
+    } else if (typeof raw === "string") {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          source = parsed as Record<string, unknown>
+        }
+      } catch {}
+    }
+    if (source) {
+      defaults = Object.fromEntries(
+        Object.entries(source).filter(([, v]) => typeof v === "string")
+      ) as Record<string, string>
+    }
+    return {
+      redirect:
+        typeof search.redirect === "string" ? search.redirect : undefined,
+      defaults,
+    }
+  },
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(

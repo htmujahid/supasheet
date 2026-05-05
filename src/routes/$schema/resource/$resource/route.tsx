@@ -2,7 +2,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router"
 
 import z from "zod"
 
-import { ResourceFormSheetProvider } from "#/components/resource/resource-form-sheet-provider"
+import { ResourceFormSheetProvider } from "#/components/resource/sheet/resource-form-sheet-provider"
 import type {
   DatabaseSchemas,
   DatabaseTables,

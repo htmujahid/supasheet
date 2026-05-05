@@ -5,24 +5,36 @@ import { Link } from "@tanstack/react-router"
 import { Button } from "#/components/ui/button"
 
 import {
-  useNewRecordSheet,
+  useEditRecordSheet,
   useResourceFormSheet,
-} from "../resource-form-sheet-provider"
+} from "./resource-form-sheet-provider"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
 type Props = {
+  pk: Record<string, unknown>
+  primaryKeyNames: string[]
   size?: ButtonProps["size"]
   variant?: ButtonProps["variant"]
   className?: string
   stopPropagation?: boolean
   children: ReactNode
+  // Optional overrides — when set, the trigger targets this schema/resource
+  // instead of the route-level default (e.g. foreign-table rows).
   schema?: string
   resource?: string
   redirect?: string
 }
 
-export function NewRecordTrigger({
+function encodePkSplat(pk: Record<string, unknown>, primaryKeyNames: string[]) {
+  return primaryKeyNames
+    .map((name) => encodeURIComponent(String(pk[name])))
+    .join("/")
+}
+
+export function EditRecordTrigger({
+  pk,
+  primaryKeyNames,
   size,
   variant,
   className,
@@ -33,7 +45,7 @@ export function NewRecordTrigger({
   redirect,
 }: Props) {
   const ctx = useResourceFormSheet()
-  const { inlineForm, open } = useNewRecordSheet(
+  const { inlineForm, open } = useEditRecordSheet(
     schemaOverride,
     resourceOverride
   )
@@ -49,13 +61,15 @@ export function NewRecordTrigger({
         className={className}
         onClick={(e: MouseEvent) => {
           if (stopPropagation) e.stopPropagation()
-          open()
+          open(pk)
         }}
       >
         {children}
       </Button>
     )
   }
+
+  const splat = encodePkSplat(pk, primaryKeyNames)
 
   return (
     <Button
@@ -65,8 +79,8 @@ export function NewRecordTrigger({
       nativeButton={false}
       render={
         <Link
-          to="/$schema/resource/$resource/new"
-          params={{ schema, resource } as never}
+          to="/$schema/resource/$resource/update/$"
+          params={{ schema, resource, _splat: splat } as never}
           search={redirect ? { redirect } : undefined}
           onClick={(e) => {
             if (stopPropagation) e.stopPropagation()

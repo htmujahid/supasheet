@@ -20,7 +20,7 @@ import type {
   TCalendarView,
 } from "#/components/resource/resource-calendar"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/triggers/new-record-trigger"
+import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import {
   Empty,

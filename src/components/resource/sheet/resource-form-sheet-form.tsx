@@ -1,41 +1,23 @@
-import { Suspense } from "react"
-
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
 import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "#/components/ui/sheet"
-import { Skeleton } from "#/components/ui/skeleton"
+import { SheetFooter } from "#/components/ui/sheet"
 import type {
   ColumnSchema,
   PrimaryKey,
   TableSchema,
 } from "#/lib/database-meta.types"
-import { formatTitle } from "#/lib/format"
 import {
-  columnsSchemaQueryOptions,
   insertResourceMutationOptions,
-  singleResourceDataQueryOptions,
-  tableSchemaQueryOptions,
   updateResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 
-import { ResourceFormField } from "./fields/resource-form-field"
-import { useAppForm } from "./form-hook"
+import { ResourceFormField } from "../fields/resource-form-field"
+import { useAppForm } from "../form-hook"
 import {
   buildCreatePayload,
   buildUpdatePayload,
@@ -43,162 +25,23 @@ import {
   getUpdateInitialValue,
   isSkippedForCreate,
   isSkippedForUpdate,
-} from "./resource-form-utils"
+} from "../resource-form-utils"
 
 type Mode = "create" | "update"
 
-type Props =
-  | {
-      mode: "create"
-      schema: string
-      resource: string
-      open: boolean
-      onOpenChange: (open: boolean) => void
-    }
-  | {
-      mode: "update"
-      schema: string
-      resource: string
-      pk: Record<string, unknown>
-      open: boolean
-      onOpenChange: (open: boolean) => void
-    }
-
-export function ResourceFormSheet(props: Props) {
-  const { mode, schema, resource, open, onOpenChange } = props
-
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="flex h-full w-full flex-col gap-0 sm:max-w-lg!"
-      >
-        <SheetHeader className="border-b">
-          <SheetTitle>
-            {mode === "create" ? "New record" : "Edit record"}
-          </SheetTitle>
-          <SheetDescription>{formatTitle(resource)}</SheetDescription>
-        </SheetHeader>
-        <Suspense fallback={<SheetBodySkeleton />}>
-          {mode === "create" ? (
-            <CreateBody
-              schema={schema}
-              resource={resource}
-              onClose={() => onOpenChange(false)}
-            />
-          ) : (
-            <UpdateBody
-              schema={schema}
-              resource={resource}
-              pk={props.pk}
-              onClose={() => onOpenChange(false)}
-            />
-          )}
-        </Suspense>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-function SheetBodySkeleton() {
-  return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="space-y-1.5">
-          <Skeleton className="h-4 w-28" />
-          <Skeleton className="h-9 w-full" />
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function CreateBody({
-  schema,
-  resource,
-  onClose,
-}: {
-  schema: string
-  resource: string
-  onClose: () => void
-}) {
-  const { data: tableSchema } = useSuspenseQuery(
-    tableSchemaQueryOptions(schema as never, resource as never)
-  )
-  const { data: columnsSchema } = useSuspenseQuery(
-    columnsSchemaQueryOptions(schema as never, resource as never)
-  )
-
-  if (!tableSchema || !columnsSchema?.length) {
-    return (
-      <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
-        Schema unavailable.
-      </div>
-    )
-  }
-
-  return (
-    <FormBody
-      mode="create"
-      tableSchema={tableSchema as TableSchema}
-      columnsSchema={columnsSchema as ColumnSchema[]}
-      record={null}
-      onClose={onClose}
-    />
-  )
-}
-
-function UpdateBody({
-  schema,
-  resource,
-  pk,
-  onClose,
-}: {
-  schema: string
-  resource: string
-  pk: Record<string, unknown>
-  onClose: () => void
-}) {
-  const { data: tableSchema } = useSuspenseQuery(
-    tableSchemaQueryOptions(schema as never, resource as never)
-  )
-  const { data: columnsSchema } = useSuspenseQuery(
-    columnsSchemaQueryOptions(schema as never, resource as never)
-  )
-  const { data: record } = useSuspenseQuery(
-    singleResourceDataQueryOptions(schema as never, resource as never, pk)
-  )
-
-  if (!tableSchema || !columnsSchema?.length || !record) {
-    return (
-      <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
-        Record unavailable.
-      </div>
-    )
-  }
-
-  return (
-    <FormBody
-      mode="update"
-      tableSchema={tableSchema as TableSchema}
-      columnsSchema={columnsSchema as ColumnSchema[]}
-      record={record}
-      onClose={onClose}
-    />
-  )
-}
-
-function FormBody({
+export function ResourceFormSheetForm({
   mode,
   tableSchema,
   columnsSchema,
   record,
+  defaults,
   onClose,
 }: {
   mode: Mode
   tableSchema: TableSchema
   columnsSchema: ColumnSchema[]
   record: Record<string, unknown> | null
+  defaults?: Record<string, string>
   onClose: () => void
 }) {
   const queryClient = useQueryClient()
@@ -222,12 +65,17 @@ function FormBody({
       : []
 
   const defaultValues = Object.fromEntries(
-    writableCols.map((col) => [
-      col.name ?? col.id,
-      mode === "create"
-        ? getCreateInitialValue(col)
-        : getUpdateInitialValue(col, record ?? {}),
-    ])
+    writableCols.map((col) => {
+      const key = col.name ?? col.id
+      if (mode === "create") {
+        const override = defaults?.[key]
+        return [
+          key,
+          override !== undefined ? override : getCreateInitialValue(col),
+        ]
+      }
+      return [key, getUpdateInitialValue(col, record ?? {})]
+    })
   )
 
   const insertMutation = useMutation(

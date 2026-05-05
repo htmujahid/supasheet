@@ -33,7 +33,7 @@ export function ResourceNewForm({
 
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { redirect } = routeApi.useSearch()
+  const { redirect, defaults } = routeApi.useSearch()
   const safeRedirect =
     redirect?.startsWith("/") && !redirect.startsWith("//")
       ? redirect
@@ -42,7 +42,14 @@ export function ResourceNewForm({
   const writableCols = columnsSchema.filter((col) => !isSkippedForCreate(col))
 
   const defaultValues = Object.fromEntries(
-    writableCols.map((col) => [col.name ?? col.id, getCreateInitialValue(col)])
+    writableCols.map((col) => {
+      const key = col.name ?? col.id
+      const override = defaults?.[key]
+      return [
+        key,
+        override !== undefined ? override : getCreateInitialValue(col),
+      ]
+    })
   )
 
   const { mutateAsync: insertRow } = useMutation(
