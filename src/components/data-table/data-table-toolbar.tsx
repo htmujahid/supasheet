@@ -28,6 +28,7 @@ interface DataTableToolbarProps<TData> {
   exportFilename?: string
   excludeColumns?: (keyof TData | "select" | "actions")[]
   newRecordUrl?: string
+  hideColumnVisibility?: boolean
 }
 
 export function DataTableToolbar<TData>({
@@ -36,6 +37,7 @@ export function DataTableToolbar<TData>({
   exportFilename,
   excludeColumns,
   newRecordUrl,
+  hideColumnVisibility,
 }: DataTableToolbarProps<TData>) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const selectedRows = table.getSelectedRowModel().rows
@@ -89,7 +91,7 @@ export function DataTableToolbar<TData>({
               Export
             </Button>
           )}
-          <DataTableColumnVisibility table={table} />
+          {!hideColumnVisibility && <DataTableColumnVisibility table={table} />}
         </div>
       </div>
 

@@ -55,9 +55,11 @@ import { Route as SchemaReportReportIndexRouteImport } from './routes/$schema/re
 import { Route as CoreUsersUserIdSecurityRouteImport } from './routes/core/users/$userId/security'
 import { Route as CoreUsersUserIdEditRouteImport } from './routes/core/users/$userId/edit'
 import { Route as CoreUsersUserIdDangerRouteImport } from './routes/core/users/$userId/danger'
+import { Route as SchemaResourceResourceTableRouteImport } from './routes/$schema/resource/$resource/table'
 import { Route as SchemaResourceResourceNewRouteImport } from './routes/$schema/resource/$resource/new'
 import { Route as SchemaResourceResourceGridRouteImport } from './routes/$schema/resource/$resource/grid'
 import { Route as SchemaResourceResourceUpdateSplatRouteImport } from './routes/$schema/resource/$resource/update/$'
+import { Route as SchemaResourceResourceListListIdRouteImport } from './routes/$schema/resource/$resource/list/$listId'
 import { Route as SchemaResourceResourceKanbanKanbanIdRouteImport } from './routes/$schema/resource/$resource/kanban/$kanbanId'
 import { Route as SchemaResourceResourceGalleryGalleryIdRouteImport } from './routes/$schema/resource/$resource/gallery/$galleryId'
 import { Route as SchemaResourceResourceDetailSplatRouteImport } from './routes/$schema/resource/$resource/detail/$'
@@ -298,6 +300,12 @@ const CoreUsersUserIdDangerRoute = CoreUsersUserIdDangerRouteImport.update({
   path: '/danger',
   getParentRoute: () => CoreUsersUserIdRouteRoute,
 } as any)
+const SchemaResourceResourceTableRoute =
+  SchemaResourceResourceTableRouteImport.update({
+    id: '/table',
+    path: '/table',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
 const SchemaResourceResourceNewRoute =
   SchemaResourceResourceNewRouteImport.update({
     id: '/new',
@@ -314,6 +322,12 @@ const SchemaResourceResourceUpdateSplatRoute =
   SchemaResourceResourceUpdateSplatRouteImport.update({
     id: '/update/$',
     path: '/update/$',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
+const SchemaResourceResourceListListIdRoute =
+  SchemaResourceResourceListListIdRouteImport.update({
+    id: '/list/$listId',
+    path: '/list/$listId',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
 const SchemaResourceResourceKanbanKanbanIdRoute =
@@ -383,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
+  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -394,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
   '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRoute
+  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRoute
   '/$schema/resource/$resource/update/$': typeof SchemaResourceResourceUpdateSplatRoute
 }
 export interface FileRoutesByTo {
@@ -431,6 +447,7 @@ export interface FileRoutesByTo {
   '/storage/$bucketId': typeof StorageBucketIdIndexRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
+  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -442,6 +459,7 @@ export interface FileRoutesByTo {
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
   '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRoute
+  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRoute
   '/$schema/resource/$resource/update/$': typeof SchemaResourceResourceUpdateSplatRoute
 }
 export interface FileRoutesById {
@@ -487,6 +505,7 @@ export interface FileRoutesById {
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
+  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -498,6 +517,7 @@ export interface FileRoutesById {
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
   '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRoute
+  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRoute
   '/$schema/resource/$resource/update/$': typeof SchemaResourceResourceUpdateSplatRoute
 }
 export interface FileRouteTypes {
@@ -544,6 +564,7 @@ export interface FileRouteTypes {
     | '/storage/$bucketId/'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
+    | '/$schema/resource/$resource/table'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
     | '/core/users/$userId/security'
@@ -555,6 +576,7 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/detail/$'
     | '/$schema/resource/$resource/gallery/$galleryId'
     | '/$schema/resource/$resource/kanban/$kanbanId'
+    | '/$schema/resource/$resource/list/$listId'
     | '/$schema/resource/$resource/update/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -592,6 +614,7 @@ export interface FileRouteTypes {
     | '/storage/$bucketId'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
+    | '/$schema/resource/$resource/table'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
     | '/core/users/$userId/security'
@@ -603,6 +626,7 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/detail/$'
     | '/$schema/resource/$resource/gallery/$galleryId'
     | '/$schema/resource/$resource/kanban/$kanbanId'
+    | '/$schema/resource/$resource/list/$listId'
     | '/$schema/resource/$resource/update/$'
   id:
     | '__root__'
@@ -647,6 +671,7 @@ export interface FileRouteTypes {
     | '/storage/$bucketId/'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
+    | '/$schema/resource/$resource/table'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
     | '/core/users/$userId/security'
@@ -658,6 +683,7 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/detail/$'
     | '/$schema/resource/$resource/gallery/$galleryId'
     | '/$schema/resource/$resource/kanban/$kanbanId'
+    | '/$schema/resource/$resource/list/$listId'
     | '/$schema/resource/$resource/update/$'
   fileRoutesById: FileRoutesById
 }
@@ -996,6 +1022,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoreUsersUserIdDangerRouteImport
       parentRoute: typeof CoreUsersUserIdRouteRoute
     }
+    '/$schema/resource/$resource/table': {
+      id: '/$schema/resource/$resource/table'
+      path: '/table'
+      fullPath: '/$schema/resource/$resource/table'
+      preLoaderRoute: typeof SchemaResourceResourceTableRouteImport
+      parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
     '/$schema/resource/$resource/new': {
       id: '/$schema/resource/$resource/new'
       path: '/new'
@@ -1015,6 +1048,13 @@ declare module '@tanstack/react-router' {
       path: '/update/$'
       fullPath: '/$schema/resource/$resource/update/$'
       preLoaderRoute: typeof SchemaResourceResourceUpdateSplatRouteImport
+      parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
+    '/$schema/resource/$resource/list/$listId': {
+      id: '/$schema/resource/$resource/list/$listId'
+      path: '/list/$listId'
+      fullPath: '/$schema/resource/$resource/list/$listId'
+      preLoaderRoute: typeof SchemaResourceResourceListListIdRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
     '/$schema/resource/$resource/kanban/$kanbanId': {
@@ -1051,11 +1091,13 @@ declare module '@tanstack/react-router' {
 interface SchemaResourceResourceRouteRouteChildren {
   SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRoute
   SchemaResourceResourceNewRoute: typeof SchemaResourceResourceNewRoute
+  SchemaResourceResourceTableRoute: typeof SchemaResourceResourceTableRoute
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
   SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
   SchemaResourceResourceDetailSplatRoute: typeof SchemaResourceResourceDetailSplatRoute
   SchemaResourceResourceGalleryGalleryIdRoute: typeof SchemaResourceResourceGalleryGalleryIdRoute
   SchemaResourceResourceKanbanKanbanIdRoute: typeof SchemaResourceResourceKanbanKanbanIdRoute
+  SchemaResourceResourceListListIdRoute: typeof SchemaResourceResourceListListIdRoute
   SchemaResourceResourceUpdateSplatRoute: typeof SchemaResourceResourceUpdateSplatRoute
 }
 
@@ -1063,6 +1105,7 @@ const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRoute
   {
     SchemaResourceResourceGridRoute: SchemaResourceResourceGridRoute,
     SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
+    SchemaResourceResourceTableRoute: SchemaResourceResourceTableRoute,
     SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
     SchemaResourceResourceCalendarCalendarIdRoute:
       SchemaResourceResourceCalendarCalendarIdRoute,
@@ -1072,6 +1115,8 @@ const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRoute
       SchemaResourceResourceGalleryGalleryIdRoute,
     SchemaResourceResourceKanbanKanbanIdRoute:
       SchemaResourceResourceKanbanKanbanIdRoute,
+    SchemaResourceResourceListListIdRoute:
+      SchemaResourceResourceListListIdRoute,
     SchemaResourceResourceUpdateSplatRoute:
       SchemaResourceResourceUpdateSplatRoute,
   }

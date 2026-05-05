@@ -74,14 +74,7 @@ export function NavResources({
                   }
                 />
               )
-              const primaryItemType = item.meta?.primaryItem
-                ? item.meta.items?.find((i) => i.id === item.meta?.primaryItem)
-                    ?.type
-                : null
-              const url =
-                item.meta?.primaryItem && primaryItemType
-                  ? `/${schema}/${item.id}/${primaryItemType}/${item.meta.primaryItem}`
-                  : `/${schema}/${item.id}`
+              const url = `/${schema}/${item.id}`
               return (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton

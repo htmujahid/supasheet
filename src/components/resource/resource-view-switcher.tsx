@@ -5,6 +5,7 @@ import {
   Grid3X3Icon,
   ImageIcon,
   LayoutGridIcon,
+  ListIcon,
   SquareKanbanIcon,
   TableIcon,
 } from "lucide-react"
@@ -41,6 +42,7 @@ function getMetaItemIcon(item: MetaItem) {
   if (item.type === "kanban") return <SquareKanbanIcon className="size-3" />
   if (item.type === "calendar") return <Grid3X3Icon className="size-3" />
   if (item.type === "gallery") return <ImageIcon className="size-3" />
+  if (item.type === "list") return <ListIcon className="size-3" />
   return null
 }
 
@@ -67,7 +69,7 @@ export function ResourceViewSwitcher<S extends DatabaseSchemas>({
   function handleViewChange(value: string) {
     if (value === "table") {
       navigate({
-        to: "/$schema/resource/$resource",
+        to: "/$schema/resource/$resource/table",
         params: { schema, resource },
       })
       return
@@ -98,6 +100,11 @@ export function ResourceViewSwitcher<S extends DatabaseSchemas>({
         to: "/$schema/resource/$resource/gallery/$galleryId",
         params: () => ({ schema, resource, galleryId: item.id }),
       })
+    } else if (item.type === "list") {
+      navigate({
+        to: "/$schema/resource/$resource/list/$listId",
+        params: () => ({ schema, resource, listId: item.id }),
+      })
     }
   }
 
@@ -108,7 +115,7 @@ export function ResourceViewSwitcher<S extends DatabaseSchemas>({
         <span className="truncate font-medium">{currentLabel}</span>
         <ChevronDownIcon className="size-3.5 opacity-50" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48 rounded-lg">
+      <DropdownMenuContent align="start" className="w-fit rounded-lg">
         <DropdownMenuGroup>
           <DropdownMenuLabel>Views</DropdownMenuLabel>
         </DropdownMenuGroup>

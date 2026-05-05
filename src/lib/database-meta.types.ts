@@ -102,7 +102,7 @@ export type TableMetadata = {
     name: string
     query?: { [key: string]: unknown }
     [key: string]: unknown
-    type: "calendar" | "kanban" | "gallery"
+    type: "calendar" | "kanban" | "gallery" | "list"
   }[]
   sections?: FieldSection[]
 }
@@ -116,7 +116,7 @@ export type ViewMetadata = {
     name: string
     query?: { [key: string]: unknown }
     [key: string]: unknown
-    type: "calendar" | "kanban" | "gallery"
+    type: "calendar" | "kanban" | "gallery" | "list"
   }[]
 }
 

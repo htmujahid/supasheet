@@ -103,6 +103,10 @@ comment on table blog.authors is
         "sort": [{"id": "display_name", "desc": false}],
         "join": [{"table": "users", "on": "user_id", "columns": ["name", "email"]}]
     },
+    "primaryItem": "list",
+    "items": [
+        {"id": "list", "name": "Authors List", "type": "list", "title": "display_name", "description": "user.email", "field1": "language", "field2": "country"}
+    ],
     "sections": [
         {"id": "identity", "title": "Identity", "fields": ["display_name", "avatar", "bio"]},
         {"id": "locale", "title": "Locale", "fields": ["language", "country"]}
