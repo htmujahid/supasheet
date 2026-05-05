@@ -2,8 +2,8 @@
   <h1 align="center">
   Supasheet
   </h1>
-  <h3 align="center"><strong>Complete CMS Platform built on Supabase</strong></h3>
-  <p>An opinionated, full-fledged open-source CMS with everything included. Go beyond basic admin panels with built-in authentication, dashboards, charts, reports, file management, and comprehensive data tools.</p>
+  <h3 align="center"><strong>Run your internal operations on Supabase</strong></h3>
+  <p>Supasheet turns any Supabase project into a complete internal operations platform. Auto-generated CRUD, multiple data views (grid, kanban, calendar, gallery, list), built-in auth with MFA, fine-grained RBAC, configurable dashboards, charts, file storage, and audit logs — all in one open-source React app.</p>
   <p>Try out Supasheet demo at <a href="https://0.supasheet.app">0.supasheet.app</a></p>
 </div>
 
@@ -20,7 +20,7 @@
 - **User Management** — Create, invite, edit, and delete users via Supabase Admin API
 - **Authorization (RBAC)** — Role-based access control with user roles and role permissions
 - **Resource (CRUD)** — Auto-generated CRUD views for any Supabase table
-- **Data Views** — Sheet (table), Kanban, Calendar, and Gallery views per resource
+- **Data Views** — Grid, Table, Kanban, Calendar, Gallery, and List views per resource
 - **Dashboard** — Configurable dashboard widgets
 - **Analytics & Charts** — Area, bar, line, pie, radar chart types
 - **Reports** — Tabular reports built from Supabase data
