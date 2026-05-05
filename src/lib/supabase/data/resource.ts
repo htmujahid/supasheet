@@ -16,7 +16,8 @@ import type {
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
 
-const joinAlias = (on: string) => (on.endsWith("_id") ? on.slice(0, -3) : on)
+export const joinAlias = (on: string) =>
+  on.endsWith("_id") ? on.slice(0, -3) : on
 
 export const schemasQueryOptions = queryOptions({
   queryKey: ["supasheet", "schema", "schemas"],

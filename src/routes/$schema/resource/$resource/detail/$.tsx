@@ -50,6 +50,7 @@ import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   columnsSchemaQueryOptions,
+  joinAlias,
   relatedTablesSchemaQueryOptions,
   singleResourceDataQueryOptions,
   tableSchemaQueryOptions,
@@ -132,22 +133,15 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
           rel.source_schema === schema && rel.source_table_name === resource
       )
       if (oneToOneAsSourceList.length > 0) {
-        const useAlias = oneToOneAsSourceList.length > 1
         for (const rel of oneToOneAsSourceList) {
-          const alias = useAlias
-            ? rel.source_column_name.replace(/_id$/, "") ||
-              rel.target_table_name
-            : rel.target_table_name
           joins.push({
-            table: useAlias
-              ? `${alias}:${rel.target_table_name}`
-              : rel.target_table_name,
+            table: rel.target_table_name,
             on: rel.source_column_name,
             columns: ["*"],
           })
           oneToOneRelationships.push({
             ...table,
-            __embedKey: alias,
+            __embedKey: joinAlias(rel.source_column_name),
             __fkColumn: rel.source_column_name,
           })
         }
@@ -175,7 +169,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
         })
         oneToOneRelationships.push({
           ...table,
-          __embedKey: oneToOneAsTarget.source_table_name,
+          __embedKey: joinAlias(oneToOneAsTarget.source_column_name),
           __fkColumn: oneToOneAsTarget.source_column_name,
         })
         continue
