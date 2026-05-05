@@ -1,12 +1,10 @@
 -- Blog Schema Seed Data
--- Hardcoded user IDs from supabase/seed.sql:
+-- Hardcoded user ID from supabase/seed.sql:
 --   b73eb03e-fb7a-424d-84ff-18e2791ce0b4  user@supasheet.dev
---   b73eb03e-fb7a-424d-84ff-18e2791ce0b1  user1@supasheet.dev
 
 DO $$
 DECLARE
     user_1_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b4';
-    user_2_id UUID := 'b73eb03e-fb7a-424d-84ff-18e2791ce0b1';
 
     author_1_id UUID;
     author_2_id UUID;
@@ -44,17 +42,111 @@ BEGIN
     RETURNING id INTO author_1_id;
 
     INSERT INTO blog.authors (id, user_id, display_name, bio, language, country, created_at, updated_at) VALUES
-    (gen_random_uuid(), user_2_id, 'Jane Smith',
+    (gen_random_uuid(), user_1_id, 'Jane Smith',
      'Travel writer and home cook documenting recipes, routines, and the occasional misadventure abroad.',
-     'en', 'US', current_timestamp - interval '120 days', current_timestamp)
+     'en', 'GB', current_timestamp - interval '120 days', current_timestamp)
     RETURNING id INTO author_2_id;
+
+    ----------------------------------------------------------------
+    -- Additional authors — all bound to user_1_id, each with a unique
+    -- (language, country) pair so the (user_id, language, country)
+    -- uniqueness constraint is satisfied.
+    ----------------------------------------------------------------
+    INSERT INTO blog.authors (id, user_id, display_name, bio, language, country, created_at, updated_at) VALUES
+    (gen_random_uuid(), user_1_id, 'John Doe (AU)',
+     'Australian edition — engineering notes, with a Southern Hemisphere calendar.',
+     'en', 'AU', current_timestamp - interval '170 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'John Doe (CA)',
+     'Canadian edition — engineering notes from a remote-first team.',
+     'en', 'CA', current_timestamp - interval '165 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'John Doe (IE)',
+     'Irish edition — engineering notes for the Dublin tech scene.',
+     'en', 'IE', current_timestamp - interval '160 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Jean Dupont',
+     'Édition française : systèmes distribués, bases de données et qualité produit.',
+     'fr', 'FR', current_timestamp - interval '155 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Jeanne Tremblay',
+     'Édition franco-canadienne : ingénierie logicielle et culture d''équipe.',
+     'fr', 'CA', current_timestamp - interval '150 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Julien Lambert',
+     'Édition belge francophone : architecture logicielle et bonnes pratiques.',
+     'fr', 'BE', current_timestamp - interval '145 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Johann Schmidt',
+     'Deutsche Ausgabe rund um verteilte Systeme, Datenbanken und Engineering-Kultur.',
+     'de', 'DE', current_timestamp - interval '140 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Stefan Müller',
+     'Österreichische Ausgabe: Engineering-Workflows und Team-Praxis.',
+     'de', 'AT', current_timestamp - interval '135 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Markus Weber',
+     'Schweizer Ausgabe: präzise Notizen zu Datenbanken und Systemdesign.',
+     'de', 'CH', current_timestamp - interval '130 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Juan García',
+     'Edición en español: sistemas distribuidos, bases de datos y detalles de producto.',
+     'es', 'ES', current_timestamp - interval '125 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Juana Martínez',
+     'Edición mexicana: ingeniería de software y prácticas de equipo.',
+     'es', 'MX', current_timestamp - interval '120 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Diego Fernández',
+     'Edición argentina: notas sobre arquitectura y trabajo remoto.',
+     'es', 'AR', current_timestamp - interval '115 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Giovanni Rossi',
+     'Edizione italiana: sistemi distribuiti e cultura ingegneristica.',
+     'it', 'IT', current_timestamp - interval '110 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'João Silva',
+     'Edição em português do Brasil — engenharia de software e boas práticas.',
+     'pt', 'BR', current_timestamp - interval '105 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Tiago Sousa',
+     'Edição em português de Portugal — arquitetura de sistemas e produto.',
+     'pt', 'PT', current_timestamp - interval '100 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Janneke de Vries',
+     'Nederlandse editie — software-engineering en team-cultuur.',
+     'nl', 'NL', current_timestamp - interval '95 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Saki Tanaka',
+     '日本語版：分散システム、データベース、そして日々のエンジニアリングノート。',
+     'ja', 'JP', current_timestamp - interval '90 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, 'Jin-ah Kim',
+     '한국어판: 분산 시스템과 엔지니어링 문화에 대한 노트.',
+     'ko', 'KR', current_timestamp - interval '85 days', current_timestamp),
+    (gen_random_uuid(), user_1_id, '李伟',
+     '中文版：分布式系统、数据库和工程文化的观察笔记。',
+     'zh', 'CN', current_timestamp - interval '80 days', current_timestamp);
 
     ----------------------------------------------------------------
     -- Social links
     ----------------------------------------------------------------
     INSERT INTO blog.social_links (author_id, website, github, twitter, linkedin) VALUES
-    (author_1_id, 'https://johndoe.dev',     'https://github.com/johndoe',   'https://twitter.com/johndoe',   'https://linkedin.com/in/johndoe'),
-    (author_2_id, 'https://janesmith.blog',  'https://github.com/janesmith', 'https://twitter.com/janesmith', 'https://linkedin.com/in/janesmith');
+    (author_1_id, 'https://johndoe.dev',    'https://github.com/johndoe', 'https://twitter.com/johndoe',   'https://linkedin.com/in/johndoe'),
+    (author_2_id, 'https://janesmith.blog', 'https://github.com/janesmith','https://twitter.com/janesmith', 'https://linkedin.com/in/janesmith');
+
+    -- Social links for the additional locale-variant authors (looked up by locale).
+    INSERT INTO blog.social_links (author_id, website, github, twitter, linkedin)
+    SELECT a.id, s.website, s.github, s.twitter, s.linkedin
+    FROM blog.authors a
+    JOIN (VALUES
+        ('en', 'AU', 'https://johndoe.com.au',       'https://github.com/johndoe', 'https://twitter.com/johndoe_au', 'https://linkedin.com/in/johndoe'),
+        ('en', 'CA', 'https://johndoe.ca',           'https://github.com/johndoe', 'https://twitter.com/johndoe_ca', NULL),
+        ('en', 'IE', 'https://johndoe.ie',           'https://github.com/johndoe', NULL,                              'https://linkedin.com/in/johndoe'),
+        ('fr', 'FR', 'https://jeandupont.fr',        NULL,                          'https://twitter.com/jeandupont',  NULL),
+        ('fr', 'CA', 'https://jeannetremblay.ca',    NULL,                          'https://twitter.com/jeannetremblay', NULL),
+        ('fr', 'BE', 'https://julienlambert.be',     NULL,                          NULL,                              'https://linkedin.com/in/julienlambert'),
+        ('de', 'DE', 'https://johannschmidt.de',     NULL,                          NULL,                              'https://linkedin.com/in/johannschmidt'),
+        ('de', 'AT', 'https://stefanmueller.at',     NULL,                          NULL,                              'https://linkedin.com/in/stefanmueller'),
+        ('de', 'CH', 'https://markusweber.ch',       NULL,                          'https://twitter.com/markusweber',  NULL),
+        ('es', 'ES', 'https://juangarcia.es',        NULL,                          'https://twitter.com/juangarcia',   NULL),
+        ('es', 'MX', 'https://juanamartinez.mx',     NULL,                          'https://twitter.com/juanamartinez',NULL),
+        ('es', 'AR', 'https://diegofernandez.ar',    NULL,                          'https://twitter.com/diegofernandez', NULL),
+        ('it', 'IT', 'https://giovannirossi.it',     NULL,                          NULL,                              'https://linkedin.com/in/giovannirossi'),
+        ('pt', 'BR', 'https://joaosilva.com.br',     NULL,                          'https://twitter.com/joaosilva',    'https://linkedin.com/in/joaosilva'),
+        ('pt', 'PT', 'https://tiagosousa.pt',        NULL,                          'https://twitter.com/tiagosousa',   NULL),
+        ('nl', 'NL', 'https://jannekedevries.nl',    NULL,                          'https://twitter.com/jannekedv',    NULL),
+        ('ja', 'JP', 'https://sakitanaka.jp',        NULL,                          'https://twitter.com/sakitanaka',   NULL),
+        ('ko', 'KR', 'https://jinahkim.kr',          NULL,                          NULL,                              'https://linkedin.com/in/jinahkim'),
+        ('zh', 'CN', 'https://liwei.cn',             NULL,                          NULL,                              NULL)
+    ) AS s(lang, ctry, website, github, twitter, linkedin)
+        ON s.lang = a.language AND s.ctry = a.country
+    WHERE a.user_id = user_1_id
+      AND NOT (a.language = 'en' AND a.country = 'US')
+      AND NOT (a.language = 'en' AND a.country = 'GB');
 
     ----------------------------------------------------------------
     -- Categories (global = user_id NULL; tutorials owned by user_1)
@@ -353,7 +445,7 @@ BEGIN
     -- Comments (mix of approved + pending; one threaded reply)
     ----------------------------------------------------------------
     INSERT INTO blog.comments (id, post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
-    (gen_random_uuid(), post_1_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+    (gen_random_uuid(), post_1_id, user_1_id, NULL, 'Jane Smith', 'user@supasheet.dev',
      'Great primer! The expand-and-contract analogy clicked for me.',
      'approved',
      current_date - interval '40 days', current_date - interval '40 days')
@@ -374,23 +466,23 @@ BEGIN
     RETURNING id INTO comment_3_id;
 
     INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
-    (post_3_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+    (post_3_id, user_1_id, NULL, 'Jane Smith', 'user@supasheet.dev',
      'Tried the recipe over the weekend with 75% hydration — slightly wetter crumb, still excellent.',
      'approved',
      current_date - interval '15 days', current_date - interval '15 days');
 
     -- pending (awaits moderation)
     INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
-    (post_4_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+    (post_4_id, user_1_id, NULL, 'Jane Smith', 'user@supasheet.dev',
      'Would love a follow-up on auth middleware patterns — JWT vs session cookies for an Express API.',
      'pending',
      current_date - interval '4 days', current_date - interval '4 days');
 
     INSERT INTO blog.comments (post_id, user_id, parent_id, author_name, author_email, content, status, created_at, updated_at) VALUES
-    (post_7_id, user_2_id, NULL, 'Jane Smith', 'user1@supasheet.dev',
+    (post_7_id, user_1_id, NULL, 'Jane Smith', 'user@supasheet.dev',
      'The retail analytics example matches what we''re seeing on the ground. Bandwidth costs are the hidden tax.',
      'pending',
      current_date - interval '2 days', current_date - interval '2 days');
 
-    RAISE NOTICE 'Blog seed inserted: 2 authors, 6 categories, 12 posts (8 published / 2 drafts / 1 scheduled / 1 archived), 6 comments';
+    RAISE NOTICE 'Blog seed inserted: 21 authors, 6 categories, 12 posts (8 published / 2 drafts / 1 scheduled / 1 archived), 6 comments';
 END $$;

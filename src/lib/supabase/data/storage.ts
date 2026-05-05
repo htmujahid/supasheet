@@ -6,6 +6,13 @@ import { supabase } from "#/lib/supabase/client"
 
 export type { FileObject }
 
+// Supabase Storage allows: word chars, /, !, -, ., *, ', (, ), space, &, $, @, =, ;, :, +, ,, ?
+// macOS screenshot filenames use U+202F (narrow no-break space) before AM/PM — NFKC
+// normalizes that to a regular space; anything else outside the allowed set becomes "_".
+export function sanitizeStorageKey(key: string): string {
+  return key.normalize("NFKC").replace(/[^\w!\-.*'() &$@=;:+,?/]/g, "_")
+}
+
 export const storageBucketsQueryOptions = queryOptions({
   queryKey: ["storage", "buckets"],
   queryFn: async () => {

@@ -43,7 +43,10 @@ import {
 } from "#/components/ui/table"
 import { formatBytes, useFileUpload } from "#/hooks/use-file-upload"
 import type { FileWithPreview } from "#/hooks/use-file-upload"
-import { storageUploadMutationOptions } from "#/lib/supabase/data/storage"
+import {
+  sanitizeStorageKey,
+  storageUploadMutationOptions,
+} from "#/lib/supabase/data/storage"
 import { cn } from "#/lib/utils"
 
 interface UploadDialogProps {
@@ -114,7 +117,8 @@ export function UploadDialog({ bucketId, path, onSuccess }: UploadDialogProps) {
       await Promise.all(
         files.map(({ file }) => {
           if (!(file instanceof File)) return Promise.resolve()
-          const filePath = folderPath ? `${folderPath}/${file.name}` : file.name
+          const safeName = sanitizeStorageKey(file.name)
+          const filePath = folderPath ? `${folderPath}/${safeName}` : safeName
           return upload({ bucketId, path: filePath, file, upsert: true })
         })
       )
