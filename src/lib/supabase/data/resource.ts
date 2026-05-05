@@ -16,6 +16,8 @@ import type {
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
 
+const joinAlias = (on: string) => (on.endsWith("_id") ? on.slice(0, -3) : on)
+
 export const schemasQueryOptions = queryOptions({
   queryKey: ["supasheet", "schema", "schemas"],
   queryFn: async () => {
@@ -171,7 +173,7 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
     queryFn: async () => {
       const joins =
         defaultQuery?.join?.map(
-          (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`
+          (j) => `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       let query = supabase
@@ -263,7 +265,7 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
     queryFn: async () => {
       const joins =
         defaultQuery?.join?.map(
-          (j) => `,${j.table}!${j.on}(${j.columns.join(",")})`
+          (j) => `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       let query = supabase

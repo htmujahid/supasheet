@@ -25,8 +25,7 @@ create table if not exists supasheet.notifications (
     created_at  timestamptz default now() not null
 );
 comment on table supasheet.notifications is '{
-  "label": "Notifications",
-  "icon": "BellIcon"
+  "display": "none"
 }';
 
 create index idx_notifications_type        on supasheet.notifications (type);
@@ -44,8 +43,7 @@ create table if not exists supasheet.user_notifications (
     unique (user_id, notification_id)
 );
 comment on table supasheet.user_notifications is '{
-  "label": "User Notifications",
-  "icon": "InboxIcon"
+  "display": "none"
 }';
 
 create index idx_user_notifications_user_id     on supasheet.user_notifications (user_id);
