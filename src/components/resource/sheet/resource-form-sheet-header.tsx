@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useLocation } from "@tanstack/react-router"
 
 import { ExternalLinkIcon } from "lucide-react"
 
@@ -28,6 +28,8 @@ type Props =
 
 export function ResourceFormSheetHeader(props: Props) {
   const { mode, schema, resource, onClose } = props
+  const location = useLocation()
+  const redirectTo = location.href
 
   return (
     <SheetHeader className="border-b">
@@ -37,7 +39,10 @@ export function ResourceFormSheetHeader(props: Props) {
             to="/$schema/resource/$resource/new"
             params={{ schema, resource } as never}
             search={
-              props.defaults ? ({ defaults: props.defaults } as never) : {}
+              {
+                redirect: redirectTo,
+                ...(props.defaults ? { defaults: props.defaults } : {}),
+              } as never
             }
             onClick={onClose}
             className={buttonVariants({ size: "icon", variant: "ghost" })}
@@ -57,6 +62,7 @@ export function ResourceFormSheetHeader(props: Props) {
                   .join("/"),
               } as never
             }
+            search={{ redirect: redirectTo } as never}
             onClick={onClose}
             className={buttonVariants({ size: "icon", variant: "ghost" })}
             aria-label="Open full page"
