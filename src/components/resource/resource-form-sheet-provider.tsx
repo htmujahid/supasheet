@@ -42,7 +42,11 @@ const ResourceFormSheetContext = createContext<ContextValue | null>(null)
 
 const routeApi = getRouteApi("/$schema/resource/$resource")
 
-export function ResourceFormSheetProvider({ children }: { children: ReactNode }) {
+export function ResourceFormSheetProvider({
+  children,
+}: {
+  children: ReactNode
+}) {
   const { schema: defaultSchema, resource: defaultResource } =
     routeApi.useParams()
   const [state, setState] = useState<SheetState>({ open: false })

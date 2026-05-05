@@ -2,8 +2,8 @@ import { useNavigate } from "@tanstack/react-router"
 
 import type { Row } from "@tanstack/react-table"
 
-import { Checkbox } from "#/components/ui/checkbox"
 import { useEditRecordSheet } from "#/components/resource/resource-form-sheet-provider"
+import { Checkbox } from "#/components/ui/checkbox"
 import type {
   DatabaseSchemas,
   DatabaseTables,
@@ -13,8 +13,8 @@ import type {
 import { buildPkSplat } from "#/lib/fields"
 import { cn } from "#/lib/utils"
 
-import type { ListView } from "./resource-list"
 import { readField } from "./read-field"
+import type { ListView } from "./resource-list"
 
 interface ResourceListRowProps<S extends DatabaseSchemas> {
   row: Row<Record<string, unknown>>

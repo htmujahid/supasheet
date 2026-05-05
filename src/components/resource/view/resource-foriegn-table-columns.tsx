@@ -12,8 +12,8 @@ import { isTableSchema } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
 import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
 
-import { Checkbox } from "#/components/ui/checkbox"
 import { EditRecordTrigger } from "#/components/resource/triggers/edit-record-trigger"
+import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 
 import { ResourceRowCell } from "../resource-row-cell"

@@ -62,7 +62,7 @@ export function ResultTable({
 
   const columns = useMemo(
     () => (rows.length > 0 ? Object.keys(rows[0]) : []),
-    [rows],
+    [rows]
   )
 
   const sortedRows = useMemo(() => {

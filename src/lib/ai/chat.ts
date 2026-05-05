@@ -8,7 +8,7 @@ const PLATFORM_URL = import.meta.env.VITE_SUPASHEET_PLATFORM as
 
 export async function askAI(
   question: string,
-  history: ChatMessage[],
+  history: ChatMessage[]
 ): Promise<AIResponse> {
   if (!PLATFORM_URL) {
     throw new Error("VITE_SUPASHEET_PLATFORM is not configured")

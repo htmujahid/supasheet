@@ -174,7 +174,8 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
     queryFn: async () => {
       const joins =
         defaultQuery?.join?.map(
-          (j) => `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
+          (j) =>
+            `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       let query = supabase
@@ -266,7 +267,8 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
     queryFn: async () => {
       const joins =
         defaultQuery?.join?.map(
-          (j) => `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
+          (j) =>
+            `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       let query = supabase

@@ -1,6 +1,10 @@
 import { Suspense } from "react"
 
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import { toast } from "sonner"
 
@@ -244,11 +248,21 @@ function FormBody({
         } else {
           const data = buildUpdatePayload(value, writableCols)
           const pk = Object.fromEntries(
-            primaryKeys.map((k) => [k.name, (record as Record<string, unknown>)[k.name]])
+            primaryKeys.map((k) => [
+              k.name,
+              (record as Record<string, unknown>)[k.name],
+            ])
           )
           await updateMutation.mutateAsync({ pk, data })
           queryClient.invalidateQueries({
-            queryKey: ["supasheet", "resource-data", schema, resource, "single", pk],
+            queryKey: [
+              "supasheet",
+              "resource-data",
+              schema,
+              resource,
+              "single",
+              pk,
+            ],
           })
           toast.success("Record updated")
         }
@@ -281,7 +295,9 @@ function FormBody({
               <Field key={name}>
                 <FieldLabel>{name}</FieldLabel>
                 <Input
-                  value={String((record as Record<string, unknown>)[name] ?? "")}
+                  value={String(
+                    (record as Record<string, unknown>)[name] ?? ""
+                  )}
                   disabled
                   className="font-mono text-xs text-muted-foreground"
                 />

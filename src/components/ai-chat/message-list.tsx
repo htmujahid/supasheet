@@ -38,7 +38,7 @@ export function MessageList({
             <MessageBubble key={i} content={m.content} />
           ) : (
             <ResultCard key={i} result={m.result} />
-          ),
+          )
         )}
         {pending ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

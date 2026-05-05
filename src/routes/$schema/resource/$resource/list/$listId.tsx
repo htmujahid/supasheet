@@ -144,10 +144,7 @@ export const Route = createFileRoute(
     return (
       <>
         <DefaultHeader
-          breadcrumbs={[
-            { title: formatTitle(resource) },
-            { title: "List" },
-          ]}
+          breadcrumbs={[{ title: formatTitle(resource) }, { title: "List" }]}
         />
         <div className="flex flex-1 flex-col">
           <div className="flex flex-col gap-4 px-4 py-4">
