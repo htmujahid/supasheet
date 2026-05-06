@@ -3,8 +3,8 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { AlertCircleIcon, LayoutTemplateIcon } from "lucide-react"
 
-import { ApplyTemplateDialog } from "#/components/template/apply-template-dialog"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ApplyTemplateDialog } from "#/components/template/apply-template-dialog"
 import { Badge } from "#/components/ui/badge"
 import { Button } from "#/components/ui/button"
 import {

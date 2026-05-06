@@ -43,7 +43,11 @@ export function ApplyTemplateDialog({
     const table = targetTable.trim()
     if (!table) return
     try {
-      const count = await applyTemplate({ schema, templateName, targetTable: table })
+      const count = await applyTemplate({
+        schema,
+        templateName,
+        targetTable: table,
+      })
       await queryClient.invalidateQueries({
         queryKey: ["supasheet", "resource-data", schema, table],
       })
@@ -52,7 +56,9 @@ export function ApplyTemplateDialog({
       )
       setOpen(false)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to apply template")
+      toast.error(
+        err instanceof Error ? err.message : "Failed to apply template"
+      )
     }
   }
 

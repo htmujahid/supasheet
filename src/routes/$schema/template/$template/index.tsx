@@ -18,10 +18,10 @@ import type {
 import { AlertCircleIcon, FileXIcon, LayoutTemplateIcon } from "lucide-react"
 import z from "zod"
 
-import { ApplyTemplateDialog } from "#/components/template/apply-template-dialog"
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ReportTable } from "#/components/report/report-table"
+import { ApplyTemplateDialog } from "#/components/template/apply-template-dialog"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -36,11 +36,11 @@ import type {
   DatabaseViews,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 import {
   templateDataQueryOptions,
   templatesQueryOptions,
 } from "#/lib/supabase/data/template"
-import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/template/$template/")({
   params: z.object({

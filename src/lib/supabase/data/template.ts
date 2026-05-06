@@ -23,11 +23,14 @@ export const templatesQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "templates", schema],
     queryFn: async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase.schema("supasheet") as any).rpc(
+       
+      const { data, error } = (await (supabase.schema("supasheet") as any).rpc(
         "get_templates",
         { p_schema: schema }
-      ) as { data: Array<{ name: string; schema: string; comment: string | null }>; error: unknown }
+      )) as {
+        data: Array<{ name: string; schema: string; comment: string | null }>
+        error: unknown
+      }
       if (error) throw error
 
       return (data ?? []).map((template) => {
@@ -99,12 +102,16 @@ export const applyTemplateMutationOptions = mutationOptions({
     templateName: string
     targetTable: string
   }) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error } = await (supabase.schema("supasheet") as any).rpc(
+     
+    const { data, error } = (await (supabase.schema("supasheet") as any).rpc(
       "apply_template",
-      { p_schema: schema, p_template_name: templateName, p_target_table: targetTable }
-    ) as { data: number; error: unknown }
+      {
+        p_schema: schema,
+        p_template_name: templateName,
+        p_target_table: targetTable,
+      }
+    )) as { data: number; error: unknown }
     if (error) throw error
-    return data as number
+    return data
   },
 })
