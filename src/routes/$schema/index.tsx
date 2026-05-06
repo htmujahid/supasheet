@@ -7,6 +7,7 @@ import {
   DatabaseIcon,
   FileChartColumnIcon,
   HomeIcon,
+  LayoutTemplateIcon,
 } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -59,6 +60,12 @@ const quickLinks = [
     description: "Tabular reports from database views",
     icon: <FileChartColumnIcon className="size-5" />,
     url: "report" as const,
+  },
+  {
+    title: "Templates",
+    description: "Bulk-insert rows from template views",
+    icon: <LayoutTemplateIcon className="size-5" />,
+    url: "template" as const,
   },
 ]
 

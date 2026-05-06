@@ -1546,3 +1546,40 @@ create trigger complaints_notify
     on hostel.complaints
     for each row
 execute function hostel.trg_complaints_notify();
+
+
+----------------------------------------------------------------
+-- Template: Monthly Payments
+-- Apply to hostel.payments to seed pending payment entries for
+-- all currently active allocations at the start of each billing
+-- month. Columns are a subset of hostel.payments — id,
+-- receipt_no, paid_date, method, reference, and notes are
+-- intentionally omitted (auto-generated or optional).
+----------------------------------------------------------------
+
+begin;
+alter type supasheet.app_permission add value if not exists 'hostel.monthly_payment_template:select';
+commit;
+
+create or replace view hostel.monthly_payment_template
+with (security_invoker = true) as
+select
+    a.id                                                            as allocation_id,
+    a.resident_id,
+    date_trunc('month', current_date)::date                         as period_month,
+    a.monthly_rent                                                  as amount,
+    0::numeric(10, 2)                                               as late_fee,
+    a.monthly_rent                                                  as total,
+    (date_trunc('month', current_date) + interval '10 days')::date  as due_date,
+    'pending'::hostel.payment_status                                as status
+from hostel.allocations a
+where a.status = 'active';
+
+revoke all on hostel.monthly_payment_template from authenticated, service_role;
+grant select on hostel.monthly_payment_template to authenticated;
+
+comment on view hostel.monthly_payment_template is
+'{"type": "template", "name": "Monthly Payment Template", "description": "Pending payment entries for all active allocations. Apply to hostel.payments to seed a new billing month.", "target_table": "payments"}';
+
+insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'hostel.monthly_payment_template:select');

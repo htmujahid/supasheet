@@ -17,6 +17,7 @@ import {
   FileXIcon,
   FolderIcon,
   HomeIcon,
+  LayoutTemplateIcon,
 } from "lucide-react"
 import { z } from "zod"
 
@@ -126,6 +127,11 @@ const navMain = [
     title: "Report",
     url: "/report",
     icon: <FileChartColumnIcon />,
+  },
+  {
+    title: "Template",
+    url: "/template",
+    icon: <LayoutTemplateIcon />,
   },
 ]
 

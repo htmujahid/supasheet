@@ -37,6 +37,7 @@ import { Route as CoreUser_rolesIndexRouteImport } from './routes/core/user_role
 import { Route as CoreRole_permissionsIndexRouteImport } from './routes/core/role_permissions/index'
 import { Route as CoreNotificationsIndexRouteImport } from './routes/core/notifications/index'
 import { Route as CoreAudit_logsIndexRouteImport } from './routes/core/audit_logs/index'
+import { Route as SchemaTemplateIndexRouteImport } from './routes/$schema/template/index'
 import { Route as SchemaReportIndexRouteImport } from './routes/$schema/report/index'
 import { Route as SchemaDashboardIndexRouteImport } from './routes/$schema/dashboard/index'
 import { Route as SchemaChartIndexRouteImport } from './routes/$schema/chart/index'
@@ -49,6 +50,7 @@ import { Route as CoreAudit_logsAuditLogIdRouteImport } from './routes/core/audi
 import { Route as CoreUsersUserIdRouteRouteImport } from './routes/core/users/$userId/route'
 import { Route as SchemaResourceResourceRouteRouteImport } from './routes/$schema/resource/$resource/route'
 import { Route as CoreUsersUserIdIndexRouteImport } from './routes/core/users/$userId/index'
+import { Route as SchemaTemplateTemplateIndexRouteImport } from './routes/$schema/template/$template/index'
 import { Route as SchemaSqlEditorSnippetIndexRouteImport } from './routes/$schema/sql-editor/$snippet/index'
 import { Route as SchemaResourceResourceIndexRouteImport } from './routes/$schema/resource/$resource/index'
 import { Route as SchemaReportReportIndexRouteImport } from './routes/$schema/report/$report/index'
@@ -206,6 +208,11 @@ const CoreAudit_logsIndexRoute = CoreAudit_logsIndexRouteImport.update({
   path: '/audit_logs/',
   getParentRoute: () => CoreRouteRoute,
 } as any)
+const SchemaTemplateIndexRoute = SchemaTemplateIndexRouteImport.update({
+  id: '/template/',
+  path: '/template/',
+  getParentRoute: () => SchemaRouteRoute,
+} as any)
 const SchemaReportIndexRoute = SchemaReportIndexRouteImport.update({
   id: '/report/',
   path: '/report/',
@@ -268,6 +275,12 @@ const CoreUsersUserIdIndexRoute = CoreUsersUserIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CoreUsersUserIdRouteRoute,
 } as any)
+const SchemaTemplateTemplateIndexRoute =
+  SchemaTemplateTemplateIndexRouteImport.update({
+    id: '/template/$template/',
+    path: '/template/$template/',
+    getParentRoute: () => SchemaRouteRoute,
+  } as any)
 const SchemaSqlEditorSnippetIndexRoute =
   SchemaSqlEditorSnippetIndexRouteImport.update({
     id: '/sql-editor/$snippet/',
@@ -389,6 +402,7 @@ export interface FileRoutesByFullPath {
   '/$schema/chart/': typeof SchemaChartIndexRoute
   '/$schema/dashboard/': typeof SchemaDashboardIndexRoute
   '/$schema/report/': typeof SchemaReportIndexRoute
+  '/$schema/template/': typeof SchemaTemplateIndexRoute
   '/core/audit_logs/': typeof CoreAudit_logsIndexRoute
   '/core/notifications/': typeof CoreNotificationsIndexRoute
   '/core/role_permissions/': typeof CoreRole_permissionsIndexRoute
@@ -404,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/$schema/report/$report/': typeof SchemaReportReportIndexRoute
   '/$schema/resource/$resource/': typeof SchemaResourceResourceIndexRoute
   '/$schema/sql-editor/$snippet/': typeof SchemaSqlEditorSnippetIndexRoute
+  '/$schema/template/$template/': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId/': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
@@ -439,6 +454,7 @@ export interface FileRoutesByTo {
   '/$schema/chart': typeof SchemaChartIndexRoute
   '/$schema/dashboard': typeof SchemaDashboardIndexRoute
   '/$schema/report': typeof SchemaReportIndexRoute
+  '/$schema/template': typeof SchemaTemplateIndexRoute
   '/core/audit_logs': typeof CoreAudit_logsIndexRoute
   '/core/notifications': typeof CoreNotificationsIndexRoute
   '/core/role_permissions': typeof CoreRole_permissionsIndexRoute
@@ -454,6 +470,7 @@ export interface FileRoutesByTo {
   '/$schema/report/$report': typeof SchemaReportReportIndexRoute
   '/$schema/resource/$resource': typeof SchemaResourceResourceIndexRoute
   '/$schema/sql-editor/$snippet': typeof SchemaSqlEditorSnippetIndexRoute
+  '/$schema/template/$template': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
@@ -497,6 +514,7 @@ export interface FileRoutesById {
   '/$schema/chart/': typeof SchemaChartIndexRoute
   '/$schema/dashboard/': typeof SchemaDashboardIndexRoute
   '/$schema/report/': typeof SchemaReportIndexRoute
+  '/$schema/template/': typeof SchemaTemplateIndexRoute
   '/core/audit_logs/': typeof CoreAudit_logsIndexRoute
   '/core/notifications/': typeof CoreNotificationsIndexRoute
   '/core/role_permissions/': typeof CoreRole_permissionsIndexRoute
@@ -512,6 +530,7 @@ export interface FileRoutesById {
   '/$schema/report/$report/': typeof SchemaReportReportIndexRoute
   '/$schema/resource/$resource/': typeof SchemaResourceResourceIndexRoute
   '/$schema/sql-editor/$snippet/': typeof SchemaSqlEditorSnippetIndexRoute
+  '/$schema/template/$template/': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId/': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
@@ -556,6 +575,7 @@ export interface FileRouteTypes {
     | '/$schema/chart/'
     | '/$schema/dashboard/'
     | '/$schema/report/'
+    | '/$schema/template/'
     | '/core/audit_logs/'
     | '/core/notifications/'
     | '/core/role_permissions/'
@@ -571,6 +591,7 @@ export interface FileRouteTypes {
     | '/$schema/report/$report/'
     | '/$schema/resource/$resource/'
     | '/$schema/sql-editor/$snippet/'
+    | '/$schema/template/$template/'
     | '/core/users/$userId/'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/detail/$'
@@ -606,6 +627,7 @@ export interface FileRouteTypes {
     | '/$schema/chart'
     | '/$schema/dashboard'
     | '/$schema/report'
+    | '/$schema/template'
     | '/core/audit_logs'
     | '/core/notifications'
     | '/core/role_permissions'
@@ -621,6 +643,7 @@ export interface FileRouteTypes {
     | '/$schema/report/$report'
     | '/$schema/resource/$resource'
     | '/$schema/sql-editor/$snippet'
+    | '/$schema/template/$template'
     | '/core/users/$userId'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/detail/$'
@@ -663,6 +686,7 @@ export interface FileRouteTypes {
     | '/$schema/chart/'
     | '/$schema/dashboard/'
     | '/$schema/report/'
+    | '/$schema/template/'
     | '/core/audit_logs/'
     | '/core/notifications/'
     | '/core/role_permissions/'
@@ -678,6 +702,7 @@ export interface FileRouteTypes {
     | '/$schema/report/$report/'
     | '/$schema/resource/$resource/'
     | '/$schema/sql-editor/$snippet/'
+    | '/$schema/template/$template/'
     | '/core/users/$userId/'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/detail/$'
@@ -896,6 +921,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoreAudit_logsIndexRouteImport
       parentRoute: typeof CoreRouteRoute
     }
+    '/$schema/template/': {
+      id: '/$schema/template/'
+      path: '/template'
+      fullPath: '/$schema/template/'
+      preLoaderRoute: typeof SchemaTemplateIndexRouteImport
+      parentRoute: typeof SchemaRouteRoute
+    }
     '/$schema/report/': {
       id: '/$schema/report/'
       path: '/report'
@@ -979,6 +1011,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/core/users/$userId/'
       preLoaderRoute: typeof CoreUsersUserIdIndexRouteImport
       parentRoute: typeof CoreUsersUserIdRouteRoute
+    }
+    '/$schema/template/$template/': {
+      id: '/$schema/template/$template/'
+      path: '/template/$template'
+      fullPath: '/$schema/template/$template/'
+      preLoaderRoute: typeof SchemaTemplateTemplateIndexRouteImport
+      parentRoute: typeof SchemaRouteRoute
     }
     '/$schema/sql-editor/$snippet/': {
       id: '/$schema/sql-editor/$snippet/'
@@ -1132,8 +1171,10 @@ interface SchemaRouteRouteChildren {
   SchemaChartIndexRoute: typeof SchemaChartIndexRoute
   SchemaDashboardIndexRoute: typeof SchemaDashboardIndexRoute
   SchemaReportIndexRoute: typeof SchemaReportIndexRoute
+  SchemaTemplateIndexRoute: typeof SchemaTemplateIndexRoute
   SchemaReportReportIndexRoute: typeof SchemaReportReportIndexRoute
   SchemaSqlEditorSnippetIndexRoute: typeof SchemaSqlEditorSnippetIndexRoute
+  SchemaTemplateTemplateIndexRoute: typeof SchemaTemplateTemplateIndexRoute
 }
 
 const SchemaRouteRouteChildren: SchemaRouteRouteChildren = {
@@ -1143,8 +1184,10 @@ const SchemaRouteRouteChildren: SchemaRouteRouteChildren = {
   SchemaChartIndexRoute: SchemaChartIndexRoute,
   SchemaDashboardIndexRoute: SchemaDashboardIndexRoute,
   SchemaReportIndexRoute: SchemaReportIndexRoute,
+  SchemaTemplateIndexRoute: SchemaTemplateIndexRoute,
   SchemaReportReportIndexRoute: SchemaReportReportIndexRoute,
   SchemaSqlEditorSnippetIndexRoute: SchemaSqlEditorSnippetIndexRoute,
+  SchemaTemplateTemplateIndexRoute: SchemaTemplateTemplateIndexRoute,
 }
 
 const SchemaRouteRouteWithChildren = SchemaRouteRoute._addFileChildren(

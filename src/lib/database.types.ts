@@ -212,6 +212,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          link: string | null
           metadata: Json
           title: string
           type: string
@@ -221,6 +222,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          link?: string | null
           metadata?: Json
           title: string
           type: string
@@ -230,6 +232,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          link?: string | null
           metadata?: Json
           title?: string
           type?: string
@@ -443,6 +446,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_template: {
+        Args: {
+          p_schema: string
+          p_target_table: string
+          p_template_name: string
+        }
+        Returns: number
+      }
       create_audit_log: {
         Args: {
           p_metadata?: Json
@@ -458,6 +469,7 @@ export type Database = {
       create_notification: {
         Args: {
           p_body: string
+          p_link?: string
           p_metadata?: Json
           p_title: string
           p_type: string
@@ -674,6 +686,16 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      get_templates: {
+        Args: { p_schema?: string }
+        Returns: {
+          comment: string
+          id: number
+          is_updatable: boolean
+          name: string
+          schema: string
+        }[]
       }
       get_users_with_permission: {
         Args: { p_permission: Database["supasheet"]["Enums"]["app_permission"] }
@@ -902,3 +924,4 @@ export const Constants = {
     },
   },
 } as const
+
