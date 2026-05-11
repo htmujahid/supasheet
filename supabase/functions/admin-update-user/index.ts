@@ -7,6 +7,16 @@ import {
   requirePermission,
 } from "../_shared/admin.ts"
 
+const UPDATE_ALLOWED_FIELDS = [
+  "email",
+  "password",
+  "email_confirm",
+  "phone",
+  "phone_confirm",
+  "user_metadata",
+  "ban_duration",
+] as const
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders })
@@ -15,7 +25,11 @@ Deno.serve(async (req) => {
   const body = await req.json().catch(() => null)
   if (!body?.userId) return errorResponse("Missing userId", 400)
 
-  const { userId, ...attrs } = body
+  const { userId } = body
+  const attrs: Record<string, unknown> = {}
+  for (const key of UPDATE_ALLOWED_FIELDS) {
+    if (key in body) attrs[key] = body[key]
+  }
 
   const callerId = await getCallerId(req.headers.get("Authorization"))
   if (callerId === userId)
@@ -39,7 +53,10 @@ Deno.serve(async (req) => {
     userId,
     attrs
   )
-  if (error) return errorResponse(error.message)
+  if (error) {
+    console.error("admin-update-user", error)
+    return errorResponse("Could not update user", 400)
+  }
 
   return jsonResponse(data)
 })

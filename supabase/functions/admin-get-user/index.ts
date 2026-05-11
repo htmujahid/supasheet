@@ -22,7 +22,10 @@ Deno.serve(async (req) => {
 
   const adminClient = createAdminClient()
   const { data, error } = await adminClient.auth.admin.getUserById(userId)
-  if (error) return errorResponse(error.message)
+  if (error) {
+    console.error("admin-get-user", error)
+    return errorResponse("Could not load user", 404)
+  }
 
   return jsonResponse(data)
 })

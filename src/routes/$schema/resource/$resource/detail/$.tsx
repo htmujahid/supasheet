@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 
 import {
   Link,
@@ -394,38 +394,46 @@ function RouteComponent() {
     `${schema}.${resource}:update` as AppPermission
   )
 
-  const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-  const availableNames = new Set(
-    columnsSchema.map((c) => (c.name as string) ?? c.id ?? "")
-  )
-  const plan = buildLayoutPlan(tableMeta.sections, availableNames, "read")
-  const colByName = new Map(
-    columnsSchema.map((c) => [(c.name as string) ?? c.id ?? "", c])
-  )
-
-  const progressFields = columnsSchema
-    .map((col) => {
-      const meta = JSON.parse(col.comment ?? "{}") as EnumMetadata
-      if (!meta?.progress || !meta.enums) return null
-      return { col, meta }
-    })
-    .filter((x): x is { col: ColumnSchema; meta: EnumMetadata } => Boolean(x))
-
-  const progressNames = new Set(
-    progressFields.map(({ col }) => col.name as string)
-  )
-
-  const filteredPlan = plan
-    ? {
-        ...plan,
-        sections: plan.sections
-          .map((s) => ({
-            ...s,
-            fields: s.fields.filter((f) => !progressNames.has(f)),
-          }))
-          .filter((s) => s.fields.length > 0),
-      }
-    : plan
+  const { colByName, progressFields, filteredPlan } = useMemo(() => {
+    const tableMeta = JSON.parse(
+      resourceSchema.comment ?? "{}"
+    ) as TableMetadata
+    const availableNames = new Set(
+      columnsSchema.map((c) => (c.name as string) ?? c.id ?? "")
+    )
+    const plan = buildLayoutPlan(tableMeta.sections, availableNames, "read")
+    const byName = new Map(
+      columnsSchema.map((c) => [(c.name as string) ?? c.id ?? "", c])
+    )
+    const progress = columnsSchema
+      .map((col) => {
+        const meta = JSON.parse(col.comment ?? "{}") as EnumMetadata
+        if (!meta?.progress || !meta.enums) return null
+        return { col, meta }
+      })
+      .filter(
+        (x): x is { col: ColumnSchema; meta: EnumMetadata } => Boolean(x)
+      )
+    const progressNames = new Set(
+      progress.map(({ col }) => col.name as string)
+    )
+    const filtered = plan
+      ? {
+          ...plan,
+          sections: plan.sections
+            .map((s) => ({
+              ...s,
+              fields: s.fields.filter((f) => !progressNames.has(f)),
+            }))
+            .filter((s) => s.fields.length > 0),
+        }
+      : plan
+    return {
+      colByName: byName,
+      progressFields: progress,
+      filteredPlan: filtered,
+    }
+  }, [resourceSchema.comment, columnsSchema])
 
   const primaryKeyDisplay = primaryKeys
     .map((key) => {

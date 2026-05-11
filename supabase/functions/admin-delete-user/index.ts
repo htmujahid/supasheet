@@ -35,7 +35,10 @@ Deno.serve(async (req) => {
   await adminClient.schema("supasheet").from("users").delete().eq("id", userId)
 
   const { error } = await adminClient.auth.admin.deleteUser(userId)
-  if (error) return errorResponse(error.message)
+  if (error) {
+    console.error("admin-delete-user", error)
+    return errorResponse("Could not delete user", 400)
+  }
 
   return jsonResponse({ success: true })
 })

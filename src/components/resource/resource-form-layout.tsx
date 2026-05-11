@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+
 import { useNavigate } from "@tanstack/react-router"
 
 import { ChevronDownIcon } from "lucide-react"
@@ -58,10 +60,21 @@ export function ResourceFormLayout({
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
   const showSecondary = primaryKeys.length > 0
 
-  const tableMeta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  const writableNames = new Set(writableCols.map((c) => c.name ?? c.id ?? ""))
-  const plan = buildLayoutPlan(tableMeta.sections, writableNames, mode)
-  const colByName = new Map(writableCols.map((c) => [c.name ?? c.id ?? "", c]))
+  const tableMeta = useMemo(
+    () => JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata,
+    [tableSchema?.comment]
+  )
+  const { plan, colByName } = useMemo(() => {
+    const writableNames = new Set(
+      writableCols.map((c) => c.name ?? c.id ?? "")
+    )
+    return {
+      plan: buildLayoutPlan(tableMeta.sections, writableNames, mode),
+      colByName: new Map(
+        writableCols.map((c) => [c.name ?? c.id ?? "", c])
+      ),
+    }
+  }, [tableMeta.sections, writableCols, mode])
 
   const handleCancel = () => {
     if (redirect) {

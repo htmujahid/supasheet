@@ -75,16 +75,6 @@ export function ResourceUpdateForm({
       queryClient.invalidateQueries({
         queryKey: ["supasheet", "resource-data", schema, resource],
       })
-      queryClient.invalidateQueries({
-        queryKey: [
-          "supasheet",
-          "resource-data",
-          schema,
-          resource,
-          "single",
-          pk,
-        ],
-      })
       toast.success("Record updated")
       if ((meta as { target?: string } | undefined)?.target === "close") {
         if (safeRedirect) {

@@ -49,15 +49,33 @@ export const removeAccountAvatarMutationOptions = (userId: string) =>
     },
   })
 
+const ALLOWED_AVATAR_MIME = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+])
+const AVATAR_MAX_BYTES = 2 * 1024 * 1024 // 2 MB
+const MIME_TO_EXT: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
+}
+
 export const uploadAccountAvatarMutationOptions = (userId: string) =>
   mutationOptions({
     mutationFn: async (file: File) => {
-      const ext = file.name.split(".").pop()
+      if (!ALLOWED_AVATAR_MIME.has(file.type)) {
+        throw new Error("Avatar must be a PNG, JPEG, or WebP image")
+      }
+      if (file.size > AVATAR_MAX_BYTES) {
+        throw new Error("Avatar must be 2 MB or smaller")
+      }
+      const ext = MIME_TO_EXT[file.type]
       const path = `${userId}/${Date.now()}.${ext}`
 
       const { error: uploadError } = await supabase.storage
         .from("account_image")
-        .upload(path, file, { upsert: true })
+        .upload(path, file, { upsert: true, contentType: file.type })
       if (uploadError) throw uploadError
 
       const {

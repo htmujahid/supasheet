@@ -55,7 +55,10 @@ export async function requirePermission(
     .schema("supasheet")
     .rpc("has_permission", { requested_permission: permission })
 
-  if (error) return errorResponse(error.message, 500)
+  if (error) {
+    console.error("requirePermission rpc", error)
+    return errorResponse("Permission check failed", 500)
+  }
   if (!data) return errorResponse("Forbidden", 403)
 
   return null

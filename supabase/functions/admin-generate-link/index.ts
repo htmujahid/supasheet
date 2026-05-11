@@ -48,7 +48,10 @@ Deno.serve(async (req) => {
 
   const adminClient = createAdminClient()
   const { data, error } = await adminClient.auth.admin.generateLink(params)
-  if (error) return errorResponse(error.message)
+  if (error) {
+    console.error("admin-generate-link", error)
+    return errorResponse("Could not generate link", 400)
+  }
 
   return jsonResponse(data, 201)
 })

@@ -24,7 +24,10 @@ Deno.serve(async (req) => {
     page,
     perPage,
   })
-  if (error) return errorResponse(error.message)
+  if (error) {
+    console.error("admin-list-users", error)
+    return errorResponse("Could not list users", 500)
+  }
 
   return jsonResponse(data)
 })

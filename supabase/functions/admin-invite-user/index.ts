@@ -32,7 +32,10 @@ Deno.serve(async (req) => {
       redirectTo,
     }
   )
-  if (error) return errorResponse(error.message)
+  if (error) {
+    console.error("admin-invite-user", error)
+    return errorResponse("Could not invite user", 400)
+  }
 
   return jsonResponse(data, 201)
 })

@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+
 import {
   Link,
   createFileRoute,
@@ -208,9 +210,13 @@ function RouteComponent() {
   const { sortId, sortDesc, page, pageSize, filters } = Route.useSearch()
   const { resourceSchema, columnsSchema = [] } = Route.useLoaderData()
 
-  const meta = (
-    resourceSchema?.comment ? JSON.parse(resourceSchema.comment) : {}
-  ) as TableMetadata
+  const meta = useMemo(
+    () =>
+      (resourceSchema?.comment
+        ? JSON.parse(resourceSchema.comment)
+        : {}) as TableMetadata,
+    [resourceSchema?.comment]
+  )
   const metaItems = meta.items ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(
