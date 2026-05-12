@@ -78,14 +78,14 @@ export function NavResources({
               return (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
-                    tooltip={formatTitle(item.name)}
+                    tooltip={item.meta?.name ?? formatTitle(item.name)}
                     render={<Link to={url as never} />}
                     isActive={location.pathname.startsWith(
                       `/${schema}/${item.id}`
                     )}
                   >
                     {icon}
-                    <span>{formatTitle(item.name)}</span>
+                    <span>{item.meta?.name ?? formatTitle(item.name)}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )

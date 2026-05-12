@@ -74,7 +74,7 @@ export function ResourceFormField<S extends DatabaseSchemas>({
       {() => (
         <Field>
           <FieldLabel>
-            {columnMetadata.icon} {formatTitle(columnSchema.name ?? "")}{" "}
+            {columnMetadata.icon} {formatTitle(columnMetadata.name)}{" "}
             {columnMetadata.required && (
               <span className="text-destructive">*</span>
             )}

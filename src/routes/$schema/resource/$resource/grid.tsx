@@ -244,7 +244,7 @@ function RouteComponent() {
       <DefaultHeader
         breadcrumbs={[
           {
-            title: formatTitle(resource),
+            title: meta.name ?? formatTitle(resource),
             url: `/${schema}/resource/${resource}`,
           },
           { title: "Grid" },

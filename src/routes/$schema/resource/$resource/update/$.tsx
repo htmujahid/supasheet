@@ -26,7 +26,7 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
-import type { PrimaryKey } from "#/lib/database-meta.types"
+import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
@@ -196,6 +196,9 @@ function RouteComponent() {
   const { schema, resource, _splat } = Route.useParams()
 
   const { tableSchema, columnsSchema } = Route.useLoaderData()
+  const resourceDisplayName = (
+    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+  ).name ?? formatTitle(resource)
 
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
   const pk = parsePkSplat(_splat ?? "", primaryKeys)
@@ -208,7 +211,7 @@ function RouteComponent() {
       <DefaultHeader
         breadcrumbs={[
           {
-            title: formatTitle(resource),
+            title: resourceDisplayName,
             url: `/${schema}/resource/${resource}`,
           },
           { title: "Edit record" },

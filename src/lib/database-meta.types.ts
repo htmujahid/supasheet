@@ -163,7 +163,7 @@ export type ViewMetadata = {
 }
 
 export type ColumnMetadata = {
-  title?: string
+  name?: string
   description?: string
   icon?: string
 }

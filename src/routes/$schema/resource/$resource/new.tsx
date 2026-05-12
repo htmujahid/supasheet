@@ -23,6 +23,7 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
+import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
@@ -206,13 +207,16 @@ function RouteComponent() {
   const { schema, resource } = Route.useParams()
 
   const { columnsSchema, tableSchema } = Route.useLoaderData()
+  const resourceDisplayName = (
+    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  ).name ?? formatTitle(tableSchema.name)
 
   return (
     <>
       <DefaultHeader
         breadcrumbs={[
           {
-            title: formatTitle(tableSchema.name),
+            title: resourceDisplayName,
             url: `/${schema}/resource/${resource}`,
           },
           { title: "New record" },

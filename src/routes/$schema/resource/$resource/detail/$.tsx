@@ -393,6 +393,10 @@ function RouteComponent() {
     `${schema}.${resource}:update` as AppPermission
   )
 
+  const resourceDisplayName = (
+    JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
+  ).name ?? formatTitle(resource)
+
   const { colByName, progressFields, filteredPlan } = useMemo(() => {
     const tableMeta = JSON.parse(
       resourceSchema.comment ?? "{}"
@@ -448,7 +452,7 @@ function RouteComponent() {
       <DefaultHeader
         breadcrumbs={[
           {
-            title: formatTitle(resource),
+            title: resourceDisplayName,
             url: `/${schema}/resource/${resource}`,
           },
           { title: "Detail" },

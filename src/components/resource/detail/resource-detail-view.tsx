@@ -10,7 +10,11 @@ import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
 import { METADATA_COLUMNS } from "#/config/database.config"
 import { getColumnMetadata } from "#/lib/columns"
-import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  ResourceSchema,
+  TableMetadata,
+} from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { FileObject } from "#/types/fields"
@@ -41,7 +45,9 @@ export function ResourceDetailView({
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <CardTitle>{formatTitle(resourceSchema.name as string)}</CardTitle>
+            <CardTitle>
+              {(JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ?? formatTitle(resourceSchema.name as string)}
+            </CardTitle>
             <CardDescription>
               View resource details and properties
             </CardDescription>
@@ -60,7 +66,7 @@ export function ResourceDetailView({
               <div className="flex items-start gap-4">
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    {columnMetadata.icon} {formatTitle(column.name as string)}
+                    {columnMetadata.icon} {formatTitle(columnMetadata.name)}
                   </Label>
                   <div className="text-sm text-muted-foreground">
                     {value ? (

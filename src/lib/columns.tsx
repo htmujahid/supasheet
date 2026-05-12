@@ -74,7 +74,7 @@ export function getColumnMetadata(
     defaultValue = null
   }
 
-  const name = columnSchema.name as string
+  const name = (commentMeta.name ?? columnSchema.name) as string
   const required =
     columnSchema.is_nullable === false && !columnSchema.default_value
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable
