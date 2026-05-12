@@ -16,13 +16,12 @@ import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { buildLayoutPlan } from "#/components/resource/resource-form-utils"
 import { parsePkSplat } from "#/components/resource/resource-table-columns"
-import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
-import { ResourceDetailView } from "#/components/resource/view/resource-detail-view"
-import { ResourceForeignTable } from "#/components/resource/view/resource-foreign-table"
-import { ResourceMetadataView } from "#/components/resource/view/resource-metadata-view"
-import { ResourceProgressField } from "#/components/resource/view/resource-progress-field"
-import { ResourceSectionDetail } from "#/components/resource/view/resource-section-detail"
-import { Button } from "#/components/ui/button"
+import { ResourceDetailView } from "#/components/resource/detail/resource-detail-view"
+import { ResourceForeignTable } from "#/components/resource/detail/resource-foreign-table"
+import { ResourceMetadataView } from "#/components/resource/detail/resource-metadata-view"
+import { ResourceProgressField } from "#/components/resource/detail/resource-progress-field"
+import { ResourceSectionDetail } from "#/components/resource/detail/resource-section-detail"
+import { Button, buttonVariants } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 import {
   Empty,
@@ -415,14 +414,14 @@ function RouteComponent() {
     const progressNames = new Set(progress.map(({ col }) => col.name as string))
     const filtered = plan
       ? {
-          ...plan,
-          sections: plan.sections
-            .map((s) => ({
-              ...s,
-              fields: s.fields.filter((f) => !progressNames.has(f)),
-            }))
-            .filter((s) => s.fields.length > 0),
-        }
+        ...plan,
+        sections: plan.sections
+          .map((s) => ({
+            ...s,
+            fields: s.fields.filter((f) => !progressNames.has(f)),
+          }))
+          .filter((s) => s.fields.length > 0),
+      }
       : plan
     return {
       colByName: byName,
@@ -454,15 +453,14 @@ function RouteComponent() {
         ]}
       >
         {tableSchema && canUpdate && (
-          <EditRecordTrigger
-            pk={pk}
-            primaryKeyNames={primaryKeys.map((k) => k.name)}
-            size="sm"
-            variant="outline"
+          <Link
+            className={buttonVariants({ size: "sm", variant: "outline" })}
+            to="/$schema/resource/$resource/update/$"
+            params={{ schema, resource, _splat: _splat ?? "" }}
           >
             <PencilIcon className="mr-1.5 size-3.5" />
             Edit
-          </EditRecordTrigger>
+          </Link>
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col">
@@ -578,7 +576,7 @@ function RouteComponent() {
                       parentColumn={relationship.__parentColumn}
                       parentValue={record[relationship.__targetColumn]}
                       resourceSchema={
-                        relationship as unknown as ResourceSchema & {
+                        relationship as ResourceSchema & {
                           columns: ColumnSchema[]
                         }
                       }

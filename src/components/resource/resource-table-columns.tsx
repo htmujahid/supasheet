@@ -87,7 +87,6 @@ export function getResourceTableColumns({
                 size="icon-xs"
                 variant="outline"
                 className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3"
-                stopPropagation
               >
                 <PencilIcon />
               </EditRecordTrigger>

@@ -2,12 +2,13 @@ import type { MouseEvent, ReactNode } from "react"
 
 import { Link } from "@tanstack/react-router"
 
-import { Button } from "#/components/ui/button"
+import { Button, buttonVariants } from "#/components/ui/button"
 
 import {
   useEditRecordSheet,
   useResourceFormSheet,
 } from "./resource-form-sheet-provider"
+import { cn } from "#/lib/utils"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
@@ -17,7 +18,6 @@ type Props = {
   size?: ButtonProps["size"]
   variant?: ButtonProps["variant"]
   className?: string
-  stopPropagation?: boolean
   children: ReactNode
   // Optional overrides — when set, the trigger targets this schema/resource
   // instead of the route-level default (e.g. foreign-table rows).
@@ -38,7 +38,6 @@ export function EditRecordTrigger({
   size,
   variant,
   className,
-  stopPropagation,
   children,
   schema: schemaOverride,
   resource: resourceOverride,
@@ -53,14 +52,14 @@ export function EditRecordTrigger({
   const schema = schemaOverride ?? ctx.schema
   const resource = resourceOverride ?? ctx.resource
 
-  if (inlineForm) {
+  if (inlineForm || schemaOverride) {
     return (
       <Button
         size={size}
         variant={variant}
         className={className}
         onClick={(e: MouseEvent) => {
-          if (stopPropagation) e.stopPropagation()
+          e.stopPropagation()
           open(pk)
         }}
       >
@@ -72,23 +71,16 @@ export function EditRecordTrigger({
   const splat = encodePkSplat(pk, primaryKeyNames)
 
   return (
-    <Button
-      size={size}
-      variant={variant}
-      className={className}
-      nativeButton={false}
-      render={
-        <Link
-          to="/$schema/resource/$resource/update/$"
-          params={{ schema, resource, _splat: splat } as never}
-          search={redirect ? { redirect } : undefined}
-          onClick={(e) => {
-            if (stopPropagation) e.stopPropagation()
-          }}
-        />
-      }
+    <Link
+      className={cn(buttonVariants({ size, variant }), className)}
+      to="/$schema/resource/$resource/update/$"
+      params={{ schema, resource, _splat: splat } as never}
+      search={redirect ? { redirect } : undefined}
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
     >
       {children}
-    </Button>
+    </Link>
   )
 }

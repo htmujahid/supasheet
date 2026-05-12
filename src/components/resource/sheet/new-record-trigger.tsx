@@ -1,13 +1,14 @@
-import type { MouseEvent, ReactNode } from "react"
+import type { ReactNode } from "react"
 
 import { Link } from "@tanstack/react-router"
 
-import { Button } from "#/components/ui/button"
+import { Button, buttonVariants } from "#/components/ui/button"
 
 import {
   useNewRecordSheet,
   useResourceFormSheet,
 } from "./resource-form-sheet-provider"
+import { cn } from "#/lib/utils"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
@@ -15,7 +16,6 @@ type Props = {
   size?: ButtonProps["size"]
   variant?: ButtonProps["variant"]
   className?: string
-  stopPropagation?: boolean
   children: ReactNode
   schema?: string
   resource?: string
@@ -33,7 +33,6 @@ export function NewRecordTrigger({
   size,
   variant,
   className,
-  stopPropagation,
   children,
   schema: schemaOverride,
   resource: resourceOverride,
@@ -49,14 +48,13 @@ export function NewRecordTrigger({
   const schema = schemaOverride ?? ctx.schema
   const resource = resourceOverride ?? ctx.resource
 
-  if (inlineForm) {
+  if (inlineForm || schemaOverride) {
     return (
       <Button
         size={size}
         variant={variant}
         className={className}
-        onClick={(e: MouseEvent) => {
-          if (stopPropagation) e.stopPropagation()
+        onClick={() => {
           open(defaults)
         }}
       >
@@ -73,21 +71,11 @@ export function NewRecordTrigger({
   }
 
   return (
-    <Button
-      size={size}
-      variant={variant}
-      className={className}
-      nativeButton={false}
-      render={
-        <Link
-          to={href as never}
-          onClick={(e) => {
-            if (stopPropagation) e.stopPropagation()
-          }}
-        />
-      }
+    <Link 
+      to={href as never}
+      className={cn(buttonVariants({ size, variant}), className)}
     >
       {children}
-    </Button>
+    </Link>
   )
 }
