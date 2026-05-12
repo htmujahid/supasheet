@@ -49,11 +49,7 @@ export const removeAccountAvatarMutationOptions = (userId: string) =>
     },
   })
 
-const ALLOWED_AVATAR_MIME = new Set([
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-])
+const ALLOWED_AVATAR_MIME = new Set(["image/png", "image/jpeg", "image/webp"])
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024 // 2 MB
 const MIME_TO_EXT: Record<string, string> = {
   "image/png": "png",

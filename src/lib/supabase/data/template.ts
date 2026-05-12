@@ -23,7 +23,6 @@ export const templatesQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "templates", schema],
     queryFn: async () => {
-       
       const { data, error } = (await (supabase.schema("supasheet") as any).rpc(
         "get_templates",
         { p_schema: schema }
@@ -102,7 +101,6 @@ export const applyTemplateMutationOptions = mutationOptions({
     templateName: string
     targetTable: string
   }) => {
-     
     const { data, error } = (await (supabase.schema("supasheet") as any).rpc(
       "apply_template",
       {

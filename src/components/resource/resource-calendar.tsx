@@ -32,7 +32,6 @@ import {
   updateResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 
-
 type TEventColor =
   | "blue"
   | "green"

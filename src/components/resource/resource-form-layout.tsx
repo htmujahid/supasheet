@@ -65,14 +65,10 @@ export function ResourceFormLayout({
     [tableSchema?.comment]
   )
   const { plan, colByName } = useMemo(() => {
-    const writableNames = new Set(
-      writableCols.map((c) => c.name ?? c.id ?? "")
-    )
+    const writableNames = new Set(writableCols.map((c) => c.name ?? c.id ?? ""))
     return {
       plan: buildLayoutPlan(tableMeta.sections, writableNames, mode),
-      colByName: new Map(
-        writableCols.map((c) => [c.name ?? c.id ?? "", c])
-      ),
+      colByName: new Map(writableCols.map((c) => [c.name ?? c.id ?? "", c])),
     }
   }, [tableMeta.sections, writableCols, mode])
 
