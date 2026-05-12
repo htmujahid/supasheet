@@ -29,7 +29,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { KanbanViewItem, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
@@ -75,7 +75,8 @@ export const Route = createFileRoute(
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const kanbanView = meta.items?.find(
-      (item) => item.id === kanbanId && item.type === "kanban"
+      (item): item is KanbanViewItem =>
+        item.id === kanbanId && item.type === "kanban"
     )
     if (!kanbanView) throw notFound()
 
@@ -226,11 +227,11 @@ function RouteComponent() {
     resourceDataQueryOptions(schema, resource, meta.query)
   )
 
-  const titleField = kanbanView.title as string
-  const groupByField = kanbanView.group as string
-  const descriptionField = kanbanView.description as string
-  const badgeField = kanbanView.badge as string
-  const dateField = kanbanView.date as string
+  const titleField = kanbanView.title
+  const groupByField = kanbanView.group
+  const descriptionField = kanbanView.description
+  const badgeField = kanbanView.badge
+  const dateField = kanbanView.date
 
   const data: KanbanViewReducedData = {}
   for (const row of resourceData?.result ?? []) {

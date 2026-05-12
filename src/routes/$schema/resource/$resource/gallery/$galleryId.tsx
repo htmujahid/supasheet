@@ -25,7 +25,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { GalleryViewItem, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
@@ -65,7 +65,8 @@ export const Route = createFileRoute(
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const galleryView = meta.items?.find(
-      (item) => item.id === galleryId && item.type === "gallery"
+      (item): item is GalleryViewItem =>
+        item.id === galleryId && item.type === "gallery"
     )
     if (!galleryView) throw notFound()
 
@@ -199,10 +200,10 @@ function RouteComponent() {
     resourceDataQueryOptions(schema, resource, meta.query)
   )
 
-  const titleField = galleryView.title as string
-  const coverField = galleryView.cover as string
-  const descriptionField = galleryView.description as string
-  const badgeField = galleryView.badge as string
+  const titleField = galleryView.title
+  const coverField = galleryView.cover
+  const descriptionField = galleryView.description
+  const badgeField = galleryView.badge
 
   const data: GalleryViewData[] = (resourceData?.result ?? []).map((row) => ({
     cover:

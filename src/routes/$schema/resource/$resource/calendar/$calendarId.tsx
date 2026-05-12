@@ -15,10 +15,6 @@ import {
   ResourceCalendar,
   colorFromString,
 } from "#/components/resource/resource-calendar"
-import type {
-  IEvent,
-  TCalendarView,
-} from "#/components/resource/resource-calendar"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { Button } from "#/components/ui/button"
@@ -29,9 +25,10 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { TableMetadata } from "#/lib/database-meta.types"
+import type { CalendarViewItem, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
@@ -79,7 +76,8 @@ export const Route = createFileRoute(
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const calendarView = meta.items?.find(
-      (item) => item.id === calendarId && item.type === "calendar"
+      (item): item is CalendarViewItem =>
+        item.id === calendarId && item.type === "calendar"
     )
     if (!calendarView) throw notFound()
 
@@ -223,24 +221,28 @@ function RouteComponent() {
     resourceDataQueryOptions(schema, resource, meta.query)
   )
 
-  const titleField = calendarView.title as string
-  const startDateField = calendarView.startDate as string
-  const endDateField = calendarView.endDate as string
-  const badgeField = calendarView.badge as string
+  const titleField = calendarView.title
+  const startDateField = calendarView.startDate
+  const endDateField = calendarView.endDate
+  const badgeField = calendarView.badge
 
-  const data: IEvent[] = (resourceData?.result ?? [])
-    .filter((row) => startDateField && row[startDateField])
-    .map((row, i) => ({
-      id: String(i),
-      title: titleField ? String(row[titleField] ?? "") : "",
-      color: colorFromString(badgeField ? String(row[badgeField] ?? "") : null),
-      startDate: String(row[startDateField]),
-      endDate:
-        endDateField && row[endDateField]
-          ? String(row[endDateField])
-          : String(row[startDateField]),
-      data: row,
-    }))
+  const data: IEvent[] = startDateField
+    ? (resourceData?.result ?? [])
+        .filter((row) => row[startDateField])
+        .map((row, i) => ({
+          id: String(i),
+          title: titleField ? String(row[titleField] ?? "") : "",
+          color: colorFromString(
+            badgeField ? String(row[badgeField] ?? "") : null
+          ),
+          startDate: String(row[startDateField]),
+          endDate:
+            endDateField && row[endDateField]
+              ? String(row[endDateField])
+              : String(row[startDateField]),
+          data: row,
+        }))
+    : []
 
   const metaItems = meta.items ?? []
   const isTable = isTableSchema(resourceSchema)

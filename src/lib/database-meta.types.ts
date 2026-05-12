@@ -83,6 +83,53 @@ export type FieldSection = {
   collapsible?: boolean
 }
 
+export type KanbanViewItem = {
+  id: string
+  name: string
+  query?: { [key: string]: unknown }
+  type: "kanban"
+  group?: string
+  title?: string
+  description?: string
+  badge?: string
+  date?: string
+}
+
+export type CalendarViewItem = {
+  id: string
+  name: string
+  query?: { [key: string]: unknown }
+  type: "calendar"
+  title?: string
+  startDate?: string
+  endDate?: string
+  badge?: string
+}
+
+export type GalleryViewItem = {
+  id: string
+  name: string
+  query?: { [key: string]: unknown }
+  type: "gallery"
+  cover?: string
+  title?: string
+  description?: string
+  badge?: string
+}
+
+export type ListViewItem = {
+  id: string
+  name: string
+  query?: { [key: string]: unknown }
+  type: "list"
+}
+
+export type MetaViewItem =
+  | KanbanViewItem
+  | CalendarViewItem
+  | GalleryViewItem
+  | ListViewItem
+
 export type TableMetadata = {
   display?: "block" | "none"
   icon?: string
@@ -98,13 +145,7 @@ export type TableMetadata = {
     join?: { table: string; on: string; columns: string[] }[]
   }
   primaryItem?: string
-  items?: {
-    id: string
-    name: string
-    query?: { [key: string]: unknown }
-    [key: string]: unknown
-    type: "calendar" | "kanban" | "gallery" | "list"
-  }[]
+  items?: MetaViewItem[]
   sections?: FieldSection[]
 }
 
@@ -112,13 +153,7 @@ export type ViewMetadata = {
   display?: "block" | "none"
   icon?: string
   primaryItem?: string
-  items?: {
-    id: string
-    name: string
-    query?: { [key: string]: unknown }
-    [key: string]: unknown
-    type: "calendar" | "kanban" | "gallery" | "list"
-  }[]
+  items?: MetaViewItem[]
 }
 
 export type EnumMetadata = {

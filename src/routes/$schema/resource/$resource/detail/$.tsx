@@ -411,12 +411,8 @@ function RouteComponent() {
         if (!meta?.progress || !meta.enums) return null
         return { col, meta }
       })
-      .filter(
-        (x): x is { col: ColumnSchema; meta: EnumMetadata } => Boolean(x)
-      )
-    const progressNames = new Set(
-      progress.map(({ col }) => col.name as string)
-    )
+      .filter((x): x is { col: ColumnSchema; meta: EnumMetadata } => Boolean(x))
+    const progressNames = new Set(progress.map(({ col }) => col.name as string))
     const filtered = plan
       ? {
           ...plan,

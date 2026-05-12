@@ -19,7 +19,11 @@ import {
 } from "#/components/ui/event-calendar"
 import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey, ResourceSchema } from "#/lib/database-meta.types"
+import type {
+  CalendarViewItem,
+  PrimaryKey,
+  ResourceSchema,
+} from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { buildPkSplat } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
@@ -28,16 +32,6 @@ import {
   updateResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 
-export type { IEvent, TCalendarView }
-
-export type CalendarView = {
-  id: string
-  type: string
-  title?: string
-  startDate?: string
-  endDate?: string
-  badge?: string
-}
 
 type TEventColor =
   | "blue"
@@ -71,7 +65,7 @@ export interface ResourceCalendarProps {
   view?: TCalendarView
   data: IEvent[]
   resourceSchema: ResourceSchema
-  currentView: CalendarView
+  currentView: CalendarViewItem
 }
 
 export function ResourceCalendar({
