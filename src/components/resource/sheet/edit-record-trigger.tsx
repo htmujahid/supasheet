@@ -3,12 +3,12 @@ import type { MouseEvent, ReactNode } from "react"
 import { Link } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "#/components/ui/button"
+import { cn } from "#/lib/utils"
 
 import {
   useEditRecordSheet,
   useResourceFormSheet,
 } from "./resource-form-sheet-provider"
-import { cn } from "#/lib/utils"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 

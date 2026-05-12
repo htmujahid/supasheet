@@ -2,7 +2,7 @@ import type { RowData } from "@tanstack/react-table"
 
 import type { DataTableConfig } from "#/config/data-table"
 
-import type { ColumnMetadata } from "./fields"
+import type { ColumnFieldMetadata } from "./fields"
 
 export type FilterVariant = DataTableConfig["filterVariants"][number]
 export type FilterOperator = DataTableConfig["operators"][number]
@@ -17,5 +17,8 @@ export type ColumnMeta = {
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line no-shadow
-  interface ColumnMeta<TData extends RowData, TValue> extends ColumnMetadata {}
+  interface ColumnMeta<
+    TData extends RowData,
+    TValue,
+  > extends ColumnFieldMetadata {}
 }

@@ -2,8 +2,8 @@ import type { LucideIcon } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 
 import { Badge } from "#/components/ui/badge"
-import type { EnumMetadata } from "#/lib/database-meta.types"
-import type { ColumnMetadata } from "#/types/fields"
+import type { EnumColumnMetadata } from "#/lib/database-meta.types"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 function LucideIconComponent({
   iconName,
@@ -20,13 +20,15 @@ export function SelectCell({
   columnMetadata,
 }: {
   value: string | null
-  columnMetadata: ColumnMetadata
+  columnMetadata: ColumnFieldMetadata
 }) {
   if (!value) {
     return null
   }
 
-  const enumMeta = JSON.parse(columnMetadata.comment ?? "{}") as EnumMetadata
+  const enumMeta = JSON.parse(
+    columnMetadata.comment ?? "{}"
+  ) as EnumColumnMetadata
 
   if (enumMeta?.enums && enumMeta.enums[value]) {
     const { icon, variant } = enumMeta.enums[value]

@@ -7,7 +7,7 @@ import type { Column, RowsChangeData } from "react-data-grid"
 
 import { DataGrid as ReactDataGrid } from "#/components/ui/data-grid"
 import { cn } from "#/lib/utils"
-import type { ColumnMetadata } from "#/types/fields"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 import { DataTablePagination } from "../data-table/data-table-pagination"
 import { DataTableToolbar } from "../data-table/data-table-toolbar"
@@ -48,7 +48,9 @@ export function DataGrid<TData>({
     .getHeaderGroups()
     .flatMap((headerGroup) =>
       headerGroup.headers.map((header) => {
-        const meta = header.column.columnDef.meta as ColumnMetadata | undefined
+        const meta = header.column.columnDef.meta as
+          | ColumnFieldMetadata
+          | undefined
         return {
           key: header.id,
           name: header.id,

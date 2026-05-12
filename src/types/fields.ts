@@ -4,8 +4,8 @@ import type { ColumnSchema } from "#/lib/database-meta.types"
 
 import type { FilterVariant } from "./data-table"
 
-export type ColumnMetadata = {
-  label: string
+export type ColumnFieldMetadata = {
+  name: string
   variant:
     | "uuid"
     | "text"
@@ -49,7 +49,7 @@ export type ColumnMetadata = {
 }
 
 export type FieldProps = {
-  columnMetadata: ColumnMetadata
+  columnMetadata: ColumnFieldMetadata
   disabled?: boolean
 }
 
@@ -62,7 +62,7 @@ export type FileObject = {
 }
 
 export type FileFieldProps = {
-  columnMetadata: ColumnMetadata
+  columnMetadata: ColumnFieldMetadata
   columnSchema: ColumnSchema
 }
 
@@ -71,10 +71,4 @@ export type UploadProgress = {
   progress: number
   completed: boolean
   error?: string
-}
-
-export type FileFieldConfig = {
-  maxSize?: number
-  maxFiles?: number
-  accept?: string
 }

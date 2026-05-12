@@ -6,7 +6,7 @@ import {
   NumberEditor,
   SelectEditor,
 } from "#/components/ui/data-grid"
-import type { ColumnMetadata } from "#/types/fields"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 type GridRow = Record<string, unknown>
 
@@ -27,7 +27,7 @@ const NUMBER_VARIANTS = new Set([
 ])
 
 export function getEditCell(
-  meta: ColumnMetadata | undefined
+  meta: ColumnFieldMetadata | undefined
 ): ((props: RenderEditCellProps<GridRow>) => React.ReactNode) | undefined {
   if (!meta || meta.disabled || meta.isPrimaryKey) return undefined
   if (NO_EDIT_VARIANTS.has(meta.variant)) return undefined

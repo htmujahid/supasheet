@@ -49,14 +49,21 @@ export function ResourceGrid({
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
 
   const columns = useMemo(() => {
-    const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
+    const tableMeta = JSON.parse(
+      resourceSchema.comment ?? "{}"
+    ) as TableMetadata
     const selectColumns = tableMeta.query?.select
     const visibleColumnsSchema = selectColumns
-      ? selectColumns
-          .map((name) => columnsSchema.find((col) => (col.name ?? col.id) === name))
-          .filter(Boolean) as ColumnSchema[]
+      ? (selectColumns
+          .map((name) =>
+            columnsSchema.find((col) => (col.name ?? col.id) === name)
+          )
+          .filter(Boolean) as ColumnSchema[])
       : columnsSchema
-    return getResourceGridColumns({ columnsSchema: visibleColumnsSchema, tableSchema })
+    return getResourceGridColumns({
+      columnsSchema: visibleColumnsSchema,
+      tableSchema,
+    })
   }, [columnsSchema, tableSchema, resourceSchema.comment])
 
   const table = useDataTable({

@@ -2,12 +2,15 @@ import type { LucideIcon } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
-import type { ColumnSchema, EnumMetadata } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  EnumColumnMetadata,
+} from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { cn } from "#/lib/utils"
 
 type Variant = NonNullable<
-  NonNullable<EnumMetadata["enums"]>[string]["variant"]
+  NonNullable<EnumColumnMetadata["enums"]>[string]["variant"]
 >
 
 const filledCircle: Record<Variant, string> = {
@@ -35,7 +38,7 @@ export function ResourceProgressField({
 }: {
   column: ColumnSchema
   value: string | null
-  enumMeta: EnumMetadata
+  enumMeta: EnumColumnMetadata
 }) {
   if (!enumMeta.enums) return null
   const steps = Object.entries(enumMeta.enums)

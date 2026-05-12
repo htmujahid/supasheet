@@ -14,13 +14,13 @@ import { AlertCircleIcon, FileXIcon, PencilIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { buildLayoutPlan } from "#/components/resource/resource-form-utils"
-import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { ResourceDetailView } from "#/components/resource/detail/resource-detail-view"
 import { ResourceForeignTable } from "#/components/resource/detail/resource-foreign-table"
 import { ResourceMetadataView } from "#/components/resource/detail/resource-metadata-view"
 import { ResourceProgressField } from "#/components/resource/detail/resource-progress-field"
 import { ResourceSectionDetail } from "#/components/resource/detail/resource-section-detail"
+import { buildLayoutPlan } from "#/components/resource/resource-form-utils"
+import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { Button, buttonVariants } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 import {
@@ -38,7 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
-  EnumMetadata,
+  EnumColumnMetadata,
   PrimaryKey,
   Relationship,
   ResourceSchema,
@@ -406,22 +406,24 @@ function RouteComponent() {
     )
     const progress = columnsSchema
       .map((col) => {
-        const meta = JSON.parse(col.comment ?? "{}") as EnumMetadata
+        const meta = JSON.parse(col.comment ?? "{}") as EnumColumnMetadata
         if (!meta?.progress || !meta.enums) return null
         return { col, meta }
       })
-      .filter((x): x is { col: ColumnSchema; meta: EnumMetadata } => Boolean(x))
+      .filter((x): x is { col: ColumnSchema; meta: EnumColumnMetadata } =>
+        Boolean(x)
+      )
     const progressNames = new Set(progress.map(({ col }) => col.name as string))
     const filtered = plan
       ? {
-        ...plan,
-        sections: plan.sections
-          .map((s) => ({
-            ...s,
-            fields: s.fields.filter((f) => !progressNames.has(f)),
-          }))
-          .filter((s) => s.fields.length > 0),
-      }
+          ...plan,
+          sections: plan.sections
+            .map((s) => ({
+              ...s,
+              fields: s.fields.filter((f) => !progressNames.has(f)),
+            }))
+            .filter((s) => s.fields.length > 0),
+        }
       : plan
     return {
       colByName: byName,

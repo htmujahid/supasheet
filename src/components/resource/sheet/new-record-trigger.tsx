@@ -3,12 +3,12 @@ import type { ReactNode } from "react"
 import { Link } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "#/components/ui/button"
+import { cn } from "#/lib/utils"
 
 import {
   useNewRecordSheet,
   useResourceFormSheet,
 } from "./resource-form-sheet-provider"
-import { cn } from "#/lib/utils"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
@@ -71,9 +71,9 @@ export function NewRecordTrigger({
   }
 
   return (
-    <Link 
+    <Link
       to={href as never}
-      className={cn(buttonVariants({ size, variant}), className)}
+      className={cn(buttonVariants({ size, variant }), className)}
     >
       {children}
     </Link>

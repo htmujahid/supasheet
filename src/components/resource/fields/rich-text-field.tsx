@@ -16,7 +16,7 @@ export function RichTextField({ columnMetadata }: FieldProps) {
   return (
     <ButtonGroup className="w-full">
       <Editor
-        name={columnMetadata.label}
+        name={columnMetadata.name}
         value={(field.state.value as string) ?? ""}
         onChange={(v) => field.handleChange(v)}
         disabled={columnMetadata.disabled}

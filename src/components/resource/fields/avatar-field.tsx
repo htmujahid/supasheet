@@ -7,13 +7,9 @@ import { CircleUserRoundIcon, XIcon } from "lucide-react"
 import { Button } from "#/components/ui/button"
 import { useFileUpload } from "#/hooks/use-file-upload"
 import type { FileMetadata, FileWithPreview } from "#/hooks/use-file-upload"
+import type { AvatarColumnMetadata } from "#/lib/database-meta.types"
 import { supabase } from "#/lib/supabase/client"
-import type {
-  FileFieldConfig,
-  FileFieldProps,
-  FileObject,
-  UploadProgress,
-} from "#/types/fields"
+import type { FileFieldProps, FileObject, UploadProgress } from "#/types/fields"
 
 import { useFieldContext } from "../form-hook"
 import {
@@ -23,7 +19,9 @@ import {
 
 export function AvatarField({ columnMetadata, columnSchema }: FileFieldProps) {
   const field = useFieldContext<unknown>()
-  const config = JSON.parse(columnSchema.comment ?? "{}") as FileFieldConfig
+  const config = JSON.parse(
+    columnSchema.comment ?? "{}"
+  ) as AvatarColumnMetadata
   const maxSize = config.maxSize ?? 5 * 1024 * 1024
 
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(

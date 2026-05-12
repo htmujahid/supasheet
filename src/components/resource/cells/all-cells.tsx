@@ -1,6 +1,6 @@
 import { memo } from "react"
 
-import type { ColumnMetadata, FileObject } from "#/types/fields"
+import type { ColumnFieldMetadata, FileObject } from "#/types/fields"
 
 import { AvatarCell } from "./avatar-cell"
 import { BooleanCell } from "./boolean-cell"
@@ -15,7 +15,7 @@ export const AllCells = memo(function ({
   columnMetadata,
   value,
 }: {
-  columnMetadata: ColumnMetadata
+  columnMetadata: ColumnFieldMetadata
   value: unknown
 }) {
   switch (columnMetadata.variant) {

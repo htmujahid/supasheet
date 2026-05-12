@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react"
 import {
   BaselineIcon,
   BinaryIcon,
@@ -17,16 +18,18 @@ import {
   ToggleLeftIcon,
   UserIcon,
 } from "lucide-react"
+import * as LucideIcons from "lucide-react"
 
 import { METADATA_COLUMNS } from "#/config/database.config"
 import { isTableSchema } from "#/lib/database-meta.types"
 import type {
+  ColumnMetadata,
   ColumnSchema,
   PrimaryKey,
   TableSchema,
   ViewSchema,
 } from "#/lib/database-meta.types"
-import type { ColumnMetadata } from "#/types/fields"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 export function getColumnCell(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
@@ -45,7 +48,18 @@ export function getColumnCell(columnSchema: ColumnSchema) {
 export function getColumnMetadata(
   tableSchema: TableSchema | ViewSchema | null,
   columnSchema: ColumnSchema
-): ColumnMetadata {
+): ColumnFieldMetadata {
+  const commentMeta = JSON.parse(columnSchema.comment ?? "{}") as ColumnMetadata
+  const commentIconName = commentMeta.icon as
+    | keyof typeof LucideIcons
+    | undefined
+  const ColumnIcon = commentIconName
+    ? (LucideIcons[commentIconName] as LucideIcon | undefined)
+    : undefined
+  const columnIcon = ColumnIcon ? (
+    <ColumnIcon className="size-4 shrink-0 text-muted-foreground" />
+  ) : null
+
   const format = columnSchema.format?.startsWith("_")
     ? columnSchema.format?.slice(1)
     : columnSchema.format
@@ -60,12 +74,12 @@ export function getColumnMetadata(
     defaultValue = null
   }
 
-  const label = columnSchema.name as string
+  const name = columnSchema.name as string
   const required =
     columnSchema.is_nullable === false && !columnSchema.default_value
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable
   const isArray = columnSchema.data_type === "ARRAY"
-  const isMetadata = METADATA_COLUMNS.includes(label)
+  const isMetadata = METADATA_COLUMNS.includes(name)
 
   // const relationship = (tableSchema?.relationships as Relationship[])?.find(
   //   (rel) =>
@@ -82,13 +96,14 @@ export function getColumnMetadata(
       : false
 
   const baseOptions = {
-    label,
+    name,
     defaultValue,
     disabled: disabled,
     required,
     isArray,
     isMetadata,
     isPrimaryKey,
+    icon: columnIcon,
     comment: columnSchema.comment,
     table: columnSchema.table as string,
     schema: columnSchema.schema as string,
@@ -105,7 +120,9 @@ export function getColumnMetadata(
       isArray: false, // special case for file upload
       variant: "file",
       filterVariant: "text",
-      icon: <PaperclipIcon className="size-4 shrink-0 text-muted-foreground" />,
+      icon: columnIcon ?? (
+        <PaperclipIcon className="size-4 shrink-0 text-muted-foreground" />
+      ),
     }
   }
 
@@ -114,18 +131,20 @@ export function getColumnMetadata(
       ...baseOptions,
       variant: "avatar",
       filterVariant: "text",
-      icon: <UserIcon className="size-4 shrink-0 text-muted-foreground" />,
+      icon: columnIcon ?? (
+        <UserIcon className="size-4 shrink-0 text-muted-foreground" />
+      ),
     }
   }
 
   if (columnSchema.data_type === "USER-DEFINED") {
     return {
       ...baseOptions,
-      icon: (
-        <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
-      ),
       filterVariant: "multiSelect",
       variant: "select",
+      icon: columnIcon ?? (
+        <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
+      ),
     }
   }
 
@@ -135,7 +154,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "email",
         filterVariant: "text",
-        icon: <MailIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <MailIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "tel":
@@ -143,7 +164,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "tel",
         filterVariant: "text",
-        icon: <PhoneIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <PhoneIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "url":
@@ -151,7 +174,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "url",
         filterVariant: "text",
-        icon: <LinkIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <LinkIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "rating":
@@ -159,7 +184,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "rating",
         filterVariant: "number",
-        icon: <StarIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <StarIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "percentage":
@@ -167,7 +194,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "percentage",
         filterVariant: "number",
-        icon: <PercentIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <PercentIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "color":
@@ -175,7 +204,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "color",
         filterVariant: "text",
-        icon: <PaletteIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <PaletteIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "duration":
@@ -183,7 +214,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "duration",
         filterVariant: "number",
-        icon: <TimerIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <TimerIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "uuid":
@@ -191,7 +224,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "uuid",
         filterVariant: "uuid",
-        icon: <HashIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <HashIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "rich_text":
@@ -199,7 +234,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "rich_text",
         filterVariant: "text",
-        icon: (
+        icon: columnIcon ?? (
           <BaselineIcon className="size-4 shrink-0 text-muted-foreground" />
         ),
       }
@@ -211,7 +246,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "text",
         filterVariant: "text",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">ab</code>
         ),
       }
@@ -221,7 +256,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "long_text",
         filterVariant: "text",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">AB</code>
         ),
       }
@@ -232,7 +267,9 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "text",
         filterVariant: "text",
-        icon: <BinaryIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <BinaryIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "bytea":
@@ -240,7 +277,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "text",
         filterVariant: "text",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">\x0</code>
         ),
       }
@@ -255,7 +292,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "number",
         filterVariant: "number",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">1.23</code>
         ),
       }
@@ -267,7 +304,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "number",
         filterVariant: "number",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">123</code>
         ),
       }
@@ -279,7 +316,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "number",
         filterVariant: "number",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">123</code>
         ),
       }
@@ -291,7 +328,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "number",
         filterVariant: "number",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">123</code>
         ),
       }
@@ -301,7 +338,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "money",
         filterVariant: "number",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">$</code>
         ),
       }
@@ -311,7 +348,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "date",
         filterVariant: "date",
-        icon: (
+        icon: columnIcon ?? (
           <CalendarDaysIcon className="size-4 shrink-0 text-muted-foreground" />
         ),
       }
@@ -321,14 +358,19 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "time",
         filterVariant: "time",
-        icon: <ClockIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <ClockIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
+
     case "timetz":
       return {
         ...baseOptions,
         variant: "time",
         filterVariant: "timetz",
-        icon: <ClockIcon className="size-4 shrink-0 text-muted-foreground" />,
+        icon: columnIcon ?? (
+          <ClockIcon className="size-4 shrink-0 text-muted-foreground" />
+        ),
       }
 
     case "timestamptz":
@@ -336,16 +378,17 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "datetime",
         filterVariant: "timestamptz",
-        icon: (
+        icon: columnIcon ?? (
           <CalendarClockIcon className="size-4 shrink-0 text-muted-foreground" />
         ),
       }
+
     case "timestamp":
       return {
         ...baseOptions,
         variant: "datetime",
         filterVariant: "timestamp",
-        icon: (
+        icon: columnIcon ?? (
           <CalendarClockIcon className="size-4 shrink-0 text-muted-foreground" />
         ),
       }
@@ -356,7 +399,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "json",
         filterVariant: "text",
-        icon: (
+        icon: columnIcon ?? (
           <code className="font-mono text-sm text-muted-foreground">{`{}`}</code>
         ),
       }
@@ -366,7 +409,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "boolean",
         filterVariant: "boolean",
-        icon: (
+        icon: columnIcon ?? (
           <ToggleLeftIcon className="size-4 shrink-0 text-muted-foreground" />
         ),
       }
@@ -376,103 +419,7 @@ export function getColumnMetadata(
         ...baseOptions,
         variant: "text",
         filterVariant: "text",
-        icon: null,
+        icon: columnIcon,
       }
   }
 }
-
-// export function getColumnFilterData(columnSchema: ColumnSchema): ColumnMeta {
-//   if (columnSchema.data_type === "USER-DEFINED") {
-//     return {
-//       label: columnSchema.name as string,
-//       variant: "multiSelect",
-//       options:
-//         (columnSchema.enums as string[])?.map((option) => ({
-//           label: option,
-//           value: option,
-//         })) ?? [],
-//     }
-//   }
-
-//   switch (columnSchema.format) {
-//     case "uuid":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "uuid",
-//       }
-//     case "character":
-//     case "varchar":
-//     case "bpchar":
-//     case "text":
-//     case "bit":
-//     case "varbit":
-//     case "bytea":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "text",
-//       }
-
-//     case "double precision":
-//     case "real":
-//     case "float4":
-//     case "float8":
-//     case "decimal":
-//     case "bigint":
-//     case "bigserial":
-//     case "integer":
-//     case "numeric":
-//     case "smallint":
-//     case "smallserial":
-//     case "serial":
-//     case "money":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "number",
-//       }
-
-//     case "date":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "date",
-//       }
-//     case "timetz":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "timetz",
-//       }
-//     case "time":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "time",
-//       }
-//     case "timestamptz":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "timestamptz",
-//       }
-//     case "timestamp":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "timestamp",
-//       }
-
-//     case "json":
-//     case "jsonb":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "text",
-//       }
-
-//     case "boolean":
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "boolean",
-//       }
-
-//     default:
-//       return {
-//         label: columnSchema.name as string,
-//         variant: "text",
-//       }
-//   }
-// }

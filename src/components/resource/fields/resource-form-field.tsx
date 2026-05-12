@@ -12,7 +12,7 @@ import type {
   TableSchema,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
-import type { ColumnMetadata } from "#/types/fields"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 import type { ResourceFormApi } from "../form-hook"
 import { useFieldContext } from "../form-hook"
@@ -42,7 +42,7 @@ export function ResourceFormField<S extends DatabaseSchemas>({
   tableSchema: TableSchema<S> | null
   form: ResourceFormApi
 }) {
-  let columnMetadata: ColumnMetadata
+  let columnMetadata: ColumnFieldMetadata
 
   if (columnSchema.data_type === "ARRAY") {
     let data_type = columnSchema.actual_type?.toString().slice(1) ?? null

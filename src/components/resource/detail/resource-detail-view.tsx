@@ -66,7 +66,7 @@ export function ResourceDetailView({
                     {value ? (
                       columnMetadata.variant === "rich_text" ? (
                         <Editor
-                          name={columnMetadata.label}
+                          name={columnMetadata.name}
                           value={value as string}
                           disabled
                         />

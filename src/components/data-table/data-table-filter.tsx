@@ -221,7 +221,7 @@ function DataTableFilterItem<TData>({
             />
           }
         >
-          <span className="truncate">{columnMeta?.label ?? filter.id}</span>
+          <span className="truncate">{columnMeta?.name ?? filter.id}</span>
           <ChevronsUpDownIcon data-icon="inline-end" className="opacity-50" />
         </PopoverTrigger>
         <PopoverContent className="w-40 p-0" align="start">
@@ -239,9 +239,7 @@ function DataTableFilterItem<TData>({
                       setFieldOpen(false)
                     }}
                   >
-                    <span className="truncate">
-                      {col.columnDef.meta?.label}
-                    </span>
+                    <span className="truncate">{col.columnDef.meta?.name}</span>
                     <CheckIcon
                       className={cn(
                         "ml-auto size-4",
@@ -413,7 +411,7 @@ function FilterValueInput({
           <PopoverContent className="w-48 p-0" align="start">
             <Command>
               <CommandInput
-                placeholder={`Search ${columnMeta?.label ?? ""}...`}
+                placeholder={`Search ${columnMeta?.name ?? ""}...`}
               />
               <CommandList className="max-h-48">
                 <CommandEmpty>No results found.</CommandEmpty>

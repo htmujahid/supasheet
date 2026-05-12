@@ -15,27 +15,23 @@ import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { cn } from "#/lib/utils"
 
-import { getDataTypeIcon } from "../icons"
-
 export const ResourceGridColumnHeader = memo(function <TData, TValue>({
   column,
   title,
   className,
-  columnSchema,
-  tableSchema,
   isSorted,
 }: {
   column: Column<TData, TValue>
   title: string
   className?: string
-  tableSchema: TableSchema | null
-  columnSchema: ColumnSchema
   isSorted: false | "asc" | "desc"
 }) {
   if (!column.getCanSort() && !column.getCanHide()) {
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
-        {getDataTypeIcon(tableSchema, columnSchema)}
+        {column.columnDef.meta?.icon && (
+          <span className="shrink-0">{column.columnDef.meta.icon}</span>
+        )}
         {formatTitle(title)}
       </div>
     )
@@ -49,7 +45,9 @@ export const ResourceGridColumnHeader = memo(function <TData, TValue>({
           className
         )}
       >
-        {getDataTypeIcon(tableSchema, columnSchema)}
+        {column.columnDef.meta?.icon && (
+          <span className="shrink-0">{column.columnDef.meta.icon}</span>
+        )}
         <span className="truncate">{formatTitle(title)}</span>
         {column.getCanSort() &&
           (isSorted === "desc" ? (

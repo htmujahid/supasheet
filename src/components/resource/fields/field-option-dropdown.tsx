@@ -8,14 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import type { ColumnMetadata } from "#/types/fields"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 export function FieldOptionDropdown({
   columnMetadata,
   setValue,
   children,
 }: {
-  columnMetadata: ColumnMetadata
+  columnMetadata: ColumnFieldMetadata
   setValue: (value: string | null | undefined) => void
   children?: React.ReactNode
 }) {

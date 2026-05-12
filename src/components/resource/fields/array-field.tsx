@@ -16,7 +16,7 @@ import {
   SortableItem,
   SortableItemHandle,
 } from "#/components/ui/sortable"
-import type { ColumnMetadata } from "#/types/fields"
+import type { ColumnFieldMetadata } from "#/types/fields"
 
 import type { ResourceFormApi } from "../form-hook"
 import { useFieldContext } from "../form-hook"
@@ -27,7 +27,7 @@ export function ArrayField({
   columnMetadata,
 }: {
   form: ResourceFormApi
-  columnMetadata: ColumnMetadata
+  columnMetadata: ColumnFieldMetadata
 }) {
   const field = useFieldContext<unknown[]>()
 

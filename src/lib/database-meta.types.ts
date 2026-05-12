@@ -132,6 +132,8 @@ export type MetaViewItem =
 
 export type TableMetadata = {
   display?: "block" | "none"
+  name?: string
+  description?: string
   icon?: string
   inlineForm?: boolean
   query?: {
@@ -152,12 +154,21 @@ export type TableMetadata = {
 
 export type ViewMetadata = {
   display?: "block" | "none"
+  name?: string
+  description?: string
   icon?: string
   primaryItem?: string
   items?: MetaViewItem[]
+  sections?: FieldSection[]
 }
 
-export type EnumMetadata = {
+export type ColumnMetadata = {
+  title?: string
+  description?: string
+  icon?: string
+}
+
+export type EnumColumnMetadata = ColumnMetadata & {
   progress?: boolean
   enums?: {
     [key: string]: {
@@ -171,4 +182,14 @@ export type EnumMetadata = {
         | "info"
     }
   }
+}
+
+export type FileColumnMetadata = ColumnMetadata & {
+  accept?: string
+  maxFiles?: number
+  maxSize?: number
+}
+
+export type AvatarColumnMetadata = ColumnMetadata & {
+  maxSize?: number
 }

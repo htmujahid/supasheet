@@ -7,15 +7,11 @@ import { AlertCircleIcon, FileUpIcon, XIcon } from "lucide-react"
 import { Button } from "#/components/ui/button"
 import { useFileUpload } from "#/hooks/use-file-upload"
 import type { FileMetadata, FileWithPreview } from "#/hooks/use-file-upload"
+import type { FileColumnMetadata } from "#/lib/database-meta.types"
 import { formatFileSize, getFileIcon } from "#/lib/files"
 import { supabase } from "#/lib/supabase/client"
 import { cn } from "#/lib/utils"
-import type {
-  FileFieldConfig,
-  FileFieldProps,
-  FileObject,
-  UploadProgress,
-} from "#/types/fields"
+import type { FileFieldProps, FileObject, UploadProgress } from "#/types/fields"
 
 import { useFieldContext } from "../form-hook"
 import {
@@ -25,7 +21,7 @@ import {
 
 export function FileField({ columnMetadata, columnSchema }: FileFieldProps) {
   const field = useFieldContext<FileObject[]>()
-  const config = JSON.parse(columnSchema.comment ?? "{}") as FileFieldConfig
+  const config = JSON.parse(columnSchema.comment ?? "{}") as FileColumnMetadata
   const maxSize = config.maxSize ?? 5 * 1024 * 1024
   const maxFiles = config.maxFiles ?? 1
   const accept = config.accept ?? "*"
