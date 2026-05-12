@@ -393,9 +393,9 @@ function RouteComponent() {
     `${schema}.${resource}:update` as AppPermission
   )
 
-  const resourceDisplayName = (
-    JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-  ).name ?? formatTitle(resource)
+  const resourceDisplayName =
+    (JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ??
+    formatTitle(resource)
 
   const { colByName, progressFields, filteredPlan } = useMemo(() => {
     const tableMeta = JSON.parse(

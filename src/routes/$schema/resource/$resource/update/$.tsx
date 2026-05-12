@@ -196,9 +196,9 @@ function RouteComponent() {
   const { schema, resource, _splat } = Route.useParams()
 
   const { tableSchema, columnsSchema } = Route.useLoaderData()
-  const resourceDisplayName = (
-    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  ).name ?? formatTitle(resource)
+  const resourceDisplayName =
+    (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).name ??
+    formatTitle(resource)
 
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
   const pk = parsePkSplat(_splat ?? "", primaryKeys)

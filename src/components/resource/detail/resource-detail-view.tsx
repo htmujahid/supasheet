@@ -46,7 +46,8 @@ export function ResourceDetailView({
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
             <CardTitle>
-              {(JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ?? formatTitle(resourceSchema.name as string)}
+              {(JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata)
+                .name ?? formatTitle(resourceSchema.name as string)}
             </CardTitle>
             <CardDescription>
               View resource details and properties

@@ -207,9 +207,9 @@ function RouteComponent() {
   const { schema, resource } = Route.useParams()
 
   const { columnsSchema, tableSchema } = Route.useLoaderData()
-  const resourceDisplayName = (
-    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).name ?? formatTitle(tableSchema.name)
+  const resourceDisplayName =
+    (JSON.parse(tableSchema.comment ?? "{}") as TableMetadata).name ??
+    formatTitle(tableSchema.name)
 
   return (
     <>
