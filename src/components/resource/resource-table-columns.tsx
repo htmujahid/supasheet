@@ -112,7 +112,14 @@ export function getResourceTableColumns({
     })
   }
 
-  for (const col of columnsSchema) {
+  const selectColumns = tableMeta.query?.select
+  const visibleColumns = selectColumns
+    ? selectColumns
+        .map((name) => columnsSchema.find((col) => (col.name ?? col.id) === name))
+        .filter(Boolean) as ColumnSchema[]
+    : columnsSchema
+
+  for (const col of visibleColumns) {
     const name = col.name ?? col.id
 
     cols.push({

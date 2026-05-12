@@ -181,7 +181,7 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
       let query = supabase
         .schema(schema)
         .from(resource)
-        .select("*" + joins.join(""), { count: "exact" })
+        .select((defaultQuery?.select?.join(",") ?? "*") + joins.join(""), { count: "exact" })
 
       if (page && pageSize) {
         query = query.range((page - 1) * pageSize, page * pageSize - 1)

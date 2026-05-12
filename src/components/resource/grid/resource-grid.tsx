@@ -16,6 +16,7 @@ import type {
   ColumnSchema,
   PrimaryKey,
   ResourceSchema,
+  TableMetadata,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
@@ -47,10 +48,16 @@ export function ResourceGrid({
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
 
-  const columns = useMemo(
-    () => getResourceGridColumns({ columnsSchema, tableSchema }),
-    [columnsSchema, tableSchema]
-  )
+  const columns = useMemo(() => {
+    const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
+    const selectColumns = tableMeta.query?.select
+    const visibleColumnsSchema = selectColumns
+      ? selectColumns
+          .map((name) => columnsSchema.find((col) => (col.name ?? col.id) === name))
+          .filter(Boolean) as ColumnSchema[]
+      : columnsSchema
+    return getResourceGridColumns({ columnsSchema: visibleColumnsSchema, tableSchema })
+  }, [columnsSchema, tableSchema, resourceSchema.comment])
 
   const table = useDataTable({
     columns,

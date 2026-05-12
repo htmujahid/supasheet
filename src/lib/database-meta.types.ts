@@ -143,6 +143,7 @@ export type TableMetadata = {
       operator: string
     }[]
     join?: { table: string; on: string; columns: string[] }[]
+    select?: string[]
   }
   primaryItem?: string
   items?: MetaViewItem[]
