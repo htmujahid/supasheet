@@ -1,4 +1,4 @@
-import { getRouteApi, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
@@ -19,21 +19,24 @@ import {
   isSkippedForCreate,
 } from "./resource-form-utils"
 
-const routeApi = getRouteApi("/$schema/resource/$resource/new")
-
 export function ResourceNewForm({
   columnsSchema,
   tableSchema,
+  redirect,
+  defaults,
+  saveOnly,
 }: {
   columnsSchema: ColumnSchema[]
   tableSchema: TableSchema
+  redirect?: string
+  defaults?: Record<string, string>
+  saveOnly?: boolean
 }) {
   const schema = tableSchema.schema
   const table = tableSchema.name
 
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { redirect, defaults } = routeApi.useSearch()
   const safeRedirect =
     redirect?.startsWith("/") && !redirect.startsWith("//")
       ? redirect
@@ -84,14 +87,13 @@ export function ResourceNewForm({
 
       const target = (meta as { target?: string } | undefined)?.target ?? "stay"
 
-      if (target === "stay" && splat) {
+      if (safeRedirect) {
+        navigate({ to: safeRedirect })
+      } else if (target === "stay" && splat) {
         navigate({
           to: "/$schema/resource/$resource/update/$",
           params: { schema, resource: table, _splat: splat },
-          search: safeRedirect ? { redirect: safeRedirect } : {},
         })
-      } else if (safeRedirect) {
-        navigate({ to: safeRedirect })
       } else {
         navigate({
           to: "/$schema/resource/$resource",
@@ -115,6 +117,7 @@ export function ResourceNewForm({
         mode="create"
         headerTitle="New record"
         redirect={safeRedirect}
+        saveOnly={saveOnly}
       />
     </form>
   )

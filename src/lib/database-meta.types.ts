@@ -135,6 +135,7 @@ export type TableMetadata = {
   name?: string
   description?: string
   icon?: string
+  single?: boolean
   inlineForm?: boolean
   query?: {
     sort?: { id: string; desc: boolean }[]
@@ -157,6 +158,7 @@ export type ViewMetadata = {
   name?: string
   description?: string
   icon?: string
+  single?: boolean
   primaryItem?: string
   items?: MetaViewItem[]
   sections?: FieldSection[]

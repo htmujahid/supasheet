@@ -593,3 +593,20 @@ INSERT INTO store.reviews (id, product_id, user_id, rating, title, content, stat
  'Firm enough to actually release knots without being unbearable on the IT band. Holds shape well.',
  'pending', false, 0,
  current_timestamp - interval '3 days', current_timestamp - interval '3 days');
+
+
+----------------------------------------------------------------
+-- Store Settings (single record)
+----------------------------------------------------------------
+
+INSERT INTO store.store_settings (store_name, store_description, contact_email, contact_phone, currency, tax_rate, shipping_rate, free_shipping_threshold) VALUES
+(
+    'Supasheet Store',
+    'Your one-stop shop for electronics, home goods, and lifestyle essentials.',
+    'hello@supasheetstore.example.com',
+    '+1 (800) 555-0100',
+    'USD',
+    8.25,
+    5.99,
+    75.00
+);

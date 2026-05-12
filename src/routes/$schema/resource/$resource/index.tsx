@@ -20,6 +20,12 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
       ? item?.meta?.items?.find((i) => i.id === primary)
       : null
 
+    if (item?.meta?.single) {
+      throw redirect({
+        to: "/$schema/resource/$resource/single",
+        params: { schema, resource },
+      })
+    }
     if (primaryItem?.type === "kanban") {
       throw redirect({
         to: "/$schema/resource/$resource/kanban/$kanbanId",

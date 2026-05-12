@@ -486,3 +486,18 @@ BEGIN
 
     RAISE NOTICE 'Blog seed inserted: 21 authors, 6 categories, 12 posts (8 published / 2 drafts / 1 scheduled / 1 archived), 6 comments';
 END $$;
+
+
+----------------------------------------------------------------
+-- Blog Settings (single record)
+----------------------------------------------------------------
+
+INSERT INTO blog.blog_settings (blog_name, tagline, posts_per_page, allow_comments, require_comment_approval, footer_text) VALUES
+(
+    'The Supasheet Blog',
+    'Engineering, travel, food, and everything in between.',
+    10,
+    true,
+    true,
+    '© 2026 The Supasheet Blog. All rights reserved.'
+);

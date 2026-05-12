@@ -43,6 +43,7 @@ type ResourceFormLayoutProps = {
   primaryKeyDisplay?: PrimaryKeyDisplay[]
   headerTitle: string
   redirect?: string
+  saveOnly?: boolean
 }
 
 export function ResourceFormLayout({
@@ -53,6 +54,7 @@ export function ResourceFormLayout({
   primaryKeyDisplay,
   headerTitle,
   redirect,
+  saveOnly,
 }: ResourceFormLayoutProps) {
   const navigate = useNavigate()
   const schema = tableSchema?.schema
@@ -103,13 +105,13 @@ export function ResourceFormLayout({
         <>
           <Button
             type="button"
-            variant={showSecondary ? "outline" : "default"}
+            variant={!saveOnly && showSecondary ? "outline" : "default"}
             disabled={!canSubmit || isSubmitting}
             onClick={handlePrimary}
           >
             {isSubmitting ? "Saving…" : "Save"}
           </Button>
-          {showSecondary ? (
+          {!saveOnly && showSecondary ? (
             <Button
               type="button"
               disabled={!canSubmit || isSubmitting}
@@ -125,9 +127,11 @@ export function ResourceFormLayout({
 
   const footer = (
     <div className="flex flex-wrap justify-end gap-2 pt-4">
-      <Button type="button" variant="outline" onClick={handleCancel}>
-        Cancel
-      </Button>
+      {!saveOnly ? (
+        <Button type="button" variant="outline" onClick={handleCancel}>
+          Cancel
+        </Button>
+      ) : null}
       {submitButtons}
     </div>
   )

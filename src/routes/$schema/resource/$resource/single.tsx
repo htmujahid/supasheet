@@ -4,19 +4,16 @@ import {
   notFound,
   useRouter,
 } from "@tanstack/react-router"
-import type {
-  ErrorComponentProps,
-  SearchSchemaInput,
-} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, EyeIcon, FileXIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { parsePkSplat } from "#/components/resource/resource-table-columns"
+import { ResourceNewForm } from "#/components/resource/resource-new-form"
 import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
-import { Button, buttonVariants } from "#/components/ui/button"
+import { Button } from "#/components/ui/button"
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
 import {
   Empty,
@@ -30,24 +27,20 @@ import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
-  singleResourceDataQueryOptions,
+  resourceDataQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
-  validateSearch: (search: { redirect?: string } & SearchSchemaInput) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-  }),
+export const Route = createFileRoute("/$schema/resource/$resource/single")({
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(
-        (p) => p.permission === `${schema}.${resource}:update`
+        (p) => p.permission === `${schema}.${resource}:select`
       )
     )
       throw notFound()
   },
-  loader: async ({ context, params }) => {
-    const { schema, resource, _splat } = params
+  loader: async ({ context, params: { schema, resource } }) => {
     const [tableSchema, columnsSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
         tableSchemaQueryOptions(schema, resource)
@@ -57,20 +50,20 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
       ),
     ])
     if (!tableSchema || !columnsSchema?.length) throw notFound()
-    const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
-    if (!primaryKeys.length) throw notFound()
-    const pk = parsePkSplat(_splat ?? "", primaryKeys)
-    const record = await context.queryClient.ensureQueryData(
-      singleResourceDataQueryOptions(schema, resource, pk)
+    context.queryClient.ensureQueryData(
+      resourceDataQueryOptions(schema, resource, undefined, 1, 1)
     )
-    if (!record) throw notFound()
     return { tableSchema, columnsSchema }
   },
-  head: ({ params }) => ({
-    meta: [
-      { title: `Edit Record | ${formatTitle(params.resource)} | Supasheet` },
-    ],
-  }),
+  head: ({ params, loaderData }) => {
+    const meta = loaderData
+      ? (JSON.parse(
+          (loaderData.tableSchema as { comment?: string }).comment ?? "{}"
+        ) as TableMetadata)
+      : {}
+    const name = meta.name ?? formatTitle(params.resource)
+    return { meta: [{ title: `${name} | Supasheet` }] }
+  },
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()
     return (
@@ -81,7 +74,6 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
               title: formatTitle(resource),
               url: `/${schema}/resource/${resource}`,
             },
-            { title: "Edit record" },
           ]}
         />
         <div className="flex flex-1 flex-col">
@@ -126,7 +118,6 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
               title: formatTitle(resource),
               url: `/${schema}/resource/${resource}`,
             },
-            { title: "Edit record" },
           ]}
         />
         <div className="flex flex-1 items-center justify-center p-8">
@@ -166,7 +157,6 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
               title: formatTitle(resource),
               url: `/${schema}/resource/${resource}`,
             },
-            { title: "Edit record" },
           ]}
         />
         <div className="flex flex-1 items-center justify-center p-8">
@@ -175,13 +165,10 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
               <EmptyMedia variant="icon">
                 <FileXIcon />
               </EmptyMedia>
-              <EmptyTitle>Record not found</EmptyTitle>
+              <EmptyTitle>Resource not found</EmptyTitle>
               <EmptyDescription>
-                <Link
-                  to="/$schema/resource/$resource"
-                  params={{ schema, resource }}
-                >
-                  Back to {formatTitle(resource)}
+                <Link to="/$schema" params={{ schema }}>
+                  Back to {formatTitle(schema)}
                 </Link>
               </EmptyDescription>
             </EmptyHeader>
@@ -193,49 +180,41 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
 })
 
 function RouteComponent() {
-  const { schema, resource, _splat } = Route.useParams()
-  const { redirect } = Route.useSearch()
-
+  const { schema, resource } = Route.useParams()
   const { tableSchema, columnsSchema } = Route.useLoaderData()
+
   const resourceDisplayName =
     (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).name ??
     formatTitle(resource)
 
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
-  const pk = parsePkSplat(_splat ?? "", primaryKeys)
-  const { data: record } = useSuspenseQuery(
-    singleResourceDataQueryOptions(schema, resource, pk)
+
+  const { data } = useSuspenseQuery(
+    resourceDataQueryOptions(schema, resource, undefined, 1, 1)
   )
+  const record = data?.result[0]
 
   return (
     <>
-      <DefaultHeader
-        breadcrumbs={[
-          {
-            title: resourceDisplayName,
-            url: `/${schema}/resource/${resource}`,
-          },
-          { title: "Edit record" },
-        ]}
-      >
-        <Link
-          className={buttonVariants({ size: "sm", variant: "outline" })}
-          to="/$schema/resource/$resource/detail/$"
-          params={{ schema, resource, _splat: _splat ?? "" }}
-        >
-          <EyeIcon className="mr-1.5 size-3.5" />
-          View
-        </Link>
-      </DefaultHeader>
+      <DefaultHeader breadcrumbs={[{ title: resourceDisplayName }]} />
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-7xl px-4 py-4">
-          <ResourceUpdateForm
-            columnsSchema={columnsSchema}
-            primaryKeys={primaryKeys}
-            record={record!}
-            tableSchema={tableSchema}
-            redirect={redirect}
-          />
+          {record ? (
+            <ResourceUpdateForm
+              columnsSchema={columnsSchema}
+              primaryKeys={primaryKeys}
+              record={record}
+              tableSchema={tableSchema}
+              saveOnly
+            />
+          ) : (
+            <ResourceNewForm
+              columnsSchema={columnsSchema}
+              tableSchema={tableSchema}
+              redirect={`/${schema}/resource/${resource}/single`}
+              saveOnly
+            />
+          )}
         </div>
       </div>
     </>

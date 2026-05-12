@@ -205,6 +205,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
+  const { redirect, defaults } = Route.useSearch()
 
   const { columnsSchema, tableSchema } = Route.useLoaderData()
   const resourceDisplayName =
@@ -227,6 +228,8 @@ function RouteComponent() {
           <ResourceNewForm
             columnsSchema={columnsSchema}
             tableSchema={tableSchema}
+            redirect={redirect}
+            defaults={defaults}
           />
         </div>
       </div>

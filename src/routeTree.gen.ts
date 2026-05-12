@@ -58,6 +58,7 @@ import { Route as CoreUsersUserIdSecurityRouteImport } from './routes/core/users
 import { Route as CoreUsersUserIdEditRouteImport } from './routes/core/users/$userId/edit'
 import { Route as CoreUsersUserIdDangerRouteImport } from './routes/core/users/$userId/danger'
 import { Route as SchemaResourceResourceTableRouteImport } from './routes/$schema/resource/$resource/table'
+import { Route as SchemaResourceResourceSingleRouteImport } from './routes/$schema/resource/$resource/single'
 import { Route as SchemaResourceResourceNewRouteImport } from './routes/$schema/resource/$resource/new'
 import { Route as SchemaResourceResourceGridRouteImport } from './routes/$schema/resource/$resource/grid'
 import { Route as SchemaResourceResourceUpdateSplatRouteImport } from './routes/$schema/resource/$resource/update/$'
@@ -319,6 +320,12 @@ const SchemaResourceResourceTableRoute =
     path: '/table',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
+const SchemaResourceResourceSingleRoute =
+  SchemaResourceResourceSingleRouteImport.update({
+    id: '/single',
+    path: '/single',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
 const SchemaResourceResourceNewRoute =
   SchemaResourceResourceNewRouteImport.update({
     id: '/new',
@@ -411,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
+  '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
   '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
@@ -463,6 +471,7 @@ export interface FileRoutesByTo {
   '/storage/$bucketId': typeof StorageBucketIdIndexRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
+  '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
   '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
@@ -523,6 +532,7 @@ export interface FileRoutesById {
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
+  '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
   '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
@@ -584,6 +594,7 @@ export interface FileRouteTypes {
     | '/storage/$bucketId/'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
+    | '/$schema/resource/$resource/single'
     | '/$schema/resource/$resource/table'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
@@ -636,6 +647,7 @@ export interface FileRouteTypes {
     | '/storage/$bucketId'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
+    | '/$schema/resource/$resource/single'
     | '/$schema/resource/$resource/table'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
@@ -695,6 +707,7 @@ export interface FileRouteTypes {
     | '/storage/$bucketId/'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
+    | '/$schema/resource/$resource/single'
     | '/$schema/resource/$resource/table'
     | '/core/users/$userId/danger'
     | '/core/users/$userId/edit'
@@ -1068,6 +1081,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceTableRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/single': {
+      id: '/$schema/resource/$resource/single'
+      path: '/single'
+      fullPath: '/$schema/resource/$resource/single'
+      preLoaderRoute: typeof SchemaResourceResourceSingleRouteImport
+      parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
     '/$schema/resource/$resource/new': {
       id: '/$schema/resource/$resource/new'
       path: '/new'
@@ -1130,6 +1150,7 @@ declare module '@tanstack/react-router' {
 interface SchemaResourceResourceRouteRouteChildren {
   SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRoute
   SchemaResourceResourceNewRoute: typeof SchemaResourceResourceNewRoute
+  SchemaResourceResourceSingleRoute: typeof SchemaResourceResourceSingleRoute
   SchemaResourceResourceTableRoute: typeof SchemaResourceResourceTableRoute
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
   SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
@@ -1144,6 +1165,7 @@ const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRoute
   {
     SchemaResourceResourceGridRoute: SchemaResourceResourceGridRoute,
     SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
+    SchemaResourceResourceSingleRoute: SchemaResourceResourceSingleRoute,
     SchemaResourceResourceTableRoute: SchemaResourceResourceTableRoute,
     SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
     SchemaResourceResourceCalendarCalendarIdRoute:

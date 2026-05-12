@@ -11,6 +11,11 @@ begin;
 create type blog.post_status as enum ('draft', 'scheduled', 'published', 'archived');
 create type blog.comment_status as enum ('pending', 'approved', 'spam');
 
+-- Blog settings (singleton)
+alter type supasheet.app_permission add value 'blog.blog_settings:select';
+alter type supasheet.app_permission add value 'blog.blog_settings:insert';
+alter type supasheet.app_permission add value 'blog.blog_settings:update';
+
 -- Authors
 alter type supasheet.app_permission add value 'blog.authors:select';
 alter type supasheet.app_permission add value 'blog.authors:insert';
@@ -62,6 +67,59 @@ alter type supasheet.app_permission add value 'blog.posts_by_category_bar:select
 alter type supasheet.app_permission add value 'blog.posts_report:select';
 
 commit;
+
+
+----------------------------------------------------------------
+-- Blog Settings  (single resource — one row only)
+----------------------------------------------------------------
+
+create table if not exists blog.blog_settings (
+    id                       uuid primary key default gen_random_uuid(),
+    blog_name                varchar(255) not null default 'My Blog',
+    tagline                  varchar(500),
+    description              supasheet.rich_text,
+    logo                     supasheet.file,
+    posts_per_page           integer not null default 10,
+    allow_comments           boolean not null default true,
+    require_comment_approval boolean not null default true,
+    footer_text              text,
+
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+comment on table blog.blog_settings is
+'{
+    "icon": "BookOpen",
+    "name": "Blog Settings",
+    "display": "block",
+    "single": true,
+    "sections": [
+        {"id": "identity",  "title": "Identity",  "fields": ["blog_name", "tagline", "description", "logo"]},
+        {"id": "content",   "title": "Content",   "fields": ["posts_per_page", "footer_text"]},
+        {"id": "comments",  "title": "Comments",  "fields": ["allow_comments", "require_comment_approval"]}
+    ]
+}';
+
+comment on column blog.blog_settings.logo is '{"name": "Logo", "accept": "image/*", "maxSize": 2097152}';
+
+revoke all on table blog.blog_settings from authenticated, service_role;
+grant select, insert, update on table blog.blog_settings to authenticated;
+
+alter table blog.blog_settings enable row level security;
+
+create policy blog_settings_select on blog.blog_settings
+    for select to authenticated
+    using (supasheet.has_permission('blog.blog_settings:select'));
+
+create policy blog_settings_insert on blog.blog_settings
+    for insert to authenticated
+    with check (supasheet.has_permission('blog.blog_settings:insert'));
+
+create policy blog_settings_update on blog.blog_settings
+    for update to authenticated
+    using  (supasheet.has_permission('blog.blog_settings:update'))
+    with check (supasheet.has_permission('blog.blog_settings:update'));
 
 
 ----------------------------------------------------------------
@@ -742,6 +800,10 @@ comment on view blog.posts_report is
 ----------------------------------------------------------------
 
 insert into supasheet.role_permissions (role, permission) values
+    ('x-admin', 'blog.blog_settings:select'),
+    ('x-admin', 'blog.blog_settings:insert'),
+    ('x-admin', 'blog.blog_settings:update'),
+
     ('x-admin', 'blog.authors:select'),
     ('x-admin', 'blog.authors:insert'),
     ('x-admin', 'blog.authors:update'),
@@ -788,6 +850,15 @@ insert into supasheet.role_permissions (role, permission) values
 ----------------------------------------------------------------
 -- Audit triggers
 ----------------------------------------------------------------
+
+create trigger audit_blog_blog_settings_insert
+    after insert on blog.blog_settings
+    for each row execute function supasheet.audit_trigger_function();
+
+create trigger audit_blog_blog_settings_update
+    after update on blog.blog_settings
+    for each row execute function supasheet.audit_trigger_function();
+
 
 create trigger audit_blog_authors_insert
     after insert on blog.authors

@@ -39,6 +39,11 @@ alter type supasheet.app_permission add value 'store.reviews:delete';
 -- Users mirror view
 alter type supasheet.app_permission add value 'store.users:select';
 
+-- Store settings (singleton)
+alter type supasheet.app_permission add value 'store.store_settings:select';
+alter type supasheet.app_permission add value 'store.store_settings:insert';
+alter type supasheet.app_permission add value 'store.store_settings:update';
+
 -- Widget / report / chart permissions
 alter type supasheet.app_permission add value 'store.order_report:select';
 alter type supasheet.app_permission add value 'store.revenue_summary:select';
@@ -53,6 +58,62 @@ alter type supasheet.app_permission add value 'store.product_category_bar:select
 alter type supasheet.app_permission add value 'store.order_metrics_radar:select';
 alter type supasheet.app_permission add value 'store.product_ratings:select';
 commit;
+
+
+----------------------------------------------------------------
+-- Store Settings  (single resource — one row only)
+----------------------------------------------------------------
+
+create table store.store_settings (
+    id                       uuid primary key default extensions.uuid_generate_v4(),
+    store_name               varchar(255) not null default 'My Store',
+    store_description        text,
+    logo                     supasheet.file,
+    contact_email            varchar(255),
+    contact_phone            varchar(50),
+    currency                 varchar(3) not null default 'USD',
+    tax_rate                 numeric(5, 2) not null default 0,
+    shipping_rate            numeric(10, 2) not null default 0,
+    free_shipping_threshold  numeric(10, 2),
+    return_policy            supasheet.rich_text,
+
+    created_at timestamptz default current_timestamp,
+    updated_at timestamptz default current_timestamp
+);
+
+comment on table store.store_settings is
+'{
+    "icon": "Store",
+    "name": "Store Settings",
+    "display": "block",
+    "single": true,
+    "sections": [
+        {"id": "identity",  "title": "Identity",  "fields": ["store_name", "store_description", "logo"]},
+        {"id": "contact",   "title": "Contact",   "fields": ["contact_email", "contact_phone"]},
+        {"id": "commerce",  "title": "Commerce",  "description": "Currency, tax, and shipping defaults", "fields": ["currency", "tax_rate", "shipping_rate", "free_shipping_threshold"]},
+        {"id": "policy",    "title": "Policy",    "collapsible": true, "fields": ["return_policy"]}
+    ]
+}';
+
+comment on column store.store_settings.logo is '{"name": "Logo", "accept": "image/*", "maxSize": 2097152}';
+
+revoke all on table store.store_settings from authenticated, service_role;
+grant select, insert, update on table store.store_settings to authenticated;
+
+alter table store.store_settings enable row level security;
+
+create policy store_settings_select on store.store_settings
+    for select to authenticated
+    using (supasheet.has_permission('store.store_settings:select'));
+
+create policy store_settings_insert on store.store_settings
+    for insert to authenticated
+    with check (supasheet.has_permission('store.store_settings:insert'));
+
+create policy store_settings_update on store.store_settings
+    for update to authenticated
+    using  (supasheet.has_permission('store.store_settings:update'))
+    with check (supasheet.has_permission('store.store_settings:update'));
 
 
 ----------------------------------------------------------------
@@ -688,6 +749,10 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'store.reviews:update'),
     ('x-admin', 'store.reviews:delete'),
 
+    ('x-admin', 'store.store_settings:select'),
+    ('x-admin', 'store.store_settings:insert'),
+    ('x-admin', 'store.store_settings:update'),
+
     ('x-admin', 'store.users:select'),
 
     ('x-admin', 'store.order_report:select'),
@@ -707,6 +772,15 @@ insert into supasheet.role_permissions (role, permission) values
 ----------------------------------------------------------------
 -- Audit triggers
 ----------------------------------------------------------------
+
+create trigger audit_store_store_settings_insert
+    after insert on store.store_settings
+    for each row execute function supasheet.audit_trigger_function();
+
+create trigger audit_store_store_settings_update
+    after update on store.store_settings
+    for each row execute function supasheet.audit_trigger_function();
+
 
 create trigger audit_store_products_insert
     after insert on store.products
