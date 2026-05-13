@@ -15,41 +15,48 @@ create type blog.comment_status as enum ('pending', 'approved', 'spam');
 alter type supasheet.app_permission add value 'blog.blog_settings:select';
 alter type supasheet.app_permission add value 'blog.blog_settings:insert';
 alter type supasheet.app_permission add value 'blog.blog_settings:update';
+alter type supasheet.app_permission add value 'blog.blog_settings:audit';
 
 -- Authors
 alter type supasheet.app_permission add value 'blog.authors:select';
 alter type supasheet.app_permission add value 'blog.authors:insert';
 alter type supasheet.app_permission add value 'blog.authors:update';
 alter type supasheet.app_permission add value 'blog.authors:delete';
+alter type supasheet.app_permission add value 'blog.authors:audit';
 
 -- Social links
 alter type supasheet.app_permission add value 'blog.social_links:select';
 alter type supasheet.app_permission add value 'blog.social_links:insert';
 alter type supasheet.app_permission add value 'blog.social_links:update';
 alter type supasheet.app_permission add value 'blog.social_links:delete';
+alter type supasheet.app_permission add value 'blog.social_links:audit';
 
 -- Categories
 alter type supasheet.app_permission add value 'blog.categories:select';
 alter type supasheet.app_permission add value 'blog.categories:insert';
 alter type supasheet.app_permission add value 'blog.categories:update';
 alter type supasheet.app_permission add value 'blog.categories:delete';
+alter type supasheet.app_permission add value 'blog.categories:audit';
 
 -- Posts
 alter type supasheet.app_permission add value 'blog.posts:select';
 alter type supasheet.app_permission add value 'blog.posts:insert';
 alter type supasheet.app_permission add value 'blog.posts:update';
 alter type supasheet.app_permission add value 'blog.posts:delete';
+alter type supasheet.app_permission add value 'blog.posts:audit';
 
 -- Post categories junction (no :update — junction rows are insert/delete only)
 alter type supasheet.app_permission add value 'blog.post_categories:select';
 alter type supasheet.app_permission add value 'blog.post_categories:insert';
 alter type supasheet.app_permission add value 'blog.post_categories:delete';
+alter type supasheet.app_permission add value 'blog.post_categories:audit';
 
 -- Comments
 alter type supasheet.app_permission add value 'blog.comments:select';
 alter type supasheet.app_permission add value 'blog.comments:insert';
 alter type supasheet.app_permission add value 'blog.comments:update';
 alter type supasheet.app_permission add value 'blog.comments:delete';
+alter type supasheet.app_permission add value 'blog.comments:audit';
 
 -- Users mirror view
 alter type supasheet.app_permission add value 'blog.users:select';
@@ -803,35 +810,42 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'blog.blog_settings:select'),
     ('x-admin', 'blog.blog_settings:insert'),
     ('x-admin', 'blog.blog_settings:update'),
+    ('x-admin', 'blog.blog_settings:audit'),
 
     ('x-admin', 'blog.authors:select'),
     ('x-admin', 'blog.authors:insert'),
     ('x-admin', 'blog.authors:update'),
     ('x-admin', 'blog.authors:delete'),
+    ('x-admin', 'blog.authors:audit'),
 
     ('x-admin', 'blog.social_links:select'),
     ('x-admin', 'blog.social_links:insert'),
     ('x-admin', 'blog.social_links:update'),
     ('x-admin', 'blog.social_links:delete'),
+    ('x-admin', 'blog.social_links:audit'),
 
     ('x-admin', 'blog.categories:select'),
     ('x-admin', 'blog.categories:insert'),
     ('x-admin', 'blog.categories:update'),
     ('x-admin', 'blog.categories:delete'),
+    ('x-admin', 'blog.categories:audit'),
 
     ('x-admin', 'blog.posts:select'),
     ('x-admin', 'blog.posts:insert'),
     ('x-admin', 'blog.posts:update'),
     ('x-admin', 'blog.posts:delete'),
+    ('x-admin', 'blog.posts:audit'),
 
     ('x-admin', 'blog.post_categories:select'),
     ('x-admin', 'blog.post_categories:insert'),
     ('x-admin', 'blog.post_categories:delete'),
+    ('x-admin', 'blog.post_categories:audit'),
 
     ('x-admin', 'blog.comments:select'),
     ('x-admin', 'blog.comments:insert'),
     ('x-admin', 'blog.comments:update'),
     ('x-admin', 'blog.comments:delete'),
+    ('x-admin', 'blog.comments:audit'),
 
     ('x-admin', 'blog.users:select'),
 

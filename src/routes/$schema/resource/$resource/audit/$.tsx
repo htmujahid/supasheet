@@ -1,0 +1,156 @@
+import { Suspense } from "react"
+
+import { createFileRoute, notFound } from "@tanstack/react-router"
+
+import { useSuspenseQuery } from "@tanstack/react-query"
+
+import { HistoryIcon } from "lucide-react"
+
+import { ResourceAuditTimeline } from "#/components/resource/audit/resource-audit-timeline"
+import { DefaultHeader } from "#/components/layouts/default-header"
+import { Skeleton } from "#/components/ui/skeleton"
+import { formatTitle } from "#/lib/format"
+import {
+  resourceAuditLogsQueryOptions,
+  tableSchemaQueryOptions,
+} from "#/lib/supabase/data/resource"
+
+export const Route = createFileRoute("/$schema/resource/$resource/audit/$")({
+  beforeLoad: ({ context, params: { schema, resource } }) => {
+    const hasAudit = context.permissions?.some(
+      (p) => p.permission === `${schema}.${resource}:audit`
+    )
+    if (!hasAudit) throw notFound()
+  },
+  loader: async ({ context, params: { schema, resource, _splat } }) => {
+    const recordId = _splat || undefined
+
+    const [tableSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema, resource)
+      ),
+      context.queryClient.ensureQueryData(
+        resourceAuditLogsQueryOptions(schema, resource, recordId)
+      ),
+    ])
+
+    return { tableSchema, recordId }
+  },
+  head: ({ params }) => ({
+    meta: [
+      {
+        title: `Audit | ${formatTitle(params.resource)} | Supasheet`,
+      },
+    ],
+  }),
+  pendingComponent: PendingComponent,
+  component: RouteComponent,
+})
+
+function PendingComponent() {
+  const { schema, resource, _splat } = Route.useParams()
+  const recordId = _splat || undefined
+
+  return (
+    <>
+      <DefaultHeader
+        breadcrumbs={[
+          {
+            title: formatTitle(resource),
+            url: `/${schema}/resource/${resource}/table`,
+          },
+          ...(recordId
+            ? [
+                {
+                  title: recordId.slice(0, 8) + "…",
+                  url: `/${schema}/resource/${resource}/detail/${recordId}`,
+                },
+              ]
+            : []),
+          { title: "Audit Log" },
+        ]}
+      />
+      <div className="flex flex-1 flex-col">
+        <div className="@container/main flex flex-1 flex-col p-4">
+          <div className="mx-auto w-full max-w-2xl space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-3">
+                <Skeleton className="mt-1 h-3.5 w-3.5 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-2 rounded-lg border p-3">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-48" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function AuditTimelineBody() {
+  const { schema, resource, _splat } = Route.useParams()
+  const recordId = _splat || undefined
+
+  const { data: logs } = useSuspenseQuery(
+    resourceAuditLogsQueryOptions(schema, resource, recordId)
+  )
+
+  return <ResourceAuditTimeline logs={logs} />
+}
+
+function RouteComponent() {
+  const { schema, resource } = Route.useParams()
+  const { tableSchema, recordId } = Route.useLoaderData()
+  const resourceTitle = tableSchema?.comment
+    ? (() => {
+        try {
+          const meta = JSON.parse(tableSchema.comment)
+          return meta.label ?? formatTitle(resource)
+        } catch {
+          return formatTitle(resource)
+        }
+      })()
+    : formatTitle(resource)
+
+  return (
+    <>
+      <DefaultHeader
+        breadcrumbs={[
+          {
+            title: resourceTitle,
+            url: `/${schema}/resource/${resource}/table`,
+          },
+          ...(recordId
+            ? [
+                {
+                  title: recordId.slice(0, 8) + "…",
+                  url: `/${schema}/resource/${resource}/detail/${recordId}`,
+                },
+              ]
+            : []),
+          { title: "Audit Log" },
+        ]}
+      />
+      <div className="flex flex-1 flex-col">
+        <div className="@container/main flex flex-1 flex-col p-4">
+          <div className="mx-auto w-full max-w-2xl">
+            <div className="mb-4 flex items-center gap-2">
+              <HistoryIcon className="h-4 w-4 text-muted-foreground" />
+              <h2 className="text-sm font-medium text-muted-foreground">
+                {recordId
+                  ? `Change history for record ${recordId.slice(0, 8)}…`
+                  : `Change history for ${resourceTitle}`}
+              </h2>
+            </div>
+            <Suspense fallback={null}>
+              <AuditTimelineBody />
+            </Suspense>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

@@ -32,54 +32,63 @@ alter type supasheet.app_permission add value 'quality.standards:select';
 alter type supasheet.app_permission add value 'quality.standards:insert';
 alter type supasheet.app_permission add value 'quality.standards:update';
 alter type supasheet.app_permission add value 'quality.standards:delete';
+alter type supasheet.app_permission add value 'quality.standards:audit';
 
 -- Inspections
 alter type supasheet.app_permission add value 'quality.inspections:select';
 alter type supasheet.app_permission add value 'quality.inspections:insert';
 alter type supasheet.app_permission add value 'quality.inspections:update';
 alter type supasheet.app_permission add value 'quality.inspections:delete';
+alter type supasheet.app_permission add value 'quality.inspections:audit';
 
 -- Inspection items
 alter type supasheet.app_permission add value 'quality.inspection_items:select';
 alter type supasheet.app_permission add value 'quality.inspection_items:insert';
 alter type supasheet.app_permission add value 'quality.inspection_items:update';
 alter type supasheet.app_permission add value 'quality.inspection_items:delete';
+alter type supasheet.app_permission add value 'quality.inspection_items:audit';
 
 -- Non-conformances
 alter type supasheet.app_permission add value 'quality.non_conformances:select';
 alter type supasheet.app_permission add value 'quality.non_conformances:insert';
 alter type supasheet.app_permission add value 'quality.non_conformances:update';
 alter type supasheet.app_permission add value 'quality.non_conformances:delete';
+alter type supasheet.app_permission add value 'quality.non_conformances:audit';
 
 -- CAPA
 alter type supasheet.app_permission add value 'quality.capa:select';
 alter type supasheet.app_permission add value 'quality.capa:insert';
 alter type supasheet.app_permission add value 'quality.capa:update';
 alter type supasheet.app_permission add value 'quality.capa:delete';
+alter type supasheet.app_permission add value 'quality.capa:audit';
 
 -- Audits
 alter type supasheet.app_permission add value 'quality.audits:select';
 alter type supasheet.app_permission add value 'quality.audits:insert';
 alter type supasheet.app_permission add value 'quality.audits:update';
 alter type supasheet.app_permission add value 'quality.audits:delete';
+alter type supasheet.app_permission add value 'quality.audits:audit';
 
 -- Audit findings
 alter type supasheet.app_permission add value 'quality.audit_findings:select';
 alter type supasheet.app_permission add value 'quality.audit_findings:insert';
 alter type supasheet.app_permission add value 'quality.audit_findings:update';
 alter type supasheet.app_permission add value 'quality.audit_findings:delete';
+alter type supasheet.app_permission add value 'quality.audit_findings:audit';
 
 -- Certifications
 alter type supasheet.app_permission add value 'quality.certifications:select';
 alter type supasheet.app_permission add value 'quality.certifications:insert';
 alter type supasheet.app_permission add value 'quality.certifications:update';
 alter type supasheet.app_permission add value 'quality.certifications:delete';
+alter type supasheet.app_permission add value 'quality.certifications:audit';
 
 -- Complaints
 alter type supasheet.app_permission add value 'quality.complaints:select';
 alter type supasheet.app_permission add value 'quality.complaints:insert';
 alter type supasheet.app_permission add value 'quality.complaints:update';
 alter type supasheet.app_permission add value 'quality.complaints:delete';
+alter type supasheet.app_permission add value 'quality.complaints:audit';
 
 -- Users mirror
 alter type supasheet.app_permission add value 'quality.users:select';
@@ -1517,46 +1526,55 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'quality.standards:insert'),
     ('x-admin', 'quality.standards:update'),
     ('x-admin', 'quality.standards:delete'),
+    ('x-admin', 'quality.standards:audit'),
 
     ('x-admin', 'quality.inspections:select'),
     ('x-admin', 'quality.inspections:insert'),
     ('x-admin', 'quality.inspections:update'),
     ('x-admin', 'quality.inspections:delete'),
+    ('x-admin', 'quality.inspections:audit'),
 
     ('x-admin', 'quality.inspection_items:select'),
     ('x-admin', 'quality.inspection_items:insert'),
     ('x-admin', 'quality.inspection_items:update'),
     ('x-admin', 'quality.inspection_items:delete'),
+    ('x-admin', 'quality.inspection_items:audit'),
 
     ('x-admin', 'quality.non_conformances:select'),
     ('x-admin', 'quality.non_conformances:insert'),
     ('x-admin', 'quality.non_conformances:update'),
     ('x-admin', 'quality.non_conformances:delete'),
+    ('x-admin', 'quality.non_conformances:audit'),
 
     ('x-admin', 'quality.capa:select'),
     ('x-admin', 'quality.capa:insert'),
     ('x-admin', 'quality.capa:update'),
     ('x-admin', 'quality.capa:delete'),
+    ('x-admin', 'quality.capa:audit'),
 
     ('x-admin', 'quality.audits:select'),
     ('x-admin', 'quality.audits:insert'),
     ('x-admin', 'quality.audits:update'),
     ('x-admin', 'quality.audits:delete'),
+    ('x-admin', 'quality.audits:audit'),
 
     ('x-admin', 'quality.audit_findings:select'),
     ('x-admin', 'quality.audit_findings:insert'),
     ('x-admin', 'quality.audit_findings:update'),
     ('x-admin', 'quality.audit_findings:delete'),
+    ('x-admin', 'quality.audit_findings:audit'),
 
     ('x-admin', 'quality.certifications:select'),
     ('x-admin', 'quality.certifications:insert'),
     ('x-admin', 'quality.certifications:update'),
     ('x-admin', 'quality.certifications:delete'),
+    ('x-admin', 'quality.certifications:audit'),
 
     ('x-admin', 'quality.complaints:select'),
     ('x-admin', 'quality.complaints:insert'),
     ('x-admin', 'quality.complaints:update'),
     ('x-admin', 'quality.complaints:delete'),
+    ('x-admin', 'quality.complaints:audit'),
 
     ('x-admin', 'quality.users:select'),
 

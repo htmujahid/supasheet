@@ -565,6 +565,34 @@ export type Database = {
           schema: string
         }[]
       }
+      get_audit_logs: {
+        Args: {
+          p_schema: string
+          p_table: string
+          p_record_id?: string | null
+        }
+        Returns: {
+          id: string
+          created_at: string
+          operation: string
+          schema_name: string
+          table_name: string
+          record_id: string | null
+          created_by: string | null
+          role: Database["supasheet"]["Enums"]["app_role"] | null
+          user_type: string
+          metadata: Json | null
+          old_data: Json | null
+          new_data: Json | null
+          changed_fields: string[] | null
+          is_error: boolean | null
+          error_message: string | null
+          error_code: string | null
+          created_by_name: string | null
+          created_by_email: string | null
+          created_by_picture_url: string | null
+        }[]
+      }
       get_charts: {
         Args: { p_schema?: string }
         Returns: {

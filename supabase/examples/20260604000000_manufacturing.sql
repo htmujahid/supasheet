@@ -23,54 +23,63 @@ alter type supasheet.app_permission add value 'manufacturing.work_centers:select
 alter type supasheet.app_permission add value 'manufacturing.work_centers:insert';
 alter type supasheet.app_permission add value 'manufacturing.work_centers:update';
 alter type supasheet.app_permission add value 'manufacturing.work_centers:delete';
+alter type supasheet.app_permission add value 'manufacturing.work_centers:audit';
 
 -- BOMs
 alter type supasheet.app_permission add value 'manufacturing.boms:select';
 alter type supasheet.app_permission add value 'manufacturing.boms:insert';
 alter type supasheet.app_permission add value 'manufacturing.boms:update';
 alter type supasheet.app_permission add value 'manufacturing.boms:delete';
+alter type supasheet.app_permission add value 'manufacturing.boms:audit';
 
 -- BOM items
 alter type supasheet.app_permission add value 'manufacturing.bom_items:select';
 alter type supasheet.app_permission add value 'manufacturing.bom_items:insert';
 alter type supasheet.app_permission add value 'manufacturing.bom_items:update';
 alter type supasheet.app_permission add value 'manufacturing.bom_items:delete';
+alter type supasheet.app_permission add value 'manufacturing.bom_items:audit';
 
 -- Routings
 alter type supasheet.app_permission add value 'manufacturing.routings:select';
 alter type supasheet.app_permission add value 'manufacturing.routings:insert';
 alter type supasheet.app_permission add value 'manufacturing.routings:update';
 alter type supasheet.app_permission add value 'manufacturing.routings:delete';
+alter type supasheet.app_permission add value 'manufacturing.routings:audit';
 
 -- Routing operations
 alter type supasheet.app_permission add value 'manufacturing.routing_operations:select';
 alter type supasheet.app_permission add value 'manufacturing.routing_operations:insert';
 alter type supasheet.app_permission add value 'manufacturing.routing_operations:update';
 alter type supasheet.app_permission add value 'manufacturing.routing_operations:delete';
+alter type supasheet.app_permission add value 'manufacturing.routing_operations:audit';
 
 -- Work orders
 alter type supasheet.app_permission add value 'manufacturing.work_orders:select';
 alter type supasheet.app_permission add value 'manufacturing.work_orders:insert';
 alter type supasheet.app_permission add value 'manufacturing.work_orders:update';
 alter type supasheet.app_permission add value 'manufacturing.work_orders:delete';
+alter type supasheet.app_permission add value 'manufacturing.work_orders:audit';
 
 -- Work order operations
 alter type supasheet.app_permission add value 'manufacturing.work_order_operations:select';
 alter type supasheet.app_permission add value 'manufacturing.work_order_operations:insert';
 alter type supasheet.app_permission add value 'manufacturing.work_order_operations:update';
 alter type supasheet.app_permission add value 'manufacturing.work_order_operations:delete';
+alter type supasheet.app_permission add value 'manufacturing.work_order_operations:audit';
 
 -- Material issues
 alter type supasheet.app_permission add value 'manufacturing.material_issues:select';
 alter type supasheet.app_permission add value 'manufacturing.material_issues:insert';
 alter type supasheet.app_permission add value 'manufacturing.material_issues:update';
 alter type supasheet.app_permission add value 'manufacturing.material_issues:delete';
+alter type supasheet.app_permission add value 'manufacturing.material_issues:audit';
 
 -- Production outputs
 alter type supasheet.app_permission add value 'manufacturing.production_outputs:select';
 alter type supasheet.app_permission add value 'manufacturing.production_outputs:insert';
 alter type supasheet.app_permission add value 'manufacturing.production_outputs:update';
 alter type supasheet.app_permission add value 'manufacturing.production_outputs:delete';
+alter type supasheet.app_permission add value 'manufacturing.production_outputs:audit';
 
 -- Users mirror
 alter type supasheet.app_permission add value 'manufacturing.users:select';
@@ -1280,46 +1289,55 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'manufacturing.work_centers:insert'),
     ('x-admin', 'manufacturing.work_centers:update'),
     ('x-admin', 'manufacturing.work_centers:delete'),
+    ('x-admin', 'manufacturing.work_centers:audit'),
 
     ('x-admin', 'manufacturing.boms:select'),
     ('x-admin', 'manufacturing.boms:insert'),
     ('x-admin', 'manufacturing.boms:update'),
     ('x-admin', 'manufacturing.boms:delete'),
+    ('x-admin', 'manufacturing.boms:audit'),
 
     ('x-admin', 'manufacturing.bom_items:select'),
     ('x-admin', 'manufacturing.bom_items:insert'),
     ('x-admin', 'manufacturing.bom_items:update'),
     ('x-admin', 'manufacturing.bom_items:delete'),
+    ('x-admin', 'manufacturing.bom_items:audit'),
 
     ('x-admin', 'manufacturing.routings:select'),
     ('x-admin', 'manufacturing.routings:insert'),
     ('x-admin', 'manufacturing.routings:update'),
     ('x-admin', 'manufacturing.routings:delete'),
+    ('x-admin', 'manufacturing.routings:audit'),
 
     ('x-admin', 'manufacturing.routing_operations:select'),
     ('x-admin', 'manufacturing.routing_operations:insert'),
     ('x-admin', 'manufacturing.routing_operations:update'),
     ('x-admin', 'manufacturing.routing_operations:delete'),
+    ('x-admin', 'manufacturing.routing_operations:audit'),
 
     ('x-admin', 'manufacturing.work_orders:select'),
     ('x-admin', 'manufacturing.work_orders:insert'),
     ('x-admin', 'manufacturing.work_orders:update'),
     ('x-admin', 'manufacturing.work_orders:delete'),
+    ('x-admin', 'manufacturing.work_orders:audit'),
 
     ('x-admin', 'manufacturing.work_order_operations:select'),
     ('x-admin', 'manufacturing.work_order_operations:insert'),
     ('x-admin', 'manufacturing.work_order_operations:update'),
     ('x-admin', 'manufacturing.work_order_operations:delete'),
+    ('x-admin', 'manufacturing.work_order_operations:audit'),
 
     ('x-admin', 'manufacturing.material_issues:select'),
     ('x-admin', 'manufacturing.material_issues:insert'),
     ('x-admin', 'manufacturing.material_issues:update'),
     ('x-admin', 'manufacturing.material_issues:delete'),
+    ('x-admin', 'manufacturing.material_issues:audit'),
 
     ('x-admin', 'manufacturing.production_outputs:select'),
     ('x-admin', 'manufacturing.production_outputs:insert'),
     ('x-admin', 'manufacturing.production_outputs:update'),
     ('x-admin', 'manufacturing.production_outputs:delete'),
+    ('x-admin', 'manufacturing.production_outputs:audit'),
 
     ('x-admin', 'manufacturing.users:select'),
 

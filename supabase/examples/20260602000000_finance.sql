@@ -26,60 +26,70 @@ alter type supasheet.app_permission add value 'finance.accounts:select';
 alter type supasheet.app_permission add value 'finance.accounts:insert';
 alter type supasheet.app_permission add value 'finance.accounts:update';
 alter type supasheet.app_permission add value 'finance.accounts:delete';
+alter type supasheet.app_permission add value 'finance.accounts:audit';
 
 -- Vendors
 alter type supasheet.app_permission add value 'finance.vendors:select';
 alter type supasheet.app_permission add value 'finance.vendors:insert';
 alter type supasheet.app_permission add value 'finance.vendors:update';
 alter type supasheet.app_permission add value 'finance.vendors:delete';
+alter type supasheet.app_permission add value 'finance.vendors:audit';
 
 -- Invoices
 alter type supasheet.app_permission add value 'finance.invoices:select';
 alter type supasheet.app_permission add value 'finance.invoices:insert';
 alter type supasheet.app_permission add value 'finance.invoices:update';
 alter type supasheet.app_permission add value 'finance.invoices:delete';
+alter type supasheet.app_permission add value 'finance.invoices:audit';
 
 -- Bills
 alter type supasheet.app_permission add value 'finance.bills:select';
 alter type supasheet.app_permission add value 'finance.bills:insert';
 alter type supasheet.app_permission add value 'finance.bills:update';
 alter type supasheet.app_permission add value 'finance.bills:delete';
+alter type supasheet.app_permission add value 'finance.bills:audit';
 
 -- Expenses
 alter type supasheet.app_permission add value 'finance.expenses:select';
 alter type supasheet.app_permission add value 'finance.expenses:insert';
 alter type supasheet.app_permission add value 'finance.expenses:update';
 alter type supasheet.app_permission add value 'finance.expenses:delete';
+alter type supasheet.app_permission add value 'finance.expenses:audit';
 
 -- Payments
 alter type supasheet.app_permission add value 'finance.payments:select';
 alter type supasheet.app_permission add value 'finance.payments:insert';
 alter type supasheet.app_permission add value 'finance.payments:update';
 alter type supasheet.app_permission add value 'finance.payments:delete';
+alter type supasheet.app_permission add value 'finance.payments:audit';
 
 -- Budgets
 alter type supasheet.app_permission add value 'finance.budgets:select';
 alter type supasheet.app_permission add value 'finance.budgets:insert';
 alter type supasheet.app_permission add value 'finance.budgets:update';
 alter type supasheet.app_permission add value 'finance.budgets:delete';
+alter type supasheet.app_permission add value 'finance.budgets:audit';
 
 -- Payroll runs
 alter type supasheet.app_permission add value 'finance.payroll_runs:select';
 alter type supasheet.app_permission add value 'finance.payroll_runs:insert';
 alter type supasheet.app_permission add value 'finance.payroll_runs:update';
 alter type supasheet.app_permission add value 'finance.payroll_runs:delete';
+alter type supasheet.app_permission add value 'finance.payroll_runs:audit';
 
 -- Payslips
 alter type supasheet.app_permission add value 'finance.payslips:select';
 alter type supasheet.app_permission add value 'finance.payslips:insert';
 alter type supasheet.app_permission add value 'finance.payslips:update';
 alter type supasheet.app_permission add value 'finance.payslips:delete';
+alter type supasheet.app_permission add value 'finance.payslips:audit';
 
 -- Journal entries
 alter type supasheet.app_permission add value 'finance.journal_entries:select';
 alter type supasheet.app_permission add value 'finance.journal_entries:insert';
 alter type supasheet.app_permission add value 'finance.journal_entries:update';
 alter type supasheet.app_permission add value 'finance.journal_entries:delete';
+alter type supasheet.app_permission add value 'finance.journal_entries:audit';
 
 -- Users mirror
 alter type supasheet.app_permission add value 'finance.users:select';
@@ -1486,51 +1496,61 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'finance.accounts:insert'),
     ('x-admin', 'finance.accounts:update'),
     ('x-admin', 'finance.accounts:delete'),
+    ('x-admin', 'finance.accounts:audit'),
 
     ('x-admin', 'finance.vendors:select'),
     ('x-admin', 'finance.vendors:insert'),
     ('x-admin', 'finance.vendors:update'),
     ('x-admin', 'finance.vendors:delete'),
+    ('x-admin', 'finance.vendors:audit'),
 
     ('x-admin', 'finance.invoices:select'),
     ('x-admin', 'finance.invoices:insert'),
     ('x-admin', 'finance.invoices:update'),
     ('x-admin', 'finance.invoices:delete'),
+    ('x-admin', 'finance.invoices:audit'),
 
     ('x-admin', 'finance.bills:select'),
     ('x-admin', 'finance.bills:insert'),
     ('x-admin', 'finance.bills:update'),
     ('x-admin', 'finance.bills:delete'),
+    ('x-admin', 'finance.bills:audit'),
 
     ('x-admin', 'finance.expenses:select'),
     ('x-admin', 'finance.expenses:insert'),
     ('x-admin', 'finance.expenses:update'),
     ('x-admin', 'finance.expenses:delete'),
+    ('x-admin', 'finance.expenses:audit'),
 
     ('x-admin', 'finance.payments:select'),
     ('x-admin', 'finance.payments:insert'),
     ('x-admin', 'finance.payments:update'),
     ('x-admin', 'finance.payments:delete'),
+    ('x-admin', 'finance.payments:audit'),
 
     ('x-admin', 'finance.budgets:select'),
     ('x-admin', 'finance.budgets:insert'),
     ('x-admin', 'finance.budgets:update'),
     ('x-admin', 'finance.budgets:delete'),
+    ('x-admin', 'finance.budgets:audit'),
 
     ('x-admin', 'finance.payroll_runs:select'),
     ('x-admin', 'finance.payroll_runs:insert'),
     ('x-admin', 'finance.payroll_runs:update'),
     ('x-admin', 'finance.payroll_runs:delete'),
+    ('x-admin', 'finance.payroll_runs:audit'),
 
     ('x-admin', 'finance.payslips:select'),
     ('x-admin', 'finance.payslips:insert'),
     ('x-admin', 'finance.payslips:update'),
     ('x-admin', 'finance.payslips:delete'),
+    ('x-admin', 'finance.payslips:audit'),
 
     ('x-admin', 'finance.journal_entries:select'),
     ('x-admin', 'finance.journal_entries:insert'),
     ('x-admin', 'finance.journal_entries:update'),
     ('x-admin', 'finance.journal_entries:delete'),
+    ('x-admin', 'finance.journal_entries:audit'),
 
     ('x-admin', 'finance.users:select'),
 

@@ -23,42 +23,49 @@ alter type supasheet.app_permission add value 'hostel.hostels:select';
 alter type supasheet.app_permission add value 'hostel.hostels:insert';
 alter type supasheet.app_permission add value 'hostel.hostels:update';
 alter type supasheet.app_permission add value 'hostel.hostels:delete';
+alter type supasheet.app_permission add value 'hostel.hostels:audit';
 
 -- Room permissions
 alter type supasheet.app_permission add value 'hostel.rooms:select';
 alter type supasheet.app_permission add value 'hostel.rooms:insert';
 alter type supasheet.app_permission add value 'hostel.rooms:update';
 alter type supasheet.app_permission add value 'hostel.rooms:delete';
+alter type supasheet.app_permission add value 'hostel.rooms:audit';
 
 -- Resident permissions
 alter type supasheet.app_permission add value 'hostel.residents:select';
 alter type supasheet.app_permission add value 'hostel.residents:insert';
 alter type supasheet.app_permission add value 'hostel.residents:update';
 alter type supasheet.app_permission add value 'hostel.residents:delete';
+alter type supasheet.app_permission add value 'hostel.residents:audit';
 
 -- Allocation permissions
 alter type supasheet.app_permission add value 'hostel.allocations:select';
 alter type supasheet.app_permission add value 'hostel.allocations:insert';
 alter type supasheet.app_permission add value 'hostel.allocations:update';
 alter type supasheet.app_permission add value 'hostel.allocations:delete';
+alter type supasheet.app_permission add value 'hostel.allocations:audit';
 
 -- Payment permissions
 alter type supasheet.app_permission add value 'hostel.payments:select';
 alter type supasheet.app_permission add value 'hostel.payments:insert';
 alter type supasheet.app_permission add value 'hostel.payments:update';
 alter type supasheet.app_permission add value 'hostel.payments:delete';
+alter type supasheet.app_permission add value 'hostel.payments:audit';
 
 -- Complaint permissions
 alter type supasheet.app_permission add value 'hostel.complaints:select';
 alter type supasheet.app_permission add value 'hostel.complaints:insert';
 alter type supasheet.app_permission add value 'hostel.complaints:update';
 alter type supasheet.app_permission add value 'hostel.complaints:delete';
+alter type supasheet.app_permission add value 'hostel.complaints:audit';
 
 -- Visitor permissions
 alter type supasheet.app_permission add value 'hostel.visitors:select';
 alter type supasheet.app_permission add value 'hostel.visitors:insert';
 alter type supasheet.app_permission add value 'hostel.visitors:update';
 alter type supasheet.app_permission add value 'hostel.visitors:delete';
+alter type supasheet.app_permission add value 'hostel.visitors:audit';
 
 -- Users mirror view
 alter type supasheet.app_permission add value 'hostel.users:select';
@@ -1141,36 +1148,43 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'hostel.hostels:insert'),
     ('x-admin', 'hostel.hostels:update'),
     ('x-admin', 'hostel.hostels:delete'),
+    ('x-admin', 'hostel.hostels:audit'),
 
     ('x-admin', 'hostel.rooms:select'),
     ('x-admin', 'hostel.rooms:insert'),
     ('x-admin', 'hostel.rooms:update'),
     ('x-admin', 'hostel.rooms:delete'),
+    ('x-admin', 'hostel.rooms:audit'),
 
     ('x-admin', 'hostel.residents:select'),
     ('x-admin', 'hostel.residents:insert'),
     ('x-admin', 'hostel.residents:update'),
     ('x-admin', 'hostel.residents:delete'),
+    ('x-admin', 'hostel.residents:audit'),
 
     ('x-admin', 'hostel.allocations:select'),
     ('x-admin', 'hostel.allocations:insert'),
     ('x-admin', 'hostel.allocations:update'),
     ('x-admin', 'hostel.allocations:delete'),
+    ('x-admin', 'hostel.allocations:audit'),
 
     ('x-admin', 'hostel.payments:select'),
     ('x-admin', 'hostel.payments:insert'),
     ('x-admin', 'hostel.payments:update'),
     ('x-admin', 'hostel.payments:delete'),
+    ('x-admin', 'hostel.payments:audit'),
 
     ('x-admin', 'hostel.complaints:select'),
     ('x-admin', 'hostel.complaints:insert'),
     ('x-admin', 'hostel.complaints:update'),
     ('x-admin', 'hostel.complaints:delete'),
+    ('x-admin', 'hostel.complaints:audit'),
 
     ('x-admin', 'hostel.visitors:select'),
     ('x-admin', 'hostel.visitors:insert'),
     ('x-admin', 'hostel.visitors:update'),
     ('x-admin', 'hostel.visitors:delete'),
+    ('x-admin', 'hostel.visitors:audit'),
 
     ('x-admin', 'hostel.users:select'),
 

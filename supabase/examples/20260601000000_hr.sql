@@ -21,42 +21,49 @@ alter type supasheet.app_permission add value 'hr.departments:select';
 alter type supasheet.app_permission add value 'hr.departments:insert';
 alter type supasheet.app_permission add value 'hr.departments:update';
 alter type supasheet.app_permission add value 'hr.departments:delete';
+alter type supasheet.app_permission add value 'hr.departments:audit';
 
 -- Positions
 alter type supasheet.app_permission add value 'hr.positions:select';
 alter type supasheet.app_permission add value 'hr.positions:insert';
 alter type supasheet.app_permission add value 'hr.positions:update';
 alter type supasheet.app_permission add value 'hr.positions:delete';
+alter type supasheet.app_permission add value 'hr.positions:audit';
 
 -- Employees
 alter type supasheet.app_permission add value 'hr.employees:select';
 alter type supasheet.app_permission add value 'hr.employees:insert';
 alter type supasheet.app_permission add value 'hr.employees:update';
 alter type supasheet.app_permission add value 'hr.employees:delete';
+alter type supasheet.app_permission add value 'hr.employees:audit';
 
 -- Leave requests
 alter type supasheet.app_permission add value 'hr.leave_requests:select';
 alter type supasheet.app_permission add value 'hr.leave_requests:insert';
 alter type supasheet.app_permission add value 'hr.leave_requests:update';
 alter type supasheet.app_permission add value 'hr.leave_requests:delete';
+alter type supasheet.app_permission add value 'hr.leave_requests:audit';
 
 -- Performance reviews
 alter type supasheet.app_permission add value 'hr.performance_reviews:select';
 alter type supasheet.app_permission add value 'hr.performance_reviews:insert';
 alter type supasheet.app_permission add value 'hr.performance_reviews:update';
 alter type supasheet.app_permission add value 'hr.performance_reviews:delete';
+alter type supasheet.app_permission add value 'hr.performance_reviews:audit';
 
 -- Job postings
 alter type supasheet.app_permission add value 'hr.job_postings:select';
 alter type supasheet.app_permission add value 'hr.job_postings:insert';
 alter type supasheet.app_permission add value 'hr.job_postings:update';
 alter type supasheet.app_permission add value 'hr.job_postings:delete';
+alter type supasheet.app_permission add value 'hr.job_postings:audit';
 
 -- Candidates
 alter type supasheet.app_permission add value 'hr.candidates:select';
 alter type supasheet.app_permission add value 'hr.candidates:insert';
 alter type supasheet.app_permission add value 'hr.candidates:update';
 alter type supasheet.app_permission add value 'hr.candidates:delete';
+alter type supasheet.app_permission add value 'hr.candidates:audit';
 
 -- Users mirror
 alter type supasheet.app_permission add value 'hr.users:select';
@@ -1110,36 +1117,43 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'hr.departments:insert'),
     ('x-admin', 'hr.departments:update'),
     ('x-admin', 'hr.departments:delete'),
+    ('x-admin', 'hr.departments:audit'),
 
     ('x-admin', 'hr.positions:select'),
     ('x-admin', 'hr.positions:insert'),
     ('x-admin', 'hr.positions:update'),
     ('x-admin', 'hr.positions:delete'),
+    ('x-admin', 'hr.positions:audit'),
 
     ('x-admin', 'hr.employees:select'),
     ('x-admin', 'hr.employees:insert'),
     ('x-admin', 'hr.employees:update'),
     ('x-admin', 'hr.employees:delete'),
+    ('x-admin', 'hr.employees:audit'),
 
     ('x-admin', 'hr.leave_requests:select'),
     ('x-admin', 'hr.leave_requests:insert'),
     ('x-admin', 'hr.leave_requests:update'),
     ('x-admin', 'hr.leave_requests:delete'),
+    ('x-admin', 'hr.leave_requests:audit'),
 
     ('x-admin', 'hr.performance_reviews:select'),
     ('x-admin', 'hr.performance_reviews:insert'),
     ('x-admin', 'hr.performance_reviews:update'),
     ('x-admin', 'hr.performance_reviews:delete'),
+    ('x-admin', 'hr.performance_reviews:audit'),
 
     ('x-admin', 'hr.job_postings:select'),
     ('x-admin', 'hr.job_postings:insert'),
     ('x-admin', 'hr.job_postings:update'),
     ('x-admin', 'hr.job_postings:delete'),
+    ('x-admin', 'hr.job_postings:audit'),
 
     ('x-admin', 'hr.candidates:select'),
     ('x-admin', 'hr.candidates:insert'),
     ('x-admin', 'hr.candidates:update'),
     ('x-admin', 'hr.candidates:delete'),
+    ('x-admin', 'hr.candidates:audit'),
 
     ('x-admin', 'hr.users:select'),
 

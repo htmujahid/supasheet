@@ -22,54 +22,63 @@ alter type supasheet.app_permission add value 'inventory.warehouses:select';
 alter type supasheet.app_permission add value 'inventory.warehouses:insert';
 alter type supasheet.app_permission add value 'inventory.warehouses:update';
 alter type supasheet.app_permission add value 'inventory.warehouses:delete';
+alter type supasheet.app_permission add value 'inventory.warehouses:audit';
 
 -- Suppliers
 alter type supasheet.app_permission add value 'inventory.suppliers:select';
 alter type supasheet.app_permission add value 'inventory.suppliers:insert';
 alter type supasheet.app_permission add value 'inventory.suppliers:update';
 alter type supasheet.app_permission add value 'inventory.suppliers:delete';
+alter type supasheet.app_permission add value 'inventory.suppliers:audit';
 
 -- Products
 alter type supasheet.app_permission add value 'inventory.products:select';
 alter type supasheet.app_permission add value 'inventory.products:insert';
 alter type supasheet.app_permission add value 'inventory.products:update';
 alter type supasheet.app_permission add value 'inventory.products:delete';
+alter type supasheet.app_permission add value 'inventory.products:audit';
 
 -- Stock levels
 alter type supasheet.app_permission add value 'inventory.stock_levels:select';
 alter type supasheet.app_permission add value 'inventory.stock_levels:insert';
 alter type supasheet.app_permission add value 'inventory.stock_levels:update';
 alter type supasheet.app_permission add value 'inventory.stock_levels:delete';
+alter type supasheet.app_permission add value 'inventory.stock_levels:audit';
 
 -- Purchase orders
 alter type supasheet.app_permission add value 'inventory.purchase_orders:select';
 alter type supasheet.app_permission add value 'inventory.purchase_orders:insert';
 alter type supasheet.app_permission add value 'inventory.purchase_orders:update';
 alter type supasheet.app_permission add value 'inventory.purchase_orders:delete';
+alter type supasheet.app_permission add value 'inventory.purchase_orders:audit';
 
 -- Purchase order items
 alter type supasheet.app_permission add value 'inventory.purchase_order_items:select';
 alter type supasheet.app_permission add value 'inventory.purchase_order_items:insert';
 alter type supasheet.app_permission add value 'inventory.purchase_order_items:update';
 alter type supasheet.app_permission add value 'inventory.purchase_order_items:delete';
+alter type supasheet.app_permission add value 'inventory.purchase_order_items:audit';
 
 -- Shipments
 alter type supasheet.app_permission add value 'inventory.shipments:select';
 alter type supasheet.app_permission add value 'inventory.shipments:insert';
 alter type supasheet.app_permission add value 'inventory.shipments:update';
 alter type supasheet.app_permission add value 'inventory.shipments:delete';
+alter type supasheet.app_permission add value 'inventory.shipments:audit';
 
 -- Shipment items
 alter type supasheet.app_permission add value 'inventory.shipment_items:select';
 alter type supasheet.app_permission add value 'inventory.shipment_items:insert';
 alter type supasheet.app_permission add value 'inventory.shipment_items:update';
 alter type supasheet.app_permission add value 'inventory.shipment_items:delete';
+alter type supasheet.app_permission add value 'inventory.shipment_items:audit';
 
 -- Stock movements
 alter type supasheet.app_permission add value 'inventory.stock_movements:select';
 alter type supasheet.app_permission add value 'inventory.stock_movements:insert';
 alter type supasheet.app_permission add value 'inventory.stock_movements:update';
 alter type supasheet.app_permission add value 'inventory.stock_movements:delete';
+alter type supasheet.app_permission add value 'inventory.stock_movements:audit';
 
 -- Users mirror
 alter type supasheet.app_permission add value 'inventory.users:select';
@@ -1286,46 +1295,55 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'inventory.warehouses:insert'),
     ('x-admin', 'inventory.warehouses:update'),
     ('x-admin', 'inventory.warehouses:delete'),
+    ('x-admin', 'inventory.warehouses:audit'),
 
     ('x-admin', 'inventory.suppliers:select'),
     ('x-admin', 'inventory.suppliers:insert'),
     ('x-admin', 'inventory.suppliers:update'),
     ('x-admin', 'inventory.suppliers:delete'),
+    ('x-admin', 'inventory.suppliers:audit'),
 
     ('x-admin', 'inventory.products:select'),
     ('x-admin', 'inventory.products:insert'),
     ('x-admin', 'inventory.products:update'),
     ('x-admin', 'inventory.products:delete'),
+    ('x-admin', 'inventory.products:audit'),
 
     ('x-admin', 'inventory.stock_levels:select'),
     ('x-admin', 'inventory.stock_levels:insert'),
     ('x-admin', 'inventory.stock_levels:update'),
     ('x-admin', 'inventory.stock_levels:delete'),
+    ('x-admin', 'inventory.stock_levels:audit'),
 
     ('x-admin', 'inventory.purchase_orders:select'),
     ('x-admin', 'inventory.purchase_orders:insert'),
     ('x-admin', 'inventory.purchase_orders:update'),
     ('x-admin', 'inventory.purchase_orders:delete'),
+    ('x-admin', 'inventory.purchase_orders:audit'),
 
     ('x-admin', 'inventory.purchase_order_items:select'),
     ('x-admin', 'inventory.purchase_order_items:insert'),
     ('x-admin', 'inventory.purchase_order_items:update'),
     ('x-admin', 'inventory.purchase_order_items:delete'),
+    ('x-admin', 'inventory.purchase_order_items:audit'),
 
     ('x-admin', 'inventory.shipments:select'),
     ('x-admin', 'inventory.shipments:insert'),
     ('x-admin', 'inventory.shipments:update'),
     ('x-admin', 'inventory.shipments:delete'),
+    ('x-admin', 'inventory.shipments:audit'),
 
     ('x-admin', 'inventory.shipment_items:select'),
     ('x-admin', 'inventory.shipment_items:insert'),
     ('x-admin', 'inventory.shipment_items:update'),
     ('x-admin', 'inventory.shipment_items:delete'),
+    ('x-admin', 'inventory.shipment_items:audit'),
 
     ('x-admin', 'inventory.stock_movements:select'),
     ('x-admin', 'inventory.stock_movements:insert'),
     ('x-admin', 'inventory.stock_movements:update'),
     ('x-admin', 'inventory.stock_movements:delete'),
+    ('x-admin', 'inventory.stock_movements:audit'),
 
     ('x-admin', 'inventory.users:select'),
 

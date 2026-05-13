@@ -10,7 +10,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, FileXIcon, PencilIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon, HistoryIcon, PencilIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
@@ -392,6 +392,9 @@ function RouteComponent() {
   const canUpdate = useHasPermission(
     `${schema}.${resource}:update` as AppPermission
   )
+  const canViewAudit = useHasPermission(
+    `${schema}.${resource}:audit` as AppPermission
+  )
 
   const resourceDisplayName =
     (JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ??
@@ -458,6 +461,16 @@ function RouteComponent() {
           { title: "Detail" },
         ]}
       >
+        {canViewAudit && (
+          <Link
+            className={buttonVariants({ size: "sm", variant: "outline" })}
+            to="/$schema/resource/$resource/audit/$"
+            params={{ schema, resource, _splat: _splat ?? "" }}
+          >
+            <HistoryIcon className="mr-1.5 size-3.5" />
+            Audit Log
+          </Link>
+        )}
         {tableSchema && canUpdate && (
           <Link
             className={buttonVariants({ size: "sm", variant: "outline" })}

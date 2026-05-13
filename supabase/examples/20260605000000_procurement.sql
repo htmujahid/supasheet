@@ -28,60 +28,70 @@ alter type supasheet.app_permission add value 'procurement.suppliers:select';
 alter type supasheet.app_permission add value 'procurement.suppliers:insert';
 alter type supasheet.app_permission add value 'procurement.suppliers:update';
 alter type supasheet.app_permission add value 'procurement.suppliers:delete';
+alter type supasheet.app_permission add value 'procurement.suppliers:audit';
 
 -- Contracts
 alter type supasheet.app_permission add value 'procurement.contracts:select';
 alter type supasheet.app_permission add value 'procurement.contracts:insert';
 alter type supasheet.app_permission add value 'procurement.contracts:update';
 alter type supasheet.app_permission add value 'procurement.contracts:delete';
+alter type supasheet.app_permission add value 'procurement.contracts:audit';
 
 -- Requisitions
 alter type supasheet.app_permission add value 'procurement.requisitions:select';
 alter type supasheet.app_permission add value 'procurement.requisitions:insert';
 alter type supasheet.app_permission add value 'procurement.requisitions:update';
 alter type supasheet.app_permission add value 'procurement.requisitions:delete';
+alter type supasheet.app_permission add value 'procurement.requisitions:audit';
 
 -- Requisition items
 alter type supasheet.app_permission add value 'procurement.requisition_items:select';
 alter type supasheet.app_permission add value 'procurement.requisition_items:insert';
 alter type supasheet.app_permission add value 'procurement.requisition_items:update';
 alter type supasheet.app_permission add value 'procurement.requisition_items:delete';
+alter type supasheet.app_permission add value 'procurement.requisition_items:audit';
 
 -- RFQs
 alter type supasheet.app_permission add value 'procurement.rfqs:select';
 alter type supasheet.app_permission add value 'procurement.rfqs:insert';
 alter type supasheet.app_permission add value 'procurement.rfqs:update';
 alter type supasheet.app_permission add value 'procurement.rfqs:delete';
+alter type supasheet.app_permission add value 'procurement.rfqs:audit';
 
 -- Quotes
 alter type supasheet.app_permission add value 'procurement.quotes:select';
 alter type supasheet.app_permission add value 'procurement.quotes:insert';
 alter type supasheet.app_permission add value 'procurement.quotes:update';
 alter type supasheet.app_permission add value 'procurement.quotes:delete';
+alter type supasheet.app_permission add value 'procurement.quotes:audit';
 
 -- Asset categories
 alter type supasheet.app_permission add value 'procurement.asset_categories:select';
 alter type supasheet.app_permission add value 'procurement.asset_categories:insert';
 alter type supasheet.app_permission add value 'procurement.asset_categories:update';
 alter type supasheet.app_permission add value 'procurement.asset_categories:delete';
+alter type supasheet.app_permission add value 'procurement.asset_categories:audit';
 
 -- Assets
 alter type supasheet.app_permission add value 'procurement.assets:select';
 alter type supasheet.app_permission add value 'procurement.assets:insert';
 alter type supasheet.app_permission add value 'procurement.assets:update';
 alter type supasheet.app_permission add value 'procurement.assets:delete';
+alter type supasheet.app_permission add value 'procurement.assets:audit';
 
 -- Asset assignments
 alter type supasheet.app_permission add value 'procurement.asset_assignments:select';
 alter type supasheet.app_permission add value 'procurement.asset_assignments:insert';
 alter type supasheet.app_permission add value 'procurement.asset_assignments:update';
 alter type supasheet.app_permission add value 'procurement.asset_assignments:delete';
+alter type supasheet.app_permission add value 'procurement.asset_assignments:audit';
 
 -- Asset maintenance
 alter type supasheet.app_permission add value 'procurement.asset_maintenance:select';
 alter type supasheet.app_permission add value 'procurement.asset_maintenance:insert';
 alter type supasheet.app_permission add value 'procurement.asset_maintenance:update';
 alter type supasheet.app_permission add value 'procurement.asset_maintenance:delete';
+alter type supasheet.app_permission add value 'procurement.asset_maintenance:audit';
 
 -- Users mirror
 alter type supasheet.app_permission add value 'procurement.users:select';
@@ -1573,51 +1583,61 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'procurement.suppliers:insert'),
     ('x-admin', 'procurement.suppliers:update'),
     ('x-admin', 'procurement.suppliers:delete'),
+    ('x-admin', 'procurement.suppliers:audit'),
 
     ('x-admin', 'procurement.contracts:select'),
     ('x-admin', 'procurement.contracts:insert'),
     ('x-admin', 'procurement.contracts:update'),
     ('x-admin', 'procurement.contracts:delete'),
+    ('x-admin', 'procurement.contracts:audit'),
 
     ('x-admin', 'procurement.requisitions:select'),
     ('x-admin', 'procurement.requisitions:insert'),
     ('x-admin', 'procurement.requisitions:update'),
     ('x-admin', 'procurement.requisitions:delete'),
+    ('x-admin', 'procurement.requisitions:audit'),
 
     ('x-admin', 'procurement.requisition_items:select'),
     ('x-admin', 'procurement.requisition_items:insert'),
     ('x-admin', 'procurement.requisition_items:update'),
     ('x-admin', 'procurement.requisition_items:delete'),
+    ('x-admin', 'procurement.requisition_items:audit'),
 
     ('x-admin', 'procurement.rfqs:select'),
     ('x-admin', 'procurement.rfqs:insert'),
     ('x-admin', 'procurement.rfqs:update'),
     ('x-admin', 'procurement.rfqs:delete'),
+    ('x-admin', 'procurement.rfqs:audit'),
 
     ('x-admin', 'procurement.quotes:select'),
     ('x-admin', 'procurement.quotes:insert'),
     ('x-admin', 'procurement.quotes:update'),
     ('x-admin', 'procurement.quotes:delete'),
+    ('x-admin', 'procurement.quotes:audit'),
 
     ('x-admin', 'procurement.asset_categories:select'),
     ('x-admin', 'procurement.asset_categories:insert'),
     ('x-admin', 'procurement.asset_categories:update'),
     ('x-admin', 'procurement.asset_categories:delete'),
+    ('x-admin', 'procurement.asset_categories:audit'),
 
     ('x-admin', 'procurement.assets:select'),
     ('x-admin', 'procurement.assets:insert'),
     ('x-admin', 'procurement.assets:update'),
     ('x-admin', 'procurement.assets:delete'),
+    ('x-admin', 'procurement.assets:audit'),
 
     ('x-admin', 'procurement.asset_assignments:select'),
     ('x-admin', 'procurement.asset_assignments:insert'),
     ('x-admin', 'procurement.asset_assignments:update'),
     ('x-admin', 'procurement.asset_assignments:delete'),
+    ('x-admin', 'procurement.asset_assignments:audit'),
 
     ('x-admin', 'procurement.asset_maintenance:select'),
     ('x-admin', 'procurement.asset_maintenance:insert'),
     ('x-admin', 'procurement.asset_maintenance:update'),
     ('x-admin', 'procurement.asset_maintenance:delete'),
+    ('x-admin', 'procurement.asset_maintenance:audit'),
 
     ('x-admin', 'procurement.users:select'),
 

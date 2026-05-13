@@ -17,24 +17,28 @@ alter type supasheet.app_permission add value 'store.products:select';
 alter type supasheet.app_permission add value 'store.products:insert';
 alter type supasheet.app_permission add value 'store.products:update';
 alter type supasheet.app_permission add value 'store.products:delete';
+alter type supasheet.app_permission add value 'store.products:audit';
 
 -- Order permissions
 alter type supasheet.app_permission add value 'store.orders:select';
 alter type supasheet.app_permission add value 'store.orders:insert';
 alter type supasheet.app_permission add value 'store.orders:update';
 alter type supasheet.app_permission add value 'store.orders:delete';
+alter type supasheet.app_permission add value 'store.orders:audit';
 
 -- Order items permissions
 alter type supasheet.app_permission add value 'store.order_items:select';
 alter type supasheet.app_permission add value 'store.order_items:insert';
 alter type supasheet.app_permission add value 'store.order_items:update';
 alter type supasheet.app_permission add value 'store.order_items:delete';
+alter type supasheet.app_permission add value 'store.order_items:audit';
 
 -- Review permissions
 alter type supasheet.app_permission add value 'store.reviews:select';
 alter type supasheet.app_permission add value 'store.reviews:insert';
 alter type supasheet.app_permission add value 'store.reviews:update';
 alter type supasheet.app_permission add value 'store.reviews:delete';
+alter type supasheet.app_permission add value 'store.reviews:audit';
 
 -- Users mirror view
 alter type supasheet.app_permission add value 'store.users:select';
@@ -43,6 +47,7 @@ alter type supasheet.app_permission add value 'store.users:select';
 alter type supasheet.app_permission add value 'store.store_settings:select';
 alter type supasheet.app_permission add value 'store.store_settings:insert';
 alter type supasheet.app_permission add value 'store.store_settings:update';
+alter type supasheet.app_permission add value 'store.store_settings:audit';
 
 -- Widget / report / chart permissions
 alter type supasheet.app_permission add value 'store.order_report:select';
@@ -733,25 +738,30 @@ insert into supasheet.role_permissions (role, permission) values
     ('x-admin', 'store.products:insert'),
     ('x-admin', 'store.products:update'),
     ('x-admin', 'store.products:delete'),
+    ('x-admin', 'store.products:audit'),
 
     ('x-admin', 'store.orders:select'),
     ('x-admin', 'store.orders:insert'),
     ('x-admin', 'store.orders:update'),
     ('x-admin', 'store.orders:delete'),
+    ('x-admin', 'store.orders:audit'),
 
     ('x-admin', 'store.order_items:select'),
     ('x-admin', 'store.order_items:insert'),
     ('x-admin', 'store.order_items:update'),
     ('x-admin', 'store.order_items:delete'),
+    ('x-admin', 'store.order_items:audit'),
 
     ('x-admin', 'store.reviews:select'),
     ('x-admin', 'store.reviews:insert'),
     ('x-admin', 'store.reviews:update'),
     ('x-admin', 'store.reviews:delete'),
+    ('x-admin', 'store.reviews:audit'),
 
     ('x-admin', 'store.store_settings:select'),
     ('x-admin', 'store.store_settings:insert'),
     ('x-admin', 'store.store_settings:update'),
+    ('x-admin', 'store.store_settings:audit'),
 
     ('x-admin', 'store.users:select'),
 

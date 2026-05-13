@@ -369,6 +369,48 @@ export const deleteResourceMutationOptions = <S extends DatabaseSchemas>(
     },
   })
 
+export type ResourceAuditLog = {
+  id: string
+  created_at: string
+  operation: string
+  schema_name: string
+  table_name: string
+  record_id: string | null
+  created_by: string | null
+  role: string | null
+  user_type: string
+  metadata: Record<string, unknown> | null
+  old_data: Record<string, unknown> | null
+  new_data: Record<string, unknown> | null
+  changed_fields: string[] | null
+  is_error: boolean
+  error_message: string | null
+  error_code: string | null
+  created_by_name: string | null
+  created_by_email: string | null
+  created_by_picture_url: string | null
+}
+
+export const resourceAuditLogsQueryOptions = (
+  schema: string,
+  resource: string,
+  recordId?: string
+) =>
+  queryOptions({
+    queryKey: ["supasheet", "resource-audit-logs", schema, resource, recordId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("supasheet")
+        .rpc("get_audit_logs", {
+          p_schema: schema,
+          p_table: resource,
+          p_record_id: recordId ?? null,
+        })
+      if (error) throw error
+      return (data ?? []) as ResourceAuditLog[]
+    },
+  })
+
 export const relatedTablesSchemaQueryOptions = <S extends DatabaseSchemas>(
   schema: S,
   id: DatabaseTables<S> | DatabaseViews<S>

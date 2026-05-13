@@ -67,6 +67,7 @@ import { Route as SchemaResourceResourceKanbanKanbanIdRouteImport } from './rout
 import { Route as SchemaResourceResourceGalleryGalleryIdRouteImport } from './routes/$schema/resource/$resource/gallery/$galleryId'
 import { Route as SchemaResourceResourceDetailSplatRouteImport } from './routes/$schema/resource/$resource/detail/$'
 import { Route as SchemaResourceResourceCalendarCalendarIdRouteImport } from './routes/$schema/resource/$resource/calendar/$calendarId'
+import { Route as SchemaResourceResourceAuditSplatRouteImport } from './routes/$schema/resource/$resource/audit/$'
 
 const InitRoute = InitRouteImport.update({
   id: '/init',
@@ -374,6 +375,12 @@ const SchemaResourceResourceCalendarCalendarIdRoute =
     path: '/calendar/$calendarId',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
+const SchemaResourceResourceAuditSplatRoute =
+  SchemaResourceResourceAuditSplatRouteImport.update({
+    id: '/audit/$',
+    path: '/audit/$',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -428,6 +435,7 @@ export interface FileRoutesByFullPath {
   '/$schema/sql-editor/$snippet/': typeof SchemaSqlEditorSnippetIndexRoute
   '/$schema/template/$template/': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId/': typeof CoreUsersUserIdIndexRoute
+  '/$schema/resource/$resource/audit/$': typeof SchemaResourceResourceAuditSplatRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
@@ -481,6 +489,7 @@ export interface FileRoutesByTo {
   '/$schema/sql-editor/$snippet': typeof SchemaSqlEditorSnippetIndexRoute
   '/$schema/template/$template': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId': typeof CoreUsersUserIdIndexRoute
+  '/$schema/resource/$resource/audit/$': typeof SchemaResourceResourceAuditSplatRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
@@ -542,6 +551,7 @@ export interface FileRoutesById {
   '/$schema/sql-editor/$snippet/': typeof SchemaSqlEditorSnippetIndexRoute
   '/$schema/template/$template/': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId/': typeof CoreUsersUserIdIndexRoute
+  '/$schema/resource/$resource/audit/$': typeof SchemaResourceResourceAuditSplatRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
   '/$schema/resource/$resource/detail/$': typeof SchemaResourceResourceDetailSplatRoute
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
@@ -604,6 +614,7 @@ export interface FileRouteTypes {
     | '/$schema/sql-editor/$snippet/'
     | '/$schema/template/$template/'
     | '/core/users/$userId/'
+    | '/$schema/resource/$resource/audit/$'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/detail/$'
     | '/$schema/resource/$resource/gallery/$galleryId'
@@ -657,6 +668,7 @@ export interface FileRouteTypes {
     | '/$schema/sql-editor/$snippet'
     | '/$schema/template/$template'
     | '/core/users/$userId'
+    | '/$schema/resource/$resource/audit/$'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/detail/$'
     | '/$schema/resource/$resource/gallery/$galleryId'
@@ -717,6 +729,7 @@ export interface FileRouteTypes {
     | '/$schema/sql-editor/$snippet/'
     | '/$schema/template/$template/'
     | '/core/users/$userId/'
+    | '/$schema/resource/$resource/audit/$'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/detail/$'
     | '/$schema/resource/$resource/gallery/$galleryId'
@@ -1144,6 +1157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceCalendarCalendarIdRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/audit/$': {
+      id: '/$schema/resource/$resource/audit/$'
+      path: '/audit/$'
+      fullPath: '/$schema/resource/$resource/audit/$'
+      preLoaderRoute: typeof SchemaResourceResourceAuditSplatRouteImport
+      parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
   }
 }
 
@@ -1153,6 +1173,7 @@ interface SchemaResourceResourceRouteRouteChildren {
   SchemaResourceResourceSingleRoute: typeof SchemaResourceResourceSingleRoute
   SchemaResourceResourceTableRoute: typeof SchemaResourceResourceTableRoute
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
+  SchemaResourceResourceAuditSplatRoute: typeof SchemaResourceResourceAuditSplatRoute
   SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
   SchemaResourceResourceDetailSplatRoute: typeof SchemaResourceResourceDetailSplatRoute
   SchemaResourceResourceGalleryGalleryIdRoute: typeof SchemaResourceResourceGalleryGalleryIdRoute
@@ -1168,6 +1189,8 @@ const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRoute
     SchemaResourceResourceSingleRoute: SchemaResourceResourceSingleRoute,
     SchemaResourceResourceTableRoute: SchemaResourceResourceTableRoute,
     SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
+    SchemaResourceResourceAuditSplatRoute:
+      SchemaResourceResourceAuditSplatRoute,
     SchemaResourceResourceCalendarCalendarIdRoute:
       SchemaResourceResourceCalendarCalendarIdRoute,
     SchemaResourceResourceDetailSplatRoute:
