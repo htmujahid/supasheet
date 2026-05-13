@@ -1,3 +1,5 @@
+SET client_min_messages = WARNING;
+
 -- Buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('public', 'public', true), ('personal', 'personal', true)

@@ -1,3 +1,5 @@
+SET client_min_messages = WARNING;
+
 -- Bucket
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('uploads', 'uploads', true)

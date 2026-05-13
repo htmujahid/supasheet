@@ -1,3 +1,5 @@
+SET client_min_messages = WARNING;
+
 -- ─────────────────────────────────────────────
 -- Permissions
 -- Admins can override the per-user RLS to view all notifications.

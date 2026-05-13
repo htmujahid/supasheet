@@ -566,31 +566,27 @@ export type Database = {
         }[]
       }
       get_audit_logs: {
-        Args: {
-          p_schema: string
-          p_table: string
-          p_record_id?: string | null
-        }
+        Args: { p_record_id?: string; p_schema: string; p_table: string }
         Returns: {
-          id: string
+          changed_fields: string[]
           created_at: string
+          created_by: string
+          created_by_email: string
+          created_by_name: string
+          created_by_picture_url: string
+          error_code: string
+          error_message: string
+          id: string
+          is_error: boolean
+          metadata: Json
+          new_data: Json
+          old_data: Json
           operation: string
+          record_id: string
+          role: Database["supasheet"]["Enums"]["app_role"]
           schema_name: string
           table_name: string
-          record_id: string | null
-          created_by: string | null
-          role: Database["supasheet"]["Enums"]["app_role"] | null
           user_type: string
-          metadata: Json | null
-          old_data: Json | null
-          new_data: Json | null
-          changed_fields: string[] | null
-          is_error: boolean | null
-          error_message: string | null
-          error_code: string | null
-          created_by_name: string | null
-          created_by_email: string | null
-          created_by_picture_url: string | null
         }[]
       }
       get_charts: {
@@ -952,3 +948,4 @@ export const Constants = {
     },
   },
 } as const
+

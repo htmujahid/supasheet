@@ -31,11 +31,9 @@ RETURNS TABLE(
   primary_keys JSONB,
   relationships JSONB
 )
-LANGUAGE plpgsql
+LANGUAGE SQL
 SET search_path = ''
 AS $$
-BEGIN
-  RETURN QUERY
   SELECT
   c.oid :: int8 AS id,
   nc.nspname AS schema,
@@ -144,7 +142,6 @@ group by
 ORDER BY c.oid
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-END;
 $$;
 
 revoke all on function supasheet.generate_tables(text, text, text, integer, integer) from public;
@@ -192,11 +189,9 @@ RETURNS TABLE (
     enums JSON,
     "comment" TEXT
 )
-LANGUAGE plpgsql
+LANGUAGE SQL
 SET search_path = ''
 AS $$
-BEGIN
-  RETURN QUERY
   -- Adapted from information_schema.columns
   SELECT
   c.oid :: int8 AS table_id,
@@ -316,7 +311,6 @@ WHERE
 ORDER BY c.oid, a.attnum
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count ELSE NULL END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-END;
 $$;
 
 revoke all on function supasheet.generate_columns(text, text, text, text, text, integer, integer) from public;
@@ -348,11 +342,9 @@ RETURNS TABLE(
   is_updatable BOOLEAN,
   comment TEXT
 )
-LANGUAGE plpgsql
+LANGUAGE SQL
 SET search_path = ''
 AS $$
-BEGIN
-  RETURN QUERY
   SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
@@ -380,7 +372,6 @@ WHERE
 ORDER BY c.oid
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-END;
 $$;
 
 revoke all on function supasheet.generate_views(text, text, text, integer, integer) from public;
@@ -404,7 +395,7 @@ CREATE OR REPLACE FUNCTION supasheet.generate_materialized_views(
     ids_filter TEXT DEFAULT NULL,
     limit_count INTEGER DEFAULT NULL,
     offset_count INTEGER DEFAULT NULL
-) 
+)
 RETURNS TABLE(
     id BIGINT,
     schema TEXT,
@@ -412,11 +403,9 @@ RETURNS TABLE(
     is_populated BOOLEAN,
     comment TEXT
 )
-LANGUAGE plpgsql
+LANGUAGE SQL
 SET search_path = ''
 AS $$
-BEGIN
-  RETURN QUERY
   SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
@@ -443,7 +432,6 @@ WHERE
 ORDER BY c.oid
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-END;
 $$;
 
 revoke all on function supasheet.generate_materialized_views(text, text, text, integer, integer) from public;
@@ -478,9 +466,9 @@ BEGIN
     LOOP
         schema_name := obj.schema_name;
         full_identity := obj.object_identity;
-        
+
         object_name := split_part(full_identity, '.', 2);
-        
+
         IF object_name = '' THEN
             object_name := full_identity;
         END IF;
@@ -496,11 +484,11 @@ BEGIN
             INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
             DELETE FROM supasheet.tables WHERE schema = 'supasheet';
             INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet');
-        
+
         ELSIF obj.object_type = 'view' THEN
             DELETE FROM supasheet.views WHERE schema = schema_name and name = object_name;
             INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
-        
+
         ELSIF obj.object_type = 'materialized view' THEN
             DELETE FROM supasheet.materialized_views WHERE schema = schema_name and name = object_name;
             INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
