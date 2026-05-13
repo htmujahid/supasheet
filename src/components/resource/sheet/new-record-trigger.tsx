@@ -2,8 +2,7 @@ import type { ReactNode } from "react"
 
 import { Link } from "@tanstack/react-router"
 
-import { Button, buttonVariants } from "#/components/ui/button"
-import { cn } from "#/lib/utils"
+import { Button } from "#/components/ui/button"
 
 import {
   useNewRecordSheet,
@@ -71,11 +70,14 @@ export function NewRecordTrigger({
   }
 
   return (
-    <Link
-      to={href as never}
-      className={cn(buttonVariants({ size, variant }), className)}
+    <Button
+      size={size}
+      variant={variant}
+      className={className}
+      nativeButton={false}
+      render={<Link to={href as never} />}
     >
       {children}
-    </Link>
+    </Button>
   )
 }

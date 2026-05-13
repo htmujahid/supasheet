@@ -305,6 +305,20 @@ export const insertResourceMutationOptions = <S extends DatabaseSchemas>(
     },
   })
 
+export const insertBulkResourceMutationOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>
+) =>
+  mutationOptions({
+    mutationFn: async (rows: Record<string, unknown>[]) => {
+      const { error } = await supabase
+        .schema(schema)
+        .from(resource)
+        .insert(rows as never)
+      if (error) throw error
+    },
+  })
+
 export const updateResourceMutationOptions = <S extends DatabaseSchemas>(
   schema: S,
   resource: DatabaseTables<S> | DatabaseViews<S>

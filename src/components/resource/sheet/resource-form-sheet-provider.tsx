@@ -9,6 +9,7 @@ import type { TableMetadata } from "#/lib/database-meta.types"
 import { tableSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 import { ResourceFormSheet } from "./resource-form-sheet"
+import { ResourceImportSheet } from "./resource-import-sheet"
 
 type SheetState =
   | { open: false }
@@ -25,6 +26,12 @@ type SheetState =
       schema: string
       resource: string
       pk: Record<string, unknown>
+    }
+  | {
+      open: true
+      mode: "import"
+      schema: string
+      resource: string
     }
 
 type OpenNewOptions = {
@@ -44,6 +51,7 @@ type ContextValue = {
   resource: string
   openNew: (options?: OpenNewOptions) => void
   openEdit: (options: OpenEditOptions) => void
+  openImport: (options?: { schema?: string; resource?: string }) => void
   close: () => void
 }
 
@@ -80,6 +88,13 @@ export function ResourceFormSheetProvider({
           resource: options.resource ?? defaultResource,
           pk: options.pk,
         }),
+      openImport: (options) =>
+        setState({
+          open: true,
+          mode: "import",
+          schema: options?.schema ?? defaultSchema,
+          resource: options?.resource ?? defaultResource,
+        }),
       close: () => setState({ open: false }),
     }),
     [defaultSchema, defaultResource]
@@ -108,6 +123,14 @@ export function ResourceFormSheetProvider({
           schema={state.schema}
           resource={state.resource}
           pk={state.pk}
+          open
+          onOpenChange={onOpenChange}
+        />
+      )}
+      {state.open && state.mode === "import" && (
+        <ResourceImportSheet
+          schema={state.schema}
+          resource={state.resource}
           open
           onOpenChange={onOpenChange}
         />
@@ -162,5 +185,12 @@ export function useEditRecordSheet(schema?: string, resource?: string) {
     inlineForm,
     open: (pk: Record<string, unknown>) =>
       ctx.openEdit({ pk, schema, resource }),
+  }
+}
+
+export function useImportSheet(schema?: string, resource?: string) {
+  const ctx = useResourceFormSheet()
+  return {
+    open: () => ctx.openImport({ schema, resource }),
   }
 }

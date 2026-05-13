@@ -31,6 +31,71 @@ import type {
 } from "#/lib/database-meta.types"
 import type { ColumnFieldMetadata } from "#/types/fields"
 
+export const NUMERIC_TYPES = new Set([
+  "integer", "bigint", "smallint", "numeric", "real",
+  "double precision", "float", "float4", "float8", "int2", "int4", "int8",
+])
+
+export const TEMPORAL_TYPES = new Set([
+  "timestamp with time zone", "timestamp without time zone",
+  "timestamptz", "timestamp", "date", "time", "time with time zone",
+  "time without time zone", "timetz", "interval",
+])
+
+export const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export function coerceColumnValue(
+  val: string,
+  col: ColumnSchema | undefined
+): unknown {
+  if (!col) return val
+  if (val === "") return null
+
+  const type = col.data_type ?? ""
+  const format = col.format ?? ""
+
+  if (type === "boolean" || format === "bool") {
+    const lower = val.toLowerCase()
+    if (lower === "true" || lower === "yes" || val === "1") return true
+    if (lower === "false" || lower === "no" || val === "0") return false
+    return null
+  }
+
+  if (NUMERIC_TYPES.has(type) || NUMERIC_TYPES.has(format)) {
+    const num = Number(val)
+    return isNaN(num) ? null : num
+  }
+
+  if (TEMPORAL_TYPES.has(type)) {
+    const d = new Date(val)
+    return isNaN(d.getTime()) ? null : val
+  }
+
+  if (type === "uuid" || format === "uuid") {
+    return UUID_RE.test(val) ? val : null
+  }
+
+  if (type === "json" || type === "jsonb") {
+    try { return JSON.parse(val) } catch { return null }
+  }
+
+  const isArray =
+    type.toUpperCase() === "ARRAY" ||
+    type.startsWith("_") ||
+    type.includes("[]") ||
+    format.startsWith("_")
+  if (isArray) {
+    if (val.startsWith("{") && val.endsWith("}")) return val
+    if (val.startsWith("[") && val.endsWith("]")) {
+      try { return JSON.parse(val) } catch { /* fall through */ }
+    }
+    return null
+  }
+
+  return val
+}
+
 export function getColumnCell(columnSchema: ColumnSchema) {
   switch (columnSchema.data_type) {
     case "json":

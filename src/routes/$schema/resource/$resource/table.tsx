@@ -19,13 +19,12 @@ import type {
   SortingState,
 } from "@tanstack/react-table"
 
-import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceTable } from "#/components/resource/resource-table"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -45,6 +44,7 @@ import {
   tableSchemaQueryOptions,
   viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
+import { ResourceActions } from "#/components/resource/resource-actions"
 
 export const Route = createFileRoute("/$schema/resource/$resource/table")({
   beforeLoad: ({ context, params: { schema, resource } }) => {
@@ -260,10 +260,11 @@ function RouteComponent() {
           currentViewId="table"
         />
         {isTable && canInsert && (
-          <NewRecordTrigger size="sm">
-            <PlusIcon className="mr-1.5 size-3.5" />
-            New record
-          </NewRecordTrigger>
+          <ResourceActions
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+          />
         )}
       </DefaultHeader>
       <div className="p-4">
