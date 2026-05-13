@@ -13,25 +13,19 @@ returns table(
   is_updatable boolean,
   comment text
 )
-language plpgsql
+language sql
 security definer
 set search_path = ''
 as $$
-declare
-  _user_id uuid;
-begin
-  _user_id := (select auth.uid());
-  return query
-    select
-      v.*
-    from supasheet.views v
-    inner join supasheet.role_permissions rp
-        ON rp.permission::text = v.schema || '.' || v.name || ':select'
-    inner join supasheet.user_roles ur
-        ON ur.role = rp.role
-    where ur.user_id = _user_id
-      and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'dashboard_widget');
-end;
+  select
+    v.*
+  from supasheet.views v
+  inner join supasheet.role_permissions rp
+      ON rp.permission::text = v.schema || '.' || v.name || ':select'
+  inner join supasheet.user_roles ur
+      ON ur.role = rp.role
+  where ur.user_id = (select auth.uid())
+    and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'dashboard_widget');
 $$;
 
 revoke all on function supasheet.get_widgets(text) from authenticated, service_role;

@@ -205,49 +205,42 @@ returns table(
     created_by_email        varchar(320),
     created_by_picture_url  varchar(1000)
 )
-    language plpgsql
+    language sql
     security definer
     set search_path = ''
 as $$
-declare
-    _user_id uuid;
-begin
-    _user_id := (select auth.uid());
-
-    return query
-        select
-            al.id,
-            al.created_at,
-            al.operation,
-            al.schema_name,
-            al.table_name,
-            al.record_id,
-            al.created_by,
-            al.role,
-            al.user_type,
-            al.metadata,
-            al.old_data,
-            al.new_data,
-            al.changed_fields,
-            al.is_error,
-            al.error_message,
-            al.error_code,
-            u.name          as created_by_name,
-            u.email         as created_by_email,
-            u.picture_url   as created_by_picture_url
-        from supasheet.audit_logs al
-        inner join supasheet.role_permissions rp
-            on rp.permission::text = p_schema || '.' || p_table || ':audit'
-        inner join supasheet.user_roles ur
-            on ur.role = rp.role
-        left join supasheet.users u
-            on u.id = al.created_by
-        where ur.user_id = _user_id
-          and al.schema_name = p_schema
-          and al.table_name  = p_table
-          and (p_record_id is null or al.record_id = p_record_id)
-        order by al.created_at desc;
-end;
+    select
+        al.id,
+        al.created_at,
+        al.operation,
+        al.schema_name,
+        al.table_name,
+        al.record_id,
+        al.created_by,
+        al.role,
+        al.user_type,
+        al.metadata,
+        al.old_data,
+        al.new_data,
+        al.changed_fields,
+        al.is_error,
+        al.error_message,
+        al.error_code,
+        u.name          as created_by_name,
+        u.email         as created_by_email,
+        u.picture_url   as created_by_picture_url
+    from supasheet.audit_logs al
+    inner join supasheet.role_permissions rp
+        on rp.permission::text = p_schema || '.' || p_table || ':audit'
+    inner join supasheet.user_roles ur
+        on ur.role = rp.role
+    left join supasheet.users u
+        on u.id = al.created_by
+    where ur.user_id = (select auth.uid())
+      and al.schema_name = p_schema
+      and al.table_name  = p_table
+      and (p_record_id is null or al.record_id = p_record_id)
+    order by al.created_at desc;
 $$;
 
 grant execute on function supasheet.get_audit_logs(text, text, text)

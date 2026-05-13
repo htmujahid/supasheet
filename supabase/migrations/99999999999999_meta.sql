@@ -5,21 +5,18 @@
 
 CREATE OR REPLACE FUNCTION supasheet.get_schemas()
 RETURNS TABLE(schema text)
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         DISTINCT t.schema
     FROM supasheet.tables t
-    INNER JOIN supasheet.role_permissions rp 
+    INNER JOIN supasheet.role_permissions rp
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur 
+    INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid());
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_schemas() FROM anon, authenticated, service_role;
@@ -32,23 +29,20 @@ GRANT EXECUTE ON FUNCTION supasheet.get_schemas() TO authenticated;
 
 CREATE OR REPLACE FUNCTION supasheet.get_tables(schema_name text DEFAULT NULL, table_name text DEFAULT NULL)
 RETURNS SETOF supasheet.tables
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         t.*
     FROM supasheet.tables t
-    INNER JOIN supasheet.role_permissions rp 
+    INNER JOIN supasheet.role_permissions rp
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur 
+    INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid())
         AND (table_name IS NULL OR t.name = table_name)
         AND (schema_name IS NULL OR t.schema = schema_name);
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_tables(text, text) FROM anon, authenticated, service_role;
@@ -61,23 +55,20 @@ GRANT EXECUTE ON FUNCTION supasheet.get_tables(text, text) TO authenticated;
 
 CREATE OR REPLACE FUNCTION supasheet.get_views(schema_name text DEFAULT NULL, view_name text DEFAULT NULL)
 RETURNS SETOF supasheet.views
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         t.*
     FROM supasheet.views t
-    INNER JOIN supasheet.role_permissions rp 
+    INNER JOIN supasheet.role_permissions rp
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur 
+    INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid())
         AND (view_name IS NULL OR t.name = view_name)
         AND (schema_name IS NULL OR t.schema = schema_name);
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_views(text, text) FROM anon, authenticated, service_role;
@@ -91,23 +82,20 @@ GRANT EXECUTE ON FUNCTION supasheet.get_views(text, text) TO authenticated;
 
 CREATE OR REPLACE FUNCTION supasheet.get_materialized_views(schema_name text DEFAULT NULL, view_name text DEFAULT NULL)
 RETURNS SETOF supasheet.materialized_views
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         t.*
     FROM supasheet.materialized_views t
-    INNER JOIN supasheet.role_permissions rp 
+    INNER JOIN supasheet.role_permissions rp
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur 
+    INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid())
         AND (view_name IS NULL OR t.name = view_name)
         AND (schema_name IS NULL OR t.schema = schema_name);
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_materialized_views(text, text) FROM anon, authenticated, service_role;
@@ -119,24 +107,21 @@ GRANT EXECUTE ON FUNCTION supasheet.get_materialized_views(text, text) TO authen
 
 CREATE OR REPLACE FUNCTION supasheet.get_columns(schema_name text DEFAULT NULL, table_name text DEFAULT NULL)
 RETURNS SETOF supasheet.columns
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         t.*
     FROM supasheet.columns t
-    INNER JOIN supasheet.role_permissions rp 
+    INNER JOIN supasheet.role_permissions rp
         ON rp.permission::text = t.schema || '.' || t.table || ':select'
-    INNER JOIN supasheet.user_roles ur 
+    INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid())
         AND (table_name IS NULL OR t.table = table_name)
         AND (schema_name IS NULL OR t.schema = schema_name)
     ORDER BY (t.ordinal_position::int);
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_columns(text, text) FROM anon, authenticated, service_role;
@@ -163,12 +148,10 @@ RETURNS TABLE(
     relationships jsonb,
     columns supasheet.columns[]
 )
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         t.id,
         t.schema,
@@ -195,9 +178,7 @@ BEGIN
     INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid())
-        -- Exclude the input table itself
         AND NOT (t.schema = schema_name AND t.name = table_name)
-        -- Find tables that have relationships with the input table
         AND EXISTS (
             SELECT 1
             FROM jsonb_array_elements(t.relationships) AS rel
@@ -207,7 +188,6 @@ BEGIN
                 (rel->>'target_table_name' = table_name AND rel->>'target_table_schema' = schema_name)
             )
         );
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_related_tables(text, text) FROM anon, authenticated, service_role;
@@ -219,12 +199,10 @@ GRANT EXECUTE ON FUNCTION supasheet.get_related_tables(text, text) TO authentica
 
 CREATE OR REPLACE FUNCTION supasheet.get_permissions(schema_name text DEFAULT NULL)
 RETURNS TABLE(permission supasheet.app_permission)
-LANGUAGE plpgsql
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-BEGIN
-    RETURN QUERY
     SELECT
         DISTINCT rp.permission
     FROM supasheet.role_permissions rp
@@ -232,7 +210,6 @@ BEGIN
         ON ur.role = rp.role
     WHERE ur.user_id = (select auth.uid())
         AND (schema_name IS NULL OR rp.permission::text LIKE schema_name || '.%');
-END;
 $$;
 
 REVOKE ALL ON FUNCTION supasheet.get_permissions(text) FROM anon, authenticated, service_role;
