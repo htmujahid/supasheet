@@ -13,29 +13,44 @@ Advisory locks provide application-level coordination without requiring database
 
 ```sql
 -- Creating dummy rows to lock on
-create table resource_locks (
-  resource_name text primary key
-);
+create table resource_locks (resource_name text primary key);
 
-insert into resource_locks values ('report_generator');
+insert into
+  resource_locks
+values
+  ('report_generator');
 
 -- Lock by selecting the row
-select * from resource_locks where resource_name = 'report_generator' for update;
+select
+  *
+from
+  resource_locks
+where
+  resource_name = 'report_generator' for
+update;
 ```
 
 **Correct (advisory locks):**
 
 ```sql
 -- Session-level advisory lock (released on disconnect or unlock)
-select pg_advisory_lock(hashtext('report_generator'));
+select
+  pg_advisory_lock (hashtext ('report_generator'));
+
 -- ... do exclusive work ...
-select pg_advisory_unlock(hashtext('report_generator'));
+select
+  pg_advisory_unlock (hashtext ('report_generator'));
 
 -- Transaction-level lock (released on commit/rollback)
 begin;
-select pg_advisory_xact_lock(hashtext('daily_report'));
+
+select
+  pg_advisory_xact_lock (hashtext ('daily_report'));
+
 -- ... do work ...
-commit;  -- Lock automatically released
+commit;
+
+-- Lock automatically released
 ```
 
 Try-lock for non-blocking operations:

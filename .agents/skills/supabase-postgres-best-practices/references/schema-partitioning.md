@@ -19,8 +19,17 @@ create table events (
 );
 
 -- 500M rows, queries scan everything
-select * from events where created_at > '2024-01-01';  -- Slow
-vacuum events;  -- Takes hours, locks table
+select
+  *
+from
+  events
+where
+  created_at > '2024-01-01';
+
+-- Slow
+vacuum events;
+
+-- Takes hours, locks table
 ```
 
 **Correct (partitioned by time range):**
@@ -30,20 +39,34 @@ create table events (
   id bigint generated always as identity,
   created_at timestamptz not null,
   data jsonb
-) partition by range (created_at);
+)
+partition by
+  range (created_at);
 
 -- Create partitions for each month
-create table events_2024_01 partition of events
-  for values from ('2024-01-01') to ('2024-02-01');
+create table events_2024_01 partition of events for
+values
+from
+  ('2024-01-01') to ('2024-02-01');
 
-create table events_2024_02 partition of events
-  for values from ('2024-02-01') to ('2024-03-01');
+create table events_2024_02 partition of events for
+values
+from
+  ('2024-02-01') to ('2024-03-01');
 
 -- Queries only scan relevant partitions
-select * from events where created_at > '2024-01-15';  -- Only scans events_2024_01+
+select
+  *
+from
+  events
+where
+  created_at > '2024-01-15';
 
+-- Only scans events_2024_01+
 -- Drop old data instantly
-drop table events_2023_01;  -- Instant vs DELETE taking hours
+drop table events_2023_01;
+
+-- Instant vs DELETE taking hours
 ```
 
 When to partition:

@@ -14,7 +14,19 @@ When multiple workers process a queue, SKIP LOCKED allows workers to process dif
 ```sql
 -- Worker 1 and Worker 2 both try to get next job
 begin;
-select * from jobs where status = 'pending' order by created_at limit 1 for update;
+
+select
+  *
+from
+  jobs
+where
+  status = 'pending'
+order by
+  created_at
+limit
+  1 for
+update;
+
 -- Worker 2 waits for Worker 1's lock to release!
 ```
 

@@ -2,8 +2,8 @@
 
 import * as React from "react"
 
-import { cva } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
+import { cva } from "class-variance-authority"
 
 import { useIsomorphicLayoutEffect } from "#/hooks/use-isomorphic-layout-effect.ts"
 import { useLazyRef } from "#/hooks/use-lazy-ref.ts"

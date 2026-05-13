@@ -4,19 +4,15 @@
  * This migration creates the schema for templates.
  * -------------------------------------------------------
  */
-
-create or replace function supasheet.get_templates(p_schema text default null)
-returns table(
+create or replace function supasheet.get_templates (p_schema text default null) returns table (
   id bigint,
   schema text,
   name text,
   is_updatable boolean,
   comment text
-)
-language sql
-security definer
-set search_path = ''
-as $$
+) language sql security definer
+set
+  search_path = '' as $$
   select
     v.*
   from supasheet.views v
@@ -28,21 +24,21 @@ as $$
     and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'template');
 $$;
 
-revoke all on function supasheet.get_templates(text) from authenticated, service_role;
+revoke all on function supasheet.get_templates (text)
+from
+  authenticated,
+  service_role;
 
-grant execute on function supasheet.get_templates(text) to authenticated;
+grant
+execute on function supasheet.get_templates (text) to authenticated;
 
-
-create or replace function supasheet.apply_template(
+create or replace function supasheet.apply_template (
   p_schema text,
   p_template_name text,
   p_target_table text
-)
-returns integer
-language plpgsql
-security invoker
-set search_path = ''
-as $$
+) returns integer language plpgsql security invoker
+set
+  search_path = '' as $$
 declare
   v_columns text;
   v_sql     text;
@@ -77,6 +73,10 @@ begin
 end;
 $$;
 
-revoke all on function supasheet.apply_template(text, text, text) from authenticated, service_role;
+revoke all on function supasheet.apply_template (text, text, text)
+from
+  authenticated,
+  service_role;
 
-grant execute on function supasheet.apply_template(text, text, text) to authenticated;
+grant
+execute on function supasheet.apply_template (text, text, text) to authenticated;

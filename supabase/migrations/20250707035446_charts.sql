@@ -5,20 +5,16 @@
  * Separate from dashboards to handle chart-specific functionality.
  * -------------------------------------------------------
  */
-
 -- Function to get charts
-create or replace function supasheet.get_charts(p_schema text default null)
-returns table(
+create or replace function supasheet.get_charts (p_schema text default null) returns table (
   id bigint,
   schema text,
   name text,
   is_updatable boolean,
   comment text
-)
-language sql
-security definer
-set search_path = ''
-as $$
+) language sql security definer
+set
+  search_path = '' as $$
   select
     v.*
   from supasheet.views v
@@ -30,5 +26,10 @@ as $$
     and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'chart');
 $$;
 
-revoke all on function supasheet.get_charts(text) from authenticated, service_role;
-grant execute on function supasheet.get_charts(text) to authenticated;
+revoke all on function supasheet.get_charts (text)
+from
+  authenticated,
+  service_role;
+
+grant
+execute on function supasheet.get_charts (text) to authenticated;

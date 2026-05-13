@@ -13,12 +13,20 @@ Idle connections waste resources. Configure timeouts to automatically reclaim th
 
 ```sql
 -- No timeout configured
-show idle_in_transaction_session_timeout;  -- 0 (disabled)
+show idle_in_transaction_session_timeout;
 
+-- 0 (disabled)
 -- Connections stay open forever, even when idle
-select pid, state, state_change, query
-from pg_stat_activity
-where state = 'idle in transaction';
+select
+  pid,
+  state,
+  state_change,
+  query
+from
+  pg_stat_activity
+where
+  state = 'idle in transaction';
+
 -- Shows transactions idle for hours, holding locks
 ```
 
@@ -26,13 +34,18 @@ where state = 'idle in transaction';
 
 ```sql
 -- Terminate connections idle in transaction after 30 seconds
-alter system set idle_in_transaction_session_timeout = '30s';
+alter system
+set
+  idle_in_transaction_session_timeout = '30s';
 
 -- Terminate completely idle connections after 10 minutes
-alter system set idle_session_timeout = '10min';
+alter system
+set
+  idle_session_timeout = '10min';
 
 -- Reload configuration
-select pg_reload_conf();
+select
+  pg_reload_conf ();
 ```
 
 For pooled connections, configure at the pooler level:

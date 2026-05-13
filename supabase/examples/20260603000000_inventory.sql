@@ -5,150 +5,303 @@ grant usage on schema inventory to authenticated;
 ----------------------------------------------------------------
 -- Enums + permissions (must commit before use)
 ----------------------------------------------------------------
-
 begin;
 
-create type inventory.warehouse_type as enum ('main', 'satellite', 'fulfillment', 'returns', 'cold_storage');
-create type inventory.supplier_status as enum ('active', 'pending', 'on_hold', 'inactive');
-create type inventory.product_status as enum ('active', 'discontinued', 'preorder', 'backorder', 'archived');
-create type inventory.stock_status as enum ('in_stock', 'low_stock', 'out_of_stock', 'overstocked');
-create type inventory.po_status as enum ('draft', 'submitted', 'confirmed', 'partially_received', 'received', 'cancelled');
-create type inventory.shipment_status as enum ('pending', 'preparing', 'shipped', 'in_transit', 'delivered', 'returned', 'cancelled');
-create type inventory.shipment_carrier as enum ('ups', 'fedex', 'usps', 'dhl', 'freight', 'other');
-create type inventory.movement_type as enum ('purchase_in', 'sale_out', 'transfer_in', 'transfer_out', 'adjustment', 'return_in', 'damage_out');
+create type inventory.warehouse_type as enum(
+  'main',
+  'satellite',
+  'fulfillment',
+  'returns',
+  'cold_storage'
+);
+
+create type inventory.supplier_status as enum('active', 'pending', 'on_hold', 'inactive');
+
+create type inventory.product_status as enum(
+  'active',
+  'discontinued',
+  'preorder',
+  'backorder',
+  'archived'
+);
+
+create type inventory.stock_status as enum(
+  'in_stock',
+  'low_stock',
+  'out_of_stock',
+  'overstocked'
+);
+
+create type inventory.po_status as enum(
+  'draft',
+  'submitted',
+  'confirmed',
+  'partially_received',
+  'received',
+  'cancelled'
+);
+
+create type inventory.shipment_status as enum(
+  'pending',
+  'preparing',
+  'shipped',
+  'in_transit',
+  'delivered',
+  'returned',
+  'cancelled'
+);
+
+create type inventory.shipment_carrier as enum('ups', 'fedex', 'usps', 'dhl', 'freight', 'other');
+
+create type inventory.movement_type as enum(
+  'purchase_in',
+  'sale_out',
+  'transfer_in',
+  'transfer_out',
+  'adjustment',
+  'return_in',
+  'damage_out'
+);
 
 -- Warehouses
-alter type supasheet.app_permission add value 'inventory.warehouses:select';
-alter type supasheet.app_permission add value 'inventory.warehouses:insert';
-alter type supasheet.app_permission add value 'inventory.warehouses:update';
-alter type supasheet.app_permission add value 'inventory.warehouses:delete';
-alter type supasheet.app_permission add value 'inventory.warehouses:audit';
+alter type supasheet.app_permission
+add value 'inventory.warehouses:select';
+
+alter type supasheet.app_permission
+add value 'inventory.warehouses:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.warehouses:update';
+
+alter type supasheet.app_permission
+add value 'inventory.warehouses:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.warehouses:audit';
 
 -- Suppliers
-alter type supasheet.app_permission add value 'inventory.suppliers:select';
-alter type supasheet.app_permission add value 'inventory.suppliers:insert';
-alter type supasheet.app_permission add value 'inventory.suppliers:update';
-alter type supasheet.app_permission add value 'inventory.suppliers:delete';
-alter type supasheet.app_permission add value 'inventory.suppliers:audit';
+alter type supasheet.app_permission
+add value 'inventory.suppliers:select';
+
+alter type supasheet.app_permission
+add value 'inventory.suppliers:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.suppliers:update';
+
+alter type supasheet.app_permission
+add value 'inventory.suppliers:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.suppliers:audit';
 
 -- Products
-alter type supasheet.app_permission add value 'inventory.products:select';
-alter type supasheet.app_permission add value 'inventory.products:insert';
-alter type supasheet.app_permission add value 'inventory.products:update';
-alter type supasheet.app_permission add value 'inventory.products:delete';
-alter type supasheet.app_permission add value 'inventory.products:audit';
+alter type supasheet.app_permission
+add value 'inventory.products:select';
+
+alter type supasheet.app_permission
+add value 'inventory.products:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.products:update';
+
+alter type supasheet.app_permission
+add value 'inventory.products:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.products:audit';
 
 -- Stock levels
-alter type supasheet.app_permission add value 'inventory.stock_levels:select';
-alter type supasheet.app_permission add value 'inventory.stock_levels:insert';
-alter type supasheet.app_permission add value 'inventory.stock_levels:update';
-alter type supasheet.app_permission add value 'inventory.stock_levels:delete';
-alter type supasheet.app_permission add value 'inventory.stock_levels:audit';
+alter type supasheet.app_permission
+add value 'inventory.stock_levels:select';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_levels:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_levels:update';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_levels:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_levels:audit';
 
 -- Purchase orders
-alter type supasheet.app_permission add value 'inventory.purchase_orders:select';
-alter type supasheet.app_permission add value 'inventory.purchase_orders:insert';
-alter type supasheet.app_permission add value 'inventory.purchase_orders:update';
-alter type supasheet.app_permission add value 'inventory.purchase_orders:delete';
-alter type supasheet.app_permission add value 'inventory.purchase_orders:audit';
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders:select';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders:update';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders:audit';
 
 -- Purchase order items
-alter type supasheet.app_permission add value 'inventory.purchase_order_items:select';
-alter type supasheet.app_permission add value 'inventory.purchase_order_items:insert';
-alter type supasheet.app_permission add value 'inventory.purchase_order_items:update';
-alter type supasheet.app_permission add value 'inventory.purchase_order_items:delete';
-alter type supasheet.app_permission add value 'inventory.purchase_order_items:audit';
+alter type supasheet.app_permission
+add value 'inventory.purchase_order_items:select';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_order_items:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_order_items:update';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_order_items:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_order_items:audit';
 
 -- Shipments
-alter type supasheet.app_permission add value 'inventory.shipments:select';
-alter type supasheet.app_permission add value 'inventory.shipments:insert';
-alter type supasheet.app_permission add value 'inventory.shipments:update';
-alter type supasheet.app_permission add value 'inventory.shipments:delete';
-alter type supasheet.app_permission add value 'inventory.shipments:audit';
+alter type supasheet.app_permission
+add value 'inventory.shipments:select';
+
+alter type supasheet.app_permission
+add value 'inventory.shipments:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.shipments:update';
+
+alter type supasheet.app_permission
+add value 'inventory.shipments:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.shipments:audit';
 
 -- Shipment items
-alter type supasheet.app_permission add value 'inventory.shipment_items:select';
-alter type supasheet.app_permission add value 'inventory.shipment_items:insert';
-alter type supasheet.app_permission add value 'inventory.shipment_items:update';
-alter type supasheet.app_permission add value 'inventory.shipment_items:delete';
-alter type supasheet.app_permission add value 'inventory.shipment_items:audit';
+alter type supasheet.app_permission
+add value 'inventory.shipment_items:select';
+
+alter type supasheet.app_permission
+add value 'inventory.shipment_items:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.shipment_items:update';
+
+alter type supasheet.app_permission
+add value 'inventory.shipment_items:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.shipment_items:audit';
 
 -- Stock movements
-alter type supasheet.app_permission add value 'inventory.stock_movements:select';
-alter type supasheet.app_permission add value 'inventory.stock_movements:insert';
-alter type supasheet.app_permission add value 'inventory.stock_movements:update';
-alter type supasheet.app_permission add value 'inventory.stock_movements:delete';
-alter type supasheet.app_permission add value 'inventory.stock_movements:audit';
+alter type supasheet.app_permission
+add value 'inventory.stock_movements:select';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_movements:insert';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_movements:update';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_movements:delete';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_movements:audit';
 
 -- Users mirror
-alter type supasheet.app_permission add value 'inventory.users:select';
+alter type supasheet.app_permission
+add value 'inventory.users:select';
 
 -- Reports
-alter type supasheet.app_permission add value 'inventory.products_report:select';
-alter type supasheet.app_permission add value 'inventory.purchase_orders_report:select';
-alter type supasheet.app_permission add value 'inventory.shipments_report:select';
-alter type supasheet.app_permission add value 'inventory.low_stock_report:select';
+alter type supasheet.app_permission
+add value 'inventory.products_report:select';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders_report:select';
+
+alter type supasheet.app_permission
+add value 'inventory.shipments_report:select';
+
+alter type supasheet.app_permission
+add value 'inventory.low_stock_report:select';
 
 -- Dashboard widgets
-alter type supasheet.app_permission add value 'inventory.inventory_value_summary:select';
-alter type supasheet.app_permission add value 'inventory.stock_status_split:select';
-alter type supasheet.app_permission add value 'inventory.open_pos_value:select';
-alter type supasheet.app_permission add value 'inventory.stock_health:select';
-alter type supasheet.app_permission add value 'inventory.recent_shipments:select';
-alter type supasheet.app_permission add value 'inventory.top_suppliers:select';
+alter type supasheet.app_permission
+add value 'inventory.inventory_value_summary:select';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_status_split:select';
+
+alter type supasheet.app_permission
+add value 'inventory.open_pos_value:select';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_health:select';
+
+alter type supasheet.app_permission
+add value 'inventory.recent_shipments:select';
+
+alter type supasheet.app_permission
+add value 'inventory.top_suppliers:select';
 
 -- Charts
-alter type supasheet.app_permission add value 'inventory.products_by_category_pie:select';
-alter type supasheet.app_permission add value 'inventory.stock_by_warehouse_bar:select';
-alter type supasheet.app_permission add value 'inventory.shipment_volume_line:select';
-alter type supasheet.app_permission add value 'inventory.movement_metrics_radar:select';
+alter type supasheet.app_permission
+add value 'inventory.products_by_category_pie:select';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_by_warehouse_bar:select';
+
+alter type supasheet.app_permission
+add value 'inventory.shipment_volume_line:select';
+
+alter type supasheet.app_permission
+add value 'inventory.movement_metrics_radar:select';
 
 commit;
-
 
 ----------------------------------------------------------------
 -- Users mirror view
 ----------------------------------------------------------------
-
 create or replace view inventory.users
-with (security_invoker = true) as
-select * from supasheet.users;
+with
+  (security_invoker = true) as
+select
+  *
+from
+  supasheet.users;
 
-revoke all on inventory.users from authenticated, service_role;
-grant select on inventory.users to authenticated;
+revoke all on inventory.users
+from
+  authenticated,
+  service_role;
 
+grant
+select
+  on inventory.users to authenticated;
 
 ----------------------------------------------------------------
 -- Warehouses
 ----------------------------------------------------------------
-
 create table inventory.warehouses (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    name varchar(255) not null,
-    code varchar(50) unique not null,
-    type inventory.warehouse_type default 'main',
-
-    description supasheet.RICH_TEXT,
-    cover supasheet.file,
-
-    address text,
-    city varchar(255),
-    country varchar(255),
-
-    capacity integer,
-    manager_user_id uuid references supasheet.users(id) on delete set null,
-
-    is_active boolean default true,
-    color supasheet.COLOR,
-    tags varchar(255)[],
-    notes text,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  name varchar(255) not null,
+  code varchar(50) unique not null,
+  type inventory.warehouse_type default 'main',
+  description supasheet.RICH_TEXT,
+  cover supasheet.file,
+  address text,
+  city varchar(255),
+  country varchar(255),
+  capacity integer,
+  manager_user_id uuid references supasheet.users (id) on delete set null,
+  is_active boolean default true,
+  color supasheet.COLOR,
+  tags varchar(255) [],
+  notes text,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column inventory.warehouses.type is
-'{
+comment on column inventory.warehouses.type is '{
     "progress": false,
     "enums": {
         "main":         {"variant": "success",   "icon": "Warehouse"},
@@ -159,8 +312,7 @@ comment on column inventory.warehouses.type is
     }
 }';
 
-comment on table inventory.warehouses is
-'{
+comment on table inventory.warehouses is '{
     "icon": "Warehouse",
     "display": "block",
     "query": {
@@ -182,73 +334,82 @@ comment on table inventory.warehouses is
 
 comment on column inventory.warehouses.cover is '{"accept":"image/*"}';
 
-revoke all on table inventory.warehouses from authenticated, service_role;
-grant select, insert, update, delete on table inventory.warehouses to authenticated;
+revoke all on table inventory.warehouses
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.warehouses to authenticated;
 
 create index idx_inv_warehouses_type on inventory.warehouses (type);
+
 create index idx_inv_warehouses_manager_user_id on inventory.warehouses (manager_user_id);
+
 create index idx_inv_warehouses_country on inventory.warehouses (country);
 
 alter table inventory.warehouses enable row level security;
 
-create policy warehouses_select on inventory.warehouses
-    for select to authenticated
-    using (supasheet.has_permission('inventory.warehouses:select'));
+create policy warehouses_select on inventory.warehouses for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.warehouses:select')
+  );
 
-create policy warehouses_insert on inventory.warehouses
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.warehouses:insert'));
+create policy warehouses_insert on inventory.warehouses for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.warehouses:insert')
+  );
 
 create policy warehouses_update on inventory.warehouses
-    for update to authenticated
-    using (supasheet.has_permission('inventory.warehouses:update'))
-    with check (supasheet.has_permission('inventory.warehouses:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.warehouses:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.warehouses:update')
+  );
 
-create policy warehouses_delete on inventory.warehouses
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.warehouses:delete'));
-
+create policy warehouses_delete on inventory.warehouses for delete to authenticated using (
+  supasheet.has_permission ('inventory.warehouses:delete')
+);
 
 ----------------------------------------------------------------
 -- Suppliers
 ----------------------------------------------------------------
-
 create table inventory.suppliers (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    name varchar(500) not null,
-    code varchar(50) unique,
-    status inventory.supplier_status default 'active',
-
-    contact_name varchar(255),
-    email supasheet.EMAIL,
-    phone supasheet.TEL,
-    website supasheet.URL,
-
-    address text,
-    city varchar(255),
-    country varchar(255),
-
-    lead_time_days integer,
-    payment_terms varchar(100),
-    tax_id varchar(100),
-
-    rating supasheet.RATING,
-
-    logo supasheet.file,
-    description supasheet.RICH_TEXT,
-
-    tags varchar(255)[],
-    color supasheet.COLOR,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  name varchar(500) not null,
+  code varchar(50) unique,
+  status inventory.supplier_status default 'active',
+  contact_name varchar(255),
+  email supasheet.EMAIL,
+  phone supasheet.TEL,
+  website supasheet.URL,
+  address text,
+  city varchar(255),
+  country varchar(255),
+  lead_time_days integer,
+  payment_terms varchar(100),
+  tax_id varchar(100),
+  rating supasheet.RATING,
+  logo supasheet.file,
+  description supasheet.RICH_TEXT,
+  tags varchar(255) [],
+  color supasheet.COLOR,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column inventory.suppliers.status is
-'{
+comment on column inventory.suppliers.status is '{
     "progress": true,
     "enums": {
         "active":   {"variant": "success",     "icon": "CircleCheck"},
@@ -258,8 +419,7 @@ comment on column inventory.suppliers.status is
     }
 }';
 
-comment on table inventory.suppliers is
-'{
+comment on table inventory.suppliers is '{
     "icon": "Factory",
     "display": "block",
     "query": {
@@ -282,78 +442,85 @@ comment on table inventory.suppliers is
 
 comment on column inventory.suppliers.logo is '{"accept":"image/*"}';
 
-revoke all on table inventory.suppliers from authenticated, service_role;
-grant select, insert, update, delete on table inventory.suppliers to authenticated;
+revoke all on table inventory.suppliers
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.suppliers to authenticated;
 
 create index idx_inv_suppliers_user_id on inventory.suppliers (user_id);
+
 create index idx_inv_suppliers_status on inventory.suppliers (status);
+
 create index idx_inv_suppliers_country on inventory.suppliers (country);
 
 alter table inventory.suppliers enable row level security;
 
-create policy suppliers_select on inventory.suppliers
-    for select to authenticated
-    using (supasheet.has_permission('inventory.suppliers:select'));
+create policy suppliers_select on inventory.suppliers for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.suppliers:select')
+  );
 
-create policy suppliers_insert on inventory.suppliers
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.suppliers:insert'));
+create policy suppliers_insert on inventory.suppliers for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.suppliers:insert')
+  );
 
 create policy suppliers_update on inventory.suppliers
-    for update to authenticated
-    using (supasheet.has_permission('inventory.suppliers:update'))
-    with check (supasheet.has_permission('inventory.suppliers:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.suppliers:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.suppliers:update')
+  );
 
-create policy suppliers_delete on inventory.suppliers
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.suppliers:delete'));
-
+create policy suppliers_delete on inventory.suppliers for delete to authenticated using (
+  supasheet.has_permission ('inventory.suppliers:delete')
+);
 
 ----------------------------------------------------------------
 -- Products
 ----------------------------------------------------------------
-
 create table inventory.products (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    sku varchar(100) unique not null,
-    name varchar(500) not null,
-    barcode varchar(100),
-
-    status inventory.product_status default 'active',
-    category varchar(255),
-    brand varchar(255),
-
-    description supasheet.RICH_TEXT,
-    image supasheet.file,
-    attachments supasheet.file,
-
-    unit_of_measure varchar(50) default 'each',
-
-    weight numeric(10, 3),
-    dimensions varchar(100),
-
-    cost_price numeric(12, 2) default 0,
-    list_price numeric(12, 2) default 0,
-    currency varchar(3) default 'USD',
-
-    reorder_point integer default 0,
-    reorder_quantity integer default 0,
-    safety_stock integer default 0,
-
-    default_supplier_id uuid references inventory.suppliers(id) on delete set null,
-
-    tags varchar(255)[],
-    color supasheet.COLOR,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  sku varchar(100) unique not null,
+  name varchar(500) not null,
+  barcode varchar(100),
+  status inventory.product_status default 'active',
+  category varchar(255),
+  brand varchar(255),
+  description supasheet.RICH_TEXT,
+  image supasheet.file,
+  attachments supasheet.file,
+  unit_of_measure varchar(50) default 'each',
+  weight numeric(10, 3),
+  dimensions varchar(100),
+  cost_price numeric(12, 2) default 0,
+  list_price numeric(12, 2) default 0,
+  currency varchar(3) default 'USD',
+  reorder_point integer default 0,
+  reorder_quantity integer default 0,
+  safety_stock integer default 0,
+  default_supplier_id uuid references inventory.suppliers (id) on delete set null,
+  tags varchar(255) [],
+  color supasheet.COLOR,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column inventory.products.status is
-'{
+comment on column inventory.products.status is '{
     "progress": true,
     "enums": {
         "active":       {"variant": "success",     "icon": "CircleCheck"},
@@ -364,8 +531,7 @@ comment on column inventory.products.status is
     }
 }';
 
-comment on table inventory.products is
-'{
+comment on table inventory.products is '{
     "icon": "Package",
     "display": "block",
     "query": {
@@ -391,66 +557,81 @@ comment on table inventory.products is
 }';
 
 comment on column inventory.products.image is '{"accept":"image/*"}';
+
 comment on column inventory.products.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table inventory.products from authenticated, service_role;
-grant select, insert, update, delete on table inventory.products to authenticated;
+revoke all on table inventory.products
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.products to authenticated;
 
 create index idx_inv_products_user_id on inventory.products (user_id);
+
 create index idx_inv_products_status on inventory.products (status);
+
 create index idx_inv_products_category on inventory.products (category);
+
 create index idx_inv_products_brand on inventory.products (brand);
+
 create index idx_inv_products_default_supplier_id on inventory.products (default_supplier_id);
+
 create index idx_inv_products_sku on inventory.products (sku);
 
 alter table inventory.products enable row level security;
 
-create policy products_select on inventory.products
-    for select to authenticated
-    using (supasheet.has_permission('inventory.products:select'));
+create policy products_select on inventory.products for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.products:select')
+  );
 
-create policy products_insert on inventory.products
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.products:insert'));
+create policy products_insert on inventory.products for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.products:insert')
+  );
 
 create policy products_update on inventory.products
-    for update to authenticated
-    using (supasheet.has_permission('inventory.products:update'))
-    with check (supasheet.has_permission('inventory.products:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.products:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.products:update')
+  );
 
-create policy products_delete on inventory.products
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.products:delete'));
-
+create policy products_delete on inventory.products for delete to authenticated using (
+  supasheet.has_permission ('inventory.products:delete')
+);
 
 ----------------------------------------------------------------
 -- Stock levels (warehouse × product)
 ----------------------------------------------------------------
-
 create table inventory.stock_levels (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    warehouse_id uuid not null references inventory.warehouses(id) on delete cascade,
-    product_id uuid not null references inventory.products(id) on delete cascade,
-
-    quantity_on_hand integer default 0,
-    quantity_reserved integer default 0,
-    quantity_available integer generated always as (quantity_on_hand - quantity_reserved) stored,
-
-    bin_location varchar(100),
-    last_counted_at timestamptz,
-
-    status inventory.stock_status default 'in_stock',
-
-    notes text,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp,
-
-    unique (warehouse_id, product_id)
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  warehouse_id uuid not null references inventory.warehouses (id) on delete cascade,
+  product_id uuid not null references inventory.products (id) on delete cascade,
+  quantity_on_hand integer default 0,
+  quantity_reserved integer default 0,
+  quantity_available integer generated always as (quantity_on_hand - quantity_reserved) stored,
+  bin_location varchar(100),
+  last_counted_at timestamptz,
+  status inventory.stock_status default 'in_stock',
+  notes text,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp,
+  unique (warehouse_id, product_id)
 );
 
-comment on column inventory.stock_levels.status is
-'{
+comment on column inventory.stock_levels.status is '{
     "progress": true,
     "enums": {
         "in_stock":     {"variant": "success",     "icon": "CircleCheck"},
@@ -460,8 +641,7 @@ comment on column inventory.stock_levels.status is
     }
 }';
 
-comment on table inventory.stock_levels is
-'{
+comment on table inventory.stock_levels is '{
     "icon": "Boxes",
     "inlineForm": true,
     "display": "block",
@@ -483,69 +663,79 @@ comment on table inventory.stock_levels is
     ]
 }';
 
-revoke all on table inventory.stock_levels from authenticated, service_role;
-grant select, insert, update, delete on table inventory.stock_levels to authenticated;
+revoke all on table inventory.stock_levels
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.stock_levels to authenticated;
 
 create index idx_inv_stock_levels_warehouse_id on inventory.stock_levels (warehouse_id);
+
 create index idx_inv_stock_levels_product_id on inventory.stock_levels (product_id);
+
 create index idx_inv_stock_levels_status on inventory.stock_levels (status);
 
 alter table inventory.stock_levels enable row level security;
 
-create policy stock_levels_select on inventory.stock_levels
-    for select to authenticated
-    using (supasheet.has_permission('inventory.stock_levels:select'));
+create policy stock_levels_select on inventory.stock_levels for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.stock_levels:select')
+  );
 
-create policy stock_levels_insert on inventory.stock_levels
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.stock_levels:insert'));
+create policy stock_levels_insert on inventory.stock_levels for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.stock_levels:insert')
+  );
 
 create policy stock_levels_update on inventory.stock_levels
-    for update to authenticated
-    using (supasheet.has_permission('inventory.stock_levels:update'))
-    with check (supasheet.has_permission('inventory.stock_levels:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.stock_levels:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.stock_levels:update')
+  );
 
-create policy stock_levels_delete on inventory.stock_levels
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.stock_levels:delete'));
-
+create policy stock_levels_delete on inventory.stock_levels for delete to authenticated using (
+  supasheet.has_permission ('inventory.stock_levels:delete')
+);
 
 ----------------------------------------------------------------
 -- Purchase orders
 ----------------------------------------------------------------
-
 create table inventory.purchase_orders (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    po_number varchar(50) unique not null,
-
-    supplier_id uuid references inventory.suppliers(id) on delete set null,
-    warehouse_id uuid references inventory.warehouses(id) on delete set null,
-
-    status inventory.po_status default 'draft',
-
-    order_date date not null,
-    expected_date date,
-    received_date date,
-
-    subtotal numeric(14, 2) default 0,
-    tax numeric(14, 2) default 0,
-    shipping numeric(14, 2) default 0,
-    total numeric(14, 2) default 0,
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  po_number varchar(50) unique not null,
+  supplier_id uuid references inventory.suppliers (id) on delete set null,
+  warehouse_id uuid references inventory.warehouses (id) on delete set null,
+  status inventory.po_status default 'draft',
+  order_date date not null,
+  expected_date date,
+  received_date date,
+  subtotal numeric(14, 2) default 0,
+  tax numeric(14, 2) default 0,
+  shipping numeric(14, 2) default 0,
+  total numeric(14, 2) default 0,
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column inventory.purchase_orders.status is
-'{
+comment on column inventory.purchase_orders.status is '{
     "progress": true,
     "enums": {
         "draft":              {"variant": "outline",     "icon": "FileEdit"},
@@ -557,8 +747,7 @@ comment on column inventory.purchase_orders.status is
     }
 }';
 
-comment on table inventory.purchase_orders is
-'{
+comment on table inventory.purchase_orders is '{
     "icon": "ClipboardList",
     "display": "block",
     "query": {
@@ -584,57 +773,74 @@ comment on table inventory.purchase_orders is
 
 comment on column inventory.purchase_orders.attachments is '{"accept":"*", "maxFiles": 20}';
 
-revoke all on table inventory.purchase_orders from authenticated, service_role;
-grant select, insert, update, delete on table inventory.purchase_orders to authenticated;
+revoke all on table inventory.purchase_orders
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.purchase_orders to authenticated;
 
 create index idx_inv_purchase_orders_user_id on inventory.purchase_orders (user_id);
+
 create index idx_inv_purchase_orders_supplier_id on inventory.purchase_orders (supplier_id);
+
 create index idx_inv_purchase_orders_warehouse_id on inventory.purchase_orders (warehouse_id);
+
 create index idx_inv_purchase_orders_status on inventory.purchase_orders (status);
+
 create index idx_inv_purchase_orders_order_date on inventory.purchase_orders (order_date desc);
+
 create index idx_inv_purchase_orders_expected_date on inventory.purchase_orders (expected_date);
 
 alter table inventory.purchase_orders enable row level security;
 
-create policy purchase_orders_select on inventory.purchase_orders
-    for select to authenticated
-    using (supasheet.has_permission('inventory.purchase_orders:select'));
+create policy purchase_orders_select on inventory.purchase_orders for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.purchase_orders:select')
+  );
 
-create policy purchase_orders_insert on inventory.purchase_orders
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.purchase_orders:insert'));
+create policy purchase_orders_insert on inventory.purchase_orders for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.purchase_orders:insert')
+  );
 
 create policy purchase_orders_update on inventory.purchase_orders
-    for update to authenticated
-    using (supasheet.has_permission('inventory.purchase_orders:update'))
-    with check (supasheet.has_permission('inventory.purchase_orders:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.purchase_orders:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.purchase_orders:update')
+  );
 
-create policy purchase_orders_delete on inventory.purchase_orders
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.purchase_orders:delete'));
-
+create policy purchase_orders_delete on inventory.purchase_orders for delete to authenticated using (
+  supasheet.has_permission ('inventory.purchase_orders:delete')
+);
 
 ----------------------------------------------------------------
 -- Purchase order items
 ----------------------------------------------------------------
-
 create table inventory.purchase_order_items (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    po_id uuid not null references inventory.purchase_orders(id) on delete cascade,
-    product_id uuid not null references inventory.products(id) on delete restrict,
-
-    quantity_ordered integer not null default 0,
-    quantity_received integer default 0,
-    unit_cost numeric(12, 2) not null default 0,
-    total_cost numeric(14, 2) generated always as (quantity_ordered * unit_cost) stored,
-
-    notes text,
-
-    created_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  po_id uuid not null references inventory.purchase_orders (id) on delete cascade,
+  product_id uuid not null references inventory.products (id) on delete restrict,
+  quantity_ordered integer not null default 0,
+  quantity_received integer default 0,
+  unit_cost numeric(12, 2) not null default 0,
+  total_cost numeric(14, 2) generated always as (quantity_ordered * unit_cost) stored,
+  notes text,
+  created_at timestamptz default current_timestamp
 );
 
-comment on table inventory.purchase_order_items is
-'{
+comment on table inventory.purchase_order_items is '{
     "icon": "ListChecks",
     "inlineForm": true,
     "display": "none",
@@ -652,73 +858,81 @@ comment on table inventory.purchase_order_items is
     ]
 }';
 
-revoke all on table inventory.purchase_order_items from authenticated, service_role;
-grant select, insert, update, delete on table inventory.purchase_order_items to authenticated;
+revoke all on table inventory.purchase_order_items
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.purchase_order_items to authenticated;
 
 create index idx_inv_po_items_po_id on inventory.purchase_order_items (po_id);
+
 create index idx_inv_po_items_product_id on inventory.purchase_order_items (product_id);
 
 alter table inventory.purchase_order_items enable row level security;
 
-create policy purchase_order_items_select on inventory.purchase_order_items
-    for select to authenticated
-    using (supasheet.has_permission('inventory.purchase_order_items:select'));
+create policy purchase_order_items_select on inventory.purchase_order_items for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.purchase_order_items:select')
+  );
 
-create policy purchase_order_items_insert on inventory.purchase_order_items
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.purchase_order_items:insert'));
+create policy purchase_order_items_insert on inventory.purchase_order_items for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.purchase_order_items:insert')
+  );
 
 create policy purchase_order_items_update on inventory.purchase_order_items
-    for update to authenticated
-    using (supasheet.has_permission('inventory.purchase_order_items:update'))
-    with check (supasheet.has_permission('inventory.purchase_order_items:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.purchase_order_items:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.purchase_order_items:update')
+  );
 
-create policy purchase_order_items_delete on inventory.purchase_order_items
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.purchase_order_items:delete'));
-
+create policy purchase_order_items_delete on inventory.purchase_order_items for delete to authenticated using (
+  supasheet.has_permission ('inventory.purchase_order_items:delete')
+);
 
 ----------------------------------------------------------------
 -- Shipments
 ----------------------------------------------------------------
-
 create table inventory.shipments (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    shipment_number varchar(50) unique not null,
-
-    warehouse_id uuid references inventory.warehouses(id) on delete set null,
-
-    customer_name varchar(500),
-    customer_email supasheet.EMAIL,
-    destination_address text,
-    destination_city varchar(255),
-    destination_country varchar(255),
-
-    status inventory.shipment_status default 'pending',
-    carrier inventory.shipment_carrier default 'other',
-    tracking_number varchar(255),
-
-    shipped_date timestamptz,
-    expected_delivery_date date,
-    delivered_date timestamptz,
-
-    weight numeric(10, 3),
-    cost numeric(12, 2),
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  shipment_number varchar(50) unique not null,
+  warehouse_id uuid references inventory.warehouses (id) on delete set null,
+  customer_name varchar(500),
+  customer_email supasheet.EMAIL,
+  destination_address text,
+  destination_city varchar(255),
+  destination_country varchar(255),
+  status inventory.shipment_status default 'pending',
+  carrier inventory.shipment_carrier default 'other',
+  tracking_number varchar(255),
+  shipped_date timestamptz,
+  expected_delivery_date date,
+  delivered_date timestamptz,
+  weight numeric(10, 3),
+  cost numeric(12, 2),
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column inventory.shipments.status is
-'{
+comment on column inventory.shipments.status is '{
     "progress": true,
     "enums": {
         "pending":    {"variant": "outline",     "icon": "Clock"},
@@ -731,8 +945,7 @@ comment on column inventory.shipments.status is
     }
 }';
 
-comment on column inventory.shipments.carrier is
-'{
+comment on column inventory.shipments.carrier is '{
     "progress": false,
     "enums": {
         "ups":     {"variant": "warning",   "icon": "Truck"},
@@ -744,8 +957,7 @@ comment on column inventory.shipments.carrier is
     }
 }';
 
-comment on table inventory.shipments is
-'{
+comment on table inventory.shipments is '{
     "icon": "Truck",
     "display": "block",
     "query": {
@@ -772,56 +984,73 @@ comment on table inventory.shipments is
 
 comment on column inventory.shipments.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table inventory.shipments from authenticated, service_role;
-grant select, insert, update, delete on table inventory.shipments to authenticated;
+revoke all on table inventory.shipments
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.shipments to authenticated;
 
 create index idx_inv_shipments_user_id on inventory.shipments (user_id);
+
 create index idx_inv_shipments_warehouse_id on inventory.shipments (warehouse_id);
+
 create index idx_inv_shipments_status on inventory.shipments (status);
+
 create index idx_inv_shipments_carrier on inventory.shipments (carrier);
+
 create index idx_inv_shipments_shipped_date on inventory.shipments (shipped_date desc);
+
 create index idx_inv_shipments_expected_delivery_date on inventory.shipments (expected_delivery_date);
 
 alter table inventory.shipments enable row level security;
 
-create policy shipments_select on inventory.shipments
-    for select to authenticated
-    using (supasheet.has_permission('inventory.shipments:select'));
+create policy shipments_select on inventory.shipments for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.shipments:select')
+  );
 
-create policy shipments_insert on inventory.shipments
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.shipments:insert'));
+create policy shipments_insert on inventory.shipments for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.shipments:insert')
+  );
 
 create policy shipments_update on inventory.shipments
-    for update to authenticated
-    using (supasheet.has_permission('inventory.shipments:update'))
-    with check (supasheet.has_permission('inventory.shipments:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.shipments:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.shipments:update')
+  );
 
-create policy shipments_delete on inventory.shipments
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.shipments:delete'));
-
+create policy shipments_delete on inventory.shipments for delete to authenticated using (
+  supasheet.has_permission ('inventory.shipments:delete')
+);
 
 ----------------------------------------------------------------
 -- Shipment items
 ----------------------------------------------------------------
-
 create table inventory.shipment_items (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    shipment_id uuid not null references inventory.shipments(id) on delete cascade,
-    product_id uuid not null references inventory.products(id) on delete restrict,
-
-    quantity integer not null default 0,
-    unit_price numeric(12, 2),
-    total_price numeric(14, 2) generated always as (quantity * coalesce(unit_price, 0)) stored,
-
-    notes text,
-
-    created_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  shipment_id uuid not null references inventory.shipments (id) on delete cascade,
+  product_id uuid not null references inventory.products (id) on delete restrict,
+  quantity integer not null default 0,
+  unit_price numeric(12, 2),
+  total_price numeric(14, 2) generated always as (quantity * coalesce(unit_price, 0)) stored,
+  notes text,
+  created_at timestamptz default current_timestamp
 );
 
-comment on table inventory.shipment_items is
-'{
+comment on table inventory.shipment_items is '{
     "icon": "ListChecks",
     "inlineForm": true,
     "display": "none",
@@ -839,63 +1068,72 @@ comment on table inventory.shipment_items is
     ]
 }';
 
-revoke all on table inventory.shipment_items from authenticated, service_role;
-grant select, insert, update, delete on table inventory.shipment_items to authenticated;
+revoke all on table inventory.shipment_items
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.shipment_items to authenticated;
 
 create index idx_inv_shipment_items_shipment_id on inventory.shipment_items (shipment_id);
+
 create index idx_inv_shipment_items_product_id on inventory.shipment_items (product_id);
 
 alter table inventory.shipment_items enable row level security;
 
-create policy shipment_items_select on inventory.shipment_items
-    for select to authenticated
-    using (supasheet.has_permission('inventory.shipment_items:select'));
+create policy shipment_items_select on inventory.shipment_items for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.shipment_items:select')
+  );
 
-create policy shipment_items_insert on inventory.shipment_items
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.shipment_items:insert'));
+create policy shipment_items_insert on inventory.shipment_items for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.shipment_items:insert')
+  );
 
 create policy shipment_items_update on inventory.shipment_items
-    for update to authenticated
-    using (supasheet.has_permission('inventory.shipment_items:update'))
-    with check (supasheet.has_permission('inventory.shipment_items:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.shipment_items:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.shipment_items:update')
+  );
 
-create policy shipment_items_delete on inventory.shipment_items
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.shipment_items:delete'));
-
+create policy shipment_items_delete on inventory.shipment_items for delete to authenticated using (
+  supasheet.has_permission ('inventory.shipment_items:delete')
+);
 
 ----------------------------------------------------------------
 -- Stock movements (audit trail)
 ----------------------------------------------------------------
-
 create table inventory.stock_movements (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    movement_number varchar(50) unique not null,
-
-    type inventory.movement_type not null,
-    product_id uuid not null references inventory.products(id) on delete restrict,
-
-    warehouse_id uuid references inventory.warehouses(id) on delete set null,
-    destination_warehouse_id uuid references inventory.warehouses(id) on delete set null,
-
-    quantity integer not null default 0,
-    unit_cost numeric(12, 2),
-
-    reference_type varchar(50),
-    reference_id uuid,
-
-    occurred_at timestamptz default current_timestamp,
-    reason text,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  movement_number varchar(50) unique not null,
+  type inventory.movement_type not null,
+  product_id uuid not null references inventory.products (id) on delete restrict,
+  warehouse_id uuid references inventory.warehouses (id) on delete set null,
+  destination_warehouse_id uuid references inventory.warehouses (id) on delete set null,
+  quantity integer not null default 0,
+  unit_cost numeric(12, 2),
+  reference_type varchar(50),
+  reference_id uuid,
+  occurred_at timestamptz default current_timestamp,
+  reason text,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp
 );
 
-comment on column inventory.stock_movements.type is
-'{
+comment on column inventory.stock_movements.type is '{
     "progress": false,
     "enums": {
         "purchase_in":  {"variant": "success",     "icon": "PackagePlus"},
@@ -908,8 +1146,7 @@ comment on column inventory.stock_movements.type is
     }
 }';
 
-comment on table inventory.stock_movements is
-'{
+comment on table inventory.stock_movements is '{
     "icon": "ArrowLeftRight",
     "display": "block",
     "query": {
@@ -935,564 +1172,804 @@ comment on table inventory.stock_movements is
     ]
 }';
 
-revoke all on table inventory.stock_movements from authenticated, service_role;
-grant select, insert, update, delete on table inventory.stock_movements to authenticated;
+revoke all on table inventory.stock_movements
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table inventory.stock_movements to authenticated;
 
 create index idx_inv_stock_movements_user_id on inventory.stock_movements (user_id);
+
 create index idx_inv_stock_movements_product_id on inventory.stock_movements (product_id);
+
 create index idx_inv_stock_movements_warehouse_id on inventory.stock_movements (warehouse_id);
+
 create index idx_inv_stock_movements_destination_warehouse_id on inventory.stock_movements (destination_warehouse_id);
+
 create index idx_inv_stock_movements_type on inventory.stock_movements (type);
+
 create index idx_inv_stock_movements_occurred_at on inventory.stock_movements (occurred_at desc);
 
 alter table inventory.stock_movements enable row level security;
 
-create policy stock_movements_select on inventory.stock_movements
-    for select to authenticated
-    using (supasheet.has_permission('inventory.stock_movements:select'));
+create policy stock_movements_select on inventory.stock_movements for
+select
+  to authenticated using (
+    supasheet.has_permission ('inventory.stock_movements:select')
+  );
 
-create policy stock_movements_insert on inventory.stock_movements
-    for insert to authenticated
-    with check (supasheet.has_permission('inventory.stock_movements:insert'));
+create policy stock_movements_insert on inventory.stock_movements for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('inventory.stock_movements:insert')
+  );
 
 create policy stock_movements_update on inventory.stock_movements
-    for update to authenticated
-    using (supasheet.has_permission('inventory.stock_movements:update'))
-    with check (supasheet.has_permission('inventory.stock_movements:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('inventory.stock_movements:update')
+  )
+with
+  check (
+    supasheet.has_permission ('inventory.stock_movements:update')
+  );
 
-create policy stock_movements_delete on inventory.stock_movements
-    for delete to authenticated
-    using (supasheet.has_permission('inventory.stock_movements:delete'));
-
+create policy stock_movements_delete on inventory.stock_movements for delete to authenticated using (
+  supasheet.has_permission ('inventory.stock_movements:delete')
+);
 
 ----------------------------------------------------------------
 -- Reports
 ----------------------------------------------------------------
-
 create or replace view inventory.products_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    p.id,
-    p.sku,
-    p.name,
-    p.status,
-    p.category,
-    p.brand,
-    p.cost_price,
-    p.list_price,
-    p.currency,
-    s.name as default_supplier,
-    p.reorder_point,
-    coalesce(sum(sl.quantity_on_hand), 0)::int as total_on_hand,
-    coalesce(sum(sl.quantity_reserved), 0)::int as total_reserved,
-    coalesce(sum(sl.quantity_available), 0)::int as total_available,
-    (coalesce(sum(sl.quantity_on_hand), 0) * p.cost_price) as inventory_value,
-    p.created_at,
-    p.updated_at
-from inventory.products p
-left join inventory.suppliers s on s.id = p.default_supplier_id
-left join inventory.stock_levels sl on sl.product_id = p.id
-group by p.id, s.name;
+  p.id,
+  p.sku,
+  p.name,
+  p.status,
+  p.category,
+  p.brand,
+  p.cost_price,
+  p.list_price,
+  p.currency,
+  s.name as default_supplier,
+  p.reorder_point,
+  coalesce(sum(sl.quantity_on_hand), 0)::int as total_on_hand,
+  coalesce(sum(sl.quantity_reserved), 0)::int as total_reserved,
+  coalesce(sum(sl.quantity_available), 0)::int as total_available,
+  (
+    coalesce(sum(sl.quantity_on_hand), 0) * p.cost_price
+  ) as inventory_value,
+  p.created_at,
+  p.updated_at
+from
+  inventory.products p
+  left join inventory.suppliers s on s.id = p.default_supplier_id
+  left join inventory.stock_levels sl on sl.product_id = p.id
+group by
+  p.id,
+  s.name;
 
-revoke all on inventory.products_report from authenticated, service_role;
-grant select on inventory.products_report to authenticated;
+revoke all on inventory.products_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.products_report to authenticated;
 
 comment on view inventory.products_report is '{"type": "report", "name": "Products Report", "description": "Products with aggregated stock levels and inventory value"}';
 
-
 create or replace view inventory.purchase_orders_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    po.id,
-    po.po_number,
-    s.name as supplier,
-    w.name as warehouse,
-    po.status,
-    po.order_date,
-    po.expected_date,
-    po.received_date,
-    po.total,
-    po.currency,
-    case
-        when po.status = 'received' then 0
-        when po.expected_date is null then null
-        else greatest(0, (current_date - po.expected_date))::int
-    end as days_overdue,
-    count(poi.id) as line_count,
-    coalesce(sum(poi.quantity_ordered), 0)::int as units_ordered,
-    coalesce(sum(poi.quantity_received), 0)::int as units_received,
-    po.created_at
-from inventory.purchase_orders po
-left join inventory.suppliers s on s.id = po.supplier_id
-left join inventory.warehouses w on w.id = po.warehouse_id
-left join inventory.purchase_order_items poi on poi.po_id = po.id
-group by po.id, s.name, w.name;
+  po.id,
+  po.po_number,
+  s.name as supplier,
+  w.name as warehouse,
+  po.status,
+  po.order_date,
+  po.expected_date,
+  po.received_date,
+  po.total,
+  po.currency,
+  case
+    when po.status = 'received' then 0
+    when po.expected_date is null then null
+    else greatest(0, (current_date - po.expected_date))::int
+  end as days_overdue,
+  count(poi.id) as line_count,
+  coalesce(sum(poi.quantity_ordered), 0)::int as units_ordered,
+  coalesce(sum(poi.quantity_received), 0)::int as units_received,
+  po.created_at
+from
+  inventory.purchase_orders po
+  left join inventory.suppliers s on s.id = po.supplier_id
+  left join inventory.warehouses w on w.id = po.warehouse_id
+  left join inventory.purchase_order_items poi on poi.po_id = po.id
+group by
+  po.id,
+  s.name,
+  w.name;
 
-revoke all on inventory.purchase_orders_report from authenticated, service_role;
-grant select on inventory.purchase_orders_report to authenticated;
+revoke all on inventory.purchase_orders_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.purchase_orders_report to authenticated;
 
 comment on view inventory.purchase_orders_report is '{"type": "report", "name": "Purchase Orders Report", "description": "POs with supplier, warehouse and receipt progress"}';
 
-
 create or replace view inventory.shipments_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    sh.id,
-    sh.shipment_number,
-    w.name as warehouse,
-    sh.customer_name,
-    sh.destination_city,
-    sh.destination_country,
-    sh.status,
-    sh.carrier,
-    sh.tracking_number,
-    sh.shipped_date,
-    sh.expected_delivery_date,
-    sh.delivered_date,
-    case
-        when sh.delivered_date is not null and sh.expected_delivery_date is not null
-            then case when sh.delivered_date::date <= sh.expected_delivery_date then 'on_time' else 'late' end
-        else null
-    end as delivery_outcome,
-    count(si.id) as line_count,
-    coalesce(sum(si.quantity), 0)::int as units_shipped,
-    sh.cost,
-    sh.currency
-from inventory.shipments sh
-left join inventory.warehouses w on w.id = sh.warehouse_id
-left join inventory.shipment_items si on si.shipment_id = sh.id
-group by sh.id, w.name;
+  sh.id,
+  sh.shipment_number,
+  w.name as warehouse,
+  sh.customer_name,
+  sh.destination_city,
+  sh.destination_country,
+  sh.status,
+  sh.carrier,
+  sh.tracking_number,
+  sh.shipped_date,
+  sh.expected_delivery_date,
+  sh.delivered_date,
+  case
+    when sh.delivered_date is not null
+    and sh.expected_delivery_date is not null then case
+      when sh.delivered_date::date <= sh.expected_delivery_date then 'on_time'
+      else 'late'
+    end
+    else null
+  end as delivery_outcome,
+  count(si.id) as line_count,
+  coalesce(sum(si.quantity), 0)::int as units_shipped,
+  sh.cost,
+  sh.currency
+from
+  inventory.shipments sh
+  left join inventory.warehouses w on w.id = sh.warehouse_id
+  left join inventory.shipment_items si on si.shipment_id = sh.id
+group by
+  sh.id,
+  w.name;
 
-revoke all on inventory.shipments_report from authenticated, service_role;
-grant select on inventory.shipments_report to authenticated;
+revoke all on inventory.shipments_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.shipments_report to authenticated;
 
 comment on view inventory.shipments_report is '{"type": "report", "name": "Shipments Report", "description": "Shipments with delivery outcome and unit counts"}';
 
-
 create or replace view inventory.low_stock_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    p.id as product_id,
-    p.sku,
-    p.name as product,
-    w.name as warehouse,
-    sl.bin_location,
-    sl.quantity_on_hand,
-    sl.quantity_available,
-    p.reorder_point,
-    p.reorder_quantity,
-    p.safety_stock,
-    sl.status,
-    s.name as default_supplier,
-    p.cost_price,
-    sl.last_counted_at,
-    sl.updated_at
-from inventory.stock_levels sl
-join inventory.products p on p.id = sl.product_id
-join inventory.warehouses w on w.id = sl.warehouse_id
-left join inventory.suppliers s on s.id = p.default_supplier_id
-where sl.status in ('low_stock', 'out_of_stock')
-   or (p.reorder_point > 0 and sl.quantity_available <= p.reorder_point);
+  p.id as product_id,
+  p.sku,
+  p.name as product,
+  w.name as warehouse,
+  sl.bin_location,
+  sl.quantity_on_hand,
+  sl.quantity_available,
+  p.reorder_point,
+  p.reorder_quantity,
+  p.safety_stock,
+  sl.status,
+  s.name as default_supplier,
+  p.cost_price,
+  sl.last_counted_at,
+  sl.updated_at
+from
+  inventory.stock_levels sl
+  join inventory.products p on p.id = sl.product_id
+  join inventory.warehouses w on w.id = sl.warehouse_id
+  left join inventory.suppliers s on s.id = p.default_supplier_id
+where
+  sl.status in ('low_stock', 'out_of_stock')
+  or (
+    p.reorder_point > 0
+    and sl.quantity_available <= p.reorder_point
+  );
 
-revoke all on inventory.low_stock_report from authenticated, service_role;
-grant select on inventory.low_stock_report to authenticated;
+revoke all on inventory.low_stock_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.low_stock_report to authenticated;
 
 comment on view inventory.low_stock_report is '{"type": "report", "name": "Low Stock Report", "description": "Products at or below reorder point"}';
-
 
 ----------------------------------------------------------------
 -- Dashboard widget views
 ----------------------------------------------------------------
-
 -- card_1: total inventory value (cost_price × on_hand)
 create or replace view inventory.inventory_value_summary
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(p.cost_price * sl.quantity_on_hand), 0)::numeric(14, 2) as value,
-    'package' as icon,
-    'inventory value' as label
-from inventory.stock_levels sl
-join inventory.products p on p.id = sl.product_id;
+  coalesce(sum(p.cost_price * sl.quantity_on_hand), 0)::numeric(14, 2) as value,
+  'package' as icon,
+  'inventory value' as label
+from
+  inventory.stock_levels sl
+  join inventory.products p on p.id = sl.product_id;
 
-revoke all on inventory.inventory_value_summary from authenticated, service_role;
-grant select on inventory.inventory_value_summary to authenticated;
+revoke all on inventory.inventory_value_summary
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.inventory_value_summary to authenticated;
 
 -- card_2: in-stock vs at-risk SKUs
 create or replace view inventory.stock_status_split
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    count(distinct product_id) filter (where status = 'in_stock') as primary,
-    count(distinct product_id) filter (where status in ('low_stock', 'out_of_stock')) as secondary,
-    'In stock' as primary_label,
-    'At risk' as secondary_label
-from inventory.stock_levels;
+  count(distinct product_id) filter (
+    where
+      status = 'in_stock'
+  ) as primary,
+  count(distinct product_id) filter (
+    where
+      status in ('low_stock', 'out_of_stock')
+  ) as secondary,
+  'In stock' as primary_label,
+  'At risk' as secondary_label
+from
+  inventory.stock_levels;
 
-revoke all on inventory.stock_status_split from authenticated, service_role;
-grant select on inventory.stock_status_split to authenticated;
+revoke all on inventory.stock_status_split
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.stock_status_split to authenticated;
 
 -- card_3: open POs value + on-time fulfillment %
 create or replace view inventory.open_pos_value
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(total) filter (where status in ('submitted', 'confirmed', 'partially_received')), 0)::numeric(14, 2) as value,
-    case
-        when count(*) filter (where status = 'received' and expected_date is not null) > 0
-        then round(
-            (count(*) filter (where status = 'received' and received_date is not null and received_date <= expected_date)::numeric
-             / count(*) filter (where status = 'received' and expected_date is not null)::numeric) * 100,
-            1
-        )
-        else 0
-    end as percent
-from inventory.purchase_orders;
+  coalesce(
+    sum(total) filter (
+      where
+        status in ('submitted', 'confirmed', 'partially_received')
+    ),
+    0
+  )::numeric(14, 2) as value,
+  case
+    when count(*) filter (
+      where
+        status = 'received'
+        and expected_date is not null
+    ) > 0 then round(
+      (
+        count(*) filter (
+          where
+            status = 'received'
+            and received_date is not null
+            and received_date <= expected_date
+        )::numeric / count(*) filter (
+          where
+            status = 'received'
+            and expected_date is not null
+        )::numeric
+      ) * 100,
+      1
+    )
+    else 0
+  end as percent
+from
+  inventory.purchase_orders;
 
-revoke all on inventory.open_pos_value from authenticated, service_role;
-grant select on inventory.open_pos_value to authenticated;
+revoke all on inventory.open_pos_value
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.open_pos_value to authenticated;
 
 -- card_4: stock health (out_of_stock + low + overstocked + overdue POs)
 create or replace view inventory.stock_health
-with (security_invoker = true) as
-with metrics as (
+with
+  (security_invoker = true) as
+with
+  metrics as (
     select
-        (select count(*) from inventory.stock_levels where status = 'out_of_stock') as out_count,
-        (select count(*) from inventory.stock_levels where status = 'low_stock') as low_count,
-        (select count(*) from inventory.stock_levels where status = 'overstocked') as over_count,
-        (select count(*) from inventory.purchase_orders
-            where status in ('submitted', 'confirmed', 'partially_received')
-              and expected_date is not null
-              and expected_date < current_date) as overdue_pos,
-        (select count(*) from inventory.stock_levels) as total
-)
+      (
+        select
+          count(*)
+        from
+          inventory.stock_levels
+        where
+          status = 'out_of_stock'
+      ) as out_count,
+      (
+        select
+          count(*)
+        from
+          inventory.stock_levels
+        where
+          status = 'low_stock'
+      ) as low_count,
+      (
+        select
+          count(*)
+        from
+          inventory.stock_levels
+        where
+          status = 'overstocked'
+      ) as over_count,
+      (
+        select
+          count(*)
+        from
+          inventory.purchase_orders
+        where
+          status in ('submitted', 'confirmed', 'partially_received')
+          and expected_date is not null
+          and expected_date < current_date
+      ) as overdue_pos,
+      (
+        select
+          count(*)
+        from
+          inventory.stock_levels
+      ) as total
+  )
 select
-    (out_count + low_count + over_count + overdue_pos) as current,
-    total,
-    json_build_array(
-        json_build_object('label', 'Out of stock', 'value', out_count),
-        json_build_object('label', 'Low stock',    'value', low_count),
-        json_build_object('label', 'Overstocked',  'value', over_count),
-        json_build_object('label', 'Overdue POs',  'value', overdue_pos)
-    ) as segments
-from metrics;
+  (out_count + low_count + over_count + overdue_pos) as current,
+  total,
+  json_build_array(
+    json_build_object('label', 'Out of stock', 'value', out_count),
+    json_build_object('label', 'Low stock', 'value', low_count),
+    json_build_object('label', 'Overstocked', 'value', over_count),
+    json_build_object('label', 'Overdue POs', 'value', overdue_pos)
+  ) as segments
+from
+  metrics;
 
-revoke all on inventory.stock_health from authenticated, service_role;
-grant select on inventory.stock_health to authenticated;
+revoke all on inventory.stock_health
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.stock_health to authenticated;
 
 -- table_1: recent shipments
 create or replace view inventory.recent_shipments
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    shipment_number as number,
-    coalesce(customer_name, '') as customer,
-    coalesce(status::text, '') as status,
-    to_char(coalesce(shipped_date, created_at), 'MM/DD') as date
-from inventory.shipments
-order by coalesce(shipped_date, created_at) desc
-limit 10;
+  shipment_number as number,
+  coalesce(customer_name, '') as customer,
+  coalesce(status::text, '') as status,
+  to_char(coalesce(shipped_date, created_at), 'MM/DD') as date
+from
+  inventory.shipments
+order by
+  coalesce(shipped_date, created_at) desc
+limit
+  10;
 
-revoke all on inventory.recent_shipments from authenticated, service_role;
-grant select on inventory.recent_shipments to authenticated;
+revoke all on inventory.recent_shipments
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.recent_shipments to authenticated;
 
 -- table_2: top suppliers by PO spend
 create or replace view inventory.top_suppliers
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    s.name as supplier,
-    coalesce(s.country, '') as country,
-    count(po.id) as orders,
-    coalesce(sum(po.total), 0) as spend
-from inventory.suppliers s
-left join inventory.purchase_orders po on po.supplier_id = s.id
-group by s.id, s.name, s.country
-order by spend desc nulls last
-limit 10;
+  s.name as supplier,
+  coalesce(s.country, '') as country,
+  count(po.id) as orders,
+  coalesce(sum(po.total), 0) as spend
+from
+  inventory.suppliers s
+  left join inventory.purchase_orders po on po.supplier_id = s.id
+group by
+  s.id,
+  s.name,
+  s.country
+order by
+  spend desc nulls last
+limit
+  10;
 
-revoke all on inventory.top_suppliers from authenticated, service_role;
-grant select on inventory.top_suppliers to authenticated;
+revoke all on inventory.top_suppliers
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.top_suppliers to authenticated;
 
 comment on view inventory.inventory_value_summary is '{"type": "dashboard_widget", "name": "Inventory Value", "description": "Total on-hand value at cost", "widget_type": "card_1"}';
-comment on view inventory.stock_status_split is '{"type": "dashboard_widget", "name": "Stock Health Split", "description": "SKUs in stock vs at risk", "widget_type": "card_2"}';
-comment on view inventory.open_pos_value is '{"type": "dashboard_widget", "name": "Open POs", "description": "Value of open POs and on-time receipt rate", "widget_type": "card_3"}';
-comment on view inventory.stock_health is '{"type": "dashboard_widget", "name": "Stock Health", "description": "At-risk stock and overdue POs", "widget_type": "card_4"}';
-comment on view inventory.recent_shipments is '{"type": "dashboard_widget", "name": "Recent Shipments", "description": "Latest 10 shipments", "widget_type": "table_1"}';
-comment on view inventory.top_suppliers is '{"type": "dashboard_widget", "name": "Top Suppliers", "description": "Top 10 suppliers by PO spend", "widget_type": "table_2"}';
 
+comment on view inventory.stock_status_split is '{"type": "dashboard_widget", "name": "Stock Health Split", "description": "SKUs in stock vs at risk", "widget_type": "card_2"}';
+
+comment on view inventory.open_pos_value is '{"type": "dashboard_widget", "name": "Open POs", "description": "Value of open POs and on-time receipt rate", "widget_type": "card_3"}';
+
+comment on view inventory.stock_health is '{"type": "dashboard_widget", "name": "Stock Health", "description": "At-risk stock and overdue POs", "widget_type": "card_4"}';
+
+comment on view inventory.recent_shipments is '{"type": "dashboard_widget", "name": "Recent Shipments", "description": "Latest 10 shipments", "widget_type": "table_1"}';
+
+comment on view inventory.top_suppliers is '{"type": "dashboard_widget", "name": "Top Suppliers", "description": "Top 10 suppliers by PO spend", "widget_type": "table_2"}';
 
 ----------------------------------------------------------------
 -- Charts
 ----------------------------------------------------------------
-
 -- Pie: products by category
 create or replace view inventory.products_by_category_pie
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(category, 'Uncategorized') as label,
-    count(*) as value
-from inventory.products
-where status = 'active'
-group by category
-order by count(*) desc;
+  coalesce(category, 'Uncategorized') as label,
+  count(*) as value
+from
+  inventory.products
+where
+  status = 'active'
+group by
+  category
+order by
+  count(*) desc;
 
-revoke all on inventory.products_by_category_pie from authenticated, service_role;
-grant select on inventory.products_by_category_pie to authenticated;
+revoke all on inventory.products_by_category_pie
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.products_by_category_pie to authenticated;
 
 -- Bar: stock units by warehouse
 create or replace view inventory.stock_by_warehouse_bar
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    w.name as label,
-    coalesce(sum(sl.quantity_on_hand), 0)::bigint as on_hand,
-    coalesce(sum(sl.quantity_reserved), 0)::bigint as reserved
-from inventory.warehouses w
-left join inventory.stock_levels sl on sl.warehouse_id = w.id
-group by w.id, w.name
-order by sum(sl.quantity_on_hand) desc nulls last
-limit 10;
+  w.name as label,
+  coalesce(sum(sl.quantity_on_hand), 0)::bigint as on_hand,
+  coalesce(sum(sl.quantity_reserved), 0)::bigint as reserved
+from
+  inventory.warehouses w
+  left join inventory.stock_levels sl on sl.warehouse_id = w.id
+group by
+  w.id,
+  w.name
+order by
+  sum(sl.quantity_on_hand) desc nulls last
+limit
+  10;
 
-revoke all on inventory.stock_by_warehouse_bar from authenticated, service_role;
-grant select on inventory.stock_by_warehouse_bar to authenticated;
+revoke all on inventory.stock_by_warehouse_bar
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.stock_by_warehouse_bar to authenticated;
 
 -- Line: weekly shipment volume (last 12 weeks)
 create or replace view inventory.shipment_volume_line
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    to_char(date_trunc('week', coalesce(shipped_date, created_at)), 'Mon DD') as date,
-    count(*) as shipments,
-    count(*) filter (where status = 'delivered')::bigint as delivered
-from inventory.shipments
-where coalesce(shipped_date, created_at) >= current_date - interval '12 weeks'
-group by date_trunc('week', coalesce(shipped_date, created_at))
-order by date_trunc('week', coalesce(shipped_date, created_at));
+  to_char(
+    date_trunc('week', coalesce(shipped_date, created_at)),
+    'Mon DD'
+  ) as date,
+  count(*) as shipments,
+  count(*) filter (
+    where
+      status = 'delivered'
+  )::bigint as delivered
+from
+  inventory.shipments
+where
+  coalesce(shipped_date, created_at) >= current_date - interval '12 weeks'
+group by
+  date_trunc('week', coalesce(shipped_date, created_at))
+order by
+  date_trunc('week', coalesce(shipped_date, created_at));
 
-revoke all on inventory.shipment_volume_line from authenticated, service_role;
-grant select on inventory.shipment_volume_line to authenticated;
+revoke all on inventory.shipment_volume_line
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.shipment_volume_line to authenticated;
 
 -- Radar: stock movement metrics by type
 create or replace view inventory.movement_metrics_radar
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    type::text as metric,
-    count(*) as total,
-    coalesce(sum(quantity), 0)::bigint as units,
-    count(*) filter (where occurred_at >= current_date - interval '30 days') as recent
-from inventory.stock_movements
-group by type;
+  type::text as metric,
+  count(*) as total,
+  coalesce(sum(quantity), 0)::bigint as units,
+  count(*) filter (
+    where
+      occurred_at >= current_date - interval '30 days'
+  ) as recent
+from
+  inventory.stock_movements
+group by
+  type;
 
-revoke all on inventory.movement_metrics_radar from authenticated, service_role;
-grant select on inventory.movement_metrics_radar to authenticated;
+revoke all on inventory.movement_metrics_radar
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on inventory.movement_metrics_radar to authenticated;
 
 comment on view inventory.products_by_category_pie is '{"type": "chart", "name": "Products By Category", "description": "Active product count per category", "chart_type": "pie"}';
-comment on view inventory.stock_by_warehouse_bar is '{"type": "chart", "name": "Stock By Warehouse", "description": "On-hand vs reserved units per warehouse", "chart_type": "bar"}';
-comment on view inventory.shipment_volume_line is '{"type": "chart", "name": "Shipment Volume", "description": "Weekly shipment counts over 12 weeks", "chart_type": "line"}';
-comment on view inventory.movement_metrics_radar is '{"type": "chart", "name": "Movement Metrics", "description": "Stock movement counts and units across types", "chart_type": "radar"}';
 
+comment on view inventory.stock_by_warehouse_bar is '{"type": "chart", "name": "Stock By Warehouse", "description": "On-hand vs reserved units per warehouse", "chart_type": "bar"}';
+
+comment on view inventory.shipment_volume_line is '{"type": "chart", "name": "Shipment Volume", "description": "Weekly shipment counts over 12 weeks", "chart_type": "line"}';
+
+comment on view inventory.movement_metrics_radar is '{"type": "chart", "name": "Movement Metrics", "description": "Stock movement counts and units across types", "chart_type": "radar"}';
 
 ----------------------------------------------------------------
 -- Role permissions (x-admin)
 ----------------------------------------------------------------
-
-insert into supasheet.role_permissions (role, permission) values
-    ('x-admin', 'inventory.warehouses:select'),
-    ('x-admin', 'inventory.warehouses:insert'),
-    ('x-admin', 'inventory.warehouses:update'),
-    ('x-admin', 'inventory.warehouses:delete'),
-    ('x-admin', 'inventory.warehouses:audit'),
-
-    ('x-admin', 'inventory.suppliers:select'),
-    ('x-admin', 'inventory.suppliers:insert'),
-    ('x-admin', 'inventory.suppliers:update'),
-    ('x-admin', 'inventory.suppliers:delete'),
-    ('x-admin', 'inventory.suppliers:audit'),
-
-    ('x-admin', 'inventory.products:select'),
-    ('x-admin', 'inventory.products:insert'),
-    ('x-admin', 'inventory.products:update'),
-    ('x-admin', 'inventory.products:delete'),
-    ('x-admin', 'inventory.products:audit'),
-
-    ('x-admin', 'inventory.stock_levels:select'),
-    ('x-admin', 'inventory.stock_levels:insert'),
-    ('x-admin', 'inventory.stock_levels:update'),
-    ('x-admin', 'inventory.stock_levels:delete'),
-    ('x-admin', 'inventory.stock_levels:audit'),
-
-    ('x-admin', 'inventory.purchase_orders:select'),
-    ('x-admin', 'inventory.purchase_orders:insert'),
-    ('x-admin', 'inventory.purchase_orders:update'),
-    ('x-admin', 'inventory.purchase_orders:delete'),
-    ('x-admin', 'inventory.purchase_orders:audit'),
-
-    ('x-admin', 'inventory.purchase_order_items:select'),
-    ('x-admin', 'inventory.purchase_order_items:insert'),
-    ('x-admin', 'inventory.purchase_order_items:update'),
-    ('x-admin', 'inventory.purchase_order_items:delete'),
-    ('x-admin', 'inventory.purchase_order_items:audit'),
-
-    ('x-admin', 'inventory.shipments:select'),
-    ('x-admin', 'inventory.shipments:insert'),
-    ('x-admin', 'inventory.shipments:update'),
-    ('x-admin', 'inventory.shipments:delete'),
-    ('x-admin', 'inventory.shipments:audit'),
-
-    ('x-admin', 'inventory.shipment_items:select'),
-    ('x-admin', 'inventory.shipment_items:insert'),
-    ('x-admin', 'inventory.shipment_items:update'),
-    ('x-admin', 'inventory.shipment_items:delete'),
-    ('x-admin', 'inventory.shipment_items:audit'),
-
-    ('x-admin', 'inventory.stock_movements:select'),
-    ('x-admin', 'inventory.stock_movements:insert'),
-    ('x-admin', 'inventory.stock_movements:update'),
-    ('x-admin', 'inventory.stock_movements:delete'),
-    ('x-admin', 'inventory.stock_movements:audit'),
-
-    ('x-admin', 'inventory.users:select'),
-
-    ('x-admin', 'inventory.products_report:select'),
-    ('x-admin', 'inventory.purchase_orders_report:select'),
-    ('x-admin', 'inventory.shipments_report:select'),
-    ('x-admin', 'inventory.low_stock_report:select'),
-
-    ('x-admin', 'inventory.inventory_value_summary:select'),
-    ('x-admin', 'inventory.stock_status_split:select'),
-    ('x-admin', 'inventory.open_pos_value:select'),
-    ('x-admin', 'inventory.stock_health:select'),
-    ('x-admin', 'inventory.recent_shipments:select'),
-    ('x-admin', 'inventory.top_suppliers:select'),
-
-    ('x-admin', 'inventory.products_by_category_pie:select'),
-    ('x-admin', 'inventory.stock_by_warehouse_bar:select'),
-    ('x-admin', 'inventory.shipment_volume_line:select'),
-    ('x-admin', 'inventory.movement_metrics_radar:select');
-
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'inventory.warehouses:select'),
+  ('x-admin', 'inventory.warehouses:insert'),
+  ('x-admin', 'inventory.warehouses:update'),
+  ('x-admin', 'inventory.warehouses:delete'),
+  ('x-admin', 'inventory.warehouses:audit'),
+  ('x-admin', 'inventory.suppliers:select'),
+  ('x-admin', 'inventory.suppliers:insert'),
+  ('x-admin', 'inventory.suppliers:update'),
+  ('x-admin', 'inventory.suppliers:delete'),
+  ('x-admin', 'inventory.suppliers:audit'),
+  ('x-admin', 'inventory.products:select'),
+  ('x-admin', 'inventory.products:insert'),
+  ('x-admin', 'inventory.products:update'),
+  ('x-admin', 'inventory.products:delete'),
+  ('x-admin', 'inventory.products:audit'),
+  ('x-admin', 'inventory.stock_levels:select'),
+  ('x-admin', 'inventory.stock_levels:insert'),
+  ('x-admin', 'inventory.stock_levels:update'),
+  ('x-admin', 'inventory.stock_levels:delete'),
+  ('x-admin', 'inventory.stock_levels:audit'),
+  ('x-admin', 'inventory.purchase_orders:select'),
+  ('x-admin', 'inventory.purchase_orders:insert'),
+  ('x-admin', 'inventory.purchase_orders:update'),
+  ('x-admin', 'inventory.purchase_orders:delete'),
+  ('x-admin', 'inventory.purchase_orders:audit'),
+  (
+    'x-admin',
+    'inventory.purchase_order_items:select'
+  ),
+  (
+    'x-admin',
+    'inventory.purchase_order_items:insert'
+  ),
+  (
+    'x-admin',
+    'inventory.purchase_order_items:update'
+  ),
+  (
+    'x-admin',
+    'inventory.purchase_order_items:delete'
+  ),
+  ('x-admin', 'inventory.purchase_order_items:audit'),
+  ('x-admin', 'inventory.shipments:select'),
+  ('x-admin', 'inventory.shipments:insert'),
+  ('x-admin', 'inventory.shipments:update'),
+  ('x-admin', 'inventory.shipments:delete'),
+  ('x-admin', 'inventory.shipments:audit'),
+  ('x-admin', 'inventory.shipment_items:select'),
+  ('x-admin', 'inventory.shipment_items:insert'),
+  ('x-admin', 'inventory.shipment_items:update'),
+  ('x-admin', 'inventory.shipment_items:delete'),
+  ('x-admin', 'inventory.shipment_items:audit'),
+  ('x-admin', 'inventory.stock_movements:select'),
+  ('x-admin', 'inventory.stock_movements:insert'),
+  ('x-admin', 'inventory.stock_movements:update'),
+  ('x-admin', 'inventory.stock_movements:delete'),
+  ('x-admin', 'inventory.stock_movements:audit'),
+  ('x-admin', 'inventory.users:select'),
+  ('x-admin', 'inventory.products_report:select'),
+  (
+    'x-admin',
+    'inventory.purchase_orders_report:select'
+  ),
+  ('x-admin', 'inventory.shipments_report:select'),
+  ('x-admin', 'inventory.low_stock_report:select'),
+  (
+    'x-admin',
+    'inventory.inventory_value_summary:select'
+  ),
+  ('x-admin', 'inventory.stock_status_split:select'),
+  ('x-admin', 'inventory.open_pos_value:select'),
+  ('x-admin', 'inventory.stock_health:select'),
+  ('x-admin', 'inventory.recent_shipments:select'),
+  ('x-admin', 'inventory.top_suppliers:select'),
+  (
+    'x-admin',
+    'inventory.products_by_category_pie:select'
+  ),
+  (
+    'x-admin',
+    'inventory.stock_by_warehouse_bar:select'
+  ),
+  (
+    'x-admin',
+    'inventory.shipment_volume_line:select'
+  ),
+  (
+    'x-admin',
+    'inventory.movement_metrics_radar:select'
+  );
 
 ----------------------------------------------------------------
 -- Audit triggers
 ----------------------------------------------------------------
-
 create trigger audit_inv_warehouses_insert
-    after insert on inventory.warehouses
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.warehouses for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_warehouses_update
-    after update on inventory.warehouses
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.warehouses for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_warehouses_delete
-    before delete on inventory.warehouses
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_warehouses_delete before delete on inventory.warehouses for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_suppliers_insert
-    after insert on inventory.suppliers
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.suppliers for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_suppliers_update
-    after update on inventory.suppliers
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.suppliers for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_suppliers_delete
-    before delete on inventory.suppliers
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_suppliers_delete before delete on inventory.suppliers for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_products_insert
-    after insert on inventory.products
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.products for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_products_update
-    after update on inventory.products
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.products for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_products_delete
-    before delete on inventory.products
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_products_delete before delete on inventory.products for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_levels_insert
-    after insert on inventory.stock_levels
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.stock_levels for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_levels_update
-    after update on inventory.stock_levels
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.stock_levels for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_stock_levels_delete
-    before delete on inventory.stock_levels
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_stock_levels_delete before delete on inventory.stock_levels for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_orders_insert
-    after insert on inventory.purchase_orders
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.purchase_orders for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_orders_update
-    after update on inventory.purchase_orders
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.purchase_orders for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_purchase_orders_delete
-    before delete on inventory.purchase_orders
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_purchase_orders_delete before delete on inventory.purchase_orders for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_order_items_insert
-    after insert on inventory.purchase_order_items
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.purchase_order_items for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_order_items_update
-    after update on inventory.purchase_order_items
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.purchase_order_items for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_purchase_order_items_delete
-    before delete on inventory.purchase_order_items
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_purchase_order_items_delete before delete on inventory.purchase_order_items for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipments_insert
-    after insert on inventory.shipments
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.shipments for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipments_update
-    after update on inventory.shipments
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.shipments for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_shipments_delete
-    before delete on inventory.shipments
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_shipments_delete before delete on inventory.shipments for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipment_items_insert
-    after insert on inventory.shipment_items
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.shipment_items for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipment_items_update
-    after update on inventory.shipment_items
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.shipment_items for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_shipment_items_delete
-    before delete on inventory.shipment_items
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_shipment_items_delete before delete on inventory.shipment_items for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_movements_insert
-    after insert on inventory.stock_movements
-    for each row execute function supasheet.audit_trigger_function();
+after insert on inventory.stock_movements for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_movements_update
-    after update on inventory.stock_movements
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on inventory.stock_movements for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_stock_movements_delete
-    before delete on inventory.stock_movements
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_inv_stock_movements_delete before delete on inventory.stock_movements for each row
+execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
 -- Notifications
 ----------------------------------------------------------------
-
 -- Stock levels: notify ops on low/out-of-stock transitions
-create or replace function inventory.trg_stock_levels_notify()
-returns trigger as $$
+create or replace function inventory.trg_stock_levels_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_product_name text;
@@ -1536,19 +2013,19 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists stock_levels_notify on inventory.stock_levels;
-create trigger stock_levels_notify
-    after update of status
-    on inventory.stock_levels
-    for each row
-execute function inventory.trg_stock_levels_notify();
 
+create trigger stock_levels_notify
+after
+update of status on inventory.stock_levels for each row
+execute function inventory.trg_stock_levels_notify ();
 
 -- Purchase orders: notify on submission and receipt
-create or replace function inventory.trg_purchase_orders_notify()
-returns trigger as $$
+create or replace function inventory.trg_purchase_orders_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_supplier_name text;
@@ -1590,19 +2067,20 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists purchase_orders_notify on inventory.purchase_orders;
-create trigger purchase_orders_notify
-    after insert or update of status
-    on inventory.purchase_orders
-    for each row
-execute function inventory.trg_purchase_orders_notify();
 
+create trigger purchase_orders_notify
+after insert
+or
+update of status on inventory.purchase_orders for each row
+execute function inventory.trg_purchase_orders_notify ();
 
 -- Shipments: notify on shipped and delivered transitions
-create or replace function inventory.trg_shipments_notify()
-returns trigger as $$
+create or replace function inventory.trg_shipments_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_type   text;
@@ -1643,11 +2121,13 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists shipments_notify on inventory.shipments;
+
 create trigger shipments_notify
-    after update of status
-    on inventory.shipments
-    for each row
-execute function inventory.trg_shipments_notify();
+after
+update of status on inventory.shipments for each row
+execute function inventory.trg_shipments_notify ();

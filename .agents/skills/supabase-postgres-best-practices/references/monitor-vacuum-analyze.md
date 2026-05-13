@@ -14,7 +14,14 @@ Outdated statistics cause the query planner to make poor decisions. VACUUM recla
 ```sql
 -- Table has 1M rows but stats say 1000
 -- Query planner chooses wrong strategy
-explain select * from orders where status = 'pending';
+explain
+select
+  *
+from
+  orders
+where
+  status = 'pending';
+
 -- Shows: Seq Scan (because stats show small table)
 -- Actually: Index Scan would be much faster
 ```
@@ -35,21 +42,28 @@ select
   last_autovacuum,
   last_analyze,
   last_autoanalyze
-from pg_stat_user_tables
-order by last_analyze nulls first;
+from
+  pg_stat_user_tables
+order by
+  last_analyze nulls first;
 ```
 
 Autovacuum tuning for busy tables:
 
 ```sql
 -- Increase frequency for high-churn tables
-alter table orders set (
-  autovacuum_vacuum_scale_factor = 0.05,     -- Vacuum at 5% dead tuples (default 20%)
-  autovacuum_analyze_scale_factor = 0.02     -- Analyze at 2% changes (default 10%)
-);
+alter table orders
+set
+  (
+    autovacuum_vacuum_scale_factor = 0.05, -- Vacuum at 5% dead tuples (default 20%)
+    autovacuum_analyze_scale_factor = 0.02 -- Analyze at 2% changes (default 10%)
+  );
 
 -- Check autovacuum status
-select * from pg_stat_progress_vacuum;
+select
+  *
+from
+  pg_stat_progress_vacuum;
 ```
 
 Reference: [VACUUM](https://supabase.com/docs/guides/database/database-size#vacuum-operations)

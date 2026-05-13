@@ -4,19 +4,15 @@
  * This migration creates the schema for dashboards.
  * -------------------------------------------------------
  */
-
-create or replace function supasheet.get_widgets(p_schema text default null)
-returns table(
+create or replace function supasheet.get_widgets (p_schema text default null) returns table (
   id bigint,
   schema text,
   name text,
   is_updatable boolean,
   comment text
-)
-language sql
-security definer
-set search_path = ''
-as $$
+) language sql security definer
+set
+  search_path = '' as $$
   select
     v.*
   from supasheet.views v
@@ -28,6 +24,10 @@ as $$
     and (v.schema = p_schema and v.comment::jsonb ->> 'type' = 'dashboard_widget');
 $$;
 
-revoke all on function supasheet.get_widgets(text) from authenticated, service_role;
+revoke all on function supasheet.get_widgets (text)
+from
+  authenticated,
+  service_role;
 
-grant execute on function supasheet.get_widgets(text) to authenticated;
+grant
+execute on function supasheet.get_widgets (text) to authenticated;

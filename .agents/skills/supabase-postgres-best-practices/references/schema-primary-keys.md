@@ -15,12 +15,12 @@ efficiency.
 ```sql
 -- identity is the SQL-standard approach
 create table users (
-  id serial primary key  -- Works, but IDENTITY is recommended
+  id serial primary key -- Works, but IDENTITY is recommended
 );
 
 -- Random UUIDs (v4) cause index fragmentation
 create table orders (
-  id uuid default gen_random_uuid() primary key  -- UUIDv4 = random = scattered inserts
+  id uuid default gen_random_uuid () primary key -- UUIDv4 = random = scattered inserts
 );
 ```
 

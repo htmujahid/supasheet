@@ -225,11 +225,10 @@ Field-type detection lives in `src/lib/columns.tsx` (`getColumnMetadata`).
 **Helper functions** (`SECURITY DEFINER STABLE`, granted to authenticated):
 
 ```sql
-supasheet.has_permission(requested_permission supasheet.app_permission) returns boolean
+supasheet.has_permission (requested_permission supasheet.app_permission) returns boolean
 -- exists(role_permissions JOIN user_roles WHERE ur.user_id = auth.uid()
 --                                          AND rp.permission = requested_permission)
-
-supasheet.has_role(requested_role supasheet.app_role) returns boolean
+supasheet.has_role (requested_role supasheet.app_role) returns boolean
 -- exists(user_roles WHERE user_id = auth.uid() AND role = requested_role)
 ```
 
@@ -240,14 +239,26 @@ Use **`has_permission` in RLS policies**, not `has_role`. Roles are an organizin
 ```sql
 ALTER TABLE my_schema.my_table ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "select" ON my_schema.my_table FOR SELECT TO authenticated
-  USING (supasheet.has_permission('my_schema.my_table:select'));
+CREATE POLICY "select" ON my_schema.my_table FOR
+SELECT
+  TO authenticated USING (
+    supasheet.has_permission ('my_schema.my_table:select')
+  );
+
 CREATE POLICY "insert" ON my_schema.my_table FOR INSERT TO authenticated
-  WITH CHECK (supasheet.has_permission('my_schema.my_table:insert'));
-CREATE POLICY "update" ON my_schema.my_table FOR UPDATE TO authenticated
-  USING (supasheet.has_permission('my_schema.my_table:update'));
-CREATE POLICY "delete" ON my_schema.my_table FOR DELETE TO authenticated
-  USING (supasheet.has_permission('my_schema.my_table:delete'));
+WITH
+  CHECK (
+    supasheet.has_permission ('my_schema.my_table:insert')
+  );
+
+CREATE POLICY "update" ON my_schema.my_table FOR
+UPDATE TO authenticated USING (
+  supasheet.has_permission ('my_schema.my_table:update')
+);
+
+CREATE POLICY "delete" ON my_schema.my_table FOR DELETE TO authenticated USING (
+  supasheet.has_permission ('my_schema.my_table:delete')
+);
 ```
 
 **Owner-scoped variant** (e.g. `blog.authors`): combine with `auth.uid() = user_id`.
@@ -641,46 +652,72 @@ Frontend invokes via `supabase.functions.invoke('admin-...', { body: ... })` —
 BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS shop;
+
 GRANT USAGE ON SCHEMA shop TO authenticated;
 
 ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders:select';
+
 ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders:insert';
+
 ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders:update';
+
 ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders:delete';
 
-COMMIT;  -- enum changes must commit before being usable
+COMMIT;
 
+-- enum changes must commit before being usable
 CREATE TABLE shop.orders (
-  id uuid PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT extensions.uuid_generate_v4 (),
   customer_email supasheet.EMAIL NOT NULL,
-  total numeric(10,2) NOT NULL,
+  total numeric(10, 2) NOT NULL,
   status text NOT NULL DEFAULT 'pending',
   notes supasheet.RICH_TEXT,
   attachments supasheet.FILE,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  created_by uuid REFERENCES auth.users(id),
-  updated_by uuid REFERENCES auth.users(id)
+  created_at timestamptz NOT NULL DEFAULT now (),
+  updated_at timestamptz NOT NULL DEFAULT now (),
+  created_by uuid REFERENCES auth.users (id),
+  updated_by uuid REFERENCES auth.users (id)
 );
 
 COMMENT ON TABLE shop.orders IS '{"label":"Orders","icon":"ShoppingCartIcon","display":"block"}';
+
 COMMENT ON COLUMN shop.orders.status IS '{"enums":{"pending":{"variant":"secondary"},"paid":{"variant":"success"},"cancelled":{"variant":"destructive"}}}';
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON shop.orders TO authenticated;
+GRANT
+SELECT
+,
+  INSERT,
+UPDATE,
+DELETE ON shop.orders TO authenticated;
+
 ALTER TABLE shop.orders ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "orders_select" ON shop.orders FOR SELECT TO authenticated USING (supasheet.has_permission('shop.orders:select'));
-CREATE POLICY "orders_insert" ON shop.orders FOR INSERT TO authenticated WITH CHECK (supasheet.has_permission('shop.orders:insert'));
-CREATE POLICY "orders_update" ON shop.orders FOR UPDATE TO authenticated USING (supasheet.has_permission('shop.orders:update'));
-CREATE POLICY "orders_delete" ON shop.orders FOR DELETE TO authenticated USING (supasheet.has_permission('shop.orders:delete'));
+CREATE POLICY "orders_select" ON shop.orders FOR
+SELECT
+  TO authenticated USING (supasheet.has_permission ('shop.orders:select'));
 
-INSERT INTO supasheet.role_permissions (role, permission) VALUES
-  ('x-admin','shop.orders:select'), ('x-admin','shop.orders:insert'),
-  ('x-admin','shop.orders:update'), ('x-admin','shop.orders:delete');
+CREATE POLICY "orders_insert" ON shop.orders FOR INSERT TO authenticated
+WITH
+  CHECK (supasheet.has_permission ('shop.orders:insert'));
+
+CREATE POLICY "orders_update" ON shop.orders FOR
+UPDATE TO authenticated USING (supasheet.has_permission ('shop.orders:update'));
+
+CREATE POLICY "orders_delete" ON shop.orders FOR DELETE TO authenticated USING (supasheet.has_permission ('shop.orders:delete'));
+
+INSERT INTO
+  supasheet.role_permissions (role, permission)
+VALUES
+  ('x-admin', 'shop.orders:select'),
+  ('x-admin', 'shop.orders:insert'),
+  ('x-admin', 'shop.orders:update'),
+  ('x-admin', 'shop.orders:delete');
 
 -- (Optional) audit log
-CREATE TRIGGER audit_shop_orders AFTER INSERT OR UPDATE OR DELETE ON shop.orders
-  FOR EACH ROW EXECUTE FUNCTION supasheet.audit_trigger_function();
+CREATE TRIGGER audit_shop_orders AFTER INSERT
+OR
+UPDATE
+OR DELETE ON shop.orders FOR EACH ROW EXECUTE FUNCTION supasheet.audit_trigger_function ();
 ```
 
 After running migrations, regenerate types: `supabase gen types typescript ... > src/lib/database.types.ts`. The UI route `/shop/resource/orders` now exists with no frontend code changes.
@@ -688,8 +725,16 @@ After running migrations, regenerate types: `supabase gen types typescript ... >
 ### Recipe B: Add a permission to an existing role
 
 ```sql
-BEGIN; ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders:invite'; COMMIT;
-INSERT INTO supasheet.role_permissions (role, permission) VALUES ('admin','shop.orders:invite');
+BEGIN;
+
+ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders:invite';
+
+COMMIT;
+
+INSERT INTO
+  supasheet.role_permissions (role, permission)
+VALUES
+  ('admin', 'shop.orders:invite');
 ```
 
 To gate UI: `useHasPermission('shop.orders:invite' as AppPermission)`.
@@ -708,9 +753,16 @@ That's it. Logs appear in `/core/audit_logs` for users with `supasheet.audit_log
 Charts/widgets/reports are just **views** with a JSON comment.
 
 ```sql
-CREATE OR REPLACE VIEW shop.orders_by_status AS
-  SELECT status, count(*) AS total, sum(total) AS revenue
-  FROM shop.orders GROUP BY status;
+CREATE
+OR REPLACE VIEW shop.orders_by_status AS
+SELECT
+  status,
+  count(*) AS total,
+  sum(total) AS revenue
+FROM
+  shop.orders
+GROUP BY
+  status;
 
 COMMENT ON VIEW shop.orders_by_status IS '{
   "type": "chart",
@@ -718,9 +770,20 @@ COMMENT ON VIEW shop.orders_by_status IS '{
   "icon": "PieChartIcon"
 }';
 
-BEGIN; ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders_by_status:select'; COMMIT;
-GRANT SELECT ON shop.orders_by_status TO authenticated;
-INSERT INTO supasheet.role_permissions (role, permission) VALUES ('x-admin','shop.orders_by_status:select');
+BEGIN;
+
+ALTER TYPE supasheet.app_permission ADD VALUE 'shop.orders_by_status:select';
+
+COMMIT;
+
+GRANT
+SELECT
+  ON shop.orders_by_status TO authenticated;
+
+INSERT INTO
+  supasheet.role_permissions (role, permission)
+VALUES
+  ('x-admin', 'shop.orders_by_status:select');
 ```
 
 The view will appear under `/shop/chart/`. Use `"type":"dashboard_widget"` for dashboard tiles, `"type":"report"` for tabular reports.

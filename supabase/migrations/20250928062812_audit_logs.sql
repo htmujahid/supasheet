@@ -1,51 +1,64 @@
 begin;
-alter type supasheet.app_permission add value 'supasheet.audit_logs:select';
+
+alter type supasheet.app_permission
+add value 'supasheet.audit_logs:select';
+
 commit;
 
-CREATE TABLE IF NOT EXISTS supasheet.audit_logs (
-    id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
-    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-    operation TEXT NOT NULL,
-    schema_name TEXT NOT NULL,
-    table_name TEXT NOT NULL,
-    record_id TEXT,
-    created_by UUID REFERENCES supasheet.users(id) ON DELETE SET NULL,
-    role supasheet.app_role,
-    user_type TEXT NOT NULL CHECK (user_type IN ('system', 'real_user')) DEFAULT 'real_user',
-    metadata JSONB DEFAULT '{}'::JSONB,
-    old_data JSONB,
-    new_data JSONB,
-    changed_fields TEXT[],
-    is_error BOOLEAN DEFAULT FALSE,
-    error_message TEXT,
-    error_code TEXT
+create table if not exists supasheet.audit_logs (
+  id UUID default extensions.uuid_generate_v4 () primary key,
+  created_at TIMESTAMPTZ default NOW() not null,
+  operation TEXT not null,
+  schema_name TEXT not null,
+  table_name TEXT not null,
+  record_id TEXT,
+  created_by UUID references supasheet.users (id) on delete set null,
+  role supasheet.app_role,
+  user_type TEXT not null check (user_type in ('system', 'real_user')) default 'real_user',
+  metadata JSONB default '{}'::JSONB,
+  old_data JSONB,
+  new_data JSONB,
+  changed_fields text[],
+  is_error BOOLEAN default false,
+  error_message TEXT,
+  error_code TEXT
 );
-comment on table supasheet.audit_logs is 
-'{
+
+comment on table supasheet.audit_logs is '{
   "label": "Audit Logs",
   "icon": "ScrollTextIcon"
 }';
 
-CREATE INDEX idx_audit_logs_created_at ON supasheet.audit_logs(created_at DESC);
-CREATE INDEX idx_audit_logs_created_by ON supasheet.audit_logs(created_by);
-CREATE INDEX idx_audit_logs_role ON supasheet.audit_logs(role);
-CREATE INDEX idx_audit_logs_operation ON supasheet.audit_logs(operation);
-CREATE INDEX idx_audit_logs_schema_table ON supasheet.audit_logs(schema_name, table_name);
-CREATE INDEX idx_audit_logs_record_id ON supasheet.audit_logs(record_id);
-CREATE INDEX idx_audit_logs_user_type ON supasheet.audit_logs(user_type);
-CREATE INDEX idx_audit_logs_is_error ON supasheet.audit_logs(is_error) WHERE is_error = TRUE;
-CREATE INDEX idx_audit_logs_metadata ON supasheet.audit_logs USING GIN (metadata);
+create index idx_audit_logs_created_at on supasheet.audit_logs (created_at desc);
+
+create index idx_audit_logs_created_by on supasheet.audit_logs (created_by);
+
+create index idx_audit_logs_role on supasheet.audit_logs (role);
+
+create index idx_audit_logs_operation on supasheet.audit_logs (operation);
+
+create index idx_audit_logs_schema_table on supasheet.audit_logs (schema_name, table_name);
+
+create index idx_audit_logs_record_id on supasheet.audit_logs (record_id);
+
+create index idx_audit_logs_user_type on supasheet.audit_logs (user_type);
+
+create index idx_audit_logs_is_error on supasheet.audit_logs (is_error)
+where
+  is_error = true;
+
+create index idx_audit_logs_metadata on supasheet.audit_logs using GIN (metadata);
 
 -- add search path to this function
-CREATE OR REPLACE FUNCTION supasheet.create_audit_log(
-    p_operation TEXT,
-    p_schema_name TEXT,
-    p_table_name TEXT,
-    p_record_id TEXT DEFAULT NULL,
-    p_old_data JSONB DEFAULT NULL,
-    p_new_data JSONB DEFAULT NULL,
-    p_metadata JSONB DEFAULT '{}'::JSONB
-) RETURNS UUID AS $$
+create or replace function supasheet.create_audit_log (
+  p_operation TEXT,
+  p_schema_name TEXT,
+  p_table_name TEXT,
+  p_record_id TEXT default null,
+  p_old_data JSONB default null,
+  p_new_data JSONB default null,
+  p_metadata JSONB default '{}'::JSONB
+) RETURNS UUID as $$
 DECLARE
     v_audit_id UUID;
     v_user_id UUID;
@@ -108,9 +121,11 @@ BEGIN
     
     RETURN v_audit_id;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE plpgsql SECURITY DEFINER
+set
+  search_path = '';
 
-CREATE OR REPLACE FUNCTION supasheet.audit_trigger_function() RETURNS TRIGGER AS $$
+create or replace function supasheet.audit_trigger_function () RETURNS TRIGGER as $$
 DECLARE
     v_old_data JSONB;
     v_new_data JSONB;
@@ -155,22 +170,41 @@ BEGIN
         RETURN NEW;
     END IF;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+$$ LANGUAGE plpgsql SECURITY DEFINER
+set
+  search_path = '';
 
-GRANT SELECT ON supasheet.audit_logs TO authenticated;
+grant
+select
+  on supasheet.audit_logs to authenticated;
 
-ALTER TABLE supasheet.audit_logs ENABLE ROW LEVEL SECURITY;
+alter table supasheet.audit_logs ENABLE row LEVEL SECURITY;
 
-CREATE POLICY "Users can view their own audit logs" ON supasheet.audit_logs
-    FOR SELECT
-    TO authenticated
-    USING (created_by = (select auth.uid()) OR EXISTS (
-        SELECT 1 FROM supasheet.user_roles
-        WHERE user_id = (select auth.uid()) AND supasheet.has_permission('supasheet.audit_logs:select')
-    ));
+create policy "Users can view their own audit logs" on supasheet.audit_logs for
+select
+  to authenticated using (
+    created_by = (
+      select
+        auth.uid ()
+    )
+    or exists (
+      select
+        1
+      from
+        supasheet.user_roles
+      where
+        user_id = (
+          select
+            auth.uid ()
+        )
+        and supasheet.has_permission ('supasheet.audit_logs:select')
+    )
+  );
 
-insert into supasheet.role_permissions (role, permission) values ('x-admin', 'supasheet.audit_logs:select');
-
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'supasheet.audit_logs:select');
 
 -- ─────────────────────────────────────────────
 -- get_audit_logs
@@ -179,36 +213,33 @@ insert into supasheet.role_permissions (role, permission) values ('x-admin', 'su
 -- caller holding the schema.table:audit permission.
 -- security invoker — RLS on audit_logs still applies.
 -- ─────────────────────────────────────────────
-create or replace function supasheet.get_audit_logs(
-    p_schema    text,
-    p_table     text,
-    p_record_id text default null
-)
-returns table(
-    id              uuid,
-    created_at      timestamptz,
-    operation       text,
-    schema_name     text,
-    table_name      text,
-    record_id       text,
-    created_by      uuid,
-    role            supasheet.app_role,
-    user_type       text,
-    metadata        jsonb,
-    old_data        jsonb,
-    new_data        jsonb,
-    changed_fields  text[],
-    is_error        boolean,
-    error_message   text,
-    error_code      text,
-    created_by_name         varchar(255),
-    created_by_email        varchar(320),
-    created_by_picture_url  varchar(1000)
-)
-    language sql
-    security definer
-    set search_path = ''
-as $$
+create or replace function supasheet.get_audit_logs (
+  p_schema text,
+  p_table text,
+  p_record_id text default null
+) returns table (
+  id uuid,
+  created_at timestamptz,
+  operation text,
+  schema_name text,
+  table_name text,
+  record_id text,
+  created_by uuid,
+  role supasheet.app_role,
+  user_type text,
+  metadata jsonb,
+  old_data jsonb,
+  new_data jsonb,
+  changed_fields text[],
+  is_error boolean,
+  error_message text,
+  error_code text,
+  created_by_name varchar(255),
+  created_by_email varchar(320),
+  created_by_picture_url varchar(1000)
+) language sql security definer
+set
+  search_path = '' as $$
     select
         al.id,
         al.created_at,
@@ -243,5 +274,5 @@ as $$
     order by al.created_at desc;
 $$;
 
-grant execute on function supasheet.get_audit_logs(text, text, text)
-    to authenticated;
+grant
+execute on function supasheet.get_audit_logs (text, text, text) to authenticated;

@@ -13,8 +13,7 @@ PostgreSQL does not support `ADD CONSTRAINT IF NOT EXISTS`. Migrations using thi
 
 ```sql
 -- ERROR: syntax error at or near "not" (SQLSTATE 42601)
-alter table public.profiles
-add constraint if not exists profiles_birthchart_id_unique unique (birthchart_id);
+alter table public.profiles add constraint if not exists profiles_birthchart_id_unique unique (birthchart_id);
 ```
 
 **Correct (idempotent constraint creation):**

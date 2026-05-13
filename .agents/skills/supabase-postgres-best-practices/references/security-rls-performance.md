@@ -12,18 +12,23 @@ Poorly written RLS policies can cause severe performance issues. Use subqueries 
 **Incorrect (function called for every row):**
 
 ```sql
-create policy orders_policy on orders
-  using (auth.uid() = user_id);  -- auth.uid() called per row!
+create policy orders_policy on orders using (auth.uid () = user_id);
 
+-- auth.uid() called per row!
 -- With 1M rows, auth.uid() is called 1M times
 ```
 
 **Correct (wrap functions in SELECT):**
 
 ```sql
-create policy orders_policy on orders
-  using ((select auth.uid()) = user_id);  -- Called once, cached
+create policy orders_policy on orders using (
+  (
+    select
+      auth.uid ()
+  ) = user_id
+);
 
+-- Called once, cached
 -- 100x+ faster on large tables
 ```
 

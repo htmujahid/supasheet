@@ -1,22 +1,19 @@
 create schema if not exists supasheet;
 
 -- Initialize schema and extensions
-grant usage on schema supasheet to authenticated, service_role;
-
+grant usage on schema supasheet to authenticated,
+service_role;
 
 ----------------------------------------------------------------
 -- Function: supasheet.generate_tables
 ----------------------------------------------------------------
-
-
-CREATE OR REPLACE FUNCTION supasheet.generate_tables(
-  schema_filter TEXT DEFAULT NULL,
-  table_identifier_filter TEXT DEFAULT NULL,
-  ids_filter TEXT DEFAULT NULL,
-  limit_count INTEGER DEFAULT NULL,
-  offset_count INTEGER DEFAULT NULL
-)
-RETURNS TABLE(
+create or replace function supasheet.generate_tables (
+  schema_filter TEXT default null,
+  table_identifier_filter TEXT default null,
+  ids_filter TEXT default null,
+  limit_count INTEGER default null,
+  offset_count INTEGER default null
+) RETURNS table (
   id BIGINT,
   schema TEXT,
   name TEXT,
@@ -30,10 +27,9 @@ RETURNS TABLE(
   comment TEXT,
   primary_keys JSONB,
   relationships JSONB
-)
-LANGUAGE SQL
-SET search_path = ''
-AS $$
+) LANGUAGE SQL
+set
+  search_path = '' as $$
   SELECT
   c.oid :: int8 AS id,
   nc.nspname AS schema,
@@ -144,54 +140,64 @@ LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
 $$;
 
-revoke all on function supasheet.generate_tables(text, text, text, integer, integer) from public;
+revoke all on function supasheet.generate_tables (text, text, text, integer, integer)
+from
+  public;
 
-create table if not exists supasheet.tables as select * from supasheet.generate_tables() with no data;
+create table if not exists supasheet.tables as
+select
+  *
+from
+  supasheet.generate_tables ()
+with
+  no data;
 
-revoke all on table supasheet.tables from public, anon, authenticated, service_role;
+revoke all on table supasheet.tables
+from
+  public,
+  anon,
+  authenticated,
+  service_role;
 
-alter table supasheet.tables add constraint pk_tables_id primary key (id);
+alter table supasheet.tables
+add constraint pk_tables_id primary key (id);
 
 alter table supasheet.tables enable row level security;
-
 
 ----------------------------------------------------------------
 -- Function: supasheet.generate_columns
 ----------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION supasheet.generate_columns(
-    schema_filter TEXT DEFAULT NULL,
-    table_identifier_filter TEXT DEFAULT NULL,
-    column_name_filter TEXT DEFAULT NULL,
-    table_id_filter TEXT DEFAULT NULL,
-    ids_filter TEXT DEFAULT NULL,
-    limit_count INTEGER DEFAULT NULL,
-    offset_count INTEGER DEFAULT NULL
-)
-RETURNS TABLE (
-    table_id BIGINT,
-    schema TEXT,
-    "table" TEXT,
-    id TEXT,
-    ordinal_position TEXT,
-    "name" TEXT,
-    default_value TEXT,
-    data_type TEXT,
-    actual_type TEXT,
-    format TEXT,
-    is_identity BOOLEAN,
-    identity_generation TEXT,
-    is_generated BOOLEAN,
-    is_nullable BOOLEAN,
-    is_updatable BOOLEAN,
-    is_unique BOOLEAN,
-    "check" TEXT,
-    enums JSON,
-    "comment" TEXT
-)
-LANGUAGE SQL
-SET search_path = ''
-AS $$
+create or replace function supasheet.generate_columns (
+  schema_filter TEXT default null,
+  table_identifier_filter TEXT default null,
+  column_name_filter TEXT default null,
+  table_id_filter TEXT default null,
+  ids_filter TEXT default null,
+  limit_count INTEGER default null,
+  offset_count INTEGER default null
+) RETURNS table (
+  table_id BIGINT,
+  schema TEXT,
+  "table" TEXT,
+  id TEXT,
+  ordinal_position TEXT,
+  "name" TEXT,
+  default_value TEXT,
+  data_type TEXT,
+  actual_type TEXT,
+  format TEXT,
+  is_identity BOOLEAN,
+  identity_generation TEXT,
+  is_generated BOOLEAN,
+  is_nullable BOOLEAN,
+  is_updatable BOOLEAN,
+  is_unique BOOLEAN,
+  "check" TEXT,
+  enums JSON,
+  "comment" TEXT
+) LANGUAGE SQL
+set
+  search_path = '' as $$
   -- Adapted from information_schema.columns
   SELECT
   c.oid :: int8 AS table_id,
@@ -313,38 +319,48 @@ LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count ELSE NULL END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
 $$;
 
-revoke all on function supasheet.generate_columns(text, text, text, text, text, integer, integer) from public;
+revoke all on function supasheet.generate_columns (text, text, text, text, text, integer, integer)
+from
+  public;
 
-create table if not exists supasheet.columns as select * from supasheet.generate_columns() with no data;
+create table if not exists supasheet.columns as
+select
+  *
+from
+  supasheet.generate_columns ()
+with
+  no data;
 
-revoke all on table supasheet.columns from public, anon, authenticated, service_role;
+revoke all on table supasheet.columns
+from
+  public,
+  anon,
+  authenticated,
+  service_role;
 
-alter table supasheet.columns add constraint pk_columns_id primary key (id);
+alter table supasheet.columns
+add constraint pk_columns_id primary key (id);
 
 alter table supasheet.columns enable row level security;
-
 
 ----------------------------------------------------------------
 -- Function: supasheet.generate_views
 ----------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION supasheet.generate_views(
-  schema_filter TEXT DEFAULT NULL,
-  view_identifier_filter TEXT DEFAULT NULL,
-  ids_filter TEXT DEFAULT NULL,
-  limit_count INTEGER DEFAULT NULL,
-  offset_count INTEGER DEFAULT NULL
-)
-RETURNS TABLE(
+create or replace function supasheet.generate_views (
+  schema_filter TEXT default null,
+  view_identifier_filter TEXT default null,
+  ids_filter TEXT default null,
+  limit_count INTEGER default null,
+  offset_count INTEGER default null
+) RETURNS table (
   id BIGINT,
   schema TEXT,
   name TEXT,
   is_updatable BOOLEAN,
   comment TEXT
-)
-LANGUAGE SQL
-SET search_path = ''
-AS $$
+) LANGUAGE SQL
+set
+  search_path = '' as $$
   SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
@@ -374,38 +390,48 @@ LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
 $$;
 
-revoke all on function supasheet.generate_views(text, text, text, integer, integer) from public;
+revoke all on function supasheet.generate_views (text, text, text, integer, integer)
+from
+  public;
 
-create table if not exists supasheet.views as select * from supasheet.generate_views() with no data;
+create table if not exists supasheet.views as
+select
+  *
+from
+  supasheet.generate_views ()
+with
+  no data;
 
-revoke all on table supasheet.views from public, anon, authenticated, service_role;
+revoke all on table supasheet.views
+from
+  public,
+  anon,
+  authenticated,
+  service_role;
 
-alter table supasheet.views add constraint pk_views_id primary key (id);
+alter table supasheet.views
+add constraint pk_views_id primary key (id);
 
 alter table supasheet.views enable row level security;
-
 
 ----------------------------------------------------------------
 -- Function: supasheet.generate_materialized_views
 ----------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION supasheet.generate_materialized_views(
-    schema_filter TEXT DEFAULT NULL,
-    materialized_view_identifier_filter TEXT DEFAULT NULL,
-    ids_filter TEXT DEFAULT NULL,
-    limit_count INTEGER DEFAULT NULL,
-    offset_count INTEGER DEFAULT NULL
-)
-RETURNS TABLE(
-    id BIGINT,
-    schema TEXT,
-    name TEXT,
-    is_populated BOOLEAN,
-    comment TEXT
-)
-LANGUAGE SQL
-SET search_path = ''
-AS $$
+create or replace function supasheet.generate_materialized_views (
+  schema_filter TEXT default null,
+  materialized_view_identifier_filter TEXT default null,
+  ids_filter TEXT default null,
+  limit_count INTEGER default null,
+  offset_count INTEGER default null
+) RETURNS table (
+  id BIGINT,
+  schema TEXT,
+  name TEXT,
+  is_populated BOOLEAN,
+  comment TEXT
+) LANGUAGE SQL
+set
+  search_path = '' as $$
   SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
@@ -434,28 +460,62 @@ LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
 $$;
 
-revoke all on function supasheet.generate_materialized_views(text, text, text, integer, integer) from public;
+revoke all on function supasheet.generate_materialized_views (text, text, text, integer, integer)
+from
+  public;
 
-create table if not exists supasheet.materialized_views as select * from supasheet.generate_materialized_views() with no data;
+create table if not exists supasheet.materialized_views as
+select
+  *
+from
+  supasheet.generate_materialized_views ()
+with
+  no data;
 
-revoke all on table supasheet.materialized_views from public, anon, authenticated, service_role;
+revoke all on table supasheet.materialized_views
+from
+  public,
+  anon,
+  authenticated,
+  service_role;
 
-alter table supasheet.materialized_views add constraint pk_materialized_views_id primary key (id);
+alter table supasheet.materialized_views
+add constraint pk_materialized_views_id primary key (id);
 
 alter table supasheet.materialized_views enable row level security;
 
+insert into
+  supasheet.columns
+select
+  *
+from
+  supasheet.generate_columns ('supasheet');
 
-INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns('supasheet');
-INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet');
-INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views('supasheet');
-INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views('supasheet');
+insert into
+  supasheet.tables
+select
+  *
+from
+  supasheet.generate_tables ('supasheet');
 
+insert into
+  supasheet.views
+select
+  *
+from
+  supasheet.generate_views ('supasheet');
+
+insert into
+  supasheet.materialized_views
+select
+  *
+from
+  supasheet.generate_materialized_views ('supasheet');
 
 ----------------------------------------------------------------
 -- Trigger Function for CREATE events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_new_table_creation()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_new_table_creation () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -495,19 +555,21 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER table_creation_trigger
-ON ddl_command_end
-WHEN TAG IN ('CREATE TABLE', 'CREATE VIEW', 'CREATE MATERIALIZED VIEW')
-EXECUTE FUNCTION supasheet.log_new_table_creation();
-
+create event trigger table_creation_trigger on ddl_command_end when TAG in (
+  'CREATE TABLE',
+  'CREATE VIEW',
+  'CREATE MATERIALIZED VIEW'
+)
+execute FUNCTION supasheet.log_new_table_creation ();
 
 ----------------------------------------------------------------
 -- Trigger Function for DROP events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_table_deletion()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_table_deletion () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -530,19 +592,21 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER table_deletion_trigger
-ON sql_drop
-WHEN TAG IN ('DROP TABLE', 'DROP VIEW', 'DROP MATERIALIZED VIEW')
-EXECUTE FUNCTION supasheet.log_table_deletion();
-
+create event trigger table_deletion_trigger on sql_drop when TAG in (
+  'DROP TABLE',
+  'DROP VIEW',
+  'DROP MATERIALIZED VIEW'
+)
+execute FUNCTION supasheet.log_table_deletion ();
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_table_alteration()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_table_alteration () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -579,19 +643,21 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER table_alteration_trigger
-ON ddl_command_end
-WHEN TAG IN ('ALTER TABLE', 'ALTER VIEW', 'ALTER MATERIALIZED VIEW')
-EXECUTE FUNCTION supasheet.log_table_alteration();
-
+create event trigger table_alteration_trigger on ddl_command_end when TAG in (
+  'ALTER TABLE',
+  'ALTER VIEW',
+  'ALTER MATERIALIZED VIEW'
+)
+execute FUNCTION supasheet.log_table_alteration ();
 
 ----------------------------------------------------------------
 -- Trigger Function for COMMENT events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_comment_changes()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_comment_changes () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -648,19 +714,17 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER comment_trigger
-ON ddl_command_end
-WHEN TAG IN ('COMMENT')
-EXECUTE FUNCTION supasheet.log_comment_changes();
-
+create event trigger comment_trigger on ddl_command_end when TAG in ('COMMENT')
+execute FUNCTION supasheet.log_comment_changes ();
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER TYPE events (enum changes)
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_enum_alteration()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_enum_alteration () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -697,19 +761,17 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER enum_alteration_trigger
-ON ddl_command_end
-WHEN TAG IN ('ALTER TYPE')
-EXECUTE FUNCTION supasheet.log_enum_alteration();
-
+create event trigger enum_alteration_trigger on ddl_command_end when TAG in ('ALTER TYPE')
+execute FUNCTION supasheet.log_enum_alteration ();
 
 ----------------------------------------------------------------
 -- Trigger Function for CREATE SCHEMA events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_schema_creation()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_schema_creation () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -733,19 +795,17 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER schema_creation_trigger
-ON ddl_command_end
-WHEN TAG IN ('CREATE SCHEMA')
-EXECUTE FUNCTION supasheet.log_schema_creation();
-
+create event trigger schema_creation_trigger on ddl_command_end when TAG in ('CREATE SCHEMA')
+execute FUNCTION supasheet.log_schema_creation ();
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER SCHEMA events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_schema_alteration()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_schema_alteration () RETURNS event_trigger as $$
 DECLARE
     obj record;
     new_schema TEXT;
@@ -774,19 +834,17 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER schema_alteration_trigger
-ON ddl_command_end
-WHEN TAG IN ('ALTER SCHEMA')
-EXECUTE FUNCTION supasheet.log_schema_alteration();
-
+create event trigger schema_alteration_trigger on ddl_command_end when TAG in ('ALTER SCHEMA')
+execute FUNCTION supasheet.log_schema_alteration ();
 
 ----------------------------------------------------------------
 -- Trigger Function for DROP SCHEMA events
 ----------------------------------------------------------------
-CREATE OR REPLACE FUNCTION supasheet.log_schema_deletion()
-RETURNS event_trigger AS $$
+create or replace function supasheet.log_schema_deletion () RETURNS event_trigger as $$
 DECLARE
     obj record;
     schema_name TEXT;
@@ -803,9 +861,9 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql SET search_path = '';
+$$ LANGUAGE plpgsql
+set
+  search_path = '';
 
-CREATE EVENT TRIGGER schema_deletion_trigger
-ON sql_drop
-WHEN TAG IN ('DROP SCHEMA')
-EXECUTE FUNCTION supasheet.log_schema_deletion();
+create event trigger schema_deletion_trigger on sql_drop when TAG in ('DROP SCHEMA')
+execute FUNCTION supasheet.log_schema_deletion ();

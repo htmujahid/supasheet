@@ -46,10 +46,16 @@ Key metrics to monitor:
 
 ```sql
 -- Queries with high mean time (candidates for optimization)
-select query, mean_exec_time, calls
-from pg_stat_statements
-where mean_exec_time > 100  -- > 100ms average
-order by mean_exec_time desc;
+select
+  query,
+  mean_exec_time,
+  calls
+from
+  pg_stat_statements
+where
+  mean_exec_time > 100 -- > 100ms average
+order by
+  mean_exec_time desc;
 ```
 
 Reference: [pg_stat_statements](https://supabase.com/docs/guides/database/extensions/pg_stat_statements)

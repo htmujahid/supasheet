@@ -13,10 +13,20 @@ LIKE with wildcards can't use indexes. Full-text search with tsvector is orders 
 
 ```sql
 -- Cannot use index, scans all rows
-select * from articles where content like '%postgresql%';
+select
+  *
+from
+  articles
+where
+  content like '%postgresql%';
 
 -- Case-insensitive makes it worse
-select * from articles where lower(content) like '%postgresql%';
+select
+  *
+from
+  articles
+where
+  lower(content) like '%postgresql%';
 ```
 
 **Correct (full-text search with tsvector):**
@@ -43,13 +53,11 @@ Search multiple terms:
 
 ```sql
 -- AND: both terms required
-to_tsquery('postgresql & performance')
-
+to_tsquery ('postgresql & performance')
 -- OR: either term
-to_tsquery('postgresql | mysql')
-
+to_tsquery ('postgresql | mysql')
 -- Prefix matching
-to_tsquery('post:*')
+to_tsquery ('post:*')
 ```
 
 Reference: [Full Text Search](https://supabase.com/docs/guides/database/full-text-search)

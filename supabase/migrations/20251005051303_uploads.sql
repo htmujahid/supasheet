@@ -1,48 +1,58 @@
-SET client_min_messages = WARNING;
+set
+  client_min_messages = WARNING;
 
 -- Bucket
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('uploads', 'uploads', true)
-ON CONFLICT DO NOTHING;
+insert into
+  storage.buckets (id, name, public)
+values
+  ('uploads', 'uploads', true)
+on conflict do nothing;
 
 -- Uploads bucket policies
-DROP POLICY IF EXISTS enable_read_authenticated_uploads_bucket ON storage.buckets;
-CREATE POLICY enable_read_authenticated_uploads_bucket ON storage.buckets
-AS PERMISSIVE FOR SELECT TO authenticated
-USING (name = 'uploads');
+drop policy IF exists enable_read_authenticated_uploads_bucket on storage.buckets;
 
-DROP POLICY IF EXISTS enable_read_authorized_uploads_objects ON storage.objects;
-CREATE POLICY enable_read_authorized_uploads_objects ON storage.objects
-AS PERMISSIVE FOR SELECT TO authenticated
-USING (
-    bucket_id = 'uploads' AND supasheet.has_permission(
-        format('%s.%s:select', path_tokens[1], path_tokens[2])::supasheet.app_permission
-    )
-);
+create policy enable_read_authenticated_uploads_bucket on storage.buckets as PERMISSIVE for
+select
+  to authenticated using (name = 'uploads');
 
-DROP POLICY IF EXISTS enable_insert_authorized_uploads_objects ON storage.objects;
-CREATE POLICY enable_insert_authorized_uploads_objects ON storage.objects
-AS PERMISSIVE FOR INSERT TO authenticated
-WITH CHECK (
-    bucket_id = 'uploads' AND supasheet.has_permission(
-        format('%s.%s:insert', path_tokens[1], path_tokens[2])::supasheet.app_permission
-    )
-);
+drop policy IF exists enable_read_authorized_uploads_objects on storage.objects;
 
-DROP POLICY IF EXISTS enable_update_authorized_uploads_objects ON storage.objects;
-CREATE POLICY enable_update_authorized_uploads_objects ON storage.objects
-AS PERMISSIVE FOR UPDATE TO authenticated
-USING (
-    bucket_id = 'uploads' AND supasheet.has_permission(
-        format('%s.%s:update', path_tokens[1], path_tokens[2])::supasheet.app_permission
+create policy enable_read_authorized_uploads_objects on storage.objects as PERMISSIVE for
+select
+  to authenticated using (
+    bucket_id = 'uploads'
+    and supasheet.has_permission (
+      format('%s.%s:select', path_tokens[1], path_tokens[2])::supasheet.app_permission
     )
-);
+  );
 
-DROP POLICY IF EXISTS enable_delete_authorized_uploads_objects ON storage.objects;
-CREATE POLICY enable_delete_authorized_uploads_objects ON storage.objects
-AS PERMISSIVE FOR DELETE TO authenticated
-USING (
-    bucket_id = 'uploads' AND supasheet.has_permission(
-        format('%s.%s:delete', path_tokens[1], path_tokens[2])::supasheet.app_permission
+drop policy IF exists enable_insert_authorized_uploads_objects on storage.objects;
+
+create policy enable_insert_authorized_uploads_objects on storage.objects as PERMISSIVE for INSERT to authenticated
+with
+  check (
+    bucket_id = 'uploads'
+    and supasheet.has_permission (
+      format('%s.%s:insert', path_tokens[1], path_tokens[2])::supasheet.app_permission
     )
+  );
+
+drop policy IF exists enable_update_authorized_uploads_objects on storage.objects;
+
+create policy enable_update_authorized_uploads_objects on storage.objects as PERMISSIVE
+for update
+  to authenticated using (
+    bucket_id = 'uploads'
+    and supasheet.has_permission (
+      format('%s.%s:update', path_tokens[1], path_tokens[2])::supasheet.app_permission
+    )
+  );
+
+drop policy IF exists enable_delete_authorized_uploads_objects on storage.objects;
+
+create policy enable_delete_authorized_uploads_objects on storage.objects as PERMISSIVE for DELETE to authenticated using (
+  bucket_id = 'uploads'
+  and supasheet.has_permission (
+    format('%s.%s:delete', path_tokens[1], path_tokens[2])::supasheet.app_permission
+  )
 );

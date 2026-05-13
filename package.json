@@ -82,6 +82,7 @@
     "@vitejs/plugin-react": "^5.1.4",
     "jsdom": "^28.1.0",
     "prettier": "^3.8.1",
+    "prettier-plugin-sql": "^0.20.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "supabase": "^2.98.0",
     "typescript": "^5.7.2",

@@ -24,8 +24,18 @@ const config = {
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   plugins: [
+    "prettier-plugin-sql",
     "prettier-plugin-tailwindcss",
     "@trivago/prettier-plugin-sort-imports",
+  ],
+  overrides: [
+    {
+      files: ["*.sql"],
+      options: {
+        language: "postgresql",
+        keywordCase: "lower",
+      },
+    },
   ],
   tailwindStylesheet: "src/styles.css",
   tailwindFunctions: ["cn", "cva"],

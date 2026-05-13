@@ -5,152 +5,287 @@ grant usage on schema manufacturing to authenticated;
 ----------------------------------------------------------------
 -- Enums + permissions (must commit before use)
 ----------------------------------------------------------------
-
 begin;
 
-create type manufacturing.work_center_type as enum ('assembly', 'machining', 'packaging', 'inspection', 'finishing', 'storage');
-create type manufacturing.work_center_status as enum ('available', 'busy', 'maintenance', 'offline');
-create type manufacturing.bom_status as enum ('draft', 'active', 'obsolete', 'archived');
-create type manufacturing.routing_status as enum ('draft', 'active', 'obsolete');
-create type manufacturing.work_order_status as enum ('draft', 'planned', 'released', 'in_progress', 'on_hold', 'completed', 'cancelled');
-create type manufacturing.work_order_priority as enum ('low', 'medium', 'high', 'critical');
-create type manufacturing.operation_status as enum ('pending', 'in_progress', 'completed', 'skipped', 'failed');
-create type manufacturing.output_status as enum ('good', 'rework', 'scrap', 'pending_inspection');
-create type manufacturing.issue_status as enum ('reserved', 'issued', 'returned');
+create type manufacturing.work_center_type as enum(
+  'assembly',
+  'machining',
+  'packaging',
+  'inspection',
+  'finishing',
+  'storage'
+);
+
+create type manufacturing.work_center_status as enum('available', 'busy', 'maintenance', 'offline');
+
+create type manufacturing.bom_status as enum('draft', 'active', 'obsolete', 'archived');
+
+create type manufacturing.routing_status as enum('draft', 'active', 'obsolete');
+
+create type manufacturing.work_order_status as enum(
+  'draft',
+  'planned',
+  'released',
+  'in_progress',
+  'on_hold',
+  'completed',
+  'cancelled'
+);
+
+create type manufacturing.work_order_priority as enum('low', 'medium', 'high', 'critical');
+
+create type manufacturing.operation_status as enum(
+  'pending',
+  'in_progress',
+  'completed',
+  'skipped',
+  'failed'
+);
+
+create type manufacturing.output_status as enum('good', 'rework', 'scrap', 'pending_inspection');
+
+create type manufacturing.issue_status as enum('reserved', 'issued', 'returned');
 
 -- Work centers
-alter type supasheet.app_permission add value 'manufacturing.work_centers:select';
-alter type supasheet.app_permission add value 'manufacturing.work_centers:insert';
-alter type supasheet.app_permission add value 'manufacturing.work_centers:update';
-alter type supasheet.app_permission add value 'manufacturing.work_centers:delete';
-alter type supasheet.app_permission add value 'manufacturing.work_centers:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.work_centers:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_centers:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_centers:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_centers:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_centers:audit';
 
 -- BOMs
-alter type supasheet.app_permission add value 'manufacturing.boms:select';
-alter type supasheet.app_permission add value 'manufacturing.boms:insert';
-alter type supasheet.app_permission add value 'manufacturing.boms:update';
-alter type supasheet.app_permission add value 'manufacturing.boms:delete';
-alter type supasheet.app_permission add value 'manufacturing.boms:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.boms:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.boms:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.boms:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.boms:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.boms:audit';
 
 -- BOM items
-alter type supasheet.app_permission add value 'manufacturing.bom_items:select';
-alter type supasheet.app_permission add value 'manufacturing.bom_items:insert';
-alter type supasheet.app_permission add value 'manufacturing.bom_items:update';
-alter type supasheet.app_permission add value 'manufacturing.bom_items:delete';
-alter type supasheet.app_permission add value 'manufacturing.bom_items:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.bom_items:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.bom_items:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.bom_items:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.bom_items:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.bom_items:audit';
 
 -- Routings
-alter type supasheet.app_permission add value 'manufacturing.routings:select';
-alter type supasheet.app_permission add value 'manufacturing.routings:insert';
-alter type supasheet.app_permission add value 'manufacturing.routings:update';
-alter type supasheet.app_permission add value 'manufacturing.routings:delete';
-alter type supasheet.app_permission add value 'manufacturing.routings:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.routings:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routings:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routings:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routings:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routings:audit';
 
 -- Routing operations
-alter type supasheet.app_permission add value 'manufacturing.routing_operations:select';
-alter type supasheet.app_permission add value 'manufacturing.routing_operations:insert';
-alter type supasheet.app_permission add value 'manufacturing.routing_operations:update';
-alter type supasheet.app_permission add value 'manufacturing.routing_operations:delete';
-alter type supasheet.app_permission add value 'manufacturing.routing_operations:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.routing_operations:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routing_operations:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routing_operations:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routing_operations:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routing_operations:audit';
 
 -- Work orders
-alter type supasheet.app_permission add value 'manufacturing.work_orders:select';
-alter type supasheet.app_permission add value 'manufacturing.work_orders:insert';
-alter type supasheet.app_permission add value 'manufacturing.work_orders:update';
-alter type supasheet.app_permission add value 'manufacturing.work_orders:delete';
-alter type supasheet.app_permission add value 'manufacturing.work_orders:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders:audit';
 
 -- Work order operations
-alter type supasheet.app_permission add value 'manufacturing.work_order_operations:select';
-alter type supasheet.app_permission add value 'manufacturing.work_order_operations:insert';
-alter type supasheet.app_permission add value 'manufacturing.work_order_operations:update';
-alter type supasheet.app_permission add value 'manufacturing.work_order_operations:delete';
-alter type supasheet.app_permission add value 'manufacturing.work_order_operations:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.work_order_operations:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_order_operations:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_order_operations:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_order_operations:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_order_operations:audit';
 
 -- Material issues
-alter type supasheet.app_permission add value 'manufacturing.material_issues:select';
-alter type supasheet.app_permission add value 'manufacturing.material_issues:insert';
-alter type supasheet.app_permission add value 'manufacturing.material_issues:update';
-alter type supasheet.app_permission add value 'manufacturing.material_issues:delete';
-alter type supasheet.app_permission add value 'manufacturing.material_issues:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.material_issues:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.material_issues:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.material_issues:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.material_issues:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.material_issues:audit';
 
 -- Production outputs
-alter type supasheet.app_permission add value 'manufacturing.production_outputs:select';
-alter type supasheet.app_permission add value 'manufacturing.production_outputs:insert';
-alter type supasheet.app_permission add value 'manufacturing.production_outputs:update';
-alter type supasheet.app_permission add value 'manufacturing.production_outputs:delete';
-alter type supasheet.app_permission add value 'manufacturing.production_outputs:audit';
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs:insert';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs:update';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs:delete';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs:audit';
 
 -- Users mirror
-alter type supasheet.app_permission add value 'manufacturing.users:select';
+alter type supasheet.app_permission
+add value 'manufacturing.users:select';
 
 -- Reports
-alter type supasheet.app_permission add value 'manufacturing.work_orders_report:select';
-alter type supasheet.app_permission add value 'manufacturing.bom_explosion_report:select';
-alter type supasheet.app_permission add value 'manufacturing.production_outputs_report:select';
-alter type supasheet.app_permission add value 'manufacturing.material_consumption_report:select';
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders_report:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.bom_explosion_report:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs_report:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.material_consumption_report:select';
 
 -- Dashboard widgets
-alter type supasheet.app_permission add value 'manufacturing.open_work_orders:select';
-alter type supasheet.app_permission add value 'manufacturing.yield_split:select';
-alter type supasheet.app_permission add value 'manufacturing.production_value:select';
-alter type supasheet.app_permission add value 'manufacturing.production_health:select';
-alter type supasheet.app_permission add value 'manufacturing.recent_work_orders:select';
-alter type supasheet.app_permission add value 'manufacturing.top_work_centers:select';
+alter type supasheet.app_permission
+add value 'manufacturing.open_work_orders:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.yield_split:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_value:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_health:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.recent_work_orders:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.top_work_centers:select';
 
 -- Charts
-alter type supasheet.app_permission add value 'manufacturing.work_orders_by_status_pie:select';
-alter type supasheet.app_permission add value 'manufacturing.production_by_work_center_bar:select';
-alter type supasheet.app_permission add value 'manufacturing.production_trend_line:select';
-alter type supasheet.app_permission add value 'manufacturing.operation_metrics_radar:select';
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders_by_status_pie:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_by_work_center_bar:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_trend_line:select';
+
+alter type supasheet.app_permission
+add value 'manufacturing.operation_metrics_radar:select';
 
 commit;
-
 
 ----------------------------------------------------------------
 -- Users mirror view
 ----------------------------------------------------------------
-
 create or replace view manufacturing.users
-with (security_invoker = true) as
-select * from supasheet.users;
+with
+  (security_invoker = true) as
+select
+  *
+from
+  supasheet.users;
 
-revoke all on manufacturing.users from authenticated, service_role;
-grant select on manufacturing.users to authenticated;
+revoke all on manufacturing.users
+from
+  authenticated,
+  service_role;
 
+grant
+select
+  on manufacturing.users to authenticated;
 
 ----------------------------------------------------------------
 -- Work centers
 ----------------------------------------------------------------
-
 create table manufacturing.work_centers (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    code varchar(50) unique not null,
-    name varchar(255) not null,
-    type manufacturing.work_center_type default 'assembly',
-    status manufacturing.work_center_status default 'available',
-
-    description supasheet.RICH_TEXT,
-    cover supasheet.file,
-
-    location varchar(255),
-    capacity_per_hour integer,
-    cost_per_hour numeric(10, 2),
-    currency varchar(3) default 'USD',
-
-    operator_user_id uuid references supasheet.users(id) on delete set null,
-
-    is_active boolean default true,
-    color supasheet.COLOR,
-    tags varchar(255)[],
-    notes text,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  code varchar(50) unique not null,
+  name varchar(255) not null,
+  type manufacturing.work_center_type default 'assembly',
+  status manufacturing.work_center_status default 'available',
+  description supasheet.RICH_TEXT,
+  cover supasheet.file,
+  location varchar(255),
+  capacity_per_hour integer,
+  cost_per_hour numeric(10, 2),
+  currency varchar(3) default 'USD',
+  operator_user_id uuid references supasheet.users (id) on delete set null,
+  is_active boolean default true,
+  color supasheet.COLOR,
+  tags varchar(255) [],
+  notes text,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.work_centers.type is
-'{
+comment on column manufacturing.work_centers.type is '{
     "progress": false,
     "enums": {
         "assembly":   {"variant": "info",      "icon": "Wrench"},
@@ -162,8 +297,7 @@ comment on column manufacturing.work_centers.type is
     }
 }';
 
-comment on column manufacturing.work_centers.status is
-'{
+comment on column manufacturing.work_centers.status is '{
     "progress": true,
     "enums": {
         "available":   {"variant": "success",     "icon": "CircleCheck"},
@@ -173,8 +307,7 @@ comment on column manufacturing.work_centers.status is
     }
 }';
 
-comment on table manufacturing.work_centers is
-'{
+comment on table manufacturing.work_centers is '{
     "icon": "Factory",
     "display": "block",
     "query": {
@@ -197,67 +330,82 @@ comment on table manufacturing.work_centers is
 
 comment on column manufacturing.work_centers.cover is '{"accept":"image/*"}';
 
-revoke all on table manufacturing.work_centers from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.work_centers to authenticated;
+revoke all on table manufacturing.work_centers
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.work_centers to authenticated;
 
 create index idx_mfg_work_centers_type on manufacturing.work_centers (type);
+
 create index idx_mfg_work_centers_status on manufacturing.work_centers (status);
+
 create index idx_mfg_work_centers_operator on manufacturing.work_centers (operator_user_id);
 
 alter table manufacturing.work_centers enable row level security;
 
-create policy work_centers_select on manufacturing.work_centers
-    for select to authenticated using (supasheet.has_permission('manufacturing.work_centers:select'));
-create policy work_centers_insert on manufacturing.work_centers
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.work_centers:insert'));
-create policy work_centers_update on manufacturing.work_centers
-    for update to authenticated using (supasheet.has_permission('manufacturing.work_centers:update'))
-    with check (supasheet.has_permission('manufacturing.work_centers:update'));
-create policy work_centers_delete on manufacturing.work_centers
-    for delete to authenticated using (supasheet.has_permission('manufacturing.work_centers:delete'));
+create policy work_centers_select on manufacturing.work_centers for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.work_centers:select')
+  );
 
+create policy work_centers_insert on manufacturing.work_centers for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.work_centers:insert')
+  );
+
+create policy work_centers_update on manufacturing.work_centers
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.work_centers:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.work_centers:update')
+  );
+
+create policy work_centers_delete on manufacturing.work_centers for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.work_centers:delete')
+);
 
 ----------------------------------------------------------------
 -- BOMs (bill of materials, header)
 ----------------------------------------------------------------
-
 create table manufacturing.boms (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    bom_number varchar(50) unique not null,
-    name varchar(500) not null,
-    version varchar(20) default '1.0',
-
-    product_sku varchar(100) not null,
-    product_name varchar(500) not null,
-    product_id uuid,
-
-    status manufacturing.bom_status default 'draft',
-
-    output_quantity integer default 1,
-    unit_of_measure varchar(50) default 'each',
-
-    description supasheet.RICH_TEXT,
-    image supasheet.file,
-    attachments supasheet.file,
-
-    effective_from date,
-    effective_to date,
-
-    estimated_cost numeric(12, 2),
-    currency varchar(3) default 'USD',
-
-    tags varchar(255)[],
-    color supasheet.COLOR,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  bom_number varchar(50) unique not null,
+  name varchar(500) not null,
+  version varchar(20) default '1.0',
+  product_sku varchar(100) not null,
+  product_name varchar(500) not null,
+  product_id uuid,
+  status manufacturing.bom_status default 'draft',
+  output_quantity integer default 1,
+  unit_of_measure varchar(50) default 'each',
+  description supasheet.RICH_TEXT,
+  image supasheet.file,
+  attachments supasheet.file,
+  effective_from date,
+  effective_to date,
+  estimated_cost numeric(12, 2),
+  currency varchar(3) default 'USD',
+  tags varchar(255) [],
+  color supasheet.COLOR,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.boms.status is
-'{
+comment on column manufacturing.boms.status is '{
     "progress": true,
     "enums": {
         "draft":    {"variant": "outline",     "icon": "FileEdit"},
@@ -267,8 +415,7 @@ comment on column manufacturing.boms.status is
     }
 }';
 
-comment on table manufacturing.boms is
-'{
+comment on table manufacturing.boms is '{
     "icon": "ListTree",
     "display": "block",
     "query": {
@@ -290,58 +437,78 @@ comment on table manufacturing.boms is
 }';
 
 comment on column manufacturing.boms.image is '{"accept":"image/*"}';
+
 comment on column manufacturing.boms.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table manufacturing.boms from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.boms to authenticated;
+revoke all on table manufacturing.boms
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.boms to authenticated;
 
 create index idx_mfg_boms_user_id on manufacturing.boms (user_id);
+
 create index idx_mfg_boms_status on manufacturing.boms (status);
+
 create index idx_mfg_boms_product_sku on manufacturing.boms (product_sku);
+
 create index idx_mfg_boms_product_id on manufacturing.boms (product_id);
 
 alter table manufacturing.boms enable row level security;
 
-create policy boms_select on manufacturing.boms
-    for select to authenticated using (supasheet.has_permission('manufacturing.boms:select'));
-create policy boms_insert on manufacturing.boms
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.boms:insert'));
-create policy boms_update on manufacturing.boms
-    for update to authenticated using (supasheet.has_permission('manufacturing.boms:update'))
-    with check (supasheet.has_permission('manufacturing.boms:update'));
-create policy boms_delete on manufacturing.boms
-    for delete to authenticated using (supasheet.has_permission('manufacturing.boms:delete'));
+create policy boms_select on manufacturing.boms for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.boms:select')
+  );
 
+create policy boms_insert on manufacturing.boms for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.boms:insert')
+  );
+
+create policy boms_update on manufacturing.boms
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.boms:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.boms:update')
+  );
+
+create policy boms_delete on manufacturing.boms for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.boms:delete')
+);
 
 ----------------------------------------------------------------
 -- BOM items (component lines)
 ----------------------------------------------------------------
-
 create table manufacturing.bom_items (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    bom_id uuid not null references manufacturing.boms(id) on delete cascade,
-
-    line_number integer default 0,
-
-    component_sku varchar(100) not null,
-    component_name varchar(500) not null,
-    component_id uuid,
-
-    quantity numeric(12, 4) not null default 1,
-    unit_of_measure varchar(50) default 'each',
-    scrap_pct numeric(5, 2) default 0,
-
-    unit_cost numeric(12, 4) default 0,
-    total_cost numeric(14, 4) generated always as (quantity * unit_cost) stored,
-
-    is_optional boolean default false,
-    notes text,
-
-    created_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  bom_id uuid not null references manufacturing.boms (id) on delete cascade,
+  line_number integer default 0,
+  component_sku varchar(100) not null,
+  component_name varchar(500) not null,
+  component_id uuid,
+  quantity numeric(12, 4) not null default 1,
+  unit_of_measure varchar(50) default 'each',
+  scrap_pct numeric(5, 2) default 0,
+  unit_cost numeric(12, 4) default 0,
+  total_cost numeric(14, 4) generated always as (quantity * unit_cost) stored,
+  is_optional boolean default false,
+  notes text,
+  created_at timestamptz default current_timestamp
 );
 
-comment on table manufacturing.bom_items is
-'{
+comment on table manufacturing.bom_items is '{
     "icon": "ListChecks",
     "display": "none",
     "query": {
@@ -357,56 +524,73 @@ comment on table manufacturing.bom_items is
     ]
 }';
 
-revoke all on table manufacturing.bom_items from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.bom_items to authenticated;
+revoke all on table manufacturing.bom_items
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.bom_items to authenticated;
 
 create index idx_mfg_bom_items_bom_id on manufacturing.bom_items (bom_id);
+
 create index idx_mfg_bom_items_component_sku on manufacturing.bom_items (component_sku);
 
 alter table manufacturing.bom_items enable row level security;
 
-create policy bom_items_select on manufacturing.bom_items
-    for select to authenticated using (supasheet.has_permission('manufacturing.bom_items:select'));
-create policy bom_items_insert on manufacturing.bom_items
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.bom_items:insert'));
-create policy bom_items_update on manufacturing.bom_items
-    for update to authenticated using (supasheet.has_permission('manufacturing.bom_items:update'))
-    with check (supasheet.has_permission('manufacturing.bom_items:update'));
-create policy bom_items_delete on manufacturing.bom_items
-    for delete to authenticated using (supasheet.has_permission('manufacturing.bom_items:delete'));
+create policy bom_items_select on manufacturing.bom_items for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.bom_items:select')
+  );
 
+create policy bom_items_insert on manufacturing.bom_items for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.bom_items:insert')
+  );
+
+create policy bom_items_update on manufacturing.bom_items
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.bom_items:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.bom_items:update')
+  );
+
+create policy bom_items_delete on manufacturing.bom_items for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.bom_items:delete')
+);
 
 ----------------------------------------------------------------
 -- Routings (operation sequence templates)
 ----------------------------------------------------------------
-
 create table manufacturing.routings (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    routing_number varchar(50) unique not null,
-    name varchar(500) not null,
-    version varchar(20) default '1.0',
-
-    product_sku varchar(100),
-    product_name varchar(500),
-    bom_id uuid references manufacturing.boms(id) on delete set null,
-
-    status manufacturing.routing_status default 'draft',
-
-    description supasheet.RICH_TEXT,
-    attachments supasheet.file,
-
-    estimated_minutes integer,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  routing_number varchar(50) unique not null,
+  name varchar(500) not null,
+  version varchar(20) default '1.0',
+  product_sku varchar(100),
+  product_name varchar(500),
+  bom_id uuid references manufacturing.boms (id) on delete set null,
+  status manufacturing.routing_status default 'draft',
+  description supasheet.RICH_TEXT,
+  attachments supasheet.file,
+  estimated_minutes integer,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.routings.status is
-'{
+comment on column manufacturing.routings.status is '{
     "progress": true,
     "enums": {
         "draft":    {"variant": "outline", "icon": "FileEdit"},
@@ -415,8 +599,7 @@ comment on column manufacturing.routings.status is
     }
 }';
 
-comment on table manufacturing.routings is
-'{
+comment on table manufacturing.routings is '{
     "icon": "Workflow",
     "display": "block",
     "query": {
@@ -440,51 +623,70 @@ comment on table manufacturing.routings is
 
 comment on column manufacturing.routings.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table manufacturing.routings from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.routings to authenticated;
+revoke all on table manufacturing.routings
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.routings to authenticated;
 
 create index idx_mfg_routings_user_id on manufacturing.routings (user_id);
+
 create index idx_mfg_routings_bom_id on manufacturing.routings (bom_id);
+
 create index idx_mfg_routings_status on manufacturing.routings (status);
 
 alter table manufacturing.routings enable row level security;
 
-create policy routings_select on manufacturing.routings
-    for select to authenticated using (supasheet.has_permission('manufacturing.routings:select'));
-create policy routings_insert on manufacturing.routings
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.routings:insert'));
-create policy routings_update on manufacturing.routings
-    for update to authenticated using (supasheet.has_permission('manufacturing.routings:update'))
-    with check (supasheet.has_permission('manufacturing.routings:update'));
-create policy routings_delete on manufacturing.routings
-    for delete to authenticated using (supasheet.has_permission('manufacturing.routings:delete'));
+create policy routings_select on manufacturing.routings for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.routings:select')
+  );
 
+create policy routings_insert on manufacturing.routings for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.routings:insert')
+  );
+
+create policy routings_update on manufacturing.routings
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.routings:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.routings:update')
+  );
+
+create policy routings_delete on manufacturing.routings for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.routings:delete')
+);
 
 ----------------------------------------------------------------
 -- Routing operations (template steps)
 ----------------------------------------------------------------
-
 create table manufacturing.routing_operations (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    routing_id uuid not null references manufacturing.routings(id) on delete cascade,
-
-    sequence_number integer default 0,
-    name varchar(255) not null,
-    description supasheet.RICH_TEXT,
-
-    work_center_id uuid references manufacturing.work_centers(id) on delete set null,
-
-    setup_minutes integer default 0,
-    run_minutes_per_unit numeric(8, 2) default 0,
-
-    instructions text,
-    notes text,
-
-    created_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  routing_id uuid not null references manufacturing.routings (id) on delete cascade,
+  sequence_number integer default 0,
+  name varchar(255) not null,
+  description supasheet.RICH_TEXT,
+  work_center_id uuid references manufacturing.work_centers (id) on delete set null,
+  setup_minutes integer default 0,
+  run_minutes_per_unit numeric(8, 2) default 0,
+  instructions text,
+  notes text,
+  created_at timestamptz default current_timestamp
 );
 
-comment on table manufacturing.routing_operations is
-'{
+comment on table manufacturing.routing_operations is '{
     "icon": "ListOrdered",
     "display": "none",
     "query": {
@@ -502,75 +704,87 @@ comment on table manufacturing.routing_operations is
     ]
 }';
 
-revoke all on table manufacturing.routing_operations from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.routing_operations to authenticated;
+revoke all on table manufacturing.routing_operations
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.routing_operations to authenticated;
 
 create index idx_mfg_routing_ops_routing_id on manufacturing.routing_operations (routing_id);
+
 create index idx_mfg_routing_ops_work_center_id on manufacturing.routing_operations (work_center_id);
 
 alter table manufacturing.routing_operations enable row level security;
 
-create policy routing_operations_select on manufacturing.routing_operations
-    for select to authenticated using (supasheet.has_permission('manufacturing.routing_operations:select'));
-create policy routing_operations_insert on manufacturing.routing_operations
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.routing_operations:insert'));
-create policy routing_operations_update on manufacturing.routing_operations
-    for update to authenticated using (supasheet.has_permission('manufacturing.routing_operations:update'))
-    with check (supasheet.has_permission('manufacturing.routing_operations:update'));
-create policy routing_operations_delete on manufacturing.routing_operations
-    for delete to authenticated using (supasheet.has_permission('manufacturing.routing_operations:delete'));
+create policy routing_operations_select on manufacturing.routing_operations for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.routing_operations:select')
+  );
 
+create policy routing_operations_insert on manufacturing.routing_operations for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.routing_operations:insert')
+  );
+
+create policy routing_operations_update on manufacturing.routing_operations
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.routing_operations:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.routing_operations:update')
+  );
+
+create policy routing_operations_delete on manufacturing.routing_operations for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.routing_operations:delete')
+);
 
 ----------------------------------------------------------------
 -- Work orders
 ----------------------------------------------------------------
-
 create table manufacturing.work_orders (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    work_order_number varchar(50) unique not null,
-
-    product_sku varchar(100) not null,
-    product_name varchar(500) not null,
-    product_id uuid,
-
-    bom_id uuid references manufacturing.boms(id) on delete set null,
-    routing_id uuid references manufacturing.routings(id) on delete set null,
-
-    status manufacturing.work_order_status default 'draft',
-    priority manufacturing.work_order_priority default 'medium',
-
-    quantity_planned integer not null default 1,
-    quantity_completed integer default 0,
-    quantity_scrapped integer default 0,
-    unit_of_measure varchar(50) default 'each',
-
-    planned_start_date date,
-    planned_end_date date,
-    actual_start_date timestamptz,
-    actual_end_date timestamptz,
-
-    estimated_cost numeric(12, 2),
-    actual_cost numeric(12, 2),
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    attachments supasheet.file,
-
-    sales_order_reference varchar(255),
-    assigned_user_id uuid references supasheet.users(id) on delete set null,
-
-    tags varchar(255)[],
-    color supasheet.COLOR,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  work_order_number varchar(50) unique not null,
+  product_sku varchar(100) not null,
+  product_name varchar(500) not null,
+  product_id uuid,
+  bom_id uuid references manufacturing.boms (id) on delete set null,
+  routing_id uuid references manufacturing.routings (id) on delete set null,
+  status manufacturing.work_order_status default 'draft',
+  priority manufacturing.work_order_priority default 'medium',
+  quantity_planned integer not null default 1,
+  quantity_completed integer default 0,
+  quantity_scrapped integer default 0,
+  unit_of_measure varchar(50) default 'each',
+  planned_start_date date,
+  planned_end_date date,
+  actual_start_date timestamptz,
+  actual_end_date timestamptz,
+  estimated_cost numeric(12, 2),
+  actual_cost numeric(12, 2),
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  attachments supasheet.file,
+  sales_order_reference varchar(255),
+  assigned_user_id uuid references supasheet.users (id) on delete set null,
+  tags varchar(255) [],
+  color supasheet.COLOR,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.work_orders.status is
-'{
+comment on column manufacturing.work_orders.status is '{
     "progress": true,
     "enums": {
         "draft":       {"variant": "outline",     "icon": "FileEdit"},
@@ -583,8 +797,7 @@ comment on column manufacturing.work_orders.status is
     }
 }';
 
-comment on column manufacturing.work_orders.priority is
-'{
+comment on column manufacturing.work_orders.priority is '{
     "progress": false,
     "enums": {
         "low":      {"variant": "outline",     "icon": "CircleArrowDown"},
@@ -594,8 +807,7 @@ comment on column manufacturing.work_orders.priority is
     }
 }';
 
-comment on table manufacturing.work_orders is
-'{
+comment on table manufacturing.work_orders is '{
     "icon": "ClipboardList",
     "display": "block",
     "query": {
@@ -625,67 +837,89 @@ comment on table manufacturing.work_orders is
 
 comment on column manufacturing.work_orders.attachments is '{"accept":"*", "maxFiles": 20}';
 
-revoke all on table manufacturing.work_orders from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.work_orders to authenticated;
+revoke all on table manufacturing.work_orders
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.work_orders to authenticated;
 
 create index idx_mfg_work_orders_user_id on manufacturing.work_orders (user_id);
+
 create index idx_mfg_work_orders_assigned_user_id on manufacturing.work_orders (assigned_user_id);
+
 create index idx_mfg_work_orders_bom_id on manufacturing.work_orders (bom_id);
+
 create index idx_mfg_work_orders_routing_id on manufacturing.work_orders (routing_id);
+
 create index idx_mfg_work_orders_status on manufacturing.work_orders (status);
+
 create index idx_mfg_work_orders_priority on manufacturing.work_orders (priority);
+
 create index idx_mfg_work_orders_planned_start_date on manufacturing.work_orders (planned_start_date desc);
+
 create index idx_mfg_work_orders_product_sku on manufacturing.work_orders (product_sku);
 
 alter table manufacturing.work_orders enable row level security;
 
-create policy work_orders_select on manufacturing.work_orders
-    for select to authenticated using (supasheet.has_permission('manufacturing.work_orders:select'));
-create policy work_orders_insert on manufacturing.work_orders
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.work_orders:insert'));
-create policy work_orders_update on manufacturing.work_orders
-    for update to authenticated using (supasheet.has_permission('manufacturing.work_orders:update'))
-    with check (supasheet.has_permission('manufacturing.work_orders:update'));
-create policy work_orders_delete on manufacturing.work_orders
-    for delete to authenticated using (supasheet.has_permission('manufacturing.work_orders:delete'));
+create policy work_orders_select on manufacturing.work_orders for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.work_orders:select')
+  );
 
+create policy work_orders_insert on manufacturing.work_orders for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.work_orders:insert')
+  );
+
+create policy work_orders_update on manufacturing.work_orders
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.work_orders:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.work_orders:update')
+  );
+
+create policy work_orders_delete on manufacturing.work_orders for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.work_orders:delete')
+);
 
 ----------------------------------------------------------------
 -- Work order operations (executed steps)
 ----------------------------------------------------------------
-
 create table manufacturing.work_order_operations (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    work_order_id uuid not null references manufacturing.work_orders(id) on delete cascade,
-    routing_operation_id uuid references manufacturing.routing_operations(id) on delete set null,
-    work_center_id uuid references manufacturing.work_centers(id) on delete set null,
-
-    sequence_number integer default 0,
-    name varchar(255) not null,
-    status manufacturing.operation_status default 'pending',
-
-    planned_start_at timestamptz,
-    planned_end_at timestamptz,
-    actual_start_at timestamptz,
-    actual_end_at timestamptz,
-
-    planned_minutes integer default 0,
-    actual_minutes integer default 0,
-
-    operator_user_id uuid references supasheet.users(id) on delete set null,
-
-    quantity_good integer default 0,
-    quantity_scrap integer default 0,
-
-    instructions text,
-    notes text,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  work_order_id uuid not null references manufacturing.work_orders (id) on delete cascade,
+  routing_operation_id uuid references manufacturing.routing_operations (id) on delete set null,
+  work_center_id uuid references manufacturing.work_centers (id) on delete set null,
+  sequence_number integer default 0,
+  name varchar(255) not null,
+  status manufacturing.operation_status default 'pending',
+  planned_start_at timestamptz,
+  planned_end_at timestamptz,
+  actual_start_at timestamptz,
+  actual_end_at timestamptz,
+  planned_minutes integer default 0,
+  actual_minutes integer default 0,
+  operator_user_id uuid references supasheet.users (id) on delete set null,
+  quantity_good integer default 0,
+  quantity_scrap integer default 0,
+  instructions text,
+  notes text,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.work_order_operations.status is
-'{
+comment on column manufacturing.work_order_operations.status is '{
     "progress": true,
     "enums": {
         "pending":     {"variant": "outline",     "icon": "Clock"},
@@ -696,8 +930,7 @@ comment on column manufacturing.work_order_operations.status is
     }
 }';
 
-comment on table manufacturing.work_order_operations is
-'{
+comment on table manufacturing.work_order_operations is '{
     "icon": "ListOrdered",
     "display": "block",
     "query": {
@@ -723,67 +956,84 @@ comment on table manufacturing.work_order_operations is
     ]
 }';
 
-revoke all on table manufacturing.work_order_operations from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.work_order_operations to authenticated;
+revoke all on table manufacturing.work_order_operations
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.work_order_operations to authenticated;
 
 create index idx_mfg_wo_ops_work_order_id on manufacturing.work_order_operations (work_order_id);
+
 create index idx_mfg_wo_ops_work_center_id on manufacturing.work_order_operations (work_center_id);
+
 create index idx_mfg_wo_ops_operator on manufacturing.work_order_operations (operator_user_id);
+
 create index idx_mfg_wo_ops_status on manufacturing.work_order_operations (status);
+
 create index idx_mfg_wo_ops_planned_start_at on manufacturing.work_order_operations (planned_start_at);
 
 alter table manufacturing.work_order_operations enable row level security;
 
-create policy work_order_operations_select on manufacturing.work_order_operations
-    for select to authenticated using (supasheet.has_permission('manufacturing.work_order_operations:select'));
-create policy work_order_operations_insert on manufacturing.work_order_operations
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.work_order_operations:insert'));
-create policy work_order_operations_update on manufacturing.work_order_operations
-    for update to authenticated using (supasheet.has_permission('manufacturing.work_order_operations:update'))
-    with check (supasheet.has_permission('manufacturing.work_order_operations:update'));
-create policy work_order_operations_delete on manufacturing.work_order_operations
-    for delete to authenticated using (supasheet.has_permission('manufacturing.work_order_operations:delete'));
+create policy work_order_operations_select on manufacturing.work_order_operations for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.work_order_operations:select')
+  );
 
+create policy work_order_operations_insert on manufacturing.work_order_operations for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.work_order_operations:insert')
+  );
+
+create policy work_order_operations_update on manufacturing.work_order_operations
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.work_order_operations:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.work_order_operations:update')
+  );
+
+create policy work_order_operations_delete on manufacturing.work_order_operations for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.work_order_operations:delete')
+);
 
 ----------------------------------------------------------------
 -- Material issues (components consumed in WO)
 ----------------------------------------------------------------
-
 create table manufacturing.material_issues (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    issue_number varchar(50) unique not null,
-
-    work_order_id uuid not null references manufacturing.work_orders(id) on delete cascade,
-    bom_item_id uuid references manufacturing.bom_items(id) on delete set null,
-
-    component_sku varchar(100) not null,
-    component_name varchar(500) not null,
-    component_id uuid,
-
-    warehouse_code varchar(50),
-
-    quantity_required numeric(12, 4) not null default 0,
-    quantity_issued numeric(12, 4) default 0,
-    quantity_returned numeric(12, 4) default 0,
-    unit_of_measure varchar(50) default 'each',
-
-    unit_cost numeric(12, 4) default 0,
-    total_cost numeric(14, 4) generated always as (quantity_issued * unit_cost) stored,
-
-    status manufacturing.issue_status default 'reserved',
-    issued_at timestamptz,
-    returned_at timestamptz,
-
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  issue_number varchar(50) unique not null,
+  work_order_id uuid not null references manufacturing.work_orders (id) on delete cascade,
+  bom_item_id uuid references manufacturing.bom_items (id) on delete set null,
+  component_sku varchar(100) not null,
+  component_name varchar(500) not null,
+  component_id uuid,
+  warehouse_code varchar(50),
+  quantity_required numeric(12, 4) not null default 0,
+  quantity_issued numeric(12, 4) default 0,
+  quantity_returned numeric(12, 4) default 0,
+  unit_of_measure varchar(50) default 'each',
+  unit_cost numeric(12, 4) default 0,
+  total_cost numeric(14, 4) generated always as (quantity_issued * unit_cost) stored,
+  status manufacturing.issue_status default 'reserved',
+  issued_at timestamptz,
+  returned_at timestamptz,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.material_issues.status is
-'{
+comment on column manufacturing.material_issues.status is '{
     "progress": true,
     "enums": {
         "reserved": {"variant": "outline", "icon": "Clock"},
@@ -792,8 +1042,7 @@ comment on column manufacturing.material_issues.status is
     }
 }';
 
-comment on table manufacturing.material_issues is
-'{
+comment on table manufacturing.material_issues is '{
     "icon": "PackageMinus",
     "display": "block",
     "query": {
@@ -817,68 +1066,84 @@ comment on table manufacturing.material_issues is
     ]
 }';
 
-revoke all on table manufacturing.material_issues from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.material_issues to authenticated;
+revoke all on table manufacturing.material_issues
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.material_issues to authenticated;
 
 create index idx_mfg_material_issues_user_id on manufacturing.material_issues (user_id);
+
 create index idx_mfg_material_issues_work_order_id on manufacturing.material_issues (work_order_id);
+
 create index idx_mfg_material_issues_bom_item_id on manufacturing.material_issues (bom_item_id);
+
 create index idx_mfg_material_issues_status on manufacturing.material_issues (status);
+
 create index idx_mfg_material_issues_component_sku on manufacturing.material_issues (component_sku);
 
 alter table manufacturing.material_issues enable row level security;
 
-create policy material_issues_select on manufacturing.material_issues
-    for select to authenticated using (supasheet.has_permission('manufacturing.material_issues:select'));
-create policy material_issues_insert on manufacturing.material_issues
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.material_issues:insert'));
-create policy material_issues_update on manufacturing.material_issues
-    for update to authenticated using (supasheet.has_permission('manufacturing.material_issues:update'))
-    with check (supasheet.has_permission('manufacturing.material_issues:update'));
-create policy material_issues_delete on manufacturing.material_issues
-    for delete to authenticated using (supasheet.has_permission('manufacturing.material_issues:delete'));
+create policy material_issues_select on manufacturing.material_issues for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.material_issues:select')
+  );
 
+create policy material_issues_insert on manufacturing.material_issues for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.material_issues:insert')
+  );
+
+create policy material_issues_update on manufacturing.material_issues
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.material_issues:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.material_issues:update')
+  );
+
+create policy material_issues_delete on manufacturing.material_issues for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.material_issues:delete')
+);
 
 ----------------------------------------------------------------
 -- Production outputs (completed batch records)
 ----------------------------------------------------------------
-
 create table manufacturing.production_outputs (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    output_number varchar(50) unique not null,
-
-    work_order_id uuid not null references manufacturing.work_orders(id) on delete cascade,
-    work_center_id uuid references manufacturing.work_centers(id) on delete set null,
-
-    status manufacturing.output_status default 'pending_inspection',
-
-    quantity numeric(12, 2) not null default 0,
-    unit_of_measure varchar(50) default 'each',
-
-    lot_number varchar(100),
-    serial_numbers text,
-
-    produced_at timestamptz default current_timestamp,
-    inspected_at timestamptz,
-    inspector_user_id uuid references supasheet.users(id) on delete set null,
-
-    quality_score supasheet.RATING,
-    defect_reason text,
-
-    destination_warehouse_code varchar(50),
-
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  output_number varchar(50) unique not null,
+  work_order_id uuid not null references manufacturing.work_orders (id) on delete cascade,
+  work_center_id uuid references manufacturing.work_centers (id) on delete set null,
+  status manufacturing.output_status default 'pending_inspection',
+  quantity numeric(12, 2) not null default 0,
+  unit_of_measure varchar(50) default 'each',
+  lot_number varchar(100),
+  serial_numbers text,
+  produced_at timestamptz default current_timestamp,
+  inspected_at timestamptz,
+  inspector_user_id uuid references supasheet.users (id) on delete set null,
+  quality_score supasheet.RATING,
+  defect_reason text,
+  destination_warehouse_code varchar(50),
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column manufacturing.production_outputs.status is
-'{
+comment on column manufacturing.production_outputs.status is '{
     "progress": true,
     "enums": {
         "good":               {"variant": "success",     "icon": "CircleCheck"},
@@ -888,8 +1153,7 @@ comment on column manufacturing.production_outputs.status is
     }
 }';
 
-comment on table manufacturing.production_outputs is
-'{
+comment on table manufacturing.production_outputs is '{
     "icon": "PackagePlus",
     "display": "block",
     "query": {
@@ -916,497 +1180,892 @@ comment on table manufacturing.production_outputs is
 
 comment on column manufacturing.production_outputs.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table manufacturing.production_outputs from authenticated, service_role;
-grant select, insert, update, delete on table manufacturing.production_outputs to authenticated;
+revoke all on table manufacturing.production_outputs
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table manufacturing.production_outputs to authenticated;
 
 create index idx_mfg_outputs_user_id on manufacturing.production_outputs (user_id);
+
 create index idx_mfg_outputs_work_order_id on manufacturing.production_outputs (work_order_id);
+
 create index idx_mfg_outputs_work_center_id on manufacturing.production_outputs (work_center_id);
+
 create index idx_mfg_outputs_inspector on manufacturing.production_outputs (inspector_user_id);
+
 create index idx_mfg_outputs_status on manufacturing.production_outputs (status);
+
 create index idx_mfg_outputs_produced_at on manufacturing.production_outputs (produced_at desc);
+
 create index idx_mfg_outputs_lot_number on manufacturing.production_outputs (lot_number);
 
 alter table manufacturing.production_outputs enable row level security;
 
-create policy production_outputs_select on manufacturing.production_outputs
-    for select to authenticated using (supasheet.has_permission('manufacturing.production_outputs:select'));
-create policy production_outputs_insert on manufacturing.production_outputs
-    for insert to authenticated with check (supasheet.has_permission('manufacturing.production_outputs:insert'));
-create policy production_outputs_update on manufacturing.production_outputs
-    for update to authenticated using (supasheet.has_permission('manufacturing.production_outputs:update'))
-    with check (supasheet.has_permission('manufacturing.production_outputs:update'));
-create policy production_outputs_delete on manufacturing.production_outputs
-    for delete to authenticated using (supasheet.has_permission('manufacturing.production_outputs:delete'));
+create policy production_outputs_select on manufacturing.production_outputs for
+select
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.production_outputs:select')
+  );
 
+create policy production_outputs_insert on manufacturing.production_outputs for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('manufacturing.production_outputs:insert')
+  );
+
+create policy production_outputs_update on manufacturing.production_outputs
+for update
+  to authenticated using (
+    supasheet.has_permission ('manufacturing.production_outputs:update')
+  )
+with
+  check (
+    supasheet.has_permission ('manufacturing.production_outputs:update')
+  );
+
+create policy production_outputs_delete on manufacturing.production_outputs for delete to authenticated using (
+  supasheet.has_permission ('manufacturing.production_outputs:delete')
+);
 
 ----------------------------------------------------------------
 -- Reports
 ----------------------------------------------------------------
-
 create or replace view manufacturing.work_orders_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    wo.id,
-    wo.work_order_number,
-    wo.product_sku,
-    wo.product_name,
-    b.bom_number,
-    r.routing_number,
-    wo.status,
-    wo.priority,
-    wo.quantity_planned,
-    wo.quantity_completed,
-    wo.quantity_scrapped,
-    case
-        when wo.quantity_planned > 0 then round((wo.quantity_completed::numeric / wo.quantity_planned::numeric) * 100, 1)
-        else 0
-    end as completion_pct,
-    case
-        when (wo.quantity_completed + wo.quantity_scrapped) > 0
-            then round((wo.quantity_completed::numeric / (wo.quantity_completed + wo.quantity_scrapped)::numeric) * 100, 1)
-        else null
-    end as yield_pct,
-    wo.planned_start_date,
-    wo.planned_end_date,
-    wo.actual_start_date,
-    wo.actual_end_date,
-    case
-        when wo.status = 'completed' then 0
-        when wo.planned_end_date is null then null
-        else greatest(0, (current_date - wo.planned_end_date))::int
-    end as days_overdue,
-    wo.estimated_cost,
-    wo.actual_cost,
-    wo.currency,
-    u.name as assigned_to,
-    wo.created_at
-from manufacturing.work_orders wo
-left join manufacturing.boms b on b.id = wo.bom_id
-left join manufacturing.routings r on r.id = wo.routing_id
-left join supasheet.users u on u.id = wo.assigned_user_id;
+  wo.id,
+  wo.work_order_number,
+  wo.product_sku,
+  wo.product_name,
+  b.bom_number,
+  r.routing_number,
+  wo.status,
+  wo.priority,
+  wo.quantity_planned,
+  wo.quantity_completed,
+  wo.quantity_scrapped,
+  case
+    when wo.quantity_planned > 0 then round(
+      (
+        wo.quantity_completed::numeric / wo.quantity_planned::numeric
+      ) * 100,
+      1
+    )
+    else 0
+  end as completion_pct,
+  case
+    when (wo.quantity_completed + wo.quantity_scrapped) > 0 then round(
+      (
+        wo.quantity_completed::numeric / (wo.quantity_completed + wo.quantity_scrapped)::numeric
+      ) * 100,
+      1
+    )
+    else null
+  end as yield_pct,
+  wo.planned_start_date,
+  wo.planned_end_date,
+  wo.actual_start_date,
+  wo.actual_end_date,
+  case
+    when wo.status = 'completed' then 0
+    when wo.planned_end_date is null then null
+    else greatest(0, (current_date - wo.planned_end_date))::int
+  end as days_overdue,
+  wo.estimated_cost,
+  wo.actual_cost,
+  wo.currency,
+  u.name as assigned_to,
+  wo.created_at
+from
+  manufacturing.work_orders wo
+  left join manufacturing.boms b on b.id = wo.bom_id
+  left join manufacturing.routings r on r.id = wo.routing_id
+  left join supasheet.users u on u.id = wo.assigned_user_id;
 
-revoke all on manufacturing.work_orders_report from authenticated, service_role;
-grant select on manufacturing.work_orders_report to authenticated;
+revoke all on manufacturing.work_orders_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.work_orders_report to authenticated;
 
 comment on view manufacturing.work_orders_report is '{"type": "report", "name": "Work Orders Report", "description": "WOs with completion, yield, and overdue days"}';
 
-
 create or replace view manufacturing.bom_explosion_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    b.id as bom_id,
-    b.bom_number,
-    b.product_sku,
-    b.product_name,
-    b.version,
-    b.status as bom_status,
-    bi.line_number,
-    bi.component_sku,
-    bi.component_name,
-    bi.quantity,
-    bi.unit_of_measure,
-    bi.scrap_pct,
-    bi.unit_cost,
-    bi.total_cost,
-    bi.is_optional,
-    b.output_quantity,
-    (bi.total_cost / nullif(b.output_quantity, 0)) as cost_per_unit
-from manufacturing.boms b
-left join manufacturing.bom_items bi on bi.bom_id = b.id;
+  b.id as bom_id,
+  b.bom_number,
+  b.product_sku,
+  b.product_name,
+  b.version,
+  b.status as bom_status,
+  bi.line_number,
+  bi.component_sku,
+  bi.component_name,
+  bi.quantity,
+  bi.unit_of_measure,
+  bi.scrap_pct,
+  bi.unit_cost,
+  bi.total_cost,
+  bi.is_optional,
+  b.output_quantity,
+  (bi.total_cost / nullif(b.output_quantity, 0)) as cost_per_unit
+from
+  manufacturing.boms b
+  left join manufacturing.bom_items bi on bi.bom_id = b.id;
 
-revoke all on manufacturing.bom_explosion_report from authenticated, service_role;
-grant select on manufacturing.bom_explosion_report to authenticated;
+revoke all on manufacturing.bom_explosion_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.bom_explosion_report to authenticated;
 
 comment on view manufacturing.bom_explosion_report is '{"type": "report", "name": "BOM Explosion", "description": "BOMs flattened with component lines and per-unit cost"}';
 
-
 create or replace view manufacturing.production_outputs_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    po.id,
-    po.output_number,
-    wo.work_order_number,
-    wo.product_sku,
-    wo.product_name,
-    wc.name as work_center,
-    po.status,
-    po.quantity,
-    po.unit_of_measure,
-    po.lot_number,
-    po.quality_score,
-    po.produced_at,
-    po.inspected_at,
-    u.name as inspector,
-    po.destination_warehouse_code,
-    po.created_at
-from manufacturing.production_outputs po
-left join manufacturing.work_orders wo on wo.id = po.work_order_id
-left join manufacturing.work_centers wc on wc.id = po.work_center_id
-left join supasheet.users u on u.id = po.inspector_user_id;
+  po.id,
+  po.output_number,
+  wo.work_order_number,
+  wo.product_sku,
+  wo.product_name,
+  wc.name as work_center,
+  po.status,
+  po.quantity,
+  po.unit_of_measure,
+  po.lot_number,
+  po.quality_score,
+  po.produced_at,
+  po.inspected_at,
+  u.name as inspector,
+  po.destination_warehouse_code,
+  po.created_at
+from
+  manufacturing.production_outputs po
+  left join manufacturing.work_orders wo on wo.id = po.work_order_id
+  left join manufacturing.work_centers wc on wc.id = po.work_center_id
+  left join supasheet.users u on u.id = po.inspector_user_id;
 
-revoke all on manufacturing.production_outputs_report from authenticated, service_role;
-grant select on manufacturing.production_outputs_report to authenticated;
+revoke all on manufacturing.production_outputs_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.production_outputs_report to authenticated;
 
 comment on view manufacturing.production_outputs_report is '{"type": "report", "name": "Production Outputs Report", "description": "Production output records with WO, work center, and QC info"}';
 
-
 create or replace view manufacturing.material_consumption_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    mi.id,
-    mi.issue_number,
-    wo.work_order_number,
-    wo.product_sku as wo_product_sku,
-    wo.product_name as wo_product_name,
-    mi.component_sku,
-    mi.component_name,
-    mi.warehouse_code,
-    mi.quantity_required,
-    mi.quantity_issued,
-    mi.quantity_returned,
-    (mi.quantity_issued - mi.quantity_returned) as quantity_consumed,
-    mi.unit_of_measure,
-    mi.unit_cost,
-    mi.total_cost,
-    mi.status,
-    mi.issued_at,
-    mi.created_at
-from manufacturing.material_issues mi
-left join manufacturing.work_orders wo on wo.id = mi.work_order_id;
+  mi.id,
+  mi.issue_number,
+  wo.work_order_number,
+  wo.product_sku as wo_product_sku,
+  wo.product_name as wo_product_name,
+  mi.component_sku,
+  mi.component_name,
+  mi.warehouse_code,
+  mi.quantity_required,
+  mi.quantity_issued,
+  mi.quantity_returned,
+  (mi.quantity_issued - mi.quantity_returned) as quantity_consumed,
+  mi.unit_of_measure,
+  mi.unit_cost,
+  mi.total_cost,
+  mi.status,
+  mi.issued_at,
+  mi.created_at
+from
+  manufacturing.material_issues mi
+  left join manufacturing.work_orders wo on wo.id = mi.work_order_id;
 
-revoke all on manufacturing.material_consumption_report from authenticated, service_role;
-grant select on manufacturing.material_consumption_report to authenticated;
+revoke all on manufacturing.material_consumption_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.material_consumption_report to authenticated;
 
 comment on view manufacturing.material_consumption_report is '{"type": "report", "name": "Material Consumption Report", "description": "Components issued and consumed per work order"}';
-
 
 ----------------------------------------------------------------
 -- Dashboard widget views
 ----------------------------------------------------------------
-
 -- card_1: open work orders count
 create or replace view manufacturing.open_work_orders
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    count(*) as value,
-    'clipboard-list' as icon,
-    'open work orders' as label
-from manufacturing.work_orders
-where status in ('planned', 'released', 'in_progress', 'on_hold');
+  count(*) as value,
+  'clipboard-list' as icon,
+  'open work orders' as label
+from
+  manufacturing.work_orders
+where
+  status in ('planned', 'released', 'in_progress', 'on_hold');
 
-revoke all on manufacturing.open_work_orders from authenticated, service_role;
-grant select on manufacturing.open_work_orders to authenticated;
+revoke all on manufacturing.open_work_orders
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.open_work_orders to authenticated;
 
 -- card_2: yield split (good vs scrap units across recent WOs)
 create or replace view manufacturing.yield_split
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(quantity_completed), 0)::bigint as primary,
-    coalesce(sum(quantity_scrapped), 0)::bigint as secondary,
-    'Good' as primary_label,
-    'Scrap' as secondary_label
-from manufacturing.work_orders
-where actual_end_date >= current_timestamp - interval '90 days'
-   or status = 'completed';
+  coalesce(sum(quantity_completed), 0)::bigint as primary,
+  coalesce(sum(quantity_scrapped), 0)::bigint as secondary,
+  'Good' as primary_label,
+  'Scrap' as secondary_label
+from
+  manufacturing.work_orders
+where
+  actual_end_date >= current_timestamp - interval '90 days'
+  or status = 'completed';
 
-revoke all on manufacturing.yield_split from authenticated, service_role;
-grant select on manufacturing.yield_split to authenticated;
+revoke all on manufacturing.yield_split
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.yield_split to authenticated;
 
 -- card_3: production value (completed × estimated unit cost) + on-time %
 create or replace view manufacturing.production_value
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(actual_cost) filter (where status = 'completed'), 0)::numeric(14, 2) as value,
-    case
-        when count(*) filter (where status = 'completed' and planned_end_date is not null) > 0
-        then round(
-            (count(*) filter (where status = 'completed' and actual_end_date is not null and actual_end_date::date <= planned_end_date)::numeric
-             / count(*) filter (where status = 'completed' and planned_end_date is not null)::numeric) * 100,
-            1
-        )
-        else 0
-    end as percent
-from manufacturing.work_orders;
+  coalesce(
+    sum(actual_cost) filter (
+      where
+        status = 'completed'
+    ),
+    0
+  )::numeric(14, 2) as value,
+  case
+    when count(*) filter (
+      where
+        status = 'completed'
+        and planned_end_date is not null
+    ) > 0 then round(
+      (
+        count(*) filter (
+          where
+            status = 'completed'
+            and actual_end_date is not null
+            and actual_end_date::date <= planned_end_date
+        )::numeric / count(*) filter (
+          where
+            status = 'completed'
+            and planned_end_date is not null
+        )::numeric
+      ) * 100,
+      1
+    )
+    else 0
+  end as percent
+from
+  manufacturing.work_orders;
 
-revoke all on manufacturing.production_value from authenticated, service_role;
-grant select on manufacturing.production_value to authenticated;
+revoke all on manufacturing.production_value
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.production_value to authenticated;
 
 -- card_4: production health (overdue + on-hold + failed ops)
 create or replace view manufacturing.production_health
-with (security_invoker = true) as
-with metrics as (
+with
+  (security_invoker = true) as
+with
+  metrics as (
     select
-        (select count(*) from manufacturing.work_orders
-            where status in ('planned', 'released', 'in_progress')
-              and planned_end_date is not null
-              and planned_end_date < current_date) as overdue_wos,
-        (select count(*) from manufacturing.work_orders
-            where status = 'on_hold') as on_hold_wos,
-        (select count(*) from manufacturing.work_order_operations
-            where status = 'failed') as failed_ops,
-        (select count(*) from manufacturing.work_centers
-            where status in ('maintenance', 'offline')) as offline_centers,
-        (select count(*) from manufacturing.work_orders
-            where status in ('planned', 'released', 'in_progress', 'on_hold')) as open_total
-)
+      (
+        select
+          count(*)
+        from
+          manufacturing.work_orders
+        where
+          status in ('planned', 'released', 'in_progress')
+          and planned_end_date is not null
+          and planned_end_date < current_date
+      ) as overdue_wos,
+      (
+        select
+          count(*)
+        from
+          manufacturing.work_orders
+        where
+          status = 'on_hold'
+      ) as on_hold_wos,
+      (
+        select
+          count(*)
+        from
+          manufacturing.work_order_operations
+        where
+          status = 'failed'
+      ) as failed_ops,
+      (
+        select
+          count(*)
+        from
+          manufacturing.work_centers
+        where
+          status in ('maintenance', 'offline')
+      ) as offline_centers,
+      (
+        select
+          count(*)
+        from
+          manufacturing.work_orders
+        where
+          status in ('planned', 'released', 'in_progress', 'on_hold')
+      ) as open_total
+  )
 select
-    (overdue_wos + on_hold_wos + failed_ops + offline_centers) as current,
-    open_total as total,
-    json_build_array(
-        json_build_object('label', 'Overdue WOs',     'value', overdue_wos),
-        json_build_object('label', 'On hold WOs',     'value', on_hold_wos),
-        json_build_object('label', 'Failed ops',      'value', failed_ops),
-        json_build_object('label', 'Centers offline', 'value', offline_centers)
-    ) as segments
-from metrics;
+  (
+    overdue_wos + on_hold_wos + failed_ops + offline_centers
+  ) as current,
+  open_total as total,
+  json_build_array(
+    json_build_object('label', 'Overdue WOs', 'value', overdue_wos),
+    json_build_object('label', 'On hold WOs', 'value', on_hold_wos),
+    json_build_object('label', 'Failed ops', 'value', failed_ops),
+    json_build_object(
+      'label',
+      'Centers offline',
+      'value',
+      offline_centers
+    )
+  ) as segments
+from
+  metrics;
 
-revoke all on manufacturing.production_health from authenticated, service_role;
-grant select on manufacturing.production_health to authenticated;
+revoke all on manufacturing.production_health
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.production_health to authenticated;
 
 -- table_1: recent work orders
 create or replace view manufacturing.recent_work_orders
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    work_order_number as number,
-    product_name as product,
-    coalesce(status::text, '') as status,
-    to_char(coalesce(planned_start_date, created_at::date), 'MM/DD') as date
-from manufacturing.work_orders
-order by coalesce(planned_start_date, created_at::date) desc
-limit 10;
+  work_order_number as number,
+  product_name as product,
+  coalesce(status::text, '') as status,
+  to_char(
+    coalesce(planned_start_date, created_at::date),
+    'MM/DD'
+  ) as date
+from
+  manufacturing.work_orders
+order by
+  coalesce(planned_start_date, created_at::date) desc
+limit
+  10;
 
-revoke all on manufacturing.recent_work_orders from authenticated, service_role;
-grant select on manufacturing.recent_work_orders to authenticated;
+revoke all on manufacturing.recent_work_orders
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.recent_work_orders to authenticated;
 
 -- table_2: top work centers by output
 create or replace view manufacturing.top_work_centers
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    wc.name as center,
-    coalesce(wc.type::text, '') as type,
-    count(po.id) as outputs,
-    coalesce(sum(po.quantity), 0)::bigint as units
-from manufacturing.work_centers wc
-left join manufacturing.production_outputs po on po.work_center_id = wc.id
-group by wc.id, wc.name, wc.type
-order by units desc nulls last
-limit 10;
+  wc.name as center,
+  coalesce(wc.type::text, '') as type,
+  count(po.id) as outputs,
+  coalesce(sum(po.quantity), 0)::bigint as units
+from
+  manufacturing.work_centers wc
+  left join manufacturing.production_outputs po on po.work_center_id = wc.id
+group by
+  wc.id,
+  wc.name,
+  wc.type
+order by
+  units desc nulls last
+limit
+  10;
 
-revoke all on manufacturing.top_work_centers from authenticated, service_role;
-grant select on manufacturing.top_work_centers to authenticated;
+revoke all on manufacturing.top_work_centers
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.top_work_centers to authenticated;
 
 comment on view manufacturing.open_work_orders is '{"type": "dashboard_widget", "name": "Open Work Orders", "description": "Count of WOs not yet completed", "widget_type": "card_1"}';
-comment on view manufacturing.yield_split is '{"type": "dashboard_widget", "name": "Good vs Scrap", "description": "Recent production yield split", "widget_type": "card_2"}';
-comment on view manufacturing.production_value is '{"type": "dashboard_widget", "name": "Production Value", "description": "Completed cost and on-time finish rate", "widget_type": "card_3"}';
-comment on view manufacturing.production_health is '{"type": "dashboard_widget", "name": "Production Health", "description": "Overdue, on-hold, failed and offline issues", "widget_type": "card_4"}';
-comment on view manufacturing.recent_work_orders is '{"type": "dashboard_widget", "name": "Recent Work Orders", "description": "Latest 10 work orders", "widget_type": "table_1"}';
-comment on view manufacturing.top_work_centers is '{"type": "dashboard_widget", "name": "Top Work Centers", "description": "Top 10 work centers by units produced", "widget_type": "table_2"}';
 
+comment on view manufacturing.yield_split is '{"type": "dashboard_widget", "name": "Good vs Scrap", "description": "Recent production yield split", "widget_type": "card_2"}';
+
+comment on view manufacturing.production_value is '{"type": "dashboard_widget", "name": "Production Value", "description": "Completed cost and on-time finish rate", "widget_type": "card_3"}';
+
+comment on view manufacturing.production_health is '{"type": "dashboard_widget", "name": "Production Health", "description": "Overdue, on-hold, failed and offline issues", "widget_type": "card_4"}';
+
+comment on view manufacturing.recent_work_orders is '{"type": "dashboard_widget", "name": "Recent Work Orders", "description": "Latest 10 work orders", "widget_type": "table_1"}';
+
+comment on view manufacturing.top_work_centers is '{"type": "dashboard_widget", "name": "Top Work Centers", "description": "Top 10 work centers by units produced", "widget_type": "table_2"}';
 
 ----------------------------------------------------------------
 -- Charts
 ----------------------------------------------------------------
-
 -- Pie: work orders by status
 create or replace view manufacturing.work_orders_by_status_pie
-with (security_invoker = true) as
-select status::text as label, count(*) as value
-from manufacturing.work_orders
-group by status
+with
+  (security_invoker = true) as
+select
+  status::text as label,
+  count(*) as value
+from
+  manufacturing.work_orders
+group by
+  status
 order by
-    case status
-        when 'draft' then 1
-        when 'planned' then 2
-        when 'released' then 3
-        when 'in_progress' then 4
-        when 'on_hold' then 5
-        when 'completed' then 6
-        when 'cancelled' then 7
-    end;
+  case status
+    when 'draft' then 1
+    when 'planned' then 2
+    when 'released' then 3
+    when 'in_progress' then 4
+    when 'on_hold' then 5
+    when 'completed' then 6
+    when 'cancelled' then 7
+  end;
 
-revoke all on manufacturing.work_orders_by_status_pie from authenticated, service_role;
-grant select on manufacturing.work_orders_by_status_pie to authenticated;
+revoke all on manufacturing.work_orders_by_status_pie
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.work_orders_by_status_pie to authenticated;
 
 -- Bar: production by work center (good vs scrap)
 create or replace view manufacturing.production_by_work_center_bar
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    wc.name as label,
-    coalesce(sum(po.quantity) filter (where po.status = 'good'), 0)::bigint as good,
-    coalesce(sum(po.quantity) filter (where po.status in ('scrap','rework')), 0)::bigint as defects
-from manufacturing.work_centers wc
-left join manufacturing.production_outputs po on po.work_center_id = wc.id
-group by wc.id, wc.name
-having count(po.id) > 0
-order by sum(po.quantity) desc nulls last
-limit 10;
+  wc.name as label,
+  coalesce(
+    sum(po.quantity) filter (
+      where
+        po.status = 'good'
+    ),
+    0
+  )::bigint as good,
+  coalesce(
+    sum(po.quantity) filter (
+      where
+        po.status in ('scrap', 'rework')
+    ),
+    0
+  )::bigint as defects
+from
+  manufacturing.work_centers wc
+  left join manufacturing.production_outputs po on po.work_center_id = wc.id
+group by
+  wc.id,
+  wc.name
+having
+  count(po.id) > 0
+order by
+  sum(po.quantity) desc nulls last
+limit
+  10;
 
-revoke all on manufacturing.production_by_work_center_bar from authenticated, service_role;
-grant select on manufacturing.production_by_work_center_bar to authenticated;
+revoke all on manufacturing.production_by_work_center_bar
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.production_by_work_center_bar to authenticated;
 
 -- Line: weekly production trend (last 12 weeks)
 create or replace view manufacturing.production_trend_line
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    to_char(date_trunc('week', produced_at), 'Mon DD') as date,
-    coalesce(sum(quantity) filter (where status = 'good'), 0)::bigint as good,
-    coalesce(sum(quantity) filter (where status in ('scrap','rework')), 0)::bigint as defects
-from manufacturing.production_outputs
-where produced_at >= current_date - interval '12 weeks'
-group by date_trunc('week', produced_at)
-order by date_trunc('week', produced_at);
+  to_char(date_trunc('week', produced_at), 'Mon DD') as date,
+  coalesce(
+    sum(quantity) filter (
+      where
+        status = 'good'
+    ),
+    0
+  )::bigint as good,
+  coalesce(
+    sum(quantity) filter (
+      where
+        status in ('scrap', 'rework')
+    ),
+    0
+  )::bigint as defects
+from
+  manufacturing.production_outputs
+where
+  produced_at >= current_date - interval '12 weeks'
+group by
+  date_trunc('week', produced_at)
+order by
+  date_trunc('week', produced_at);
 
-revoke all on manufacturing.production_trend_line from authenticated, service_role;
-grant select on manufacturing.production_trend_line to authenticated;
+revoke all on manufacturing.production_trend_line
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.production_trend_line to authenticated;
 
 -- Radar: operation metrics by status
 create or replace view manufacturing.operation_metrics_radar
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    status::text as metric,
-    count(*) as total,
-    coalesce(sum(quantity_good), 0)::bigint as good_units,
-    coalesce(sum(quantity_scrap), 0)::bigint as scrap_units
-from manufacturing.work_order_operations
-group by status;
+  status::text as metric,
+  count(*) as total,
+  coalesce(sum(quantity_good), 0)::bigint as good_units,
+  coalesce(sum(quantity_scrap), 0)::bigint as scrap_units
+from
+  manufacturing.work_order_operations
+group by
+  status;
 
-revoke all on manufacturing.operation_metrics_radar from authenticated, service_role;
-grant select on manufacturing.operation_metrics_radar to authenticated;
+revoke all on manufacturing.operation_metrics_radar
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on manufacturing.operation_metrics_radar to authenticated;
 
 comment on view manufacturing.work_orders_by_status_pie is '{"type": "chart", "name": "Work Orders By Status", "description": "WO count grouped by status", "chart_type": "pie"}';
-comment on view manufacturing.production_by_work_center_bar is '{"type": "chart", "name": "Production By Work Center", "description": "Good vs defective units per work center", "chart_type": "bar"}';
-comment on view manufacturing.production_trend_line is '{"type": "chart", "name": "Production Trend", "description": "Weekly good vs defective output over 12 weeks", "chart_type": "line"}';
-comment on view manufacturing.operation_metrics_radar is '{"type": "chart", "name": "Operation Metrics", "description": "Operation counts and unit yields by status", "chart_type": "radar"}';
 
+comment on view manufacturing.production_by_work_center_bar is '{"type": "chart", "name": "Production By Work Center", "description": "Good vs defective units per work center", "chart_type": "bar"}';
+
+comment on view manufacturing.production_trend_line is '{"type": "chart", "name": "Production Trend", "description": "Weekly good vs defective output over 12 weeks", "chart_type": "line"}';
+
+comment on view manufacturing.operation_metrics_radar is '{"type": "chart", "name": "Operation Metrics", "description": "Operation counts and unit yields by status", "chart_type": "radar"}';
 
 ----------------------------------------------------------------
 -- Role permissions (x-admin)
 ----------------------------------------------------------------
-
-insert into supasheet.role_permissions (role, permission) values
-    ('x-admin', 'manufacturing.work_centers:select'),
-    ('x-admin', 'manufacturing.work_centers:insert'),
-    ('x-admin', 'manufacturing.work_centers:update'),
-    ('x-admin', 'manufacturing.work_centers:delete'),
-    ('x-admin', 'manufacturing.work_centers:audit'),
-
-    ('x-admin', 'manufacturing.boms:select'),
-    ('x-admin', 'manufacturing.boms:insert'),
-    ('x-admin', 'manufacturing.boms:update'),
-    ('x-admin', 'manufacturing.boms:delete'),
-    ('x-admin', 'manufacturing.boms:audit'),
-
-    ('x-admin', 'manufacturing.bom_items:select'),
-    ('x-admin', 'manufacturing.bom_items:insert'),
-    ('x-admin', 'manufacturing.bom_items:update'),
-    ('x-admin', 'manufacturing.bom_items:delete'),
-    ('x-admin', 'manufacturing.bom_items:audit'),
-
-    ('x-admin', 'manufacturing.routings:select'),
-    ('x-admin', 'manufacturing.routings:insert'),
-    ('x-admin', 'manufacturing.routings:update'),
-    ('x-admin', 'manufacturing.routings:delete'),
-    ('x-admin', 'manufacturing.routings:audit'),
-
-    ('x-admin', 'manufacturing.routing_operations:select'),
-    ('x-admin', 'manufacturing.routing_operations:insert'),
-    ('x-admin', 'manufacturing.routing_operations:update'),
-    ('x-admin', 'manufacturing.routing_operations:delete'),
-    ('x-admin', 'manufacturing.routing_operations:audit'),
-
-    ('x-admin', 'manufacturing.work_orders:select'),
-    ('x-admin', 'manufacturing.work_orders:insert'),
-    ('x-admin', 'manufacturing.work_orders:update'),
-    ('x-admin', 'manufacturing.work_orders:delete'),
-    ('x-admin', 'manufacturing.work_orders:audit'),
-
-    ('x-admin', 'manufacturing.work_order_operations:select'),
-    ('x-admin', 'manufacturing.work_order_operations:insert'),
-    ('x-admin', 'manufacturing.work_order_operations:update'),
-    ('x-admin', 'manufacturing.work_order_operations:delete'),
-    ('x-admin', 'manufacturing.work_order_operations:audit'),
-
-    ('x-admin', 'manufacturing.material_issues:select'),
-    ('x-admin', 'manufacturing.material_issues:insert'),
-    ('x-admin', 'manufacturing.material_issues:update'),
-    ('x-admin', 'manufacturing.material_issues:delete'),
-    ('x-admin', 'manufacturing.material_issues:audit'),
-
-    ('x-admin', 'manufacturing.production_outputs:select'),
-    ('x-admin', 'manufacturing.production_outputs:insert'),
-    ('x-admin', 'manufacturing.production_outputs:update'),
-    ('x-admin', 'manufacturing.production_outputs:delete'),
-    ('x-admin', 'manufacturing.production_outputs:audit'),
-
-    ('x-admin', 'manufacturing.users:select'),
-
-    ('x-admin', 'manufacturing.work_orders_report:select'),
-    ('x-admin', 'manufacturing.bom_explosion_report:select'),
-    ('x-admin', 'manufacturing.production_outputs_report:select'),
-    ('x-admin', 'manufacturing.material_consumption_report:select'),
-
-    ('x-admin', 'manufacturing.open_work_orders:select'),
-    ('x-admin', 'manufacturing.yield_split:select'),
-    ('x-admin', 'manufacturing.production_value:select'),
-    ('x-admin', 'manufacturing.production_health:select'),
-    ('x-admin', 'manufacturing.recent_work_orders:select'),
-    ('x-admin', 'manufacturing.top_work_centers:select'),
-
-    ('x-admin', 'manufacturing.work_orders_by_status_pie:select'),
-    ('x-admin', 'manufacturing.production_by_work_center_bar:select'),
-    ('x-admin', 'manufacturing.production_trend_line:select'),
-    ('x-admin', 'manufacturing.operation_metrics_radar:select');
-
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'manufacturing.work_centers:select'),
+  ('x-admin', 'manufacturing.work_centers:insert'),
+  ('x-admin', 'manufacturing.work_centers:update'),
+  ('x-admin', 'manufacturing.work_centers:delete'),
+  ('x-admin', 'manufacturing.work_centers:audit'),
+  ('x-admin', 'manufacturing.boms:select'),
+  ('x-admin', 'manufacturing.boms:insert'),
+  ('x-admin', 'manufacturing.boms:update'),
+  ('x-admin', 'manufacturing.boms:delete'),
+  ('x-admin', 'manufacturing.boms:audit'),
+  ('x-admin', 'manufacturing.bom_items:select'),
+  ('x-admin', 'manufacturing.bom_items:insert'),
+  ('x-admin', 'manufacturing.bom_items:update'),
+  ('x-admin', 'manufacturing.bom_items:delete'),
+  ('x-admin', 'manufacturing.bom_items:audit'),
+  ('x-admin', 'manufacturing.routings:select'),
+  ('x-admin', 'manufacturing.routings:insert'),
+  ('x-admin', 'manufacturing.routings:update'),
+  ('x-admin', 'manufacturing.routings:delete'),
+  ('x-admin', 'manufacturing.routings:audit'),
+  (
+    'x-admin',
+    'manufacturing.routing_operations:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.routing_operations:insert'
+  ),
+  (
+    'x-admin',
+    'manufacturing.routing_operations:update'
+  ),
+  (
+    'x-admin',
+    'manufacturing.routing_operations:delete'
+  ),
+  (
+    'x-admin',
+    'manufacturing.routing_operations:audit'
+  ),
+  ('x-admin', 'manufacturing.work_orders:select'),
+  ('x-admin', 'manufacturing.work_orders:insert'),
+  ('x-admin', 'manufacturing.work_orders:update'),
+  ('x-admin', 'manufacturing.work_orders:delete'),
+  ('x-admin', 'manufacturing.work_orders:audit'),
+  (
+    'x-admin',
+    'manufacturing.work_order_operations:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.work_order_operations:insert'
+  ),
+  (
+    'x-admin',
+    'manufacturing.work_order_operations:update'
+  ),
+  (
+    'x-admin',
+    'manufacturing.work_order_operations:delete'
+  ),
+  (
+    'x-admin',
+    'manufacturing.work_order_operations:audit'
+  ),
+  ('x-admin', 'manufacturing.material_issues:select'),
+  ('x-admin', 'manufacturing.material_issues:insert'),
+  ('x-admin', 'manufacturing.material_issues:update'),
+  ('x-admin', 'manufacturing.material_issues:delete'),
+  ('x-admin', 'manufacturing.material_issues:audit'),
+  (
+    'x-admin',
+    'manufacturing.production_outputs:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_outputs:insert'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_outputs:update'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_outputs:delete'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_outputs:audit'
+  ),
+  ('x-admin', 'manufacturing.users:select'),
+  (
+    'x-admin',
+    'manufacturing.work_orders_report:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.bom_explosion_report:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_outputs_report:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.material_consumption_report:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.open_work_orders:select'
+  ),
+  ('x-admin', 'manufacturing.yield_split:select'),
+  (
+    'x-admin',
+    'manufacturing.production_value:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_health:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.recent_work_orders:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.top_work_centers:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.work_orders_by_status_pie:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_by_work_center_bar:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_trend_line:select'
+  ),
+  (
+    'x-admin',
+    'manufacturing.operation_metrics_radar:select'
+  );
 
 ----------------------------------------------------------------
 -- Audit triggers
 ----------------------------------------------------------------
+create trigger audit_mfg_work_centers_insert
+after insert on manufacturing.work_centers for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_work_centers_insert after insert on manufacturing.work_centers for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_work_centers_update after update on manufacturing.work_centers for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_work_centers_delete before delete on manufacturing.work_centers for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_work_centers_update
+after
+update on manufacturing.work_centers for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_boms_insert after insert on manufacturing.boms for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_boms_update after update on manufacturing.boms for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_boms_delete before delete on manufacturing.boms for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_work_centers_delete before delete on manufacturing.work_centers for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_bom_items_insert after insert on manufacturing.bom_items for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_bom_items_update after update on manufacturing.bom_items for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_bom_items_delete before delete on manufacturing.bom_items for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_boms_insert
+after insert on manufacturing.boms for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_routings_insert after insert on manufacturing.routings for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_routings_update after update on manufacturing.routings for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_routings_delete before delete on manufacturing.routings for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_boms_update
+after
+update on manufacturing.boms for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_routing_ops_insert after insert on manufacturing.routing_operations for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_routing_ops_update after update on manufacturing.routing_operations for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_routing_ops_delete before delete on manufacturing.routing_operations for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_boms_delete before delete on manufacturing.boms for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_work_orders_insert after insert on manufacturing.work_orders for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_work_orders_update after update on manufacturing.work_orders for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_work_orders_delete before delete on manufacturing.work_orders for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_bom_items_insert
+after insert on manufacturing.bom_items for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_wo_ops_insert after insert on manufacturing.work_order_operations for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_wo_ops_update after update on manufacturing.work_order_operations for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_wo_ops_delete before delete on manufacturing.work_order_operations for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_bom_items_update
+after
+update on manufacturing.bom_items for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_material_issues_insert after insert on manufacturing.material_issues for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_material_issues_update after update on manufacturing.material_issues for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_material_issues_delete before delete on manufacturing.material_issues for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_bom_items_delete before delete on manufacturing.bom_items for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_outputs_insert after insert on manufacturing.production_outputs for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_outputs_update after update on manufacturing.production_outputs for each row execute function supasheet.audit_trigger_function();
-create trigger audit_mfg_outputs_delete before delete on manufacturing.production_outputs for each row execute function supasheet.audit_trigger_function();
+create trigger audit_mfg_routings_insert
+after insert on manufacturing.routings for each row
+execute function supasheet.audit_trigger_function ();
 
+create trigger audit_mfg_routings_update
+after
+update on manufacturing.routings for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_routings_delete before delete on manufacturing.routings for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_routing_ops_insert
+after insert on manufacturing.routing_operations for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_routing_ops_update
+after
+update on manufacturing.routing_operations for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_routing_ops_delete before delete on manufacturing.routing_operations for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_work_orders_insert
+after insert on manufacturing.work_orders for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_work_orders_update
+after
+update on manufacturing.work_orders for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_work_orders_delete before delete on manufacturing.work_orders for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_wo_ops_insert
+after insert on manufacturing.work_order_operations for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_wo_ops_update
+after
+update on manufacturing.work_order_operations for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_wo_ops_delete before delete on manufacturing.work_order_operations for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_material_issues_insert
+after insert on manufacturing.material_issues for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_material_issues_update
+after
+update on manufacturing.material_issues for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_material_issues_delete before delete on manufacturing.material_issues for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_outputs_insert
+after insert on manufacturing.production_outputs for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_outputs_update
+after
+update on manufacturing.production_outputs for each row
+execute function supasheet.audit_trigger_function ();
+
+create trigger audit_mfg_outputs_delete before delete on manufacturing.production_outputs for each row
+execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
 -- Notifications
 ----------------------------------------------------------------
-
 -- Work orders: notify on creation, release, completion, cancellation
-create or replace function manufacturing.trg_work_orders_notify()
-returns trigger as $$
+create or replace function manufacturing.trg_work_orders_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_type   text;
@@ -1447,19 +2106,20 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists work_orders_notify on manufacturing.work_orders;
-create trigger work_orders_notify
-    after insert or update of status
-    on manufacturing.work_orders
-    for each row
-execute function manufacturing.trg_work_orders_notify();
 
+create trigger work_orders_notify
+after insert
+or
+update of status on manufacturing.work_orders for each row
+execute function manufacturing.trg_work_orders_notify ();
 
 -- Work order operations: notify operator + WO owner on start/complete/fail
-create or replace function manufacturing.trg_wo_operations_notify()
-returns trigger as $$
+create or replace function manufacturing.trg_wo_operations_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_wo_owner uuid;
@@ -1507,19 +2167,19 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists wo_operations_notify on manufacturing.work_order_operations;
-create trigger wo_operations_notify
-    after update of status
-    on manufacturing.work_order_operations
-    for each row
-execute function manufacturing.trg_wo_operations_notify();
 
+create trigger wo_operations_notify
+after
+update of status on manufacturing.work_order_operations for each row
+execute function manufacturing.trg_wo_operations_notify ();
 
 -- Production outputs: notify QA on scrap and rework
-create or replace function manufacturing.trg_production_outputs_notify()
-returns trigger as $$
+create or replace function manufacturing.trg_production_outputs_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_wo_number text;
@@ -1567,11 +2227,14 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists production_outputs_notify on manufacturing.production_outputs;
+
 create trigger production_outputs_notify
-    after insert or update of status
-    on manufacturing.production_outputs
-    for each row
-execute function manufacturing.trg_production_outputs_notify();
+after insert
+or
+update of status on manufacturing.production_outputs for each row
+execute function manufacturing.trg_production_outputs_notify ();

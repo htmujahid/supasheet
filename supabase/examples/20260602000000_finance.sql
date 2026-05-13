@@ -5,156 +5,325 @@ grant usage on schema finance to authenticated;
 ----------------------------------------------------------------
 -- Enums + permissions (must commit before use)
 ----------------------------------------------------------------
-
 begin;
 
-create type finance.account_type as enum ('asset', 'liability', 'equity', 'revenue', 'expense');
-create type finance.invoice_status as enum ('draft', 'sent', 'paid', 'overdue', 'cancelled', 'refunded');
-create type finance.bill_status as enum ('draft', 'pending', 'approved', 'paid', 'overdue', 'cancelled');
-create type finance.expense_status as enum ('draft', 'submitted', 'approved', 'rejected', 'reimbursed');
-create type finance.expense_category as enum ('travel', 'meals', 'lodging', 'office', 'software', 'training', 'marketing', 'other');
-create type finance.payment_method as enum ('bank_transfer', 'credit_card', 'check', 'cash', 'wire', 'ach');
-create type finance.payment_direction as enum ('incoming', 'outgoing');
-create type finance.payment_status as enum ('pending', 'completed', 'failed', 'refunded');
-create type finance.budget_period as enum ('monthly', 'quarterly', 'annual');
-create type finance.payroll_status as enum ('draft', 'processing', 'completed', 'cancelled');
-create type finance.payslip_status as enum ('pending', 'issued', 'paid');
-create type finance.journal_status as enum ('draft', 'posted', 'reversed');
+create type finance.account_type as enum(
+  'asset',
+  'liability',
+  'equity',
+  'revenue',
+  'expense'
+);
+
+create type finance.invoice_status as enum(
+  'draft',
+  'sent',
+  'paid',
+  'overdue',
+  'cancelled',
+  'refunded'
+);
+
+create type finance.bill_status as enum(
+  'draft',
+  'pending',
+  'approved',
+  'paid',
+  'overdue',
+  'cancelled'
+);
+
+create type finance.expense_status as enum(
+  'draft',
+  'submitted',
+  'approved',
+  'rejected',
+  'reimbursed'
+);
+
+create type finance.expense_category as enum(
+  'travel',
+  'meals',
+  'lodging',
+  'office',
+  'software',
+  'training',
+  'marketing',
+  'other'
+);
+
+create type finance.payment_method as enum(
+  'bank_transfer',
+  'credit_card',
+  'check',
+  'cash',
+  'wire',
+  'ach'
+);
+
+create type finance.payment_direction as enum('incoming', 'outgoing');
+
+create type finance.payment_status as enum('pending', 'completed', 'failed', 'refunded');
+
+create type finance.budget_period as enum('monthly', 'quarterly', 'annual');
+
+create type finance.payroll_status as enum('draft', 'processing', 'completed', 'cancelled');
+
+create type finance.payslip_status as enum('pending', 'issued', 'paid');
+
+create type finance.journal_status as enum('draft', 'posted', 'reversed');
 
 -- Accounts
-alter type supasheet.app_permission add value 'finance.accounts:select';
-alter type supasheet.app_permission add value 'finance.accounts:insert';
-alter type supasheet.app_permission add value 'finance.accounts:update';
-alter type supasheet.app_permission add value 'finance.accounts:delete';
-alter type supasheet.app_permission add value 'finance.accounts:audit';
+alter type supasheet.app_permission
+add value 'finance.accounts:select';
+
+alter type supasheet.app_permission
+add value 'finance.accounts:insert';
+
+alter type supasheet.app_permission
+add value 'finance.accounts:update';
+
+alter type supasheet.app_permission
+add value 'finance.accounts:delete';
+
+alter type supasheet.app_permission
+add value 'finance.accounts:audit';
 
 -- Vendors
-alter type supasheet.app_permission add value 'finance.vendors:select';
-alter type supasheet.app_permission add value 'finance.vendors:insert';
-alter type supasheet.app_permission add value 'finance.vendors:update';
-alter type supasheet.app_permission add value 'finance.vendors:delete';
-alter type supasheet.app_permission add value 'finance.vendors:audit';
+alter type supasheet.app_permission
+add value 'finance.vendors:select';
+
+alter type supasheet.app_permission
+add value 'finance.vendors:insert';
+
+alter type supasheet.app_permission
+add value 'finance.vendors:update';
+
+alter type supasheet.app_permission
+add value 'finance.vendors:delete';
+
+alter type supasheet.app_permission
+add value 'finance.vendors:audit';
 
 -- Invoices
-alter type supasheet.app_permission add value 'finance.invoices:select';
-alter type supasheet.app_permission add value 'finance.invoices:insert';
-alter type supasheet.app_permission add value 'finance.invoices:update';
-alter type supasheet.app_permission add value 'finance.invoices:delete';
-alter type supasheet.app_permission add value 'finance.invoices:audit';
+alter type supasheet.app_permission
+add value 'finance.invoices:select';
+
+alter type supasheet.app_permission
+add value 'finance.invoices:insert';
+
+alter type supasheet.app_permission
+add value 'finance.invoices:update';
+
+alter type supasheet.app_permission
+add value 'finance.invoices:delete';
+
+alter type supasheet.app_permission
+add value 'finance.invoices:audit';
 
 -- Bills
-alter type supasheet.app_permission add value 'finance.bills:select';
-alter type supasheet.app_permission add value 'finance.bills:insert';
-alter type supasheet.app_permission add value 'finance.bills:update';
-alter type supasheet.app_permission add value 'finance.bills:delete';
-alter type supasheet.app_permission add value 'finance.bills:audit';
+alter type supasheet.app_permission
+add value 'finance.bills:select';
+
+alter type supasheet.app_permission
+add value 'finance.bills:insert';
+
+alter type supasheet.app_permission
+add value 'finance.bills:update';
+
+alter type supasheet.app_permission
+add value 'finance.bills:delete';
+
+alter type supasheet.app_permission
+add value 'finance.bills:audit';
 
 -- Expenses
-alter type supasheet.app_permission add value 'finance.expenses:select';
-alter type supasheet.app_permission add value 'finance.expenses:insert';
-alter type supasheet.app_permission add value 'finance.expenses:update';
-alter type supasheet.app_permission add value 'finance.expenses:delete';
-alter type supasheet.app_permission add value 'finance.expenses:audit';
+alter type supasheet.app_permission
+add value 'finance.expenses:select';
+
+alter type supasheet.app_permission
+add value 'finance.expenses:insert';
+
+alter type supasheet.app_permission
+add value 'finance.expenses:update';
+
+alter type supasheet.app_permission
+add value 'finance.expenses:delete';
+
+alter type supasheet.app_permission
+add value 'finance.expenses:audit';
 
 -- Payments
-alter type supasheet.app_permission add value 'finance.payments:select';
-alter type supasheet.app_permission add value 'finance.payments:insert';
-alter type supasheet.app_permission add value 'finance.payments:update';
-alter type supasheet.app_permission add value 'finance.payments:delete';
-alter type supasheet.app_permission add value 'finance.payments:audit';
+alter type supasheet.app_permission
+add value 'finance.payments:select';
+
+alter type supasheet.app_permission
+add value 'finance.payments:insert';
+
+alter type supasheet.app_permission
+add value 'finance.payments:update';
+
+alter type supasheet.app_permission
+add value 'finance.payments:delete';
+
+alter type supasheet.app_permission
+add value 'finance.payments:audit';
 
 -- Budgets
-alter type supasheet.app_permission add value 'finance.budgets:select';
-alter type supasheet.app_permission add value 'finance.budgets:insert';
-alter type supasheet.app_permission add value 'finance.budgets:update';
-alter type supasheet.app_permission add value 'finance.budgets:delete';
-alter type supasheet.app_permission add value 'finance.budgets:audit';
+alter type supasheet.app_permission
+add value 'finance.budgets:select';
+
+alter type supasheet.app_permission
+add value 'finance.budgets:insert';
+
+alter type supasheet.app_permission
+add value 'finance.budgets:update';
+
+alter type supasheet.app_permission
+add value 'finance.budgets:delete';
+
+alter type supasheet.app_permission
+add value 'finance.budgets:audit';
 
 -- Payroll runs
-alter type supasheet.app_permission add value 'finance.payroll_runs:select';
-alter type supasheet.app_permission add value 'finance.payroll_runs:insert';
-alter type supasheet.app_permission add value 'finance.payroll_runs:update';
-alter type supasheet.app_permission add value 'finance.payroll_runs:delete';
-alter type supasheet.app_permission add value 'finance.payroll_runs:audit';
+alter type supasheet.app_permission
+add value 'finance.payroll_runs:select';
+
+alter type supasheet.app_permission
+add value 'finance.payroll_runs:insert';
+
+alter type supasheet.app_permission
+add value 'finance.payroll_runs:update';
+
+alter type supasheet.app_permission
+add value 'finance.payroll_runs:delete';
+
+alter type supasheet.app_permission
+add value 'finance.payroll_runs:audit';
 
 -- Payslips
-alter type supasheet.app_permission add value 'finance.payslips:select';
-alter type supasheet.app_permission add value 'finance.payslips:insert';
-alter type supasheet.app_permission add value 'finance.payslips:update';
-alter type supasheet.app_permission add value 'finance.payslips:delete';
-alter type supasheet.app_permission add value 'finance.payslips:audit';
+alter type supasheet.app_permission
+add value 'finance.payslips:select';
+
+alter type supasheet.app_permission
+add value 'finance.payslips:insert';
+
+alter type supasheet.app_permission
+add value 'finance.payslips:update';
+
+alter type supasheet.app_permission
+add value 'finance.payslips:delete';
+
+alter type supasheet.app_permission
+add value 'finance.payslips:audit';
 
 -- Journal entries
-alter type supasheet.app_permission add value 'finance.journal_entries:select';
-alter type supasheet.app_permission add value 'finance.journal_entries:insert';
-alter type supasheet.app_permission add value 'finance.journal_entries:update';
-alter type supasheet.app_permission add value 'finance.journal_entries:delete';
-alter type supasheet.app_permission add value 'finance.journal_entries:audit';
+alter type supasheet.app_permission
+add value 'finance.journal_entries:select';
+
+alter type supasheet.app_permission
+add value 'finance.journal_entries:insert';
+
+alter type supasheet.app_permission
+add value 'finance.journal_entries:update';
+
+alter type supasheet.app_permission
+add value 'finance.journal_entries:delete';
+
+alter type supasheet.app_permission
+add value 'finance.journal_entries:audit';
 
 -- Users mirror
-alter type supasheet.app_permission add value 'finance.users:select';
+alter type supasheet.app_permission
+add value 'finance.users:select';
 
 -- Reports
-alter type supasheet.app_permission add value 'finance.invoices_report:select';
-alter type supasheet.app_permission add value 'finance.bills_report:select';
-alter type supasheet.app_permission add value 'finance.expenses_report:select';
-alter type supasheet.app_permission add value 'finance.payroll_report:select';
+alter type supasheet.app_permission
+add value 'finance.invoices_report:select';
+
+alter type supasheet.app_permission
+add value 'finance.bills_report:select';
+
+alter type supasheet.app_permission
+add value 'finance.expenses_report:select';
+
+alter type supasheet.app_permission
+add value 'finance.payroll_report:select';
 
 -- Dashboard widgets
-alter type supasheet.app_permission add value 'finance.revenue_summary:select';
-alter type supasheet.app_permission add value 'finance.ar_ap_split:select';
-alter type supasheet.app_permission add value 'finance.cash_position:select';
-alter type supasheet.app_permission add value 'finance.financial_health:select';
-alter type supasheet.app_permission add value 'finance.recent_invoices:select';
-alter type supasheet.app_permission add value 'finance.top_vendors:select';
+alter type supasheet.app_permission
+add value 'finance.revenue_summary:select';
+
+alter type supasheet.app_permission
+add value 'finance.ar_ap_split:select';
+
+alter type supasheet.app_permission
+add value 'finance.cash_position:select';
+
+alter type supasheet.app_permission
+add value 'finance.financial_health:select';
+
+alter type supasheet.app_permission
+add value 'finance.recent_invoices:select';
+
+alter type supasheet.app_permission
+add value 'finance.top_vendors:select';
 
 -- Charts
-alter type supasheet.app_permission add value 'finance.invoices_by_status_pie:select';
-alter type supasheet.app_permission add value 'finance.revenue_by_month_bar:select';
-alter type supasheet.app_permission add value 'finance.cash_flow_trend_line:select';
-alter type supasheet.app_permission add value 'finance.expense_categories_radar:select';
+alter type supasheet.app_permission
+add value 'finance.invoices_by_status_pie:select';
+
+alter type supasheet.app_permission
+add value 'finance.revenue_by_month_bar:select';
+
+alter type supasheet.app_permission
+add value 'finance.cash_flow_trend_line:select';
+
+alter type supasheet.app_permission
+add value 'finance.expense_categories_radar:select';
 
 commit;
-
 
 ----------------------------------------------------------------
 -- Users mirror view
 ----------------------------------------------------------------
-
 create or replace view finance.users
-with (security_invoker = true) as
-select * from supasheet.users;
+with
+  (security_invoker = true) as
+select
+  *
+from
+  supasheet.users;
 
-revoke all on finance.users from authenticated, service_role;
-grant select on finance.users to authenticated;
+revoke all on finance.users
+from
+  authenticated,
+  service_role;
 
+grant
+select
+  on finance.users to authenticated;
 
 ----------------------------------------------------------------
 -- Accounts (Chart of Accounts)
 ----------------------------------------------------------------
-
 create table finance.accounts (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    code varchar(50) unique not null,
-    name varchar(255) not null,
-    type finance.account_type not null,
-
-    parent_id uuid references finance.accounts(id) on delete set null,
-    description supasheet.RICH_TEXT,
-
-    currency varchar(3) default 'USD',
-    opening_balance numeric(14, 2) default 0,
-    current_balance numeric(14, 2) default 0,
-
-    is_active boolean default true,
-    color supasheet.COLOR,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  code varchar(50) unique not null,
+  name varchar(255) not null,
+  type finance.account_type not null,
+  parent_id uuid references finance.accounts (id) on delete set null,
+  description supasheet.RICH_TEXT,
+  currency varchar(3) default 'USD',
+  opening_balance numeric(14, 2) default 0,
+  current_balance numeric(14, 2) default 0,
+  is_active boolean default true,
+  color supasheet.COLOR,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.accounts.type is
-'{
+comment on column finance.accounts.type is '{
     "progress": false,
     "enums": {
         "asset":     {"variant": "success",     "icon": "Landmark"},
@@ -165,8 +334,7 @@ comment on column finance.accounts.type is
     }
 }';
 
-comment on table finance.accounts is
-'{
+comment on table finance.accounts is '{
     "icon": "BookOpen",
     "display": "block",
     "query": {
@@ -183,69 +351,79 @@ comment on table finance.accounts is
     ]
 }';
 
-revoke all on table finance.accounts from authenticated, service_role;
-grant select, insert, update, delete on table finance.accounts to authenticated;
+revoke all on table finance.accounts
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.accounts to authenticated;
 
 create index idx_finance_accounts_parent_id on finance.accounts (parent_id);
+
 create index idx_finance_accounts_type on finance.accounts (type);
+
 create index idx_finance_accounts_code on finance.accounts (code);
 
 alter table finance.accounts enable row level security;
 
-create policy accounts_select on finance.accounts
-    for select to authenticated
-    using (supasheet.has_permission('finance.accounts:select'));
+create policy accounts_select on finance.accounts for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.accounts:select')
+  );
 
-create policy accounts_insert on finance.accounts
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.accounts:insert'));
+create policy accounts_insert on finance.accounts for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.accounts:insert')
+  );
 
 create policy accounts_update on finance.accounts
-    for update to authenticated
-    using (supasheet.has_permission('finance.accounts:update'))
-    with check (supasheet.has_permission('finance.accounts:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.accounts:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.accounts:update')
+  );
 
-create policy accounts_delete on finance.accounts
-    for delete to authenticated
-    using (supasheet.has_permission('finance.accounts:delete'));
-
+create policy accounts_delete on finance.accounts for delete to authenticated using (
+  supasheet.has_permission ('finance.accounts:delete')
+);
 
 ----------------------------------------------------------------
 -- Vendors
 ----------------------------------------------------------------
-
 create table finance.vendors (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    name varchar(500) not null,
-    legal_name varchar(500),
-    code varchar(50) unique,
-
-    website supasheet.URL,
-    email supasheet.EMAIL,
-    phone supasheet.TEL,
-
-    address text,
-    city varchar(255),
-    country varchar(255),
-
-    tax_id varchar(100),
-    payment_terms varchar(100),
-
-    logo supasheet.file,
-    description supasheet.RICH_TEXT,
-
-    tags varchar(255)[],
-    color supasheet.COLOR,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  name varchar(500) not null,
+  legal_name varchar(500),
+  code varchar(50) unique,
+  website supasheet.URL,
+  email supasheet.EMAIL,
+  phone supasheet.TEL,
+  address text,
+  city varchar(255),
+  country varchar(255),
+  tax_id varchar(100),
+  payment_terms varchar(100),
+  logo supasheet.file,
+  description supasheet.RICH_TEXT,
+  tags varchar(255) [],
+  color supasheet.COLOR,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on table finance.vendors is
-'{
+comment on table finance.vendors is '{
     "icon": "Truck",
     "display": "block",
     "query": {
@@ -267,72 +445,80 @@ comment on table finance.vendors is
 
 comment on column finance.vendors.logo is '{"accept":"image/*"}';
 
-revoke all on table finance.vendors from authenticated, service_role;
-grant select, insert, update, delete on table finance.vendors to authenticated;
+revoke all on table finance.vendors
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.vendors to authenticated;
 
 create index idx_finance_vendors_user_id on finance.vendors (user_id);
+
 create index idx_finance_vendors_country on finance.vendors (country);
 
 alter table finance.vendors enable row level security;
 
-create policy vendors_select on finance.vendors
-    for select to authenticated
-    using (supasheet.has_permission('finance.vendors:select'));
+create policy vendors_select on finance.vendors for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.vendors:select')
+  );
 
-create policy vendors_insert on finance.vendors
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.vendors:insert'));
+create policy vendors_insert on finance.vendors for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.vendors:insert')
+  );
 
 create policy vendors_update on finance.vendors
-    for update to authenticated
-    using (supasheet.has_permission('finance.vendors:update'))
-    with check (supasheet.has_permission('finance.vendors:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.vendors:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.vendors:update')
+  );
 
-create policy vendors_delete on finance.vendors
-    for delete to authenticated
-    using (supasheet.has_permission('finance.vendors:delete'));
-
+create policy vendors_delete on finance.vendors for delete to authenticated using (
+  supasheet.has_permission ('finance.vendors:delete')
+);
 
 ----------------------------------------------------------------
 -- Invoices (Accounts Receivable)
 ----------------------------------------------------------------
-
 create table finance.invoices (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    invoice_number varchar(50) unique not null,
-
-    customer_name varchar(500) not null,
-    customer_email supasheet.EMAIL,
-    customer_address text,
-
-    status finance.invoice_status default 'draft',
-    issue_date date not null,
-    due_date date,
-    paid_date date,
-
-    subtotal numeric(14, 2) default 0,
-    tax numeric(14, 2) default 0,
-    total numeric(14, 2) default 0,
-    amount_paid numeric(14, 2) default 0,
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    line_items jsonb,
-
-    revenue_account_id uuid references finance.accounts(id) on delete set null,
-
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  invoice_number varchar(50) unique not null,
+  customer_name varchar(500) not null,
+  customer_email supasheet.EMAIL,
+  customer_address text,
+  status finance.invoice_status default 'draft',
+  issue_date date not null,
+  due_date date,
+  paid_date date,
+  subtotal numeric(14, 2) default 0,
+  tax numeric(14, 2) default 0,
+  total numeric(14, 2) default 0,
+  amount_paid numeric(14, 2) default 0,
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  line_items jsonb,
+  revenue_account_id uuid references finance.accounts (id) on delete set null,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.invoices.status is
-'{
+comment on column finance.invoices.status is '{
     "progress": true,
     "enums": {
         "draft":     {"variant": "outline",     "icon": "FileEdit"},
@@ -344,8 +530,7 @@ comment on column finance.invoices.status is
     }
 }';
 
-comment on table finance.invoices is
-'{
+comment on table finance.invoices is '{
     "icon": "Receipt",
     "display": "block",
     "query": {
@@ -372,73 +557,84 @@ comment on table finance.invoices is
 
 comment on column finance.invoices.attachments is '{"accept":"*", "maxFiles": 20}';
 
-revoke all on table finance.invoices from authenticated, service_role;
-grant select, insert, update, delete on table finance.invoices to authenticated;
+revoke all on table finance.invoices
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.invoices to authenticated;
 
 create index idx_finance_invoices_user_id on finance.invoices (user_id);
+
 create index idx_finance_invoices_status on finance.invoices (status);
+
 create index idx_finance_invoices_issue_date on finance.invoices (issue_date desc);
+
 create index idx_finance_invoices_due_date on finance.invoices (due_date);
+
 create index idx_finance_invoices_customer_email on finance.invoices (customer_email);
 
 alter table finance.invoices enable row level security;
 
-create policy invoices_select on finance.invoices
-    for select to authenticated
-    using (supasheet.has_permission('finance.invoices:select'));
+create policy invoices_select on finance.invoices for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.invoices:select')
+  );
 
-create policy invoices_insert on finance.invoices
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.invoices:insert'));
+create policy invoices_insert on finance.invoices for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.invoices:insert')
+  );
 
 create policy invoices_update on finance.invoices
-    for update to authenticated
-    using (supasheet.has_permission('finance.invoices:update'))
-    with check (supasheet.has_permission('finance.invoices:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.invoices:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.invoices:update')
+  );
 
-create policy invoices_delete on finance.invoices
-    for delete to authenticated
-    using (supasheet.has_permission('finance.invoices:delete'));
-
+create policy invoices_delete on finance.invoices for delete to authenticated using (
+  supasheet.has_permission ('finance.invoices:delete')
+);
 
 ----------------------------------------------------------------
 -- Bills (Accounts Payable)
 ----------------------------------------------------------------
-
 create table finance.bills (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    bill_number varchar(50) unique not null,
-
-    vendor_id uuid references finance.vendors(id) on delete set null,
-
-    status finance.bill_status default 'draft',
-    issue_date date not null,
-    due_date date,
-    paid_date date,
-
-    subtotal numeric(14, 2) default 0,
-    tax numeric(14, 2) default 0,
-    total numeric(14, 2) default 0,
-    amount_paid numeric(14, 2) default 0,
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    line_items jsonb,
-
-    expense_account_id uuid references finance.accounts(id) on delete set null,
-
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  bill_number varchar(50) unique not null,
+  vendor_id uuid references finance.vendors (id) on delete set null,
+  status finance.bill_status default 'draft',
+  issue_date date not null,
+  due_date date,
+  paid_date date,
+  subtotal numeric(14, 2) default 0,
+  tax numeric(14, 2) default 0,
+  total numeric(14, 2) default 0,
+  amount_paid numeric(14, 2) default 0,
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  line_items jsonb,
+  expense_account_id uuid references finance.accounts (id) on delete set null,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.bills.status is
-'{
+comment on column finance.bills.status is '{
     "progress": true,
     "enums": {
         "draft":     {"variant": "outline",     "icon": "FileEdit"},
@@ -450,8 +646,7 @@ comment on column finance.bills.status is
     }
 }';
 
-comment on table finance.bills is
-'{
+comment on table finance.bills is '{
     "icon": "FileText",
     "display": "block",
     "query": {
@@ -478,79 +673,77 @@ comment on table finance.bills is
 
 comment on column finance.bills.attachments is '{"accept":"*", "maxFiles": 20}';
 
-revoke all on table finance.bills from authenticated, service_role;
-grant select, insert, update, delete on table finance.bills to authenticated;
+revoke all on table finance.bills
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.bills to authenticated;
 
 create index idx_finance_bills_user_id on finance.bills (user_id);
+
 create index idx_finance_bills_vendor_id on finance.bills (vendor_id);
+
 create index idx_finance_bills_status on finance.bills (status);
+
 create index idx_finance_bills_issue_date on finance.bills (issue_date desc);
+
 create index idx_finance_bills_due_date on finance.bills (due_date);
 
 alter table finance.bills enable row level security;
 
-create policy bills_select on finance.bills
-    for select to authenticated
-    using (supasheet.has_permission('finance.bills:select'));
+create policy bills_select on finance.bills for
+select
+  to authenticated using (supasheet.has_permission ('finance.bills:select'));
 
-create policy bills_insert on finance.bills
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.bills:insert'));
+create policy bills_insert on finance.bills for insert to authenticated
+with
+  check (supasheet.has_permission ('finance.bills:insert'));
 
 create policy bills_update on finance.bills
-    for update to authenticated
-    using (supasheet.has_permission('finance.bills:update'))
-    with check (supasheet.has_permission('finance.bills:update'));
+for update
+  to authenticated using (supasheet.has_permission ('finance.bills:update'))
+with
+  check (supasheet.has_permission ('finance.bills:update'));
 
-create policy bills_delete on finance.bills
-    for delete to authenticated
-    using (supasheet.has_permission('finance.bills:delete'));
-
+create policy bills_delete on finance.bills for delete to authenticated using (supasheet.has_permission ('finance.bills:delete'));
 
 ----------------------------------------------------------------
 -- Expenses (employee expense claims)
 ----------------------------------------------------------------
-
 create table finance.expenses (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    expense_number varchar(50) unique not null,
-
-    employee_name varchar(500) not null,
-    employee_email supasheet.EMAIL,
-
-    category finance.expense_category default 'other',
-    status finance.expense_status default 'draft',
-
-    amount numeric(14, 2) not null default 0,
-    currency varchar(3) default 'USD',
-
-    expense_date date not null,
-    description supasheet.RICH_TEXT,
-    merchant varchar(255),
-    payment_method finance.payment_method,
-
-    expense_account_id uuid references finance.accounts(id) on delete set null,
-
-    receipt supasheet.file,
-    attachments supasheet.file,
-
-    reviewer_user_id uuid references supasheet.users(id) on delete set null,
-    reviewed_at timestamptz,
-    response text,
-
-    reimbursed_at timestamptz,
-
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  expense_number varchar(50) unique not null,
+  employee_name varchar(500) not null,
+  employee_email supasheet.EMAIL,
+  category finance.expense_category default 'other',
+  status finance.expense_status default 'draft',
+  amount numeric(14, 2) not null default 0,
+  currency varchar(3) default 'USD',
+  expense_date date not null,
+  description supasheet.RICH_TEXT,
+  merchant varchar(255),
+  payment_method finance.payment_method,
+  expense_account_id uuid references finance.accounts (id) on delete set null,
+  receipt supasheet.file,
+  attachments supasheet.file,
+  reviewer_user_id uuid references supasheet.users (id) on delete set null,
+  reviewed_at timestamptz,
+  response text,
+  reimbursed_at timestamptz,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.expenses.status is
-'{
+comment on column finance.expenses.status is '{
     "progress": true,
     "enums": {
         "draft":      {"variant": "outline",     "icon": "FileEdit"},
@@ -561,8 +754,7 @@ comment on column finance.expenses.status is
     }
 }';
 
-comment on column finance.expenses.category is
-'{
+comment on column finance.expenses.category is '{
     "progress": false,
     "enums": {
         "travel":    {"variant": "info",      "icon": "Plane"},
@@ -576,8 +768,7 @@ comment on column finance.expenses.category is
     }
 }';
 
-comment on column finance.expenses.payment_method is
-'{
+comment on column finance.expenses.payment_method is '{
     "progress": false,
     "enums": {
         "bank_transfer": {"variant": "info",     "icon": "Landmark"},
@@ -589,8 +780,7 @@ comment on column finance.expenses.payment_method is
     }
 }';
 
-comment on table finance.expenses is
-'{
+comment on table finance.expenses is '{
     "icon": "Wallet",
     "display": "block",
     "query": {
@@ -616,75 +806,87 @@ comment on table finance.expenses is
 }';
 
 comment on column finance.expenses.receipt is '{"accept":"image/*,application/pdf", "maxFiles": 5}';
+
 comment on column finance.expenses.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table finance.expenses from authenticated, service_role;
-grant select, insert, update, delete on table finance.expenses to authenticated;
+revoke all on table finance.expenses
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.expenses to authenticated;
 
 create index idx_finance_expenses_user_id on finance.expenses (user_id);
+
 create index idx_finance_expenses_reviewer_user_id on finance.expenses (reviewer_user_id);
+
 create index idx_finance_expenses_status on finance.expenses (status);
+
 create index idx_finance_expenses_category on finance.expenses (category);
+
 create index idx_finance_expenses_expense_date on finance.expenses (expense_date desc);
 
 alter table finance.expenses enable row level security;
 
-create policy expenses_select on finance.expenses
-    for select to authenticated
-    using (supasheet.has_permission('finance.expenses:select'));
+create policy expenses_select on finance.expenses for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.expenses:select')
+  );
 
-create policy expenses_insert on finance.expenses
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.expenses:insert'));
+create policy expenses_insert on finance.expenses for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.expenses:insert')
+  );
 
 create policy expenses_update on finance.expenses
-    for update to authenticated
-    using (supasheet.has_permission('finance.expenses:update'))
-    with check (supasheet.has_permission('finance.expenses:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.expenses:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.expenses:update')
+  );
 
-create policy expenses_delete on finance.expenses
-    for delete to authenticated
-    using (supasheet.has_permission('finance.expenses:delete'));
-
+create policy expenses_delete on finance.expenses for delete to authenticated using (
+  supasheet.has_permission ('finance.expenses:delete')
+);
 
 ----------------------------------------------------------------
 -- Payments (incoming/outgoing)
 ----------------------------------------------------------------
-
 create table finance.payments (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    payment_number varchar(50) unique not null,
-
-    direction finance.payment_direction not null default 'incoming',
-    status finance.payment_status default 'pending',
-    method finance.payment_method default 'bank_transfer',
-
-    amount numeric(14, 2) not null default 0,
-    currency varchar(3) default 'USD',
-
-    payment_date date not null,
-    reference_number varchar(255),
-
-    party_name varchar(500),
-    party_email supasheet.EMAIL,
-
-    invoice_id uuid references finance.invoices(id) on delete set null,
-    bill_id uuid references finance.bills(id) on delete set null,
-    account_id uuid references finance.accounts(id) on delete set null,
-
-    description supasheet.RICH_TEXT,
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  payment_number varchar(50) unique not null,
+  direction finance.payment_direction not null default 'incoming',
+  status finance.payment_status default 'pending',
+  method finance.payment_method default 'bank_transfer',
+  amount numeric(14, 2) not null default 0,
+  currency varchar(3) default 'USD',
+  payment_date date not null,
+  reference_number varchar(255),
+  party_name varchar(500),
+  party_email supasheet.EMAIL,
+  invoice_id uuid references finance.invoices (id) on delete set null,
+  bill_id uuid references finance.bills (id) on delete set null,
+  account_id uuid references finance.accounts (id) on delete set null,
+  description supasheet.RICH_TEXT,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.payments.direction is
-'{
+comment on column finance.payments.direction is '{
     "progress": false,
     "enums": {
         "incoming": {"variant": "success",     "icon": "ArrowDownLeft"},
@@ -692,8 +894,7 @@ comment on column finance.payments.direction is
     }
 }';
 
-comment on column finance.payments.status is
-'{
+comment on column finance.payments.status is '{
     "progress": true,
     "enums": {
         "pending":   {"variant": "warning",     "icon": "Clock"},
@@ -703,8 +904,7 @@ comment on column finance.payments.status is
     }
 }';
 
-comment on column finance.payments.method is
-'{
+comment on column finance.payments.method is '{
     "progress": false,
     "enums": {
         "bank_transfer": {"variant": "info",     "icon": "Landmark"},
@@ -716,8 +916,7 @@ comment on column finance.payments.method is
     }
 }';
 
-comment on table finance.payments is
-'{
+comment on table finance.payments is '{
     "icon": "ArrowLeftRight",
     "display": "block",
     "query": {
@@ -744,68 +943,84 @@ comment on table finance.payments is
 
 comment on column finance.payments.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table finance.payments from authenticated, service_role;
-grant select, insert, update, delete on table finance.payments to authenticated;
+revoke all on table finance.payments
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.payments to authenticated;
 
 create index idx_finance_payments_user_id on finance.payments (user_id);
+
 create index idx_finance_payments_invoice_id on finance.payments (invoice_id);
+
 create index idx_finance_payments_bill_id on finance.payments (bill_id);
+
 create index idx_finance_payments_account_id on finance.payments (account_id);
+
 create index idx_finance_payments_status on finance.payments (status);
+
 create index idx_finance_payments_direction on finance.payments (direction);
+
 create index idx_finance_payments_payment_date on finance.payments (payment_date desc);
 
 alter table finance.payments enable row level security;
 
-create policy payments_select on finance.payments
-    for select to authenticated
-    using (supasheet.has_permission('finance.payments:select'));
+create policy payments_select on finance.payments for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.payments:select')
+  );
 
-create policy payments_insert on finance.payments
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.payments:insert'));
+create policy payments_insert on finance.payments for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.payments:insert')
+  );
 
 create policy payments_update on finance.payments
-    for update to authenticated
-    using (supasheet.has_permission('finance.payments:update'))
-    with check (supasheet.has_permission('finance.payments:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.payments:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.payments:update')
+  );
 
-create policy payments_delete on finance.payments
-    for delete to authenticated
-    using (supasheet.has_permission('finance.payments:delete'));
-
+create policy payments_delete on finance.payments for delete to authenticated using (
+  supasheet.has_permission ('finance.payments:delete')
+);
 
 ----------------------------------------------------------------
 -- Budgets
 ----------------------------------------------------------------
-
 create table finance.budgets (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    name varchar(500) not null,
-    period finance.budget_period default 'monthly',
-    period_start date not null,
-    period_end date not null,
-
-    department varchar(255),
-    account_id uuid references finance.accounts(id) on delete set null,
-
-    amount numeric(14, 2) not null default 0,
-    spent numeric(14, 2) default 0,
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    color supasheet.COLOR,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  name varchar(500) not null,
+  period finance.budget_period default 'monthly',
+  period_start date not null,
+  period_end date not null,
+  department varchar(255),
+  account_id uuid references finance.accounts (id) on delete set null,
+  amount numeric(14, 2) not null default 0,
+  spent numeric(14, 2) default 0,
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  color supasheet.COLOR,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.budgets.period is
-'{
+comment on column finance.budgets.period is '{
     "progress": false,
     "enums": {
         "monthly":   {"variant": "info",      "icon": "Calendar"},
@@ -814,8 +1029,7 @@ comment on column finance.budgets.period is
     }
 }';
 
-comment on table finance.budgets is
-'{
+comment on table finance.budgets is '{
     "icon": "PiggyBank",
     "display": "block",
     "query": {
@@ -838,69 +1052,80 @@ comment on table finance.budgets is
     ]
 }';
 
-revoke all on table finance.budgets from authenticated, service_role;
-grant select, insert, update, delete on table finance.budgets to authenticated;
+revoke all on table finance.budgets
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.budgets to authenticated;
 
 create index idx_finance_budgets_user_id on finance.budgets (user_id);
+
 create index idx_finance_budgets_account_id on finance.budgets (account_id);
+
 create index idx_finance_budgets_period on finance.budgets (period);
+
 create index idx_finance_budgets_period_start on finance.budgets (period_start desc);
 
 alter table finance.budgets enable row level security;
 
-create policy budgets_select on finance.budgets
-    for select to authenticated
-    using (supasheet.has_permission('finance.budgets:select'));
+create policy budgets_select on finance.budgets for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.budgets:select')
+  );
 
-create policy budgets_insert on finance.budgets
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.budgets:insert'));
+create policy budgets_insert on finance.budgets for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.budgets:insert')
+  );
 
 create policy budgets_update on finance.budgets
-    for update to authenticated
-    using (supasheet.has_permission('finance.budgets:update'))
-    with check (supasheet.has_permission('finance.budgets:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.budgets:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.budgets:update')
+  );
 
-create policy budgets_delete on finance.budgets
-    for delete to authenticated
-    using (supasheet.has_permission('finance.budgets:delete'));
-
+create policy budgets_delete on finance.budgets for delete to authenticated using (
+  supasheet.has_permission ('finance.budgets:delete')
+);
 
 ----------------------------------------------------------------
 -- Payroll runs
 ----------------------------------------------------------------
-
 create table finance.payroll_runs (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    run_number varchar(50) unique not null,
-
-    period_start date not null,
-    period_end date not null,
-    pay_date date not null,
-
-    status finance.payroll_status default 'draft',
-
-    total_gross numeric(14, 2) default 0,
-    total_deductions numeric(14, 2) default 0,
-    total_tax numeric(14, 2) default 0,
-    total_net numeric(14, 2) default 0,
-    currency varchar(3) default 'USD',
-
-    employee_count integer default 0,
-
-    description supasheet.RICH_TEXT,
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  run_number varchar(50) unique not null,
+  period_start date not null,
+  period_end date not null,
+  pay_date date not null,
+  status finance.payroll_status default 'draft',
+  total_gross numeric(14, 2) default 0,
+  total_deductions numeric(14, 2) default 0,
+  total_tax numeric(14, 2) default 0,
+  total_net numeric(14, 2) default 0,
+  currency varchar(3) default 'USD',
+  employee_count integer default 0,
+  description supasheet.RICH_TEXT,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.payroll_runs.status is
-'{
+comment on column finance.payroll_runs.status is '{
     "progress": true,
     "enums": {
         "draft":      {"variant": "outline",     "icon": "FileEdit"},
@@ -910,8 +1135,7 @@ comment on column finance.payroll_runs.status is
     }
 }';
 
-comment on table finance.payroll_runs is
-'{
+comment on table finance.payroll_runs is '{
     "icon": "Banknote",
     "display": "block",
     "query": {
@@ -933,78 +1157,85 @@ comment on table finance.payroll_runs is
 
 comment on column finance.payroll_runs.attachments is '{"accept":"*", "maxFiles": 20}';
 
-revoke all on table finance.payroll_runs from authenticated, service_role;
-grant select, insert, update, delete on table finance.payroll_runs to authenticated;
+revoke all on table finance.payroll_runs
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.payroll_runs to authenticated;
 
 create index idx_finance_payroll_runs_user_id on finance.payroll_runs (user_id);
+
 create index idx_finance_payroll_runs_status on finance.payroll_runs (status);
+
 create index idx_finance_payroll_runs_pay_date on finance.payroll_runs (pay_date desc);
 
 alter table finance.payroll_runs enable row level security;
 
-create policy payroll_runs_select on finance.payroll_runs
-    for select to authenticated
-    using (supasheet.has_permission('finance.payroll_runs:select'));
+create policy payroll_runs_select on finance.payroll_runs for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.payroll_runs:select')
+  );
 
-create policy payroll_runs_insert on finance.payroll_runs
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.payroll_runs:insert'));
+create policy payroll_runs_insert on finance.payroll_runs for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.payroll_runs:insert')
+  );
 
 create policy payroll_runs_update on finance.payroll_runs
-    for update to authenticated
-    using (supasheet.has_permission('finance.payroll_runs:update'))
-    with check (supasheet.has_permission('finance.payroll_runs:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.payroll_runs:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.payroll_runs:update')
+  );
 
-create policy payroll_runs_delete on finance.payroll_runs
-    for delete to authenticated
-    using (supasheet.has_permission('finance.payroll_runs:delete'));
-
+create policy payroll_runs_delete on finance.payroll_runs for delete to authenticated using (
+  supasheet.has_permission ('finance.payroll_runs:delete')
+);
 
 ----------------------------------------------------------------
 -- Payslips
 ----------------------------------------------------------------
-
 create table finance.payslips (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    payslip_number varchar(50) unique not null,
-
-    run_id uuid not null references finance.payroll_runs(id) on delete cascade,
-
-    employee_name varchar(500) not null,
-    employee_email supasheet.EMAIL,
-    employee_user_id uuid references supasheet.users(id) on delete set null,
-
-    status finance.payslip_status default 'pending',
-    currency varchar(3) default 'USD',
-
-    base_salary numeric(14, 2) default 0,
-    bonuses numeric(14, 2) default 0,
-    overtime numeric(14, 2) default 0,
-    gross_salary numeric(14, 2) default 0,
-
-    tax_withheld numeric(14, 2) default 0,
-    social_security numeric(14, 2) default 0,
-    health_insurance numeric(14, 2) default 0,
-    retirement numeric(14, 2) default 0,
-    other_deductions numeric(14, 2) default 0,
-
-    net_salary numeric(14, 2) default 0,
-
-    hours_worked numeric(8, 2),
-    payment_method finance.payment_method default 'bank_transfer',
-    paid_at timestamptz,
-
-    attachments supasheet.file,
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  payslip_number varchar(50) unique not null,
+  run_id uuid not null references finance.payroll_runs (id) on delete cascade,
+  employee_name varchar(500) not null,
+  employee_email supasheet.EMAIL,
+  employee_user_id uuid references supasheet.users (id) on delete set null,
+  status finance.payslip_status default 'pending',
+  currency varchar(3) default 'USD',
+  base_salary numeric(14, 2) default 0,
+  bonuses numeric(14, 2) default 0,
+  overtime numeric(14, 2) default 0,
+  gross_salary numeric(14, 2) default 0,
+  tax_withheld numeric(14, 2) default 0,
+  social_security numeric(14, 2) default 0,
+  health_insurance numeric(14, 2) default 0,
+  retirement numeric(14, 2) default 0,
+  other_deductions numeric(14, 2) default 0,
+  net_salary numeric(14, 2) default 0,
+  hours_worked numeric(8, 2),
+  payment_method finance.payment_method default 'bank_transfer',
+  paid_at timestamptz,
+  attachments supasheet.file,
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.payslips.status is
-'{
+comment on column finance.payslips.status is '{
     "progress": true,
     "enums": {
         "pending": {"variant": "warning", "icon": "Clock"},
@@ -1013,8 +1244,7 @@ comment on column finance.payslips.status is
     }
 }';
 
-comment on table finance.payslips is
-'{
+comment on table finance.payslips is '{
     "icon": "FileSpreadsheet",
     "display": "block",
     "query": {
@@ -1040,67 +1270,78 @@ comment on table finance.payslips is
 
 comment on column finance.payslips.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table finance.payslips from authenticated, service_role;
-grant select, insert, update, delete on table finance.payslips to authenticated;
+revoke all on table finance.payslips
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.payslips to authenticated;
 
 create index idx_finance_payslips_run_id on finance.payslips (run_id);
+
 create index idx_finance_payslips_employee_user_id on finance.payslips (employee_user_id);
+
 create index idx_finance_payslips_status on finance.payslips (status);
+
 create index idx_finance_payslips_employee_email on finance.payslips (employee_email);
 
 alter table finance.payslips enable row level security;
 
-create policy payslips_select on finance.payslips
-    for select to authenticated
-    using (supasheet.has_permission('finance.payslips:select'));
+create policy payslips_select on finance.payslips for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.payslips:select')
+  );
 
-create policy payslips_insert on finance.payslips
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.payslips:insert'));
+create policy payslips_insert on finance.payslips for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.payslips:insert')
+  );
 
 create policy payslips_update on finance.payslips
-    for update to authenticated
-    using (supasheet.has_permission('finance.payslips:update'))
-    with check (supasheet.has_permission('finance.payslips:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.payslips:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.payslips:update')
+  );
 
-create policy payslips_delete on finance.payslips
-    for delete to authenticated
-    using (supasheet.has_permission('finance.payslips:delete'));
-
+create policy payslips_delete on finance.payslips for delete to authenticated using (
+  supasheet.has_permission ('finance.payslips:delete')
+);
 
 ----------------------------------------------------------------
 -- Journal entries (general ledger)
 ----------------------------------------------------------------
-
 create table finance.journal_entries (
-    id uuid primary key default extensions.uuid_generate_v4(),
-    entry_number varchar(50) unique not null,
-
-    entry_date date not null,
-    status finance.journal_status default 'draft',
-
-    debit_account_id uuid references finance.accounts(id) on delete set null,
-    credit_account_id uuid references finance.accounts(id) on delete set null,
-
-    amount numeric(14, 2) not null default 0,
-    currency varchar(3) default 'USD',
-
-    description supasheet.RICH_TEXT,
-    reference_type varchar(50),
-    reference_id uuid,
-
-    attachments supasheet.file,
-    tags varchar(255)[],
-    notes text,
-
-    user_id uuid default auth.uid() references supasheet.users(id) on delete set null,
-
-    created_at timestamptz default current_timestamp,
-    updated_at timestamptz default current_timestamp
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  entry_number varchar(50) unique not null,
+  entry_date date not null,
+  status finance.journal_status default 'draft',
+  debit_account_id uuid references finance.accounts (id) on delete set null,
+  credit_account_id uuid references finance.accounts (id) on delete set null,
+  amount numeric(14, 2) not null default 0,
+  currency varchar(3) default 'USD',
+  description supasheet.RICH_TEXT,
+  reference_type varchar(50),
+  reference_id uuid,
+  attachments supasheet.file,
+  tags varchar(255) [],
+  notes text,
+  user_id uuid default auth.uid () references supasheet.users (id) on delete set null,
+  created_at timestamptz default current_timestamp,
+  updated_at timestamptz default current_timestamp
 );
 
-comment on column finance.journal_entries.status is
-'{
+comment on column finance.journal_entries.status is '{
     "progress": true,
     "enums": {
         "draft":    {"variant": "outline",     "icon": "FileEdit"},
@@ -1109,8 +1350,7 @@ comment on column finance.journal_entries.status is
     }
 }';
 
-comment on table finance.journal_entries is
-'{
+comment on table finance.journal_entries is '{
     "icon": "BookText",
     "display": "block",
     "query": {
@@ -1136,583 +1376,823 @@ comment on table finance.journal_entries is
 
 comment on column finance.journal_entries.attachments is '{"accept":"*", "maxFiles": 10}';
 
-revoke all on table finance.journal_entries from authenticated, service_role;
-grant select, insert, update, delete on table finance.journal_entries to authenticated;
+revoke all on table finance.journal_entries
+from
+  authenticated,
+  service_role;
+
+grant
+select
+,
+  insert,
+update,
+delete on table finance.journal_entries to authenticated;
 
 create index idx_finance_journal_entries_user_id on finance.journal_entries (user_id);
+
 create index idx_finance_journal_entries_debit_account_id on finance.journal_entries (debit_account_id);
+
 create index idx_finance_journal_entries_credit_account_id on finance.journal_entries (credit_account_id);
+
 create index idx_finance_journal_entries_status on finance.journal_entries (status);
+
 create index idx_finance_journal_entries_entry_date on finance.journal_entries (entry_date desc);
 
 alter table finance.journal_entries enable row level security;
 
-create policy journal_entries_select on finance.journal_entries
-    for select to authenticated
-    using (supasheet.has_permission('finance.journal_entries:select'));
+create policy journal_entries_select on finance.journal_entries for
+select
+  to authenticated using (
+    supasheet.has_permission ('finance.journal_entries:select')
+  );
 
-create policy journal_entries_insert on finance.journal_entries
-    for insert to authenticated
-    with check (supasheet.has_permission('finance.journal_entries:insert'));
+create policy journal_entries_insert on finance.journal_entries for insert to authenticated
+with
+  check (
+    supasheet.has_permission ('finance.journal_entries:insert')
+  );
 
 create policy journal_entries_update on finance.journal_entries
-    for update to authenticated
-    using (supasheet.has_permission('finance.journal_entries:update'))
-    with check (supasheet.has_permission('finance.journal_entries:update'));
+for update
+  to authenticated using (
+    supasheet.has_permission ('finance.journal_entries:update')
+  )
+with
+  check (
+    supasheet.has_permission ('finance.journal_entries:update')
+  );
 
-create policy journal_entries_delete on finance.journal_entries
-    for delete to authenticated
-    using (supasheet.has_permission('finance.journal_entries:delete'));
-
+create policy journal_entries_delete on finance.journal_entries for delete to authenticated using (
+  supasheet.has_permission ('finance.journal_entries:delete')
+);
 
 ----------------------------------------------------------------
 -- Reports
 ----------------------------------------------------------------
-
 create or replace view finance.invoices_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    i.id,
-    i.invoice_number,
-    i.customer_name,
-    i.customer_email,
-    i.status,
-    i.issue_date,
-    i.due_date,
-    i.paid_date,
-    i.total,
-    i.amount_paid,
-    (i.total - i.amount_paid) as amount_due,
-    i.currency,
-    case
-        when i.status = 'paid' then 0
-        when i.due_date is null then null
-        else greatest(0, (current_date - i.due_date))::int
-    end as days_overdue,
-    a.code as revenue_account_code,
-    a.name as revenue_account_name,
-    u.name as owner,
-    i.created_at,
-    i.updated_at
-from finance.invoices i
-left join finance.accounts a on a.id = i.revenue_account_id
-left join supasheet.users u on u.id = i.user_id;
+  i.id,
+  i.invoice_number,
+  i.customer_name,
+  i.customer_email,
+  i.status,
+  i.issue_date,
+  i.due_date,
+  i.paid_date,
+  i.total,
+  i.amount_paid,
+  (i.total - i.amount_paid) as amount_due,
+  i.currency,
+  case
+    when i.status = 'paid' then 0
+    when i.due_date is null then null
+    else greatest(0, (current_date - i.due_date))::int
+  end as days_overdue,
+  a.code as revenue_account_code,
+  a.name as revenue_account_name,
+  u.name as owner,
+  i.created_at,
+  i.updated_at
+from
+  finance.invoices i
+  left join finance.accounts a on a.id = i.revenue_account_id
+  left join supasheet.users u on u.id = i.user_id;
 
-revoke all on finance.invoices_report from authenticated, service_role;
-grant select on finance.invoices_report to authenticated;
+revoke all on finance.invoices_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.invoices_report to authenticated;
 
 comment on view finance.invoices_report is '{"type": "report", "name": "Invoices Report", "description": "All invoices with aging and account info"}';
 
-
 create or replace view finance.bills_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    b.id,
-    b.bill_number,
-    v.name as vendor,
-    b.status,
-    b.issue_date,
-    b.due_date,
-    b.paid_date,
-    b.total,
-    b.amount_paid,
-    (b.total - b.amount_paid) as amount_due,
-    b.currency,
-    case
-        when b.status = 'paid' then 0
-        when b.due_date is null then null
-        else greatest(0, (current_date - b.due_date))::int
-    end as days_overdue,
-    a.code as expense_account_code,
-    a.name as expense_account_name,
-    b.created_at,
-    b.updated_at
-from finance.bills b
-left join finance.vendors v on v.id = b.vendor_id
-left join finance.accounts a on a.id = b.expense_account_id;
+  b.id,
+  b.bill_number,
+  v.name as vendor,
+  b.status,
+  b.issue_date,
+  b.due_date,
+  b.paid_date,
+  b.total,
+  b.amount_paid,
+  (b.total - b.amount_paid) as amount_due,
+  b.currency,
+  case
+    when b.status = 'paid' then 0
+    when b.due_date is null then null
+    else greatest(0, (current_date - b.due_date))::int
+  end as days_overdue,
+  a.code as expense_account_code,
+  a.name as expense_account_name,
+  b.created_at,
+  b.updated_at
+from
+  finance.bills b
+  left join finance.vendors v on v.id = b.vendor_id
+  left join finance.accounts a on a.id = b.expense_account_id;
 
-revoke all on finance.bills_report from authenticated, service_role;
-grant select on finance.bills_report to authenticated;
+revoke all on finance.bills_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.bills_report to authenticated;
 
 comment on view finance.bills_report is '{"type": "report", "name": "Bills Report", "description": "All bills with vendor and aging info"}';
 
-
 create or replace view finance.expenses_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    e.id,
-    e.expense_number,
-    e.employee_name,
-    e.employee_email,
-    e.category,
-    e.status,
-    e.amount,
-    e.currency,
-    e.expense_date,
-    e.merchant,
-    e.payment_method,
-    a.code as account_code,
-    a.name as account_name,
-    r.name as reviewer,
-    e.reviewed_at,
-    e.reimbursed_at,
-    e.created_at
-from finance.expenses e
-left join finance.accounts a on a.id = e.expense_account_id
-left join supasheet.users r on r.id = e.reviewer_user_id;
+  e.id,
+  e.expense_number,
+  e.employee_name,
+  e.employee_email,
+  e.category,
+  e.status,
+  e.amount,
+  e.currency,
+  e.expense_date,
+  e.merchant,
+  e.payment_method,
+  a.code as account_code,
+  a.name as account_name,
+  r.name as reviewer,
+  e.reviewed_at,
+  e.reimbursed_at,
+  e.created_at
+from
+  finance.expenses e
+  left join finance.accounts a on a.id = e.expense_account_id
+  left join supasheet.users r on r.id = e.reviewer_user_id;
 
-revoke all on finance.expenses_report from authenticated, service_role;
-grant select on finance.expenses_report to authenticated;
+revoke all on finance.expenses_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.expenses_report to authenticated;
 
 comment on view finance.expenses_report is '{"type": "report", "name": "Expenses Report", "description": "Employee expense claims with reviewer"}';
 
-
 create or replace view finance.payroll_report
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    ps.id,
-    ps.payslip_number,
-    pr.run_number,
-    pr.pay_date,
-    ps.employee_name,
-    ps.employee_email,
-    ps.status,
-    ps.gross_salary,
-    ps.tax_withheld,
-    (ps.social_security + ps.health_insurance + ps.retirement + ps.other_deductions) as total_deductions,
-    ps.net_salary,
-    ps.currency,
-    ps.payment_method,
-    ps.paid_at,
-    ps.created_at
-from finance.payslips ps
-left join finance.payroll_runs pr on pr.id = ps.run_id;
+  ps.id,
+  ps.payslip_number,
+  pr.run_number,
+  pr.pay_date,
+  ps.employee_name,
+  ps.employee_email,
+  ps.status,
+  ps.gross_salary,
+  ps.tax_withheld,
+  (
+    ps.social_security + ps.health_insurance + ps.retirement + ps.other_deductions
+  ) as total_deductions,
+  ps.net_salary,
+  ps.currency,
+  ps.payment_method,
+  ps.paid_at,
+  ps.created_at
+from
+  finance.payslips ps
+  left join finance.payroll_runs pr on pr.id = ps.run_id;
 
-revoke all on finance.payroll_report from authenticated, service_role;
-grant select on finance.payroll_report to authenticated;
+revoke all on finance.payroll_report
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.payroll_report to authenticated;
 
 comment on view finance.payroll_report is '{"type": "report", "name": "Payroll Report", "description": "All payslips with payroll run info"}';
-
 
 ----------------------------------------------------------------
 -- Dashboard widget views
 ----------------------------------------------------------------
-
 -- card_1: total revenue (paid invoices) this year
 create or replace view finance.revenue_summary
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(total), 0) as value,
-    'trending-up' as icon,
-    'revenue (YTD)' as label
-from finance.invoices
-where status = 'paid'
+  coalesce(sum(total), 0) as value,
+  'trending-up' as icon,
+  'revenue (YTD)' as label
+from
+  finance.invoices
+where
+  status = 'paid'
   and issue_date >= date_trunc('year', current_date);
 
-revoke all on finance.revenue_summary from authenticated, service_role;
-grant select on finance.revenue_summary to authenticated;
+revoke all on finance.revenue_summary
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.revenue_summary to authenticated;
 
 -- card_2: AR vs AP outstanding
 create or replace view finance.ar_ap_split
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(i.total - i.amount_paid) filter (where i.status in ('sent', 'overdue')), 0)::bigint as primary,
-    coalesce(sum(b.total - b.amount_paid) filter (where b.status in ('pending', 'approved', 'overdue')), 0)::bigint as secondary,
-    'Receivable' as primary_label,
-    'Payable' as secondary_label
-from finance.invoices i
-full outer join finance.bills b on false;
+  coalesce(
+    sum(i.total - i.amount_paid) filter (
+      where
+        i.status in ('sent', 'overdue')
+    ),
+    0
+  )::bigint as primary,
+  coalesce(
+    sum(b.total - b.amount_paid) filter (
+      where
+        b.status in ('pending', 'approved', 'overdue')
+    ),
+    0
+  )::bigint as secondary,
+  'Receivable' as primary_label,
+  'Payable' as secondary_label
+from
+  finance.invoices i
+  full outer join finance.bills b on false;
 
-revoke all on finance.ar_ap_split from authenticated, service_role;
-grant select on finance.ar_ap_split to authenticated;
+revoke all on finance.ar_ap_split
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.ar_ap_split to authenticated;
 
 -- card_3: cash position (in - out, last 30d) + collection %
 create or replace view finance.cash_position
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    coalesce(sum(amount) filter (where direction = 'incoming' and status = 'completed'), 0) -
-    coalesce(sum(amount) filter (where direction = 'outgoing' and status = 'completed'), 0) as value,
-    case
-        when count(*) filter (where direction = 'incoming') > 0
-        then round(
-            (count(*) filter (where direction = 'incoming' and status = 'completed')::numeric
-             / count(*) filter (where direction = 'incoming')::numeric) * 100,
-            1
-        )
-        else 0
-    end as percent
-from finance.payments
-where payment_date >= current_date - interval '30 days';
+  coalesce(
+    sum(amount) filter (
+      where
+        direction = 'incoming'
+        and status = 'completed'
+    ),
+    0
+  ) - coalesce(
+    sum(amount) filter (
+      where
+        direction = 'outgoing'
+        and status = 'completed'
+    ),
+    0
+  ) as value,
+  case
+    when count(*) filter (
+      where
+        direction = 'incoming'
+    ) > 0 then round(
+      (
+        count(*) filter (
+          where
+            direction = 'incoming'
+            and status = 'completed'
+        )::numeric / count(*) filter (
+          where
+            direction = 'incoming'
+        )::numeric
+      ) * 100,
+      1
+    )
+    else 0
+  end as percent
+from
+  finance.payments
+where
+  payment_date >= current_date - interval '30 days';
 
-revoke all on finance.cash_position from authenticated, service_role;
-grant select on finance.cash_position to authenticated;
+revoke all on finance.cash_position
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.cash_position to authenticated;
 
 -- card_4: financial health (overdue + at-risk)
 create or replace view finance.financial_health
-with (security_invoker = true) as
-with metrics as (
+with
+  (security_invoker = true) as
+with
+  metrics as (
     select
-        (select count(*) from finance.invoices
-            where status in ('sent', 'overdue') and due_date is not null and due_date < current_date) as overdue_invoices,
-        (select count(*) from finance.bills
-            where status in ('pending', 'approved', 'overdue') and due_date is not null and due_date < current_date) as overdue_bills,
-        (select count(*) from finance.expenses
-            where status = 'submitted' and expense_date < current_date - interval '7 days') as stale_expenses,
-        (select count(*) from finance.invoices
-            where status in ('sent', 'overdue', 'draft')) as open_total
-)
+      (
+        select
+          count(*)
+        from
+          finance.invoices
+        where
+          status in ('sent', 'overdue')
+          and due_date is not null
+          and due_date < current_date
+      ) as overdue_invoices,
+      (
+        select
+          count(*)
+        from
+          finance.bills
+        where
+          status in ('pending', 'approved', 'overdue')
+          and due_date is not null
+          and due_date < current_date
+      ) as overdue_bills,
+      (
+        select
+          count(*)
+        from
+          finance.expenses
+        where
+          status = 'submitted'
+          and expense_date < current_date - interval '7 days'
+      ) as stale_expenses,
+      (
+        select
+          count(*)
+        from
+          finance.invoices
+        where
+          status in ('sent', 'overdue', 'draft')
+      ) as open_total
+  )
 select
-    (overdue_invoices + overdue_bills + stale_expenses) as current,
-    open_total as total,
-    json_build_array(
-        json_build_object('label', 'Overdue invoices', 'value', overdue_invoices),
-        json_build_object('label', 'Overdue bills',    'value', overdue_bills),
-        json_build_object('label', 'Stale expenses',   'value', stale_expenses)
-    ) as segments
-from metrics;
+  (overdue_invoices + overdue_bills + stale_expenses) as current,
+  open_total as total,
+  json_build_array(
+    json_build_object(
+      'label',
+      'Overdue invoices',
+      'value',
+      overdue_invoices
+    ),
+    json_build_object('label', 'Overdue bills', 'value', overdue_bills),
+    json_build_object(
+      'label',
+      'Stale expenses',
+      'value',
+      stale_expenses
+    )
+  ) as segments
+from
+  metrics;
 
-revoke all on finance.financial_health from authenticated, service_role;
-grant select on finance.financial_health to authenticated;
+revoke all on finance.financial_health
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.financial_health to authenticated;
 
 -- table_1: recent invoices
 create or replace view finance.recent_invoices
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    invoice_number as number,
-    customer_name as customer,
-    coalesce(total::text, '0') as total,
-    to_char(issue_date, 'MM/DD') as issued
-from finance.invoices
-order by issue_date desc
-limit 10;
+  invoice_number as number,
+  customer_name as customer,
+  coalesce(total::text, '0') as total,
+  to_char(issue_date, 'MM/DD') as issued
+from
+  finance.invoices
+order by
+  issue_date desc
+limit
+  10;
 
-revoke all on finance.recent_invoices from authenticated, service_role;
-grant select on finance.recent_invoices to authenticated;
+revoke all on finance.recent_invoices
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.recent_invoices to authenticated;
 
 -- table_2: top vendors by spend
 create or replace view finance.top_vendors
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    v.name as vendor,
-    coalesce(v.country, '') as country,
-    count(b.id) as bills,
-    coalesce(sum(b.total), 0) as spend
-from finance.vendors v
-left join finance.bills b on b.vendor_id = v.id
-group by v.id, v.name, v.country
-order by spend desc nulls last
-limit 10;
+  v.name as vendor,
+  coalesce(v.country, '') as country,
+  count(b.id) as bills,
+  coalesce(sum(b.total), 0) as spend
+from
+  finance.vendors v
+  left join finance.bills b on b.vendor_id = v.id
+group by
+  v.id,
+  v.name,
+  v.country
+order by
+  spend desc nulls last
+limit
+  10;
 
-revoke all on finance.top_vendors from authenticated, service_role;
-grant select on finance.top_vendors to authenticated;
+revoke all on finance.top_vendors
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.top_vendors to authenticated;
 
 comment on view finance.revenue_summary is '{"type": "dashboard_widget", "name": "Revenue (YTD)", "description": "Sum of paid invoices this year", "widget_type": "card_1"}';
-comment on view finance.ar_ap_split is '{"type": "dashboard_widget", "name": "AR vs AP", "description": "Outstanding receivables vs payables", "widget_type": "card_2"}';
-comment on view finance.cash_position is '{"type": "dashboard_widget", "name": "Cash Position (30d)", "description": "Net cash flow and collection rate", "widget_type": "card_3"}';
-comment on view finance.financial_health is '{"type": "dashboard_widget", "name": "Financial Health", "description": "Overdue and stale items", "widget_type": "card_4"}';
-comment on view finance.recent_invoices is '{"type": "dashboard_widget", "name": "Recent Invoices", "description": "Latest 10 invoices", "widget_type": "table_1"}';
-comment on view finance.top_vendors is '{"type": "dashboard_widget", "name": "Top Vendors", "description": "Top 10 vendors by spend", "widget_type": "table_2"}';
 
+comment on view finance.ar_ap_split is '{"type": "dashboard_widget", "name": "AR vs AP", "description": "Outstanding receivables vs payables", "widget_type": "card_2"}';
+
+comment on view finance.cash_position is '{"type": "dashboard_widget", "name": "Cash Position (30d)", "description": "Net cash flow and collection rate", "widget_type": "card_3"}';
+
+comment on view finance.financial_health is '{"type": "dashboard_widget", "name": "Financial Health", "description": "Overdue and stale items", "widget_type": "card_4"}';
+
+comment on view finance.recent_invoices is '{"type": "dashboard_widget", "name": "Recent Invoices", "description": "Latest 10 invoices", "widget_type": "table_1"}';
+
+comment on view finance.top_vendors is '{"type": "dashboard_widget", "name": "Top Vendors", "description": "Top 10 vendors by spend", "widget_type": "table_2"}';
 
 ----------------------------------------------------------------
 -- Charts
 ----------------------------------------------------------------
-
 -- Pie: invoices by status
 create or replace view finance.invoices_by_status_pie
-with (security_invoker = true) as
-select status::text as label, count(*) as value
-from finance.invoices
-group by status
+with
+  (security_invoker = true) as
+select
+  status::text as label,
+  count(*) as value
+from
+  finance.invoices
+group by
+  status
 order by
-    case status
-        when 'draft' then 1
-        when 'sent' then 2
-        when 'paid' then 3
-        when 'overdue' then 4
-        when 'cancelled' then 5
-        when 'refunded' then 6
-    end;
+  case status
+    when 'draft' then 1
+    when 'sent' then 2
+    when 'paid' then 3
+    when 'overdue' then 4
+    when 'cancelled' then 5
+    when 'refunded' then 6
+  end;
 
-revoke all on finance.invoices_by_status_pie from authenticated, service_role;
-grant select on finance.invoices_by_status_pie to authenticated;
+revoke all on finance.invoices_by_status_pie
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.invoices_by_status_pie to authenticated;
 
 -- Bar: monthly revenue (last 12 months)
 create or replace view finance.revenue_by_month_bar
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    to_char(date_trunc('month', issue_date), 'Mon YY') as label,
-    coalesce(sum(total) filter (where status = 'paid'), 0)::bigint as paid,
-    coalesce(sum(total) filter (where status in ('sent', 'overdue')), 0)::bigint as outstanding
-from finance.invoices
-where issue_date >= current_date - interval '12 months'
-group by date_trunc('month', issue_date)
-order by date_trunc('month', issue_date);
+  to_char(date_trunc('month', issue_date), 'Mon YY') as label,
+  coalesce(
+    sum(total) filter (
+      where
+        status = 'paid'
+    ),
+    0
+  )::bigint as paid,
+  coalesce(
+    sum(total) filter (
+      where
+        status in ('sent', 'overdue')
+    ),
+    0
+  )::bigint as outstanding
+from
+  finance.invoices
+where
+  issue_date >= current_date - interval '12 months'
+group by
+  date_trunc('month', issue_date)
+order by
+  date_trunc('month', issue_date);
 
-revoke all on finance.revenue_by_month_bar from authenticated, service_role;
-grant select on finance.revenue_by_month_bar to authenticated;
+revoke all on finance.revenue_by_month_bar
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.revenue_by_month_bar to authenticated;
 
 -- Line: weekly cash flow trend (last 12 weeks)
 create or replace view finance.cash_flow_trend_line
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    to_char(date_trunc('week', payment_date), 'Mon DD') as date,
-    coalesce(sum(amount) filter (where direction = 'incoming' and status = 'completed'), 0)::bigint as inflow,
-    coalesce(sum(amount) filter (where direction = 'outgoing' and status = 'completed'), 0)::bigint as outflow
-from finance.payments
-where payment_date >= current_date - interval '12 weeks'
-group by date_trunc('week', payment_date)
-order by date_trunc('week', payment_date);
+  to_char(date_trunc('week', payment_date), 'Mon DD') as date,
+  coalesce(
+    sum(amount) filter (
+      where
+        direction = 'incoming'
+        and status = 'completed'
+    ),
+    0
+  )::bigint as inflow,
+  coalesce(
+    sum(amount) filter (
+      where
+        direction = 'outgoing'
+        and status = 'completed'
+    ),
+    0
+  )::bigint as outflow
+from
+  finance.payments
+where
+  payment_date >= current_date - interval '12 weeks'
+group by
+  date_trunc('week', payment_date)
+order by
+  date_trunc('week', payment_date);
 
-revoke all on finance.cash_flow_trend_line from authenticated, service_role;
-grant select on finance.cash_flow_trend_line to authenticated;
+revoke all on finance.cash_flow_trend_line
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.cash_flow_trend_line to authenticated;
 
 -- Radar: expense categories
 create or replace view finance.expense_categories_radar
-with (security_invoker = true) as
+with
+  (security_invoker = true) as
 select
-    category::text as metric,
-    count(*) as total,
-    count(*) filter (where status in ('approved', 'reimbursed')) as approved,
-    count(*) filter (where status = 'submitted') as pending
-from finance.expenses
-group by category;
+  category::text as metric,
+  count(*) as total,
+  count(*) filter (
+    where
+      status in ('approved', 'reimbursed')
+  ) as approved,
+  count(*) filter (
+    where
+      status = 'submitted'
+  ) as pending
+from
+  finance.expenses
+group by
+  category;
 
-revoke all on finance.expense_categories_radar from authenticated, service_role;
-grant select on finance.expense_categories_radar to authenticated;
+revoke all on finance.expense_categories_radar
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on finance.expense_categories_radar to authenticated;
 
 comment on view finance.invoices_by_status_pie is '{"type": "chart", "name": "Invoices By Status", "description": "Invoice count grouped by status", "chart_type": "pie"}';
-comment on view finance.revenue_by_month_bar is '{"type": "chart", "name": "Revenue By Month", "description": "Paid vs outstanding revenue per month", "chart_type": "bar"}';
-comment on view finance.cash_flow_trend_line is '{"type": "chart", "name": "Cash Flow Trend", "description": "Weekly inflow vs outflow over 12 weeks", "chart_type": "line"}';
-comment on view finance.expense_categories_radar is '{"type": "chart", "name": "Expense Categories", "description": "Expense counts across categories and statuses", "chart_type": "radar"}';
 
+comment on view finance.revenue_by_month_bar is '{"type": "chart", "name": "Revenue By Month", "description": "Paid vs outstanding revenue per month", "chart_type": "bar"}';
+
+comment on view finance.cash_flow_trend_line is '{"type": "chart", "name": "Cash Flow Trend", "description": "Weekly inflow vs outflow over 12 weeks", "chart_type": "line"}';
+
+comment on view finance.expense_categories_radar is '{"type": "chart", "name": "Expense Categories", "description": "Expense counts across categories and statuses", "chart_type": "radar"}';
 
 ----------------------------------------------------------------
 -- Role permissions (x-admin)
 ----------------------------------------------------------------
-
-insert into supasheet.role_permissions (role, permission) values
-    ('x-admin', 'finance.accounts:select'),
-    ('x-admin', 'finance.accounts:insert'),
-    ('x-admin', 'finance.accounts:update'),
-    ('x-admin', 'finance.accounts:delete'),
-    ('x-admin', 'finance.accounts:audit'),
-
-    ('x-admin', 'finance.vendors:select'),
-    ('x-admin', 'finance.vendors:insert'),
-    ('x-admin', 'finance.vendors:update'),
-    ('x-admin', 'finance.vendors:delete'),
-    ('x-admin', 'finance.vendors:audit'),
-
-    ('x-admin', 'finance.invoices:select'),
-    ('x-admin', 'finance.invoices:insert'),
-    ('x-admin', 'finance.invoices:update'),
-    ('x-admin', 'finance.invoices:delete'),
-    ('x-admin', 'finance.invoices:audit'),
-
-    ('x-admin', 'finance.bills:select'),
-    ('x-admin', 'finance.bills:insert'),
-    ('x-admin', 'finance.bills:update'),
-    ('x-admin', 'finance.bills:delete'),
-    ('x-admin', 'finance.bills:audit'),
-
-    ('x-admin', 'finance.expenses:select'),
-    ('x-admin', 'finance.expenses:insert'),
-    ('x-admin', 'finance.expenses:update'),
-    ('x-admin', 'finance.expenses:delete'),
-    ('x-admin', 'finance.expenses:audit'),
-
-    ('x-admin', 'finance.payments:select'),
-    ('x-admin', 'finance.payments:insert'),
-    ('x-admin', 'finance.payments:update'),
-    ('x-admin', 'finance.payments:delete'),
-    ('x-admin', 'finance.payments:audit'),
-
-    ('x-admin', 'finance.budgets:select'),
-    ('x-admin', 'finance.budgets:insert'),
-    ('x-admin', 'finance.budgets:update'),
-    ('x-admin', 'finance.budgets:delete'),
-    ('x-admin', 'finance.budgets:audit'),
-
-    ('x-admin', 'finance.payroll_runs:select'),
-    ('x-admin', 'finance.payroll_runs:insert'),
-    ('x-admin', 'finance.payroll_runs:update'),
-    ('x-admin', 'finance.payroll_runs:delete'),
-    ('x-admin', 'finance.payroll_runs:audit'),
-
-    ('x-admin', 'finance.payslips:select'),
-    ('x-admin', 'finance.payslips:insert'),
-    ('x-admin', 'finance.payslips:update'),
-    ('x-admin', 'finance.payslips:delete'),
-    ('x-admin', 'finance.payslips:audit'),
-
-    ('x-admin', 'finance.journal_entries:select'),
-    ('x-admin', 'finance.journal_entries:insert'),
-    ('x-admin', 'finance.journal_entries:update'),
-    ('x-admin', 'finance.journal_entries:delete'),
-    ('x-admin', 'finance.journal_entries:audit'),
-
-    ('x-admin', 'finance.users:select'),
-
-    ('x-admin', 'finance.invoices_report:select'),
-    ('x-admin', 'finance.bills_report:select'),
-    ('x-admin', 'finance.expenses_report:select'),
-    ('x-admin', 'finance.payroll_report:select'),
-
-    ('x-admin', 'finance.revenue_summary:select'),
-    ('x-admin', 'finance.ar_ap_split:select'),
-    ('x-admin', 'finance.cash_position:select'),
-    ('x-admin', 'finance.financial_health:select'),
-    ('x-admin', 'finance.recent_invoices:select'),
-    ('x-admin', 'finance.top_vendors:select'),
-
-    ('x-admin', 'finance.invoices_by_status_pie:select'),
-    ('x-admin', 'finance.revenue_by_month_bar:select'),
-    ('x-admin', 'finance.cash_flow_trend_line:select'),
-    ('x-admin', 'finance.expense_categories_radar:select');
-
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'finance.accounts:select'),
+  ('x-admin', 'finance.accounts:insert'),
+  ('x-admin', 'finance.accounts:update'),
+  ('x-admin', 'finance.accounts:delete'),
+  ('x-admin', 'finance.accounts:audit'),
+  ('x-admin', 'finance.vendors:select'),
+  ('x-admin', 'finance.vendors:insert'),
+  ('x-admin', 'finance.vendors:update'),
+  ('x-admin', 'finance.vendors:delete'),
+  ('x-admin', 'finance.vendors:audit'),
+  ('x-admin', 'finance.invoices:select'),
+  ('x-admin', 'finance.invoices:insert'),
+  ('x-admin', 'finance.invoices:update'),
+  ('x-admin', 'finance.invoices:delete'),
+  ('x-admin', 'finance.invoices:audit'),
+  ('x-admin', 'finance.bills:select'),
+  ('x-admin', 'finance.bills:insert'),
+  ('x-admin', 'finance.bills:update'),
+  ('x-admin', 'finance.bills:delete'),
+  ('x-admin', 'finance.bills:audit'),
+  ('x-admin', 'finance.expenses:select'),
+  ('x-admin', 'finance.expenses:insert'),
+  ('x-admin', 'finance.expenses:update'),
+  ('x-admin', 'finance.expenses:delete'),
+  ('x-admin', 'finance.expenses:audit'),
+  ('x-admin', 'finance.payments:select'),
+  ('x-admin', 'finance.payments:insert'),
+  ('x-admin', 'finance.payments:update'),
+  ('x-admin', 'finance.payments:delete'),
+  ('x-admin', 'finance.payments:audit'),
+  ('x-admin', 'finance.budgets:select'),
+  ('x-admin', 'finance.budgets:insert'),
+  ('x-admin', 'finance.budgets:update'),
+  ('x-admin', 'finance.budgets:delete'),
+  ('x-admin', 'finance.budgets:audit'),
+  ('x-admin', 'finance.payroll_runs:select'),
+  ('x-admin', 'finance.payroll_runs:insert'),
+  ('x-admin', 'finance.payroll_runs:update'),
+  ('x-admin', 'finance.payroll_runs:delete'),
+  ('x-admin', 'finance.payroll_runs:audit'),
+  ('x-admin', 'finance.payslips:select'),
+  ('x-admin', 'finance.payslips:insert'),
+  ('x-admin', 'finance.payslips:update'),
+  ('x-admin', 'finance.payslips:delete'),
+  ('x-admin', 'finance.payslips:audit'),
+  ('x-admin', 'finance.journal_entries:select'),
+  ('x-admin', 'finance.journal_entries:insert'),
+  ('x-admin', 'finance.journal_entries:update'),
+  ('x-admin', 'finance.journal_entries:delete'),
+  ('x-admin', 'finance.journal_entries:audit'),
+  ('x-admin', 'finance.users:select'),
+  ('x-admin', 'finance.invoices_report:select'),
+  ('x-admin', 'finance.bills_report:select'),
+  ('x-admin', 'finance.expenses_report:select'),
+  ('x-admin', 'finance.payroll_report:select'),
+  ('x-admin', 'finance.revenue_summary:select'),
+  ('x-admin', 'finance.ar_ap_split:select'),
+  ('x-admin', 'finance.cash_position:select'),
+  ('x-admin', 'finance.financial_health:select'),
+  ('x-admin', 'finance.recent_invoices:select'),
+  ('x-admin', 'finance.top_vendors:select'),
+  (
+    'x-admin',
+    'finance.invoices_by_status_pie:select'
+  ),
+  ('x-admin', 'finance.revenue_by_month_bar:select'),
+  ('x-admin', 'finance.cash_flow_trend_line:select'),
+  (
+    'x-admin',
+    'finance.expense_categories_radar:select'
+  );
 
 ----------------------------------------------------------------
 -- Audit triggers
 ----------------------------------------------------------------
-
 create trigger audit_finance_accounts_insert
-    after insert on finance.accounts
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.accounts for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_accounts_update
-    after update on finance.accounts
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.accounts for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_accounts_delete
-    before delete on finance.accounts
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_accounts_delete before delete on finance.accounts for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_vendors_insert
-    after insert on finance.vendors
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.vendors for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_vendors_update
-    after update on finance.vendors
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.vendors for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_vendors_delete
-    before delete on finance.vendors
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_vendors_delete before delete on finance.vendors for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_invoices_insert
-    after insert on finance.invoices
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.invoices for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_invoices_update
-    after update on finance.invoices
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.invoices for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_invoices_delete
-    before delete on finance.invoices
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_invoices_delete before delete on finance.invoices for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_bills_insert
-    after insert on finance.bills
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.bills for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_bills_update
-    after update on finance.bills
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.bills for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_bills_delete
-    before delete on finance.bills
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_bills_delete before delete on finance.bills for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_expenses_insert
-    after insert on finance.expenses
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.expenses for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_expenses_update
-    after update on finance.expenses
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.expenses for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_expenses_delete
-    before delete on finance.expenses
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_expenses_delete before delete on finance.expenses for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payments_insert
-    after insert on finance.payments
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.payments for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payments_update
-    after update on finance.payments
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.payments for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_payments_delete
-    before delete on finance.payments
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_payments_delete before delete on finance.payments for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_budgets_insert
-    after insert on finance.budgets
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.budgets for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_budgets_update
-    after update on finance.budgets
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.budgets for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_budgets_delete
-    before delete on finance.budgets
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_budgets_delete before delete on finance.budgets for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payroll_runs_insert
-    after insert on finance.payroll_runs
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.payroll_runs for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payroll_runs_update
-    after update on finance.payroll_runs
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.payroll_runs for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_payroll_runs_delete
-    before delete on finance.payroll_runs
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_payroll_runs_delete before delete on finance.payroll_runs for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payslips_insert
-    after insert on finance.payslips
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.payslips for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payslips_update
-    after update on finance.payslips
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.payslips for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_payslips_delete
-    before delete on finance.payslips
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_payslips_delete before delete on finance.payslips for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_journal_entries_insert
-    after insert on finance.journal_entries
-    for each row execute function supasheet.audit_trigger_function();
+after insert on finance.journal_entries for each row
+execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_journal_entries_update
-    after update on finance.journal_entries
-    for each row execute function supasheet.audit_trigger_function();
+after
+update on finance.journal_entries for each row
+execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_journal_entries_delete
-    before delete on finance.journal_entries
-    for each row execute function supasheet.audit_trigger_function();
-
+create trigger audit_finance_journal_entries_delete before delete on finance.journal_entries for each row
+execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
 -- Notifications
 ----------------------------------------------------------------
-
 -- Invoices: notify owner + finance team on creation, paid, or overdue transitions
-create or replace function finance.trg_invoices_notify()
-returns trigger as $$
+create or replace function finance.trg_invoices_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_type   text;
@@ -1750,19 +2230,20 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists invoices_notify on finance.invoices;
-create trigger invoices_notify
-    after insert or update of status
-    on finance.invoices
-    for each row
-execute function finance.trg_invoices_notify();
 
+create trigger invoices_notify
+after insert
+or
+update of status on finance.invoices for each row
+execute function finance.trg_invoices_notify ();
 
 -- Expenses: notify reviewers on submission, employee on status change
-create or replace function finance.trg_expenses_notify()
-returns trigger as $$
+create or replace function finance.trg_expenses_notify () returns trigger as $$
 declare
     v_recipients uuid[];
     v_type   text;
@@ -1801,19 +2282,20 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists expenses_notify on finance.expenses;
-create trigger expenses_notify
-    after insert or update of status
-    on finance.expenses
-    for each row
-execute function finance.trg_expenses_notify();
 
+create trigger expenses_notify
+after insert
+or
+update of status on finance.expenses for each row
+execute function finance.trg_expenses_notify ();
 
 -- Payroll runs: notify finance team on completion
-create or replace function finance.trg_payroll_runs_notify()
-returns trigger as $$
+create or replace function finance.trg_payroll_runs_notify () returns trigger as $$
 declare
     v_recipients uuid[];
 begin
@@ -1846,11 +2328,13 @@ begin
     );
     return new;
 end;
-$$ language plpgsql security definer set search_path = '';
+$$ language plpgsql security definer
+set
+  search_path = '';
 
 drop trigger if exists payroll_runs_notify on finance.payroll_runs;
+
 create trigger payroll_runs_notify
-    after update of status
-    on finance.payroll_runs
-    for each row
-execute function finance.trg_payroll_runs_notify();
+after
+update of status on finance.payroll_runs for each row
+execute function finance.trg_payroll_runs_notify ();

@@ -13,14 +13,37 @@ N+1 queries execute one query per item in a loop. Batch them into a single query
 
 ```sql
 -- First query: get all users
-select id from users where active = true;  -- Returns 100 IDs
+select
+  id
+from
+  users
+where
+  active = true;
 
+-- Returns 100 IDs
 -- Then N queries, one per user
-select * from orders where user_id = 1;
-select * from orders where user_id = 2;
-select * from orders where user_id = 3;
--- ... 97 more queries!
+select
+  *
+from
+  orders
+where
+  user_id = 1;
 
+select
+  *
+from
+  orders
+where
+  user_id = 2;
+
+select
+  *
+from
+  orders
+where
+  user_id = 3;
+
+-- ... 97 more queries!
 -- Total: 101 round trips to database
 ```
 

@@ -41,10 +41,7 @@ select * from orders;  -- Only returns orders for user 123
 Policy for authenticated role:
 
 ```sql
-create policy orders_user_policy on orders
-  for all
-  to authenticated
-  using (user_id = auth.uid());
+create policy orders_user_policy on orders for all to authenticated using (user_id = auth.uid ());
 ```
 
 Reference: [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)

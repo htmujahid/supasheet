@@ -44,7 +44,9 @@ CREATE TABLE users (
 );
 
 -- Now show the index
-CREATE INDEX users_active_email_idx ON users(email) WHERE deleted_at IS NULL;
+CREATE INDEX users_active_email_idx ON users (email)
+WHERE
+  deleted_at IS NULL;
 ```
 
 ### 5. Semantic Naming
@@ -62,12 +64,14 @@ Use meaningful table/column names. Names carry intent for LLMs.
 
 ```sql
 -- Use lowercase keywords, clear formatting
-CREATE INDEX CONCURRENTLY users_email_idx
-  ON users(email)
-  WHERE deleted_at IS NULL;
+CREATE INDEX CONCURRENTLY users_email_idx ON users (email)
+WHERE
+  deleted_at IS NULL;
 
 -- Not cramped or ALL CAPS
-CREATE INDEX CONCURRENTLY USERS_EMAIL_IDX ON USERS(EMAIL) WHERE DELETED_AT IS NULL;
+CREATE INDEX CONCURRENTLY USERS_EMAIL_IDX ON USERS (EMAIL)
+WHERE
+  DELETED_AT IS NULL;
 ```
 
 ### Comments

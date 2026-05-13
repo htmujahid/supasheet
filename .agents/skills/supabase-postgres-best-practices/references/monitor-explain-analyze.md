@@ -13,7 +13,14 @@ EXPLAIN ANALYZE executes the query and shows actual timings, revealing the true 
 
 ```sql
 -- Query is slow, but why?
-select * from orders where customer_id = 123 and status = 'pending';
+select
+  *
+from
+  orders
+where
+  customer_id = 123
+  and status = 'pending';
+
 -- "It must be missing an index" - but which one?
 ```
 
@@ -21,7 +28,13 @@ select * from orders where customer_id = 123 and status = 'pending';
 
 ```sql
 explain (analyze, buffers, format text)
-select * from orders where customer_id = 123 and status = 'pending';
+select
+  *
+from
+  orders
+where
+  customer_id = 123
+  and status = 'pending';
 
 -- Output reveals the issue:
 -- Seq Scan on orders (cost=0.00..25000.00 rows=50 width=100) (actual time=0.015..450.123 rows=50 loops=1)

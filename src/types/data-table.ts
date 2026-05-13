@@ -22,7 +22,6 @@ declare module "@tanstack/react-table" {
     TValue,
   > extends ColumnFieldMetadata {}
 
-   
   interface TableMeta<TData extends RowData> {
     filename?: string
   }

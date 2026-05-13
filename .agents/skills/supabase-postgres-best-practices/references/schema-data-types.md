@@ -13,11 +13,11 @@ Using the right data types reduces storage, improves query performance, and prev
 
 ```sql
 create table users (
-  id int,                    -- Will overflow at 2.1 billion
-  email varchar(255),        -- Unnecessary length limit
-  created_at timestamp,      -- Missing timezone info
-  is_active varchar(5),      -- String for boolean
-  price varchar(20)          -- String for numeric
+  id int, -- Will overflow at 2.1 billion
+  email varchar(255), -- Unnecessary length limit
+  created_at timestamp, -- Missing timezone info
+  is_active varchar(5), -- String for boolean
+  price varchar(20) -- String for numeric
 );
 ```
 
@@ -25,11 +25,11 @@ create table users (
 
 ```sql
 create table users (
-  id bigint generated always as identity primary key,  -- 9 quintillion max
-  email text,                     -- No artificial limit, same performance as varchar
-  created_at timestamptz,         -- Always store timezone-aware timestamps
+  id bigint generated always as identity primary key, -- 9 quintillion max
+  email text, -- No artificial limit, same performance as varchar
+  created_at timestamptz, -- Always store timezone-aware timestamps
   is_active boolean default true, -- 1 byte vs variable string length
-  price numeric(10,2)             -- Exact decimal arithmetic
+  price numeric(10, 2) -- Exact decimal arithmetic
 );
 ```
 
