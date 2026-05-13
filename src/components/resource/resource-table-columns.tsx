@@ -122,7 +122,6 @@ export function getResourceTableColumns({
         <ResourceColumnHeader
           column={column}
           title={name}
-          columnSchema={col}
           isSorted={column.getIsSorted()}
         />
       ),

@@ -241,34 +241,34 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
             </p>
           </div>
           <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <p className="text-sm font-semibold">Old Data</p>
-                {data.old_data ? (
-                  <ScrollArea className="max-h-64 w-full overflow-auto rounded-md border">
-                    <pre className="p-3 text-xs">
-                      {JSON.stringify(data.old_data, null, 2)}
-                    </pre>
-                  </ScrollArea>
-                ) : (
-                  <div className="flex h-20 items-center justify-center rounded-md border border-dashed">
-                    <p className="text-xs text-muted-foreground">No data</p>
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col gap-2">
-                <p className="text-sm font-semibold">New Data</p>
-                {data.new_data ? (
-                  <ScrollArea className="max-h-64 w-full overflow-auto rounded-md border">
-                    <pre className="p-3 text-xs">
-                      {JSON.stringify(data.new_data, null, 2)}
-                    </pre>
-                  </ScrollArea>
-                ) : (
-                  <div className="flex h-20 items-center justify-center rounded-md border border-dashed">
-                    <p className="text-xs text-muted-foreground">No data</p>
-                  </div>
-                )}
-              </div>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-semibold">Old Data</p>
+              {data.old_data ? (
+                <ScrollArea className="max-h-64 w-full overflow-auto rounded-md border">
+                  <pre className="p-3 text-xs">
+                    {JSON.stringify(data.old_data, null, 2)}
+                  </pre>
+                </ScrollArea>
+              ) : (
+                <div className="flex h-20 items-center justify-center rounded-md border border-dashed">
+                  <p className="text-xs text-muted-foreground">No data</p>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-semibold">New Data</p>
+              {data.new_data ? (
+                <ScrollArea className="max-h-64 w-full overflow-auto rounded-md border">
+                  <pre className="p-3 text-xs">
+                    {JSON.stringify(data.new_data, null, 2)}
+                  </pre>
+                </ScrollArea>
+              ) : (
+                <div className="flex h-20 items-center justify-center rounded-md border border-dashed">
+                  <p className="text-xs text-muted-foreground">No data</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

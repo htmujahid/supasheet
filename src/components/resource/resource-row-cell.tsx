@@ -59,14 +59,16 @@ export const ResourceRowCell = memo(function ({
     const alias = joinConfig.on.endsWith("_id")
       ? joinConfig.on.slice(0, -3)
       : joinConfig.on
-    const joinedObj = row.original?.[alias as keyof ResourceDataSchema] as
+    const joinedObj = row.original?.[alias] as
       | Record<string, unknown>
       | null
       | undefined
     const joinedValue = joinedObj?.[joinConfig.columns[0]]
 
     return (
-      <div className={cn("relative truncate select-none", relationship && "pl-6")}>
+      <div
+        className={cn("relative truncate select-none", relationship && "pl-6")}
+      >
         {relationship && (
           <DetailRecordTrigger
             pk={{ [relationship.target_column_name]: value }}
@@ -103,7 +105,9 @@ export const ResourceRowCell = memo(function ({
             <ArrowUpRightIcon />
           </DetailRecordTrigger>
           <span>
-            {row.original?.[relationship.source_column_name as keyof ResourceDataSchema]?.toString() || ""}
+            {row.original?.[
+              relationship.source_column_name
+            ]?.toString() || ""}
           </span>
         </>
       ) : columnData.isArray ? (

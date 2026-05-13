@@ -38,65 +38,65 @@ export function getResourceForeignTableColumns({
   const selectColumn: ColumnDef<ResourceDataSchema, unknown> | null =
     hasPrimaryKeys
       ? {
-        id: "select",
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            indeterminate={
-              table.getIsSomePageRowsSelected() &&
-              !table.getIsAllPageRowsSelected()
-            }
-            onCheckedChange={(checked) =>
-              table.toggleAllPageRowsSelected(!!checked)
-            }
-            aria-label="Select all"
-          />
-        ),
-        cell: ({ row }) => {
-          const pk = Object.fromEntries(
-            primaryKeys.map((k) => [k.name, row.original[k.name]])
-          )
-          return (
-            <div className="flex items-center gap-1.5">
-              <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(checked) => row.toggleSelected(!!checked)}
-                aria-label="Select row"
-              />
-              {!canUpdate ? (
-                <EditRecordTrigger
-                  pk={pk}
-                  primaryKeyNames={primaryKeyNames}
-                  schema={resourceSchema.schema}
-                  resource={resourceSchema.name}
-                  redirect={redirect}
-                  size="icon-xs"
-                  variant="outline"
-                  className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
-                >
-                  <PencilIcon />
-                </EditRecordTrigger>
-              ) : (
-                <DetailRecordTrigger
-                  pk={pk}
-                  primaryKeyNames={primaryKeyNames}
-                  schema={resourceSchema.schema}
-                  resource={resourceSchema.name}
-                  size="icon-xs"
-                  variant="outline"
-                  className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
-                >
-                  <ArrowUpRightIcon />
-                </DetailRecordTrigger>
-              )}
-            </div>
-          )
-        },
-        size: 60,
-        enableSorting: false,
-        enableHiding: false,
-        enableColumnFilter: false,
-      }
+          id: "select",
+          header: ({ table }) => (
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected()}
+              indeterminate={
+                table.getIsSomePageRowsSelected() &&
+                !table.getIsAllPageRowsSelected()
+              }
+              onCheckedChange={(checked) =>
+                table.toggleAllPageRowsSelected(!!checked)
+              }
+              aria-label="Select all"
+            />
+          ),
+          cell: ({ row }) => {
+            const pk = Object.fromEntries(
+              primaryKeys.map((k) => [k.name, row.original[k.name]])
+            )
+            return (
+              <div className="flex items-center gap-1.5">
+                <Checkbox
+                  checked={row.getIsSelected()}
+                  onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+                  aria-label="Select row"
+                />
+                {!canUpdate ? (
+                  <EditRecordTrigger
+                    pk={pk}
+                    primaryKeyNames={primaryKeyNames}
+                    schema={resourceSchema.schema}
+                    resource={resourceSchema.name}
+                    redirect={redirect}
+                    size="icon-xs"
+                    variant="outline"
+                    className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
+                  >
+                    <PencilIcon />
+                  </EditRecordTrigger>
+                ) : (
+                  <DetailRecordTrigger
+                    pk={pk}
+                    primaryKeyNames={primaryKeyNames}
+                    schema={resourceSchema.schema}
+                    resource={resourceSchema.name}
+                    size="icon-xs"
+                    variant="outline"
+                    className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
+                  >
+                    <ArrowUpRightIcon />
+                  </DetailRecordTrigger>
+                )}
+              </div>
+            )
+          },
+          size: 60,
+          enableSorting: false,
+          enableHiding: false,
+          enableColumnFilter: false,
+        }
       : null
 
   return [
@@ -124,29 +124,29 @@ export function getResourceForeignTableColumns({
     })),
     ...(data.length > 0
       ? Object.keys(data[0]).map((key) => {
-        const existingColumn = columnsSchema.find((c) => c.name === key)
-        if (existingColumn) {
-          return null
-        }
-        return {
-          id: key,
-          accessorKey: key,
-          header: () => (
-            <div className="truncate select-none">{formatTitle(key)}</div>
-          ),
-          cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
-            <ResourceRowCell
-              row={row}
-              columnSchema={{ id: key, name: key } as ColumnSchema}
-              resourceSchema={resourceSchema}
-            />
-          ),
-          size: 150,
-          enableColumnFilter: false,
-          enableSorting: true,
-          enableHiding: true,
-        } as ColumnDef<ResourceDataSchema, unknown>
-      })
+          const existingColumn = columnsSchema.find((c) => c.name === key)
+          if (existingColumn) {
+            return null
+          }
+          return {
+            id: key,
+            accessorKey: key,
+            header: () => (
+              <div className="truncate select-none">{formatTitle(key)}</div>
+            ),
+            cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
+              <ResourceRowCell
+                row={row}
+                columnSchema={{ id: key, name: key } as ColumnSchema}
+                resourceSchema={resourceSchema}
+              />
+            ),
+            size: 150,
+            enableColumnFilter: false,
+            enableSorting: true,
+            enableHiding: true,
+          } as ColumnDef<ResourceDataSchema, unknown>
+        })
       : []
     ).filter((c) => c !== null),
   ] as ColumnDef<ResourceDataSchema, unknown>[]

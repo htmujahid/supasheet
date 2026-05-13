@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import type { ColumnSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { cn } from "#/lib/utils"
 
@@ -109,6 +108,5 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
   column: Column<TData, TValue>
   title: string
   className?: string
-  columnSchema: ColumnSchema
   isSorted: false | "asc" | "desc"
 }) => React.ReactElement

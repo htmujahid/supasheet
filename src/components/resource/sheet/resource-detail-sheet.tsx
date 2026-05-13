@@ -5,12 +5,10 @@ import { Link } from "@tanstack/react-router"
 import { ExternalLinkIcon } from "lucide-react"
 
 import { buttonVariants } from "#/components/ui/button"
-import { Sheet, SheetContent } from "#/components/ui/sheet"
-import {
+import { Sheet, SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
-} from "#/components/ui/sheet"
+  SheetTitle } from "#/components/ui/sheet"
 import { formatTitle } from "#/lib/format"
 
 import { ResourceDetailSheetBody } from "./resource-detail-sheet-body"
@@ -43,11 +41,13 @@ export function ResourceDetailSheet({
           <div className="flex items-center gap-2 pr-6">
             <Link
               to="/$schema/resource/$resource/detail/$"
-              params={{
-                schema,
-                resource,
-                _splat: Object.values(pk).map(String).join("/"),
-              } as never}
+              params={
+                {
+                  schema,
+                  resource,
+                  _splat: Object.values(pk).map(String).join("/"),
+                } as never
+              }
               onClick={onClose}
               className={buttonVariants({ size: "icon", variant: "ghost" })}
               aria-label="Open full page"
@@ -61,7 +61,11 @@ export function ResourceDetailSheet({
           </div>
         </SheetHeader>
         <Suspense fallback={<ResourceFormSheetSkeleton />}>
-          <ResourceDetailSheetBody schema={schema} resource={resource} pk={pk} />
+          <ResourceDetailSheetBody
+            schema={schema}
+            resource={resource}
+            pk={pk}
+          />
         </Suspense>
       </SheetContent>
     </Sheet>

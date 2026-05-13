@@ -9,13 +9,13 @@ import { Separator } from "#/components/ui/separator"
 import { METADATA_COLUMNS } from "#/config/database.config"
 import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
-import type { FileObject } from "#/types/fields"
+import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
   singleResourceDataQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
-import { formatTitle } from "#/lib/format"
+import type { FileObject } from "#/types/fields"
 
 export function ResourceDetailSheetBody({
   schema,
@@ -87,9 +87,7 @@ export function ResourceDetailSheetBody({
                 </div>
               </div>
             </div>
-            {index < detailColumns.length - 1 && (
-              <Separator className="my-2" />
-            )}
+            {index < detailColumns.length - 1 && <Separator className="my-2" />}
           </div>
         )
       })}

@@ -404,7 +404,7 @@ export const resourceAuditLogsQueryOptions = (
         .rpc("get_audit_logs", {
           p_schema: schema,
           p_table: resource,
-          p_record_id: recordId ?? null,
+          p_record_id: recordId ?? undefined,
         })
       if (error) throw error
       return (data ?? []) as ResourceAuditLog[]
