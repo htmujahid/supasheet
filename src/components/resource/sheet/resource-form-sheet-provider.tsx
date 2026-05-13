@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { tableSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
+import { ResourceDetailSheet } from "./resource-detail-sheet"
 import { ResourceFormSheet } from "./resource-form-sheet"
 import { ResourceImportSheet } from "./resource-import-sheet"
 
@@ -23,6 +24,13 @@ type SheetState =
   | {
       open: true
       mode: "update"
+      schema: string
+      resource: string
+      pk: Record<string, unknown>
+    }
+  | {
+      open: true
+      mode: "detail"
       schema: string
       resource: string
       pk: Record<string, unknown>
@@ -46,11 +54,18 @@ type OpenEditOptions = {
   resource?: string
 }
 
+type OpenDetailOptions = {
+  pk: Record<string, unknown>
+  schema?: string
+  resource?: string
+}
+
 type ContextValue = {
   schema: string
   resource: string
   openNew: (options?: OpenNewOptions) => void
   openEdit: (options: OpenEditOptions) => void
+  openDetail: (options: OpenDetailOptions) => void
   openImport: (options?: { schema?: string; resource?: string }) => void
   close: () => void
 }
@@ -88,6 +103,14 @@ export function ResourceFormSheetProvider({
           resource: options.resource ?? defaultResource,
           pk: options.pk,
         }),
+      openDetail: (options) =>
+        setState({
+          open: true,
+          mode: "detail",
+          schema: options.schema ?? defaultSchema,
+          resource: options.resource ?? defaultResource,
+          pk: options.pk,
+        }),
       openImport: (options) =>
         setState({
           open: true,
@@ -120,6 +143,15 @@ export function ResourceFormSheetProvider({
       {state.open && state.mode === "update" && (
         <ResourceFormSheet
           mode="update"
+          schema={state.schema}
+          resource={state.resource}
+          pk={state.pk}
+          open
+          onOpenChange={onOpenChange}
+        />
+      )}
+      {state.open && state.mode === "detail" && (
+        <ResourceDetailSheet
           schema={state.schema}
           resource={state.resource}
           pk={state.pk}
@@ -185,6 +217,18 @@ export function useEditRecordSheet(schema?: string, resource?: string) {
     inlineForm,
     open: (pk: Record<string, unknown>) =>
       ctx.openEdit({ pk, schema, resource }),
+  }
+}
+
+export function useDetailRecordSheet(schema?: string, resource?: string) {
+  const ctx = useResourceFormSheet()
+  const targetSchema = schema ?? ctx.schema
+  const targetResource = resource ?? ctx.resource
+  const inlineForm = useInlineFormFlag(targetSchema, targetResource)
+  return {
+    inlineForm,
+    open: (pk: Record<string, unknown>) =>
+      ctx.openDetail({ pk, schema, resource }),
   }
 }
 

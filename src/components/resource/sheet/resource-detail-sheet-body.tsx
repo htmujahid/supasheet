@@ -1,0 +1,98 @@
+import { useSuspenseQuery } from "@tanstack/react-query"
+
+import { Editor } from "#/components/blocks/editor-md/editor"
+import { AllCells } from "#/components/resource/cells/all-cells"
+import { ResourceAvatarDisplay } from "#/components/resource/detail/resource-avatar-display"
+import { ResourceFileDisplay } from "#/components/resource/detail/resource-file-display"
+import { Label } from "#/components/ui/label"
+import { Separator } from "#/components/ui/separator"
+import { METADATA_COLUMNS } from "#/config/database.config"
+import { getColumnMetadata } from "#/lib/columns"
+import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type { FileObject } from "#/types/fields"
+import {
+  columnsSchemaQueryOptions,
+  singleResourceDataQueryOptions,
+  tableSchemaQueryOptions,
+} from "#/lib/supabase/data/resource"
+import { formatTitle } from "#/lib/format"
+
+export function ResourceDetailSheetBody({
+  schema,
+  resource,
+  pk,
+}: {
+  schema: string
+  resource: string
+  pk: Record<string, unknown>
+}) {
+  const { data: tableSchema } = useSuspenseQuery(
+    tableSchemaQueryOptions(schema as never, resource as never)
+  )
+  const { data: columnsSchema } = useSuspenseQuery(
+    columnsSchemaQueryOptions(schema as never, resource as never)
+  )
+  const { data: record } = useSuspenseQuery(
+    singleResourceDataQueryOptions(schema as never, resource as never, pk)
+  )
+
+  if (!tableSchema || !columnsSchema?.length || !record) {
+    return (
+      <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
+        Record unavailable.
+      </div>
+    )
+  }
+
+  const detailColumns = (columnsSchema as ColumnSchema[]).filter(
+    (col) => !METADATA_COLUMNS.includes(col.name as string)
+  )
+
+  return (
+    <div className="flex-1 overflow-y-auto p-4">
+      {detailColumns.map((column, index) => {
+        const value = record[column.name as string]
+        const columnMetadata = getColumnMetadata(
+          tableSchema as TableSchema,
+          column
+        )
+
+        return (
+          <div key={column.id}>
+            <div className="flex items-start gap-4">
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+                  {columnMetadata.icon} {formatTitle(columnMetadata.name)}
+                </Label>
+                <div className="text-sm text-muted-foreground">
+                  {value ? (
+                    columnMetadata.variant === "rich_text" ? (
+                      <Editor
+                        name={columnMetadata.name}
+                        value={value as string}
+                        disabled
+                      />
+                    ) : columnMetadata.variant === "file" ? (
+                      <ResourceFileDisplay value={value as FileObject[]} />
+                    ) : columnMetadata.variant === "avatar" ? (
+                      <ResourceAvatarDisplay
+                        value={(value as FileObject | null) ?? null}
+                      />
+                    ) : (
+                      <AllCells columnMetadata={columnMetadata} value={value} />
+                    )
+                  ) : (
+                    <div className="text-muted">N/A</div>
+                  )}
+                </div>
+              </div>
+            </div>
+            {index < detailColumns.length - 1 && (
+              <Separator className="my-2" />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}

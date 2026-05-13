@@ -1,9 +1,8 @@
-import { Link } from "@tanstack/react-router"
-
 import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
 import { ArrowUpRightIcon, Link2Icon, PencilIcon } from "lucide-react"
 
+import { DetailRecordTrigger } from "#/components/resource/sheet/detail-record-trigger"
 import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
@@ -38,8 +37,6 @@ export function getResourceTableColumns({
   canUpdate?: boolean
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const schema = resourceSchema.schema
-  const resource = resourceSchema.name
 
   const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const joinedColumns: `${string}.${string}`[] = (
@@ -91,18 +88,15 @@ export function getResourceTableColumns({
                 <PencilIcon />
               </EditRecordTrigger>
             ) : (
-              <Link
-                to="/$schema/resource/$resource/detail/$"
-                params={{
-                  schema,
-                  resource,
-                  _splat: row.id,
-                }}
-                className="inline-flex rounded border p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
-                onClick={(e) => e.stopPropagation()}
+              <DetailRecordTrigger
+                pk={pk}
+                primaryKeyNames={primaryKeyNames}
+                size="icon-xs"
+                variant="outline"
+                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3"
               >
-                <ArrowUpRightIcon className="size-3" />
-              </Link>
+                <ArrowUpRightIcon />
+              </DetailRecordTrigger>
             )}
           </div>
         )
