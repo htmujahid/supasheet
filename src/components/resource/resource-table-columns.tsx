@@ -1,6 +1,6 @@
 import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
-import { ArrowUpRightIcon, Link2Icon, PencilIcon } from "lucide-react"
+import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
 
 import { DetailRecordTrigger } from "#/components/resource/sheet/detail-record-trigger"
 import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
@@ -14,7 +14,6 @@ import type {
   TableMetadata,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import { formatTitle } from "#/lib/format"
 
 import { ResourceColumnHeader } from "./resource-column-header"
 import { ResourceRowCell } from "./resource-row-cell"
@@ -39,12 +38,6 @@ export function getResourceTableColumns({
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
 
   const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-  const joinedColumns: `${string}.${string}`[] = (
-    tableMeta.query?.join ?? []
-  ).flatMap((join) => {
-    const alias = join.on.endsWith("_id") ? join.on.slice(0, -3) : join.on
-    return join.columns.map((col) => `${alias}.${col}` as const)
-  })
 
   const cols: ColumnDef<Record<string, unknown>, unknown>[] = []
 
@@ -129,7 +122,6 @@ export function getResourceTableColumns({
         <ResourceColumnHeader
           column={column}
           title={name}
-          resourceSchema={resourceSchema}
           columnSchema={col}
           isSorted={column.getIsSorted()}
         />
@@ -146,23 +138,6 @@ export function getResourceTableColumns({
       enableHiding: true,
       enableColumnFilter: true,
       meta: getColumnMetadata(tableSchema, col),
-    })
-  }
-
-  for (const col of joinedColumns) {
-    cols.push({
-      id: col,
-      accessorKey: col,
-      header: () => (
-        <div className="flex items-center gap-2 truncate">
-          <Link2Icon className="text-muted-foreground size-4 shrink-0" />
-          <span>{formatTitle(col.replace(".", "_"))}</span>
-        </div>
-      ),
-      size: 170,
-      enableHiding: true,
-      enableColumnFilter: false,
-      enableSorting: false,
     })
   }
 

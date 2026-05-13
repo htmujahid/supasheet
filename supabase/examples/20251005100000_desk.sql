@@ -375,6 +375,7 @@ comment on table desk.tasks is '{
         "sort": [{"id":"title","desc":false}],
         "join": [
             {"table":"users","on":"user_id","columns":["name","email"]},
+            {"table":"users","on":"assignee_id","columns":["name"]},
             {"table":"projects","on":"project_id","columns":["title"]}
         ]
     },

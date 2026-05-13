@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { cn } from "#/lib/utils"
 
@@ -30,9 +30,13 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
     return (
       <div className={cn("flex items-center gap-2 truncate", className)}>
         {column.columnDef.meta?.icon && (
-          <span className="shrink-0">{column.columnDef.meta.icon}</span>
+          <span>{column.columnDef.meta.icon}</span>
         )}
-        {formatTitle(title)}
+        {formatTitle(
+          column.columnDef.meta?.isRelationship && title.endsWith("_id")
+            ? title.slice(0, -3)
+            : title
+        )}
       </div>
     )
   }
@@ -48,7 +52,13 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
         {column.columnDef.meta?.icon && (
           <span>{column.columnDef.meta.icon}</span>
         )}
-        <span className="truncate">{formatTitle(title)}</span>
+        <span className="truncate">
+          {formatTitle(
+            column.columnDef.meta?.isRelationship && title.endsWith("_id")
+              ? title.slice(0, -3)
+              : title
+          )}
+        </span>
         {column.getCanSort() &&
           (isSorted === "desc" ? (
             <ChevronDown />
@@ -99,7 +109,6 @@ export const ResourceColumnHeader = memo(function <TData, TValue>({
   column: Column<TData, TValue>
   title: string
   className?: string
-  resourceSchema: ResourceSchema
   columnSchema: ColumnSchema
   isSorted: false | "asc" | "desc"
 }) => React.ReactElement

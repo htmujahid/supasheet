@@ -10,6 +10,7 @@ import type {
   Relationship,
   ResourceDataSchema,
   ResourceSchema,
+  TableMetadata,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { cn } from "#/lib/utils"
@@ -34,6 +35,16 @@ export const ResourceRowCell = memo(function ({
     [tableSchema, columnSchema]
   )
 
+  const tableMeta = useMemo(
+    () => JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata,
+    [resourceSchema.comment]
+  )
+
+  const joinConfig = useMemo(
+    () => tableMeta.query?.join?.find((j) => j.on === columnSchema.name),
+    [tableMeta, columnSchema.name]
+  )
+
   const relationship = useMemo(
     () =>
       (tableSchema?.relationships as Relationship[])?.find(
@@ -44,24 +55,58 @@ export const ResourceRowCell = memo(function ({
 
   const value = row.original?.[columnSchema.name as keyof ResourceDataSchema]
 
+  if (joinConfig) {
+    const alias = joinConfig.on.endsWith("_id")
+      ? joinConfig.on.slice(0, -3)
+      : joinConfig.on
+    const joinedObj = row.original?.[alias as keyof ResourceDataSchema] as
+      | Record<string, unknown>
+      | null
+      | undefined
+    const joinedValue = joinedObj?.[joinConfig.columns[0]]
+
+    return (
+      <div className={cn("relative truncate select-none", relationship && "pl-6")}>
+        {relationship && (
+          <DetailRecordTrigger
+            pk={{ [relationship.target_column_name]: value }}
+            primaryKeyNames={[relationship.target_column_name]}
+            schema={relationship.target_table_schema}
+            resource={relationship.target_table_name}
+            size="icon-xs"
+            variant="outline"
+            className="absolute top-1/2 left-0 -translate-y-1/2 [&_svg]:size-3 size-5"
+          >
+            <ArrowUpRightIcon />
+          </DetailRecordTrigger>
+        )}
+        <span>{joinedValue?.toString() ?? ""}</span>
+      </div>
+    )
+  }
+
   return (
     <div
       className={cn("relative truncate select-none", relationship && "pl-6")}
     >
-      {relationship && (
-        <DetailRecordTrigger
-          pk={{ [relationship.target_column_name]: value }}
-          primaryKeyNames={[relationship.target_column_name]}
-          schema={relationship.target_table_schema}
-          resource={relationship.target_table_name}
-          size="icon-xs"
-          variant="outline"
-          className="absolute top-1/2 left-0 -translate-y-1/2 [&_svg]:size-3 size-5"
-        >
-          <ArrowUpRightIcon />
-        </DetailRecordTrigger>
-      )}
-      {columnData.isArray ? (
+      {relationship ? (
+        <>
+          <DetailRecordTrigger
+            pk={{ [relationship.target_column_name]: value }}
+            primaryKeyNames={[relationship.target_column_name]}
+            schema={relationship.target_table_schema}
+            resource={relationship.target_table_name}
+            size="icon-xs"
+            variant="outline"
+            className="absolute top-1/2 left-0 -translate-y-1/2 [&_svg]:size-3 size-5"
+          >
+            <ArrowUpRightIcon />
+          </DetailRecordTrigger>
+          <span>
+            {row.original?.[relationship.source_column_name as keyof ResourceDataSchema]?.toString() || ""}
+          </span>
+        </>
+      ) : columnData.isArray ? (
         <ArrayCell value={value as any[]} />
       ) : (
         <AllCells columnMetadata={columnData} value={value} />

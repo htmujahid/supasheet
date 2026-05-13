@@ -37,6 +37,7 @@ export type ColumnFieldMetadata = {
   isArray: boolean
   isMetadata: boolean
   isPrimaryKey: boolean
+  isRelationship: boolean
   // relationship: Relationship | undefined
   comment: string | null
   // primaryKeys: PrimaryKey[]
