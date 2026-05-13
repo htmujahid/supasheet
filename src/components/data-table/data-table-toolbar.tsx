@@ -63,7 +63,7 @@ export function DataTableToolbar<TData>({
               Delete ({selectedCount})
             </Button>
           )}
-          {children ?? <DataTableExportButton table={table} />}
+          {children ?? <DataTableExportButton table={table} excludeColumns={["select"]} />}
           {!hideColumnVisibility && <DataTableColumnVisibility table={table} />}
         </div>
       </div>
