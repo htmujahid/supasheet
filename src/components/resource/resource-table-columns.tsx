@@ -83,7 +83,7 @@ export function getResourceTableColumns({
                 primaryKeyNames={primaryKeyNames}
                 size="icon-xs"
                 variant="outline"
-                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3"
+                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
               >
                 <PencilIcon />
               </EditRecordTrigger>
@@ -93,7 +93,7 @@ export function getResourceTableColumns({
                 primaryKeyNames={primaryKeyNames}
                 size="icon-xs"
                 variant="outline"
-                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3"
+                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
               >
                 <ArrowUpRightIcon />
               </DetailRecordTrigger>

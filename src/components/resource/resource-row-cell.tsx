@@ -1,7 +1,5 @@
 import { memo, useMemo } from "react"
 
-import { Link } from "@tanstack/react-router"
-
 import type { Row } from "@tanstack/react-table"
 
 import { ArrowUpRightIcon } from "lucide-react"
@@ -12,13 +10,13 @@ import type {
   Relationship,
   ResourceDataSchema,
   ResourceSchema,
-  TableSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { cn } from "#/lib/utils"
 
 import { AllCells } from "./cells/all-cells"
 import { ArrayCell } from "./cells/array-cell"
+import { DetailRecordTrigger } from "./sheet/detail-record-trigger"
 
 export const ResourceRowCell = memo(function ({
   row,
@@ -50,43 +48,24 @@ export const ResourceRowCell = memo(function ({
     <div
       className={cn("relative truncate select-none", relationship && "pl-6")}
     >
+      {relationship && (
+        <DetailRecordTrigger
+          pk={{ [relationship.target_column_name]: value }}
+          primaryKeyNames={[relationship.target_column_name]}
+          schema={relationship.target_table_schema}
+          resource={relationship.target_table_name}
+          size="icon-xs"
+          variant="outline"
+          className="absolute top-1/2 left-0 -translate-y-1/2 [&_svg]:size-3 size-5"
+        >
+          <ArrowUpRightIcon />
+        </DetailRecordTrigger>
+      )}
       {columnData.isArray ? (
         <ArrayCell value={value as any[]} />
       ) : (
         <AllCells columnMetadata={columnData} value={value} />
       )}
-      {/* {value?.toString()} */}
-      {relationship && (
-        <Link
-          to={prepareForeignKeyLink(
-            columnSchema.name as string,
-            row.original?.[
-              columnSchema.name as keyof ResourceDataSchema
-            ]?.toString() ?? "",
-            tableSchema
-          )}
-          target="_blank"
-          className="absolute top-1/2 left-0 -translate-y-1/2 transform rounded border p-0.5"
-        >
-          <ArrowUpRightIcon className="size-3" />
-        </Link>
-      )}
     </div>
   )
 })
-
-function prepareForeignKeyLink(
-  key: string,
-  value: string,
-  tableSchema: TableSchema | null
-) {
-  if (!tableSchema) return "#"
-
-  const relationships = tableSchema.relationships as Relationship[]
-
-  const relationship = relationships.find((r) => r.source_column_name === key)
-
-  if (!relationship) return "#"
-
-  return `/${relationship.target_table_schema}/resource/${relationship.target_table_name}?filters=[{"id":"${relationship.target_column_name}","value":"eq.${value}"}]`
-}

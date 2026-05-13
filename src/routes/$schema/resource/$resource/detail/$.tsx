@@ -578,16 +578,18 @@ function RouteComponent() {
 
           {allManyRelationships.length > 0 && (
             <Tabs defaultValue={allManyRelationships[0]?.name ?? ""}>
-              <TabsList className="mx-auto">
-                {allManyRelationships.map((relationship) => (
-                  <TabsTrigger
-                    key={relationship.id}
-                    value={relationship.name ?? ""}
-                  >
-                    {formatTitle(relationship.name as string)}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="w-full overflow-x-auto">
+                <TabsList className="">
+                  {allManyRelationships.map((relationship) => (
+                    <TabsTrigger
+                      key={relationship.id}
+                      value={relationship.name ?? ""}
+                    >
+                      {formatTitle(relationship.name as string)}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
               {allManyRelationships.map((relationship) => (
                 <TabsContent
                   key={relationship.id}
