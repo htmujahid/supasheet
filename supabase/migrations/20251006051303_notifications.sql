@@ -117,14 +117,17 @@ create or replace function supasheet.create_notification(
     set search_path = ''
 as $$
 declare
-    v_id uuid;
+    v_id     uuid;
+    _user_id uuid;
 begin
+    _user_id := (select auth.uid());
+
     if p_user_ids is null or array_length(p_user_ids, 1) is null then
         return null;
     end if;
 
     insert into supasheet.notifications (type, title, body, link, metadata, created_by)
-    values (p_type, p_title, p_body, p_link, p_metadata, auth.uid())
+    values (p_type, p_title, p_body, p_link, p_metadata, _user_id)
     returning id into v_id;
 
     insert into supasheet.user_notifications (notification_id, user_id)
@@ -149,14 +152,18 @@ grant execute on function supasheet.create_notification(text, text, text, uuid[]
 -- All users currently holding a given role.
 create or replace function supasheet.get_users_with_role(p_role supasheet.app_role)
 returns uuid[]
-    language sql
+    language plpgsql
     stable
     security definer
     set search_path = ''
 as $$
-    select coalesce(array_agg(distinct user_id), '{}'::uuid[])
-    from supasheet.user_roles
-    where role = p_role
+begin
+    return (
+        select coalesce(array_agg(distinct user_id), '{}'::uuid[])
+        from supasheet.user_roles
+        where role = p_role
+    );
+end;
 $$;
 
 grant execute on function supasheet.get_users_with_role(supasheet.app_role)
@@ -167,15 +174,19 @@ create or replace function supasheet.get_users_with_permission(
     p_permission supasheet.app_permission
 )
 returns uuid[]
-    language sql
+    language plpgsql
     stable
     security definer
     set search_path = ''
 as $$
-    select coalesce(array_agg(distinct ur.user_id), '{}'::uuid[])
-    from supasheet.user_roles ur
-    join supasheet.role_permissions rp on rp.role = ur.role
-    where rp.permission = p_permission
+begin
+    return (
+        select coalesce(array_agg(distinct ur.user_id), '{}'::uuid[])
+        from supasheet.user_roles ur
+        join supasheet.role_permissions rp on rp.role = ur.role
+        where rp.permission = p_permission
+    );
+end;
 $$;
 
 grant execute on function supasheet.get_users_with_permission(supasheet.app_permission)
@@ -194,11 +205,13 @@ returns integer
     set search_path = ''
 as $$
 declare
-    v_count integer;
+    v_count  integer;
+    _user_id uuid;
 begin
+    _user_id := (select auth.uid());
     update supasheet.user_notifications
     set    read_at = now()
-    where  user_id = auth.uid()
+    where  user_id = _user_id
       and  read_at is null
       and  archived_at is null;
 
@@ -213,16 +226,23 @@ grant execute on function supasheet.mark_all_notifications_read()
 -- Count of unread, unarchived deliveries for the current user.
 create or replace function supasheet.unread_notifications_count()
 returns integer
-    language sql
+    language plpgsql
     stable
     security definer
     set search_path = ''
 as $$
-    select count(*)::int
-    from   supasheet.user_notifications
-    where  user_id = auth.uid()
-      and  read_at is null
-      and  archived_at is null
+declare
+    _user_id uuid;
+begin
+    _user_id := (select auth.uid());
+    return (
+        select count(*)::int
+        from   supasheet.user_notifications
+        where  user_id = _user_id
+          and  read_at is null
+          and  archived_at is null
+    );
+end;
 $$;
 
 grant execute on function supasheet.unread_notifications_count()

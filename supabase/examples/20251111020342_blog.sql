@@ -940,12 +940,21 @@ create trigger audit_blog_comments_delete
 
 -- Resolver: the supasheet user behind a post (post → author → user)
 create or replace function blog.get_post_author_user_id(p_post_id uuid)
-returns uuid as $$
-    select a.user_id
-    from blog.posts p
-    join blog.authors a on a.id = p.author_id
-    where p.id = p_post_id
-$$ language sql stable security definer set search_path = '';
+returns uuid
+    language plpgsql
+    stable
+    security definer
+    set search_path = ''
+as $$
+begin
+    return (
+        select a.user_id
+        from blog.posts p
+        join blog.authors a on a.id = p.author_id
+        where p.id = p_post_id
+    );
+end;
+$$;
 
 
 -- Post trigger: notify the author and post readers when a post is published

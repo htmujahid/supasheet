@@ -31,10 +31,12 @@ RETURNS TABLE(
   primary_keys JSONB,
   relationships JSONB
 )
-LANGUAGE SQL
+LANGUAGE plpgsql
 SET search_path = ''
 AS $$
-SELECT
+BEGIN
+  RETURN QUERY
+  SELECT
   c.oid :: int8 AS id,
   nc.nspname AS schema,
   c.relname AS name,
@@ -141,7 +143,8 @@ group by
   pk.primary_keys
 ORDER BY c.oid
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END
+OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
+END;
 $$;
 
 revoke all on function supasheet.generate_tables(text, text, text, integer, integer) from public;
@@ -189,12 +192,13 @@ RETURNS TABLE (
     enums JSON,
     "comment" TEXT
 )
-LANGUAGE SQL
+LANGUAGE plpgsql
 SET search_path = ''
 AS $$
--- Adapted from information_schema.columns
-
-SELECT
+BEGIN
+  RETURN QUERY
+  -- Adapted from information_schema.columns
+  SELECT
   c.oid :: int8 AS table_id,
   nc.nspname AS schema,
   c.relname AS "table",
@@ -312,6 +316,7 @@ WHERE
 ORDER BY c.oid, a.attnum
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count ELSE NULL END
 OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
+END;
 $$;
 
 revoke all on function supasheet.generate_columns(text, text, text, text, text, integer, integer) from public;
@@ -343,10 +348,12 @@ RETURNS TABLE(
   is_updatable BOOLEAN,
   comment TEXT
 )
-LANGUAGE SQL
+LANGUAGE plpgsql
 SET search_path = ''
 AS $$
-SELECT
+BEGIN
+  RETURN QUERY
+  SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
   c.relname AS name,
@@ -372,7 +379,8 @@ WHERE
   )
 ORDER BY c.oid
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END
+OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
+END;
 $$;
 
 revoke all on function supasheet.generate_views(text, text, text, integer, integer) from public;
@@ -404,10 +412,12 @@ RETURNS TABLE(
     is_populated BOOLEAN,
     comment TEXT
 )
-LANGUAGE SQL
+LANGUAGE plpgsql
 SET search_path = ''
 AS $$
-SELECT
+BEGIN
+  RETURN QUERY
+  SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
   c.relname AS name,
@@ -432,7 +442,8 @@ WHERE
   )
 ORDER BY c.oid
 LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END
+OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
+END;
 $$;
 
 revoke all on function supasheet.generate_materialized_views(text, text, text, integer, integer) from public;

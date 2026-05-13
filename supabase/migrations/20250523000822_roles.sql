@@ -65,12 +65,15 @@ create or replace function supasheet.has_permission(
   requested_permission supasheet.app_permission
 )
 returns boolean as $$
+declare
+  _user_id uuid;
 begin
+  _user_id := (select auth.uid()); -- evaluated once
   return exists (
     select 1
     from supasheet.role_permissions rp
     inner join supasheet.user_roles ur on rp.role = ur.role
-    where ur.user_id = auth.uid()
+    where ur.user_id = _user_id
       and rp.permission = requested_permission
   );
 end;
@@ -82,10 +85,13 @@ create or replace function supasheet.has_role(
   requested_role supasheet.app_role
 )
 returns boolean as $$
+declare
+  _user_id uuid;
 begin
+  _user_id := (select auth.uid());
   return exists (
-    select 1 from supasheet.user_roles 
-    where user_id = auth.uid() and role = requested_role
+    select 1 from supasheet.user_roles
+    where user_id = _user_id and role = requested_role
   );
 end;
 $$ language plpgsql stable security definer set search_path = '';

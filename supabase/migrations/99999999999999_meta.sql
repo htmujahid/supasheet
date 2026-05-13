@@ -18,7 +18,7 @@ BEGIN
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
     INNER JOIN supasheet.user_roles ur 
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid();
+    WHERE ur.user_id = (select auth.uid());
 END;
 $$;
 
@@ -45,7 +45,7 @@ BEGIN
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
     INNER JOIN supasheet.user_roles ur 
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (select auth.uid())
         AND (table_name IS NULL OR t.name = table_name)
         AND (schema_name IS NULL OR t.schema = schema_name);
 END;
@@ -74,7 +74,7 @@ BEGIN
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
     INNER JOIN supasheet.user_roles ur 
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (select auth.uid())
         AND (view_name IS NULL OR t.name = view_name)
         AND (schema_name IS NULL OR t.schema = schema_name);
 END;
@@ -104,7 +104,7 @@ BEGIN
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
     INNER JOIN supasheet.user_roles ur 
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (select auth.uid())
         AND (view_name IS NULL OR t.name = view_name)
         AND (schema_name IS NULL OR t.schema = schema_name);
 END;
@@ -132,7 +132,7 @@ BEGIN
         ON rp.permission::text = t.schema || '.' || t.table || ':select'
     INNER JOIN supasheet.user_roles ur 
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (select auth.uid())
         AND (table_name IS NULL OR t.table = table_name)
         AND (schema_name IS NULL OR t.schema = schema_name)
     ORDER BY (t.ordinal_position::int);
@@ -194,7 +194,7 @@ BEGIN
         ON rp.permission::text = t.schema || '.' || t.name || ':select'
     INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (select auth.uid())
         -- Exclude the input table itself
         AND NOT (t.schema = schema_name AND t.name = table_name)
         -- Find tables that have relationships with the input table
@@ -230,7 +230,7 @@ BEGIN
     FROM supasheet.role_permissions rp
     INNER JOIN supasheet.user_roles ur
         ON ur.role = rp.role
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (select auth.uid())
         AND (schema_name IS NULL OR rp.permission::text LIKE schema_name || '.%');
 END;
 $$;
