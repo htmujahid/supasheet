@@ -32,14 +32,31 @@ import type {
 import type { ColumnFieldMetadata } from "#/types/fields"
 
 export const NUMERIC_TYPES = new Set([
-  "integer", "bigint", "smallint", "numeric", "real",
-  "double precision", "float", "float4", "float8", "int2", "int4", "int8",
+  "integer",
+  "bigint",
+  "smallint",
+  "numeric",
+  "real",
+  "double precision",
+  "float",
+  "float4",
+  "float8",
+  "int2",
+  "int4",
+  "int8",
 ])
 
 export const TEMPORAL_TYPES = new Set([
-  "timestamp with time zone", "timestamp without time zone",
-  "timestamptz", "timestamp", "date", "time", "time with time zone",
-  "time without time zone", "timetz", "interval",
+  "timestamp with time zone",
+  "timestamp without time zone",
+  "timestamptz",
+  "timestamp",
+  "date",
+  "time",
+  "time with time zone",
+  "time without time zone",
+  "timetz",
+  "interval",
 ])
 
 export const UUID_RE =
@@ -77,7 +94,11 @@ export function coerceColumnValue(
   }
 
   if (type === "json" || type === "jsonb") {
-    try { return JSON.parse(val) } catch { return null }
+    try {
+      return JSON.parse(val)
+    } catch {
+      return null
+    }
   }
 
   const isArray =
@@ -88,7 +109,11 @@ export function coerceColumnValue(
   if (isArray) {
     if (val.startsWith("{") && val.endsWith("}")) return val
     if (val.startsWith("[") && val.endsWith("]")) {
-      try { return JSON.parse(val) } catch { /* fall through */ }
+      try {
+        return JSON.parse(val)
+      } catch {
+        /* fall through */
+      }
     }
     return null
   }

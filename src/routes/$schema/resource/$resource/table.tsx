@@ -23,6 +23,7 @@ import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { ResourceTable } from "#/components/resource/resource-table"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { Button } from "#/components/ui/button"
@@ -44,7 +45,6 @@ import {
   tableSchemaQueryOptions,
   viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
-import { ResourceActions } from "#/components/resource/resource-actions"
 
 export const Route = createFileRoute("/$schema/resource/$resource/table")({
   beforeLoad: ({ context, params: { schema, resource } }) => {

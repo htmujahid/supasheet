@@ -109,9 +109,7 @@ function AuditTimelineItem({
                 {userInitials(entry.created_by_name)}
               </AvatarFallback>
             </Avatar>
-            <span>
-              {entry.created_by_name ?? entry.created_by ?? "System"}
-            </span>
+            <span>{entry.created_by_name ?? entry.created_by ?? "System"}</span>
             <span className="text-muted-foreground/50">·</span>
             <span>{description()}</span>
           </TimelineDescription>
@@ -147,7 +145,12 @@ export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
         ))}
       </Timeline>
 
-      <Sheet open={selected !== null} onOpenChange={(open) => { if (!open) setSelected(null) }}>
+      <Sheet
+        open={selected !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelected(null)
+        }}
+      >
         <SheetContent className="w-full sm:max-w-lg overflow-hidden p-0">
           <SheetHeader className="p-4 pb-2">
             <SheetTitle>Audit Log Entry</SheetTitle>

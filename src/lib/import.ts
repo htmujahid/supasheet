@@ -1,5 +1,5 @@
-import type { ColumnSchema } from "#/lib/database-meta.types"
 import { coerceColumnValue } from "#/lib/columns"
+import type { ColumnSchema } from "#/lib/database-meta.types"
 
 export const IMPORT_BATCH_SIZE = 500
 
@@ -49,7 +49,9 @@ export function matchHeaders(
   csvHeaders: string[],
   columnsSchema: ColumnSchema[]
 ): { matched: string[]; unmatched: string[] } {
-  const tableNames = new Set(columnsSchema.map((c) => c.name?.toLowerCase() ?? ""))
+  const tableNames = new Set(
+    columnsSchema.map((c) => c.name?.toLowerCase() ?? "")
+  )
   return {
     matched: csvHeaders.filter((h) => tableNames.has(h.toLowerCase())),
     unmatched: csvHeaders.filter((h) => !tableNames.has(h.toLowerCase())),
@@ -71,6 +73,8 @@ export function coerceImportRow(
   )
 }
 
-export function buildColumnMap(columnsSchema: ColumnSchema[]): Map<string, ColumnSchema> {
+export function buildColumnMap(
+  columnsSchema: ColumnSchema[]
+): Map<string, ColumnSchema> {
   return new Map(columnsSchema.map((c) => [c.name?.toLowerCase() ?? "", c]))
 }

@@ -2,7 +2,11 @@
 
 import * as React from "react"
 
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 
 import { AlertCircleIcon, CheckCircle2Icon, UploadIcon } from "lucide-react"
 import { toast } from "sonner"
@@ -331,7 +335,9 @@ function ResourceImportSheetBody({
                 </p>
                 <ScrollArea className="bg-destructive/5 max-h-32 rounded-md border border-destructive/20 p-2">
                   {errors.map((e, i) => (
-                    <p key={i} className="text-destructive text-xs">{e}</p>
+                    <p key={i} className="text-destructive text-xs">
+                      {e}
+                    </p>
                   ))}
                 </ScrollArea>
               </div>
@@ -357,7 +363,11 @@ function ResourceImportSheetBody({
             </Button>
             <Button
               onClick={handleImport}
-              disabled={importing || matchedHeaders.length === 0 || parsed.rows.length === 0}
+              disabled={
+                importing ||
+                matchedHeaders.length === 0 ||
+                parsed.rows.length === 0
+              }
             >
               {importing
                 ? "Importing…"

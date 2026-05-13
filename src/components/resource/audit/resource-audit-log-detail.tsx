@@ -144,7 +144,9 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
               <div className="flex items-center gap-2 pt-0.5">
                 <Avatar className="h-7 w-7">
                   <AvatarImage src={data.created_by_picture_url ?? undefined} />
-                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                  <AvatarFallback className="text-xs">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium leading-none">

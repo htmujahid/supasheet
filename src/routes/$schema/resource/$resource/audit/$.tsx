@@ -6,8 +6,8 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { HistoryIcon } from "lucide-react"
 
-import { ResourceAuditTimeline } from "#/components/resource/audit/resource-audit-timeline"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceAuditTimeline } from "#/components/resource/audit/resource-audit-timeline"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
 import {

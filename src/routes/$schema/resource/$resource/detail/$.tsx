@@ -10,7 +10,12 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, FileXIcon, HistoryIcon, PencilIcon } from "lucide-react"
+import {
+  AlertCircleIcon,
+  FileXIcon,
+  HistoryIcon,
+  PencilIcon,
+} from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"

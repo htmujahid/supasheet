@@ -22,7 +22,7 @@ declare module "@tanstack/react-table" {
     TValue,
   > extends ColumnFieldMetadata {}
 
-  // eslint-disable-next-line no-shadow
+   
   interface TableMeta<TData extends RowData> {
     filename?: string
   }
