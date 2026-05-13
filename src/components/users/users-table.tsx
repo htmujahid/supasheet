@@ -49,6 +49,7 @@ export function UsersTable({
     data,
     pageCount,
     state: { sorting, pagination, columnFilters },
+    meta: { filename: "users" },
   })
 
   const { mutateAsync: deleteUser } = useMutation(

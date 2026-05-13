@@ -20,6 +20,7 @@ interface ReportTableProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
+  filename?: string
 }
 
 export function ReportTable({
@@ -29,6 +30,7 @@ export function ReportTable({
   pagination,
   columnFilters,
   pageCount,
+  filename,
 }: ReportTableProps) {
   const columns = useMemo(
     () => getReportTableColumns(columnsSchema),
@@ -40,6 +42,7 @@ export function ReportTable({
     data,
     pageCount,
     state: { sorting, pagination, columnFilters },
+    meta: { filename },
   })
 
   return (

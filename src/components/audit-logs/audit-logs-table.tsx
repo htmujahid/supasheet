@@ -40,6 +40,7 @@ export function AuditLogTable({
     data,
     pageCount,
     state: { sorting, pagination, columnFilters },
+    meta: { filename: "audit_logs" },
   })
   return (
     <DataTable table={table}>

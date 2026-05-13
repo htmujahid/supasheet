@@ -72,6 +72,7 @@ export function ResourceGrid({
     pageCount,
     state: { sorting, pagination, columnFilters },
     getRowId: (row) => primaryKeys.map((key) => row[key.name]).join("/"),
+    meta: { filename: resource },
   })
 
   const { mutateAsync: updateRow } = useMutation(

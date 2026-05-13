@@ -50,6 +50,7 @@ export function RolePermissionsTable({
     data,
     pageCount,
     state: { sorting, pagination, columnFilters },
+    meta: { filename: "role_permissions" },
   })
 
   const { mutateAsync: deleteRolePermissions } = useMutation({

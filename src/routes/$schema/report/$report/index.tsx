@@ -215,6 +215,7 @@ function RouteComponent() {
             pagination={pagination}
             columnFilters={filters}
             pageCount={pageCount}
+            filename={params.report}
           />
         </div>
       </div>

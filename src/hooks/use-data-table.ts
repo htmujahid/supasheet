@@ -30,6 +30,7 @@ interface UseDataTableOptions<TData, TValue> {
         parent?: Row<TData> | undefined
       ) => string)
     | undefined
+  meta?: { filename?: string }
 }
 
 export function useDataTable<TData, TValue>({
@@ -38,6 +39,7 @@ export function useDataTable<TData, TValue>({
   pageCount,
   state,
   getRowId,
+  meta,
 }: UseDataTableOptions<TData, TValue>) {
   const sorting = state?.sorting ?? []
   const pagination = state?.pagination ?? { pageIndex: 0, pageSize: 10 }
@@ -126,6 +128,7 @@ export function useDataTable<TData, TValue>({
     manualPagination: true,
     manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
+    meta,
   })
 
   return table

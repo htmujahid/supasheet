@@ -48,6 +48,7 @@ export function UserRolesTable({
     data,
     pageCount,
     state: { sorting, pagination, columnFilters },
+    meta: { filename: "user_roles" },
   })
 
   const { mutateAsync: deleteUserRoles } = useMutation({

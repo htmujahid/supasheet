@@ -230,6 +230,7 @@ function RouteComponent() {
             pagination={pagination}
             columnFilters={filters}
             pageCount={pageCount}
+            filename={params.template}
           />
         </div>
       </div>
