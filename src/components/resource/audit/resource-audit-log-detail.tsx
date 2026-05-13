@@ -13,13 +13,6 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
 import { Badge } from "#/components/ui/badge"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card"
 import { ScrollArea } from "#/components/ui/scroll-area"
 import { Separator } from "#/components/ui/separator"
 import type { ResourceAuditLog } from "#/lib/supabase/data/resource"
@@ -60,10 +53,10 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card>
-        <CardHeader>
+      <div className="flex flex-col gap-4">
+        <div>
           <div className="flex items-center justify-between">
-            <CardTitle>Audit Log Details</CardTitle>
+            <p className="text-sm font-semibold">Audit Log Details</p>
             {data.is_error ? (
               <Badge variant="destructive" className="gap-1">
                 <XCircle className="h-3 w-3" />
@@ -79,13 +72,13 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
               </Badge>
             )}
           </div>
-          <CardDescription>
+          <p className="text-xs text-muted-foreground">
             {formatDistanceToNow(new Date(data.created_at), {
               addSuffix: true,
             })}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+          </p>
+        </div>
+        <div className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4">
             <Field label="ID">
               <p className="font-mono text-sm break-all">{data.id}</p>
@@ -234,25 +227,24 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
                 </div>
               </>
             )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {(data.old_data || data.new_data) && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Data Changes</CardTitle>
-            <CardDescription>
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-sm font-semibold">Data Changes</p>
+            <p className="text-xs text-muted-foreground">
               {data.operation === "INSERT" && "New data created"}
               {data.operation === "UPDATE" && "Data modifications"}
               {data.operation === "DELETE" && "Data removed"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
+            </p>
+          </div>
+          <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <p className="text-sm font-semibold">Old Data</p>
                 {data.old_data ? (
-                  <ScrollArea className="max-h-64 w-full rounded-md border">
+                  <ScrollArea className="max-h-64 w-full overflow-auto rounded-md border">
                     <pre className="p-3 text-xs">
                       {JSON.stringify(data.old_data, null, 2)}
                     </pre>
@@ -266,7 +258,7 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
               <div className="flex flex-col gap-2">
                 <p className="text-sm font-semibold">New Data</p>
                 {data.new_data ? (
-                  <ScrollArea className="max-h-64 w-full rounded-md border">
+                  <ScrollArea className="max-h-64 w-full overflow-auto rounded-md border">
                     <pre className="p-3 text-xs">
                       {JSON.stringify(data.new_data, null, 2)}
                     </pre>
@@ -277,9 +269,8 @@ export function ResourceAuditLogDetail({ data }: { data: ResourceAuditLog }) {
                   </div>
                 )}
               </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )

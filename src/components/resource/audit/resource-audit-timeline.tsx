@@ -151,8 +151,8 @@ export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
           if (!open) setSelected(null)
         }}
       >
-        <SheetContent className="w-full sm:max-w-lg overflow-hidden p-0">
-          <SheetHeader className="p-4 pb-2">
+        <SheetContent className="w-full sm:max-w-lg!">
+          <SheetHeader>
             <SheetTitle>Audit Log Entry</SheetTitle>
             <SheetDescription>
               {selected && format(new Date(selected.created_at), "PPpp")}
