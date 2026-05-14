@@ -2,7 +2,7 @@ import { useState } from "react"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { format, formatDistanceToNow } from "date-fns"
+import { formatDistanceToNow } from "date-fns"
 import { PencilIcon, SendIcon, Trash2Icon, XIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
@@ -70,9 +70,6 @@ function CommentTimelineItem({
                 {formatDistanceToNow(new Date(comment.created_at), {
                   addSuffix: true,
                 })}
-                <span className="ml-1 text-muted-foreground/60">
-                  · {format(new Date(comment.created_at), "MMM d, HH:mm")}
-                </span>
                 {comment.updated_at !== comment.created_at && (
                   <span className="ml-1 text-muted-foreground/50">
                     · edited
@@ -101,7 +98,7 @@ function CommentTimelineItem({
               </div>
             )}
           </div>
-          <p className="mt-2 whitespace-pre-wrap break-words text-sm text-muted-foreground">
+          <p className="mt-2 whitespace-pre-wrap wrap-break-word text-sm text-muted-foreground">
             {comment.content}
           </p>
         </div>
@@ -228,28 +225,22 @@ export function ResourceComments({
     })
   }
 
-  if (comments.length === 0 && !newContent) {
-    return (
-      <div className="px-1 py-2">
-        <div className="flex flex-col items-center justify-center py-10 text-center">
-          <p className="text-sm font-medium">No comments yet</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Be the first to leave a comment on this record.
-          </p>
-        </div>
-        <NewCommentForm
-          value={newContent}
-          onChange={setNewContent}
-          onSubmit={handleSubmit}
-          isPending={insertMutation.isPending}
-          authUser={authUser}
-        />
-      </div>
-    )
-  }
-
   return (
     <Timeline className="px-1 py-2">
+      {comments.length === 0 && (
+        <TimelineItem>
+          <TimelineDot className="border-muted-foreground/30" />
+          <TimelineConnector />
+          <TimelineContent>
+            <div className="flex flex-col items-center justify-center py-6 text-center">
+              <p className="text-sm font-medium">No comments yet</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Be the first to leave a comment on this record.
+              </p>
+            </div>
+          </TimelineContent>
+        </TimelineItem>
+      )}
       {comments.map((comment) =>
         editingComment?.id === comment.id ? (
           <EditCommentForm
