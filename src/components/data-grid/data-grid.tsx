@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
+import type { ReactNode } from "react"
 
 import type { Table } from "@tanstack/react-table"
 import { flexRender } from "@tanstack/react-table"
@@ -10,7 +11,6 @@ import { cn } from "#/lib/utils"
 import type { ColumnFieldMetadata } from "#/types/fields"
 
 import { DataTablePagination } from "../data-table/data-table-pagination"
-import { DataTableToolbar } from "../data-table/data-table-toolbar"
 import { getEditCell } from "./data-grid-edit-cell"
 
 type GridRow = Record<string, unknown>
@@ -18,17 +18,17 @@ type GridRow = Record<string, unknown>
 interface DataGridProps<TData> {
   table: Table<TData>
   isEditable?: boolean
-  onDelete?: (rows: TData[]) => void | Promise<void>
   onRowsChange?: (rows: GridRow[], data: RowsChangeData<GridRow>) => void
   className?: string
+  children?: ReactNode
 }
 
 export function DataGrid<TData>({
   table,
   isEditable = true,
-  onDelete,
   onRowsChange,
   className,
+  children,
 }: DataGridProps<TData>) {
   const rowModel = table.getRowModel()
   const gridRows = useMemo(
@@ -73,7 +73,7 @@ export function DataGrid<TData>({
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
-      <DataTableToolbar table={table} onDelete={onDelete} />
+      {children}
       <ReactDataGrid
         className="h-min! overflow-auto!"
         columns={gridColumns}

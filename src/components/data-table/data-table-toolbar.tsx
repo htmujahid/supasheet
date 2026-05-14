@@ -25,8 +25,8 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>
   onDelete?: (rows: TData[]) => void | Promise<void>
   hideColumnVisibility?: boolean
-  // Action buttons rendered between the delete button and column visibility.
-  // When omitted, a default Export button is rendered.
+  // Rendered immediately to the right of the Filter button on the left side
+  // of the toolbar (e.g. filter templates).
   children?: ReactNode
 }
 
@@ -51,6 +51,7 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <DataTableFilter table={table} />
+          {children}
         </div>
         <div className="flex items-center gap-2">
           {selectedCount > 0 && onDelete && (
@@ -63,13 +64,11 @@ export function DataTableToolbar<TData>({
               Delete ({selectedCount})
             </Button>
           )}
-          {children ?? (
-            <DataTableExportButton
-              table={table}
-              excludeColumns={["select"]}
-              filename={table.options.meta?.filename}
-            />
-          )}
+          <DataTableExportButton
+            table={table}
+            excludeColumns={["select"]}
+            filename={table.options.meta?.filename}
+          />
           {!hideColumnVisibility && <DataTableColumnVisibility table={table} />}
         </div>
       </div>

@@ -16,6 +16,7 @@ import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
+  FilterTemplate,
   PrimaryKey,
   ResourceSchema,
 } from "#/lib/database-meta.types"
@@ -23,6 +24,7 @@ import { isTableSchema } from "#/lib/database-meta.types"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 
+import { ResourceFilterTemplates } from "../resource-filter-templates"
 import { getResourceTableColumns } from "../resource-table-columns"
 import { ResourceListEmpty } from "./resource-list-empty"
 import { ResourceListRow } from "./resource-list-row"
@@ -46,6 +48,7 @@ interface ResourceListProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
+  filterTemplates?: FilterTemplate[]
 }
 
 export function ResourceList({
@@ -57,6 +60,7 @@ export function ResourceList({
   pagination,
   columnFilters,
   pageCount,
+  filterTemplates = [],
 }: ResourceListProps) {
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
@@ -121,7 +125,12 @@ export function ResourceList({
         table={table}
         onDelete={canDelete ? handleDelete : undefined}
         hideColumnVisibility
-      />
+      >
+        <ResourceFilterTemplates
+          filterTemplates={filterTemplates}
+          currentFilters={columnFilters}
+        />
+      </DataTableToolbar>
       {rows.length === 0 ? (
         <ResourceListEmpty />
       ) : (

@@ -130,6 +130,19 @@ export type MetaViewItem =
   | GalleryViewItem
   | ListViewItem
 
+export type FilterTemplate = {
+  id: string
+  name: string
+  description?: string
+  icon?: string
+  filters: {
+    id: string
+    value: string | string[]
+    variant: string
+    operator: string
+  }[]
+}
+
 export type TableMetadata = {
   display?: "block" | "none"
   name?: string
@@ -150,6 +163,7 @@ export type TableMetadata = {
   }
   primaryItem?: string
   items?: MetaViewItem[]
+  filterTemplates?: FilterTemplate[]
   sections?: FieldSection[]
 }
 
@@ -161,6 +175,7 @@ export type ViewMetadata = {
   single?: boolean
   primaryItem?: string
   items?: MetaViewItem[]
+  filterTemplates?: FilterTemplate[]
   sections?: FieldSection[]
 }
 

@@ -223,6 +223,12 @@ comment on table desk.projects is '{
         {"id":"calendar","name":"Project Timeline","type":"calendar","title":"title","startDate":"start_date","endDate":"end_date","badge":"status"},
         {"id":"gallery","name":"Project Gallery","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
     ],
+    "filterTemplates": [
+        {"id":"active","name":"Active","filters":[{"id":"status","value":"active","variant":"select","operator":"eq"}]},
+        {"id":"on_hold","name":"On Hold","filters":[{"id":"status","value":"on_hold","variant":"select","operator":"eq"}]},
+        {"id":"high_priority","name":"High Priority","filters":[{"id":"priority","value":["critical","high"],"variant":"multiSelect","operator":"in"}]},
+        {"id":"completed","name":"Completed","filters":[{"id":"status","value":"completed","variant":"select","operator":"eq"}]}
+    ],
     "sections": [
         {"id":"summary","title":"Summary","fields":["title","description","cover"]},
         {"id":"schedule","title":"Schedule","fields":["status","priority","start_date","end_date"]},
@@ -397,6 +403,14 @@ comment on table desk.tasks is '{
         {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"created_at","badge":"status"},
         {"id":"calendar","name":"Calendar View","type":"calendar", "title": "title", "startDate": "created_at", "endDate": "due_date", "badge": "status"},
         {"id":"gallery","name":"Gallery View","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
+    ],
+    "filterTemplates": [
+        {"id":"in_progress","name":"In Progress","filters":[{"id":"status","value":"in_progress","variant":"select","operator":"eq"}]},
+        {"id":"pending","name":"Pending","filters":[{"id":"status","value":"pending","variant":"select","operator":"eq"}]},
+        {"id":"completed","name":"Completed","filters":[{"id":"status","value":"completed","variant":"select","operator":"eq"}]},
+        {"id":"open","name":"Open (not completed)","filters":[{"id":"status","value":["pending","in_progress"],"variant":"multiSelect","operator":"in"}]},
+        {"id":"critical","name":"Critical & High","filters":[{"id":"priority","value":["critical","high"],"variant":"multiSelect","operator":"in"}]},
+        {"id":"important","name":"Important","filters":[{"id":"is_important","value":"true","variant":"boolean","operator":"is"}]}
     ],
     "sections": [
         {"id":"summary","title":"Summary","fields":["title","description","cover"]},
@@ -1702,6 +1716,13 @@ comment on table desk.timesheets is '{
     },
     "items": [
         {"id":"calendar","name":"Time Calendar","type":"calendar","title":"title","startDate":"started_at","endDate":"ended_at","badge":"status"}
+    ],
+    "filterTemplates": [
+        {"id":"drafts","name":"Drafts","filters":[{"id":"status","value":"draft","variant":"select","operator":"eq"}]},
+        {"id":"pending_approval","name":"Pending Approval","filters":[{"id":"status","value":"submitted","variant":"select","operator":"eq"}]},
+        {"id":"approved","name":"Approved","filters":[{"id":"status","value":"approved","variant":"select","operator":"eq"}]},
+        {"id":"rejected","name":"Rejected","filters":[{"id":"status","value":"rejected","variant":"select","operator":"eq"}]},
+        {"id":"billable","name":"Billable","filters":[{"id":"billable","value":"true","variant":"boolean","operator":"is"}]}
     ],
     "sections": [
         {"id":"summary","title":"Summary","fields":["title","description","task_id","project_id"]},

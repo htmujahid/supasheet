@@ -276,6 +276,7 @@ function RouteComponent() {
           pagination={pagination}
           columnFilters={filters}
           pageCount={pageCount}
+          filterTemplates={meta.filterTemplates ?? []}
         />
       </div>
     </>

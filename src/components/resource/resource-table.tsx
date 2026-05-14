@@ -16,6 +16,7 @@ import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
+  FilterTemplate,
   PrimaryKey,
   ResourceSchema,
 } from "#/lib/database-meta.types"
@@ -23,6 +24,7 @@ import { isTableSchema } from "#/lib/database-meta.types"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 
+import { ResourceFilterTemplates } from "./resource-filter-templates"
 import { getResourceTableColumns } from "./resource-table-columns"
 
 interface ResourceTableProps {
@@ -33,6 +35,7 @@ interface ResourceTableProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
+  filterTemplates?: FilterTemplate[]
 }
 
 export function ResourceTable({
@@ -43,6 +46,7 @@ export function ResourceTable({
   pagination,
   columnFilters,
   pageCount,
+  filterTemplates = [],
 }: ResourceTableProps) {
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
@@ -104,7 +108,12 @@ export function ResourceTable({
       <DataTableToolbar
         table={table}
         onDelete={canDelete ? handleDelete : undefined}
-      />
+      >
+        <ResourceFilterTemplates
+          filterTemplates={filterTemplates}
+          currentFilters={columnFilters}
+        />
+      </DataTableToolbar>
     </DataTable>
   )
 }

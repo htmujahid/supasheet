@@ -11,9 +11,11 @@ import type {
 import { toast } from "sonner"
 
 import { DataGrid } from "#/components/data-grid/data-grid"
+import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
 import type {
   ColumnSchema,
+  FilterTemplate,
   PrimaryKey,
   ResourceSchema,
   TableMetadata,
@@ -21,6 +23,7 @@ import type {
 import { isTableSchema } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
 
+import { ResourceFilterTemplates } from "../resource-filter-templates"
 import { getResourceGridColumns } from "./resource-grid-columns"
 
 interface ResourceGridProps {
@@ -31,6 +34,7 @@ interface ResourceGridProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
+  filterTemplates?: FilterTemplate[]
 }
 
 export function ResourceGrid({
@@ -41,6 +45,7 @@ export function ResourceGrid({
   pagination,
   columnFilters,
   pageCount,
+  filterTemplates = [],
 }: ResourceGridProps) {
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
@@ -127,8 +132,14 @@ export function ResourceGrid({
     <DataGrid
       table={table}
       isEditable={!!tableSchema}
-      onDelete={undefined}
       onRowsChange={handleRowsChange}
-    />
+    >
+      <DataTableToolbar table={table}>
+        <ResourceFilterTemplates
+          filterTemplates={filterTemplates}
+          currentFilters={columnFilters}
+        />
+      </DataTableToolbar>
+    </DataGrid>
   )
 }
