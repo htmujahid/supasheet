@@ -105,9 +105,7 @@ export const ResourceRowCell = memo(function ({
             <ArrowUpRightIcon />
           </DetailRecordTrigger>
           <span>
-            {row.original?.[
-              relationship.source_column_name
-            ]?.toString() || ""}
+            {row.original?.[relationship.source_column_name]?.toString() || ""}
           </span>
         </>
       ) : columnData.isArray ? (

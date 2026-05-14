@@ -1,10 +1,7 @@
 import type { Column, ColumnDef } from "@tanstack/react-table"
 
 import { getColumnMetadata } from "#/lib/columns"
-import type {
-  ColumnSchema,
-  TableSchema,
-} from "#/lib/database-meta.types"
+import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
 
 import { ResourceGridColumnHeader } from "./resource-grid-column-header"
 

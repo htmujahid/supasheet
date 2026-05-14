@@ -56,7 +56,9 @@ function CommentTimelineItem({
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
               <Avatar className="h-5 w-5 shrink-0">
-                <AvatarImage src={comment.created_by_picture_url ?? undefined} />
+                <AvatarImage
+                  src={comment.created_by_picture_url ?? undefined}
+                />
                 <AvatarFallback className="text-[10px]">
                   {userInitials(comment.created_by_name)}
                 </AvatarFallback>

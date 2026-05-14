@@ -8,8 +8,6 @@ import {
   PencilIcon,
 } from "lucide-react"
 
-import { useHasPermission } from "#/hooks/use-permissions"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import { Button } from "#/components/ui/button"
 import {
   DropdownMenu,
@@ -19,6 +17,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
+import { useHasPermission } from "#/hooks/use-permissions"
+import type { AppPermission } from "#/lib/supabase/data/core"
 
 interface ResourceRecordActionsProps {
   schema: string
@@ -37,11 +37,17 @@ export function ResourceRecordActions({
 }: ResourceRecordActionsProps) {
   const navigate = useNavigate()
 
-  const canUpdate = useHasPermission(`${schema}.${resource}:update` as AppPermission)
-  const canViewAudit = useHasPermission(`${schema}.${resource}:audit` as AppPermission)
-  const canViewComments = useHasPermission(`${schema}.${resource}:comment` as AppPermission)
+  const canUpdate = useHasPermission(
+    `${schema}.${resource}:update` as AppPermission
+  )
+  const canViewAudit = useHasPermission(
+    `${schema}.${resource}:audit` as AppPermission
+  )
+  const canViewComments = useHasPermission(
+    `${schema}.${resource}:comment` as AppPermission
+  )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const params = { schema, resource, resourceId } as any
 
   const hasViewDetail = mode === "update"

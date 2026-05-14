@@ -2250,7 +2250,10 @@ values
   ('x-admin', 'procurement.requisition_items:update'),
   ('x-admin', 'procurement.requisition_items:delete'),
   ('x-admin', 'procurement.requisition_items:audit'),
-  ('x-admin', 'procurement.requisition_items:comment'),
+  (
+    'x-admin',
+    'procurement.requisition_items:comment'
+  ),
   ('x-admin', 'procurement.rfqs:select'),
   ('x-admin', 'procurement.rfqs:insert'),
   ('x-admin', 'procurement.rfqs:update'),
@@ -2280,13 +2283,19 @@ values
   ('x-admin', 'procurement.asset_assignments:update'),
   ('x-admin', 'procurement.asset_assignments:delete'),
   ('x-admin', 'procurement.asset_assignments:audit'),
-  ('x-admin', 'procurement.asset_assignments:comment'),
+  (
+    'x-admin',
+    'procurement.asset_assignments:comment'
+  ),
   ('x-admin', 'procurement.asset_maintenance:select'),
   ('x-admin', 'procurement.asset_maintenance:insert'),
   ('x-admin', 'procurement.asset_maintenance:update'),
   ('x-admin', 'procurement.asset_maintenance:delete'),
   ('x-admin', 'procurement.asset_maintenance:audit'),
-  ('x-admin', 'procurement.asset_maintenance:comment'),
+  (
+    'x-admin',
+    'procurement.asset_maintenance:comment'
+  ),
   ('x-admin', 'procurement.users:select'),
   (
     'x-admin',

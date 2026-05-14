@@ -433,15 +433,16 @@ export const resourceCommentsQueryOptions = (
   queryOptions({
     queryKey: ["supasheet", "resource-comments", schema, resource, recordId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .schema("supasheet")
-        .rpc("get_comments" as never, {
+      const { data, error } = await supabase.schema("supasheet").rpc(
+        "get_comments" as never,
+        {
           p_schema: schema,
           p_table: resource,
           p_record_id: recordId,
-        } as never)
+        } as never
+      )
       if (error) throw error
-      return ((data ?? []) as unknown) as ResourceComment[]
+      return (data ?? []) as unknown as ResourceComment[]
     },
   })
 

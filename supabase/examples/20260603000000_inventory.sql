@@ -1837,7 +1837,10 @@ values
     'inventory.purchase_order_items:delete'
   ),
   ('x-admin', 'inventory.purchase_order_items:audit'),
-  ('x-admin', 'inventory.purchase_order_items:comment'),
+  (
+    'x-admin',
+    'inventory.purchase_order_items:comment'
+  ),
   ('x-admin', 'inventory.shipments:select'),
   ('x-admin', 'inventory.shipments:insert'),
   ('x-admin', 'inventory.shipments:update'),

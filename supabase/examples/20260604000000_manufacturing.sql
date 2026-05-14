@@ -1915,7 +1915,10 @@ values
   ('x-admin', 'manufacturing.material_issues:update'),
   ('x-admin', 'manufacturing.material_issues:delete'),
   ('x-admin', 'manufacturing.material_issues:audit'),
-  ('x-admin', 'manufacturing.material_issues:comment'),
+  (
+    'x-admin',
+    'manufacturing.material_issues:comment'
+  ),
   (
     'x-admin',
     'manufacturing.production_outputs:select'

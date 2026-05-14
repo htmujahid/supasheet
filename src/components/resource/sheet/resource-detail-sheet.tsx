@@ -5,10 +5,13 @@ import { Link } from "@tanstack/react-router"
 import { ExternalLinkIcon } from "lucide-react"
 
 import { buttonVariants } from "#/components/ui/button"
-import { Sheet, SheetContent,
+import {
+  Sheet,
+  SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle } from "#/components/ui/sheet"
+  SheetTitle,
+} from "#/components/ui/sheet"
 import { formatTitle } from "#/lib/format"
 
 import { ResourceDetailSheetBody } from "./resource-detail-sheet-body"
