@@ -1,7 +1,7 @@
 import { useLocation } from "@tanstack/react-router"
 
 const SUPPORTED_VIEW_RE =
-  /\/(table|grid|kanban\/[^/]+|calendar\/[^/]+|gallery\/[^/]+|list\/[^/]+)$/
+  /\/(table|grid|kanban\/[^/]+|calendar\/[^/]+|gallery\/[^/]+|list\/[^/]+|[^/]+\/detail)$/
 
 export type SheetLink = {
   to: string

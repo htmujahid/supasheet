@@ -2,6 +2,7 @@ import { Suspense, useMemo } from "react"
 
 import {
   Link,
+  Outlet,
   createFileRoute,
   notFound,
   useRouter,
@@ -594,6 +595,7 @@ function RouteComponent() {
           )}
         </div>
       </div>
+      <Outlet />
     </>
   )
 }

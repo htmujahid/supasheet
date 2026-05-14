@@ -254,17 +254,6 @@ function RouteComponent() {
           { title: "Table" },
         ]}
       >
-        <Link
-          to="/$schema/resource/$resource/table/sheet"
-          params={{ resource, schema }}
-          search={{ mode: "create" }}
-          mask={{
-            to: "/$schema/resource/$resource/table",
-            params: { resource, schema },
-          }}
-        >
-          click here
-        </Link>
         <ResourceViewSwitcher
           schema={schema}
           resource={resource}
