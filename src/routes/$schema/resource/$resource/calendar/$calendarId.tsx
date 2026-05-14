@@ -1,5 +1,6 @@
 import {
   Link,
+  Outlet,
   createFileRoute,
   notFound,
   useRouter,
@@ -282,6 +283,7 @@ function RouteComponent() {
           currentView={calendarView}
         />
       </div>
+      <Outlet />
     </>
   )
 }

@@ -1,5 +1,6 @@
 import {
   Link,
+  Outlet,
   createFileRoute,
   notFound,
   useRouter,
@@ -252,6 +253,7 @@ function RouteComponent() {
       <div className="flex flex-1 flex-col px-4 py-4">
         <ResourceGallery data={data} resourceSchema={resourceSchema} />
       </div>
+      <Outlet />
     </>
   )
 }

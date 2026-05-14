@@ -61,14 +61,20 @@ import { Route as SchemaResourceResourceTableRouteImport } from './routes/$schem
 import { Route as SchemaResourceResourceSingleRouteImport } from './routes/$schema/resource/$resource/single'
 import { Route as SchemaResourceResourceNewRouteImport } from './routes/$schema/resource/$resource/new'
 import { Route as SchemaResourceResourceGridRouteImport } from './routes/$schema/resource/$resource/grid'
+import { Route as SchemaResourceResourceTableSheetRouteImport } from './routes/$schema/resource/$resource/table.sheet'
 import { Route as SchemaResourceResourceListListIdRouteImport } from './routes/$schema/resource/$resource/list/$listId'
 import { Route as SchemaResourceResourceKanbanKanbanIdRouteImport } from './routes/$schema/resource/$resource/kanban/$kanbanId'
+import { Route as SchemaResourceResourceGridSheetRouteImport } from './routes/$schema/resource/$resource/grid.sheet'
 import { Route as SchemaResourceResourceGalleryGalleryIdRouteImport } from './routes/$schema/resource/$resource/gallery/$galleryId'
 import { Route as SchemaResourceResourceCalendarCalendarIdRouteImport } from './routes/$schema/resource/$resource/calendar/$calendarId'
 import { Route as SchemaResourceResourceResourceIdUpdateRouteImport } from './routes/$schema/resource/$resource/$resourceId/update'
 import { Route as SchemaResourceResourceResourceIdDetailRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail'
 import { Route as SchemaResourceResourceResourceIdCommentRouteImport } from './routes/$schema/resource/$resource/$resourceId/comment'
 import { Route as SchemaResourceResourceResourceIdAuditRouteImport } from './routes/$schema/resource/$resource/$resourceId/audit'
+import { Route as SchemaResourceResourceListListIdSheetRouteImport } from './routes/$schema/resource/$resource/list/$listId.sheet'
+import { Route as SchemaResourceResourceKanbanKanbanIdSheetRouteImport } from './routes/$schema/resource/$resource/kanban/$kanbanId.sheet'
+import { Route as SchemaResourceResourceGalleryGalleryIdSheetRouteImport } from './routes/$schema/resource/$resource/gallery/$galleryId.sheet'
+import { Route as SchemaResourceResourceCalendarCalendarIdSheetRouteImport } from './routes/$schema/resource/$resource/calendar/$calendarId.sheet'
 
 const InitRoute = InitRouteImport.update({
   id: '/init',
@@ -340,6 +346,12 @@ const SchemaResourceResourceGridRoute =
     path: '/grid',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
+const SchemaResourceResourceTableSheetRoute =
+  SchemaResourceResourceTableSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceTableRoute,
+  } as any)
 const SchemaResourceResourceListListIdRoute =
   SchemaResourceResourceListListIdRouteImport.update({
     id: '/list/$listId',
@@ -351,6 +363,12 @@ const SchemaResourceResourceKanbanKanbanIdRoute =
     id: '/kanban/$kanbanId',
     path: '/kanban/$kanbanId',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
+const SchemaResourceResourceGridSheetRoute =
+  SchemaResourceResourceGridSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceGridRoute,
   } as any)
 const SchemaResourceResourceGalleryGalleryIdRoute =
   SchemaResourceResourceGalleryGalleryIdRouteImport.update({
@@ -387,6 +405,30 @@ const SchemaResourceResourceResourceIdAuditRoute =
     id: '/$resourceId/audit',
     path: '/$resourceId/audit',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
+const SchemaResourceResourceListListIdSheetRoute =
+  SchemaResourceResourceListListIdSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceListListIdRoute,
+  } as any)
+const SchemaResourceResourceKanbanKanbanIdSheetRoute =
+  SchemaResourceResourceKanbanKanbanIdSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceKanbanKanbanIdRoute,
+  } as any)
+const SchemaResourceResourceGalleryGalleryIdSheetRoute =
+  SchemaResourceResourceGalleryGalleryIdSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceGalleryGalleryIdRoute,
+  } as any)
+const SchemaResourceResourceCalendarCalendarIdSheetRoute =
+  SchemaResourceResourceCalendarCalendarIdSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceCalendarCalendarIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -430,10 +472,10 @@ export interface FileRoutesByFullPath {
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
-  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
+  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRouteWithChildren
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
   '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
-  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
+  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRouteWithChildren
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -446,10 +488,16 @@ export interface FileRoutesByFullPath {
   '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
   '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRoute
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
-  '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
-  '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
-  '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRoute
-  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRoute
+  '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRouteWithChildren
+  '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRouteWithChildren
+  '/$schema/resource/$resource/grid/sheet': typeof SchemaResourceResourceGridSheetRoute
+  '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
+  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRouteWithChildren
+  '/$schema/resource/$resource/table/sheet': typeof SchemaResourceResourceTableSheetRoute
+  '/$schema/resource/$resource/calendar/$calendarId/sheet': typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
+  '/$schema/resource/$resource/gallery/$galleryId/sheet': typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
+  '/$schema/resource/$resource/kanban/$kanbanId/sheet': typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
+  '/$schema/resource/$resource/list/$listId/sheet': typeof SchemaResourceResourceListListIdSheetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -485,10 +533,10 @@ export interface FileRoutesByTo {
   '/core/user_roles': typeof CoreUser_rolesIndexRoute
   '/core/users': typeof CoreUsersIndexRoute
   '/storage/$bucketId': typeof StorageBucketIdIndexRoute
-  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
+  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRouteWithChildren
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
   '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
-  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
+  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRouteWithChildren
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -501,10 +549,16 @@ export interface FileRoutesByTo {
   '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
   '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRoute
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
-  '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
-  '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
-  '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRoute
-  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRoute
+  '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRouteWithChildren
+  '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRouteWithChildren
+  '/$schema/resource/$resource/grid/sheet': typeof SchemaResourceResourceGridSheetRoute
+  '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
+  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRouteWithChildren
+  '/$schema/resource/$resource/table/sheet': typeof SchemaResourceResourceTableSheetRoute
+  '/$schema/resource/$resource/calendar/$calendarId/sheet': typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
+  '/$schema/resource/$resource/gallery/$galleryId/sheet': typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
+  '/$schema/resource/$resource/kanban/$kanbanId/sheet': typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
+  '/$schema/resource/$resource/list/$listId/sheet': typeof SchemaResourceResourceListListIdSheetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -548,10 +602,10 @@ export interface FileRoutesById {
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
-  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRoute
+  '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRouteWithChildren
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
   '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
-  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRoute
+  '/$schema/resource/$resource/table': typeof SchemaResourceResourceTableRouteWithChildren
   '/core/users/$userId/danger': typeof CoreUsersUserIdDangerRoute
   '/core/users/$userId/edit': typeof CoreUsersUserIdEditRoute
   '/core/users/$userId/security': typeof CoreUsersUserIdSecurityRoute
@@ -564,10 +618,16 @@ export interface FileRoutesById {
   '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
   '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRoute
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
-  '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
-  '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRoute
-  '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRoute
-  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRoute
+  '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRouteWithChildren
+  '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRouteWithChildren
+  '/$schema/resource/$resource/grid/sheet': typeof SchemaResourceResourceGridSheetRoute
+  '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
+  '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRouteWithChildren
+  '/$schema/resource/$resource/table/sheet': typeof SchemaResourceResourceTableSheetRoute
+  '/$schema/resource/$resource/calendar/$calendarId/sheet': typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
+  '/$schema/resource/$resource/gallery/$galleryId/sheet': typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
+  '/$schema/resource/$resource/kanban/$kanbanId/sheet': typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
+  '/$schema/resource/$resource/list/$listId/sheet': typeof SchemaResourceResourceListListIdSheetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -630,8 +690,14 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/gallery/$galleryId'
+    | '/$schema/resource/$resource/grid/sheet'
     | '/$schema/resource/$resource/kanban/$kanbanId'
     | '/$schema/resource/$resource/list/$listId'
+    | '/$schema/resource/$resource/table/sheet'
+    | '/$schema/resource/$resource/calendar/$calendarId/sheet'
+    | '/$schema/resource/$resource/gallery/$galleryId/sheet'
+    | '/$schema/resource/$resource/kanban/$kanbanId/sheet'
+    | '/$schema/resource/$resource/list/$listId/sheet'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -685,8 +751,14 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/gallery/$galleryId'
+    | '/$schema/resource/$resource/grid/sheet'
     | '/$schema/resource/$resource/kanban/$kanbanId'
     | '/$schema/resource/$resource/list/$listId'
+    | '/$schema/resource/$resource/table/sheet'
+    | '/$schema/resource/$resource/calendar/$calendarId/sheet'
+    | '/$schema/resource/$resource/gallery/$galleryId/sheet'
+    | '/$schema/resource/$resource/kanban/$kanbanId/sheet'
+    | '/$schema/resource/$resource/list/$listId/sheet'
   id:
     | '__root__'
     | '/'
@@ -747,8 +819,14 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/gallery/$galleryId'
+    | '/$schema/resource/$resource/grid/sheet'
     | '/$schema/resource/$resource/kanban/$kanbanId'
     | '/$schema/resource/$resource/list/$listId'
+    | '/$schema/resource/$resource/table/sheet'
+    | '/$schema/resource/$resource/calendar/$calendarId/sheet'
+    | '/$schema/resource/$resource/gallery/$galleryId/sheet'
+    | '/$schema/resource/$resource/kanban/$kanbanId/sheet'
+    | '/$schema/resource/$resource/list/$listId/sheet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1128,6 +1206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceGridRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/table/sheet': {
+      id: '/$schema/resource/$resource/table/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/table/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceTableSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceTableRoute
+    }
     '/$schema/resource/$resource/list/$listId': {
       id: '/$schema/resource/$resource/list/$listId'
       path: '/list/$listId'
@@ -1141,6 +1226,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/$schema/resource/$resource/kanban/$kanbanId'
       preLoaderRoute: typeof SchemaResourceResourceKanbanKanbanIdRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
+    '/$schema/resource/$resource/grid/sheet': {
+      id: '/$schema/resource/$resource/grid/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/grid/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceGridSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceGridRoute
     }
     '/$schema/resource/$resource/gallery/$galleryId': {
       id: '/$schema/resource/$resource/gallery/$galleryId'
@@ -1184,31 +1276,150 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceResourceIdAuditRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/list/$listId/sheet': {
+      id: '/$schema/resource/$resource/list/$listId/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/list/$listId/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceListListIdSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceListListIdRoute
+    }
+    '/$schema/resource/$resource/kanban/$kanbanId/sheet': {
+      id: '/$schema/resource/$resource/kanban/$kanbanId/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/kanban/$kanbanId/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceKanbanKanbanIdSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceKanbanKanbanIdRoute
+    }
+    '/$schema/resource/$resource/gallery/$galleryId/sheet': {
+      id: '/$schema/resource/$resource/gallery/$galleryId/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/gallery/$galleryId/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceGalleryGalleryIdSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceGalleryGalleryIdRoute
+    }
+    '/$schema/resource/$resource/calendar/$calendarId/sheet': {
+      id: '/$schema/resource/$resource/calendar/$calendarId/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/calendar/$calendarId/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceCalendarCalendarIdSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
+    }
   }
 }
 
+interface SchemaResourceResourceGridRouteChildren {
+  SchemaResourceResourceGridSheetRoute: typeof SchemaResourceResourceGridSheetRoute
+}
+
+const SchemaResourceResourceGridRouteChildren: SchemaResourceResourceGridRouteChildren =
+  {
+    SchemaResourceResourceGridSheetRoute: SchemaResourceResourceGridSheetRoute,
+  }
+
+const SchemaResourceResourceGridRouteWithChildren =
+  SchemaResourceResourceGridRoute._addFileChildren(
+    SchemaResourceResourceGridRouteChildren,
+  )
+
+interface SchemaResourceResourceTableRouteChildren {
+  SchemaResourceResourceTableSheetRoute: typeof SchemaResourceResourceTableSheetRoute
+}
+
+const SchemaResourceResourceTableRouteChildren: SchemaResourceResourceTableRouteChildren =
+  {
+    SchemaResourceResourceTableSheetRoute:
+      SchemaResourceResourceTableSheetRoute,
+  }
+
+const SchemaResourceResourceTableRouteWithChildren =
+  SchemaResourceResourceTableRoute._addFileChildren(
+    SchemaResourceResourceTableRouteChildren,
+  )
+
+interface SchemaResourceResourceCalendarCalendarIdRouteChildren {
+  SchemaResourceResourceCalendarCalendarIdSheetRoute: typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
+}
+
+const SchemaResourceResourceCalendarCalendarIdRouteChildren: SchemaResourceResourceCalendarCalendarIdRouteChildren =
+  {
+    SchemaResourceResourceCalendarCalendarIdSheetRoute:
+      SchemaResourceResourceCalendarCalendarIdSheetRoute,
+  }
+
+const SchemaResourceResourceCalendarCalendarIdRouteWithChildren =
+  SchemaResourceResourceCalendarCalendarIdRoute._addFileChildren(
+    SchemaResourceResourceCalendarCalendarIdRouteChildren,
+  )
+
+interface SchemaResourceResourceGalleryGalleryIdRouteChildren {
+  SchemaResourceResourceGalleryGalleryIdSheetRoute: typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
+}
+
+const SchemaResourceResourceGalleryGalleryIdRouteChildren: SchemaResourceResourceGalleryGalleryIdRouteChildren =
+  {
+    SchemaResourceResourceGalleryGalleryIdSheetRoute:
+      SchemaResourceResourceGalleryGalleryIdSheetRoute,
+  }
+
+const SchemaResourceResourceGalleryGalleryIdRouteWithChildren =
+  SchemaResourceResourceGalleryGalleryIdRoute._addFileChildren(
+    SchemaResourceResourceGalleryGalleryIdRouteChildren,
+  )
+
+interface SchemaResourceResourceKanbanKanbanIdRouteChildren {
+  SchemaResourceResourceKanbanKanbanIdSheetRoute: typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
+}
+
+const SchemaResourceResourceKanbanKanbanIdRouteChildren: SchemaResourceResourceKanbanKanbanIdRouteChildren =
+  {
+    SchemaResourceResourceKanbanKanbanIdSheetRoute:
+      SchemaResourceResourceKanbanKanbanIdSheetRoute,
+  }
+
+const SchemaResourceResourceKanbanKanbanIdRouteWithChildren =
+  SchemaResourceResourceKanbanKanbanIdRoute._addFileChildren(
+    SchemaResourceResourceKanbanKanbanIdRouteChildren,
+  )
+
+interface SchemaResourceResourceListListIdRouteChildren {
+  SchemaResourceResourceListListIdSheetRoute: typeof SchemaResourceResourceListListIdSheetRoute
+}
+
+const SchemaResourceResourceListListIdRouteChildren: SchemaResourceResourceListListIdRouteChildren =
+  {
+    SchemaResourceResourceListListIdSheetRoute:
+      SchemaResourceResourceListListIdSheetRoute,
+  }
+
+const SchemaResourceResourceListListIdRouteWithChildren =
+  SchemaResourceResourceListListIdRoute._addFileChildren(
+    SchemaResourceResourceListListIdRouteChildren,
+  )
+
 interface SchemaResourceResourceRouteRouteChildren {
-  SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRoute
+  SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRouteWithChildren
   SchemaResourceResourceNewRoute: typeof SchemaResourceResourceNewRoute
   SchemaResourceResourceSingleRoute: typeof SchemaResourceResourceSingleRoute
-  SchemaResourceResourceTableRoute: typeof SchemaResourceResourceTableRoute
+  SchemaResourceResourceTableRoute: typeof SchemaResourceResourceTableRouteWithChildren
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
   SchemaResourceResourceResourceIdAuditRoute: typeof SchemaResourceResourceResourceIdAuditRoute
   SchemaResourceResourceResourceIdCommentRoute: typeof SchemaResourceResourceResourceIdCommentRoute
   SchemaResourceResourceResourceIdDetailRoute: typeof SchemaResourceResourceResourceIdDetailRoute
   SchemaResourceResourceResourceIdUpdateRoute: typeof SchemaResourceResourceResourceIdUpdateRoute
-  SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
-  SchemaResourceResourceGalleryGalleryIdRoute: typeof SchemaResourceResourceGalleryGalleryIdRoute
-  SchemaResourceResourceKanbanKanbanIdRoute: typeof SchemaResourceResourceKanbanKanbanIdRoute
-  SchemaResourceResourceListListIdRoute: typeof SchemaResourceResourceListListIdRoute
+  SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRouteWithChildren
+  SchemaResourceResourceGalleryGalleryIdRoute: typeof SchemaResourceResourceGalleryGalleryIdRouteWithChildren
+  SchemaResourceResourceKanbanKanbanIdRoute: typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
+  SchemaResourceResourceListListIdRoute: typeof SchemaResourceResourceListListIdRouteWithChildren
 }
 
 const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRouteChildren =
   {
-    SchemaResourceResourceGridRoute: SchemaResourceResourceGridRoute,
+    SchemaResourceResourceGridRoute:
+      SchemaResourceResourceGridRouteWithChildren,
     SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
     SchemaResourceResourceSingleRoute: SchemaResourceResourceSingleRoute,
-    SchemaResourceResourceTableRoute: SchemaResourceResourceTableRoute,
+    SchemaResourceResourceTableRoute:
+      SchemaResourceResourceTableRouteWithChildren,
     SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
     SchemaResourceResourceResourceIdAuditRoute:
       SchemaResourceResourceResourceIdAuditRoute,
@@ -1219,13 +1430,13 @@ const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRoute
     SchemaResourceResourceResourceIdUpdateRoute:
       SchemaResourceResourceResourceIdUpdateRoute,
     SchemaResourceResourceCalendarCalendarIdRoute:
-      SchemaResourceResourceCalendarCalendarIdRoute,
+      SchemaResourceResourceCalendarCalendarIdRouteWithChildren,
     SchemaResourceResourceGalleryGalleryIdRoute:
-      SchemaResourceResourceGalleryGalleryIdRoute,
+      SchemaResourceResourceGalleryGalleryIdRouteWithChildren,
     SchemaResourceResourceKanbanKanbanIdRoute:
-      SchemaResourceResourceKanbanKanbanIdRoute,
+      SchemaResourceResourceKanbanKanbanIdRouteWithChildren,
     SchemaResourceResourceListListIdRoute:
-      SchemaResourceResourceListListIdRoute,
+      SchemaResourceResourceListListIdRouteWithChildren,
   }
 
 const SchemaResourceResourceRouteRouteWithChildren =

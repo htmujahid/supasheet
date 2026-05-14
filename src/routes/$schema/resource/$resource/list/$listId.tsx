@@ -1,5 +1,6 @@
 import {
   Link,
+  Outlet,
   createFileRoute,
   notFound,
   useRouter,
@@ -300,6 +301,7 @@ function RouteComponent() {
           filterTemplates={meta.filterTemplates ?? []}
         />
       </div>
+      <Outlet />
     </>
   )
 }

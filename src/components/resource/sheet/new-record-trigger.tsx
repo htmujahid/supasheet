@@ -1,13 +1,10 @@
 import type { ReactNode } from "react"
 
-import { Link } from "@tanstack/react-router"
+import { Link, getRouteApi } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
-
-import {
-  useNewRecordSheet,
-  useResourceFormSheet,
-} from "./resource-sheet-provider"
+import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
@@ -18,15 +15,16 @@ type Props = {
   children: ReactNode
   schema?: string
   resource?: string
-  // Pre-filled field values. Applied to both inline (sheet) and full-page
-  // flows. For the link path, callers can either pass `defaults` and let the
-  // trigger build the URL, or pass a fully-formed `url`.
+  // Pre-filled field values. Applied to both inline (sheet) and full-page flows.
+  // For the link path, callers can either pass `defaults` and let the trigger
+  // build the URL, or pass a fully-formed `url`.
   defaults?: Record<string, string>
   // Full URL used for the link (non-inline) path. Defaults to
-  // `/<schema>/resource/<resource>/new`. Caller may include query strings
-  // (e.g. `?redirect=...&defaults=...`).
+  // `/<schema>/resource/<resource>/new`.
   url?: string
 }
+
+const routeApi = getRouteApi("/$schema/resource/$resource")
 
 export function NewRecordTrigger({
   size,
@@ -38,24 +36,28 @@ export function NewRecordTrigger({
   defaults,
   url,
 }: Props) {
-  const ctx = useResourceFormSheet()
-  const { inlineForm, open } = useNewRecordSheet(
-    schemaOverride,
-    resourceOverride
-  )
+  const params = routeApi.useParams()
+  const schema = schemaOverride ?? params.schema
+  const resource = resourceOverride ?? params.resource
 
-  const schema = schemaOverride ?? ctx.schema
-  const resource = resourceOverride ?? ctx.resource
+  const inlineForm = useInlineFormFlag(schema, resource)
+  const sheetLink = useSheetHref({
+    mode: "create",
+    defaults,
+    schema: schemaOverride,
+    resource: resourceOverride,
+  })
 
-  if (inlineForm || schemaOverride) {
+  if ((inlineForm || schemaOverride) && sheetLink) {
     return (
       <Button
         size={size}
         variant={variant}
         className={className}
-        onClick={() => {
-          open(defaults)
-        }}
+        nativeButton={false}
+        render={
+          <Link to={sheetLink.to as never} search={sheetLink.search as never} />
+        }
       >
         {children}
       </Button>
@@ -64,9 +66,9 @@ export function NewRecordTrigger({
 
   let href = url ?? `/${schema}/resource/${resource}/new`
   if (!url && defaults) {
-    const params = new URLSearchParams()
-    params.set("defaults", JSON.stringify(defaults))
-    href = `${href}?${params.toString()}`
+    const search = new URLSearchParams()
+    search.set("defaults", JSON.stringify(defaults))
+    href = `${href}?${search.toString()}`
   }
 
   return (

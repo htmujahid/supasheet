@@ -1,14 +1,12 @@
 import type { MouseEvent, ReactNode } from "react"
 
-import { Link } from "@tanstack/react-router"
+import { Link, getRouteApi } from "@tanstack/react-router"
 
-import { Button, buttonVariants } from "#/components/ui/button"
+import { buttonVariants } from "#/components/ui/button"
+import type { Button } from "#/components/ui/button"
+import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 import { cn } from "#/lib/utils"
-
-import {
-  useEditRecordSheet,
-  useResourceFormSheet,
-} from "./resource-sheet-provider"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
@@ -26,6 +24,8 @@ type Props = {
   redirect?: string
 }
 
+const routeApi = getRouteApi("/$schema/resource/$resource")
+
 export function EditRecordTrigger({
   pk,
   primaryKeyNames,
@@ -37,28 +37,30 @@ export function EditRecordTrigger({
   resource: resourceOverride,
   redirect,
 }: Props) {
-  const ctx = useResourceFormSheet()
-  const { inlineForm, open } = useEditRecordSheet(
-    schemaOverride,
-    resourceOverride
-  )
+  const params = routeApi.useParams()
+  const schema = schemaOverride ?? params.schema
+  const resource = resourceOverride ?? params.resource
 
-  const schema = schemaOverride ?? ctx.schema
-  const resource = resourceOverride ?? ctx.resource
+  const inlineForm = useInlineFormFlag(schema, resource)
+  const sheetLink = useSheetHref({
+    mode: "update",
+    pk,
+    schema: schemaOverride,
+    resource: resourceOverride,
+  })
 
-  if (inlineForm || schemaOverride) {
+  if ((inlineForm || schemaOverride) && sheetLink) {
     return (
-      <Button
-        size={size}
-        variant={variant}
-        className={className}
+      <Link
+        className={cn(buttonVariants({ size, variant }), className)}
+        to={sheetLink.to as never}
+        search={sheetLink.search as never}
         onClick={(e: MouseEvent) => {
           e.stopPropagation()
-          open(pk)
         }}
       >
         {children}
-      </Button>
+      </Link>
     )
   }
 

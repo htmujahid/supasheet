@@ -1,5 +1,7 @@
 "use client"
 
+import { useNavigate } from "@tanstack/react-router"
+
 import { useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -12,7 +14,6 @@ import {
 import { toast } from "sonner"
 
 import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
-import { useImportSheet } from "#/components/resource/sheet/resource-sheet-provider"
 import { Button } from "#/components/ui/button"
 import { ButtonGroup } from "#/components/ui/button-group"
 import {
@@ -23,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 import type { ColumnSchema } from "#/lib/database-meta.types"
 
 interface RecordActionsProps {
@@ -54,13 +56,22 @@ export function ResourceActions({
   columnsSchema,
 }: RecordActionsProps) {
   const queryClient = useQueryClient()
-  const { open: openImport } = useImportSheet()
+  const navigate = useNavigate()
+  const importLink = useSheetHref({ mode: "import" })
 
   function handleRefresh() {
     queryClient.invalidateQueries({
       queryKey: ["supasheet", "resource-data", schema, resource],
     })
     toast.success("Data refreshed")
+  }
+
+  function handleImport() {
+    if (importLink)
+      navigate({
+        to: importLink.to as never,
+        search: importLink.search as never,
+      })
   }
 
   return (
@@ -79,7 +90,7 @@ export function ResourceActions({
         />
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={openImport}>
+            <DropdownMenuItem onClick={handleImport} disabled={!importLink}>
               <UploadIcon />
               Import CSV
             </DropdownMenuItem>

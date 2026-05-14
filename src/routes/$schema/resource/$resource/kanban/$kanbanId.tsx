@@ -1,5 +1,6 @@
 import {
   Link,
+  Outlet,
   createFileRoute,
   notFound,
   useRouter,
@@ -296,6 +297,7 @@ function RouteComponent() {
           layout={layout}
         />
       </div>
+      <Outlet />
     </>
   )
 }
