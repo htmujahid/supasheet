@@ -127,25 +127,26 @@ set
 
 create or replace function supasheet.audit_trigger_function () RETURNS TRIGGER as $$
 DECLARE
-    v_old_data JSONB;
-    v_new_data JSONB;
-    v_operation TEXT;
-    v_record_id TEXT;
+    v_pk_column  TEXT := COALESCE(NULLIF(TG_ARGV[0], ''), 'id');
+    v_old_data   JSONB;
+    v_new_data   JSONB;
+    v_operation  TEXT;
+    v_record_id  TEXT;
 BEGIN
     v_operation := TG_OP;
-    
+
     IF TG_OP = 'DELETE' THEN
-        v_old_data := to_jsonb(OLD);
-        v_new_data := NULL;
-        v_record_id := v_old_data ->> 'id';
+        v_old_data  := to_jsonb(OLD);
+        v_new_data  := NULL;
+        v_record_id := v_old_data ->> v_pk_column;
     ELSIF TG_OP = 'UPDATE' THEN
-        v_old_data := to_jsonb(OLD);
-        v_new_data := to_jsonb(NEW);
-        v_record_id := v_new_data ->> 'id';
+        v_old_data  := to_jsonb(OLD);
+        v_new_data  := to_jsonb(NEW);
+        v_record_id := v_new_data ->> v_pk_column;
     ELSIF TG_OP = 'INSERT' THEN
-        v_old_data := NULL;
-        v_new_data := to_jsonb(NEW);
-        v_record_id := v_new_data ->> 'id';
+        v_old_data  := NULL;
+        v_new_data  := to_jsonb(NEW);
+        v_record_id := v_new_data ->> v_pk_column;
     END IF;
 
     

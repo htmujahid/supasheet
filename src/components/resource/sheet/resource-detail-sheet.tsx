@@ -40,12 +40,12 @@ export function ResourceDetailSheet({
         <SheetHeader className="border-b">
           <div className="flex items-center gap-2 pr-6">
             <Link
-              to="/$schema/resource/$resource/detail/$"
+              to="/$schema/resource/$resource/$resourceId/detail"
               params={
                 {
                   schema,
                   resource,
-                  _splat: Object.values(pk).map(String).join("/"),
+                  resourceId: String(Object.values(pk)[0] ?? ""),
                 } as never
               }
               onClick={onClose}

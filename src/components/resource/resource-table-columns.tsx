@@ -18,14 +18,6 @@ import { isTableSchema } from "#/lib/database-meta.types"
 import { ResourceColumnHeader } from "./resource-column-header"
 import { ResourceRowCell } from "./resource-row-cell"
 
-export function parsePkSplat(
-  splat: string,
-  primaryKeys: PrimaryKey[]
-): Record<string, unknown> {
-  const values = splat.split("/").map(decodeURIComponent)
-  return Object.fromEntries(primaryKeys.map((pk, i) => [pk.name, values[i]]))
-}
-
 export function getResourceTableColumns({
   columnsSchema,
   resourceSchema,

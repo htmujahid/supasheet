@@ -45,7 +45,7 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import { buildPkSplat } from "#/lib/fields"
+import { getPkValue } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   deleteResourceMutationOptions,
@@ -207,14 +207,14 @@ export function ResourceKanban({
                 </div>
                 <div className="flex flex-col gap-2 overflow-y-auto p-0.5">
                   {tasks.map((task) => {
-                    const pkSplat = buildPkSplat(task.data, primaryKeys)
+                    const resourceId = getPkValue(task.data, primaryKeys)
                     return (
                       <KanbanContextMenu
                         key={buildId(task)}
                         task={task}
                         schema={schema}
                         resource={resource}
-                        pkSplat={pkSplat}
+                        resourceId={resourceId}
                         primaryKeys={primaryKeys}
                         isTable={isTable}
                       >
@@ -267,7 +267,7 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
   task,
   schema,
   resource,
-  pkSplat,
+  resourceId,
   primaryKeys,
   isTable,
 }: {
@@ -275,7 +275,7 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
   task: KanbanViewData
   schema: S
   resource: DatabaseTables<S>
-  pkSplat: string
+  resourceId: string
   primaryKeys: PrimaryKey[]
   isTable: boolean
 }) {
@@ -315,8 +315,8 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
         <ContextMenuItem
           onClick={() =>
             navigate({
-              to: "/$schema/resource/$resource/detail/$",
-              params: { schema, resource, _splat: pkSplat },
+              to: "/$schema/resource/$resource/$resourceId/detail",
+              params: { schema, resource, resourceId },
             })
           }
         >
@@ -327,8 +327,8 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
           <ContextMenuItem
             onClick={() =>
               navigate({
-                to: "/$schema/resource/$resource/update/$",
-                params: { schema, resource, _splat: pkSplat },
+                to: "/$schema/resource/$resource/$resourceId/update",
+                params: { schema, resource, resourceId },
               })
             }
           >

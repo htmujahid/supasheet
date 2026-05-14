@@ -1,9 +1,8 @@
 import type { PrimaryKey, ResourceDataSchema } from "./database-meta.types"
 
-export function buildPkSplat(
+export function getPkValue(
   data: ResourceDataSchema,
   primaryKeys: PrimaryKey[]
-) {
-  //   join with / use data[pk.name]
-  return primaryKeys.map((pk) => data[pk.name]).join("/")
+): string {
+  return String(data[primaryKeys[0]?.name] ?? "")
 }

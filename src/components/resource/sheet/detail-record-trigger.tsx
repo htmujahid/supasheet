@@ -23,12 +23,6 @@ type Props = {
   resource?: string
 }
 
-function encodePkSplat(pk: Record<string, unknown>, primaryKeyNames: string[]) {
-  return primaryKeyNames
-    .map((name) => encodeURIComponent(String(pk[name])))
-    .join("/")
-}
-
 export function DetailRecordTrigger({
   pk,
   primaryKeyNames,
@@ -64,13 +58,13 @@ export function DetailRecordTrigger({
     )
   }
 
-  const splat = encodePkSplat(pk, primaryKeyNames)
+  const resourceId = String(pk[primaryKeyNames[0]] ?? "")
 
   return (
     <Link
       className={cn(buttonVariants({ size, variant }), className)}
-      to="/$schema/resource/$resource/detail/$"
-      params={{ schema, resource, _splat: splat } as never}
+      to="/$schema/resource/$resource/$resourceId/detail"
+      params={{ schema, resource, resourceId } as never}
       onClick={(e) => {
         e.stopPropagation()
       }}

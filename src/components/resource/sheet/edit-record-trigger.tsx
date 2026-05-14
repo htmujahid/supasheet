@@ -26,12 +26,6 @@ type Props = {
   redirect?: string
 }
 
-function encodePkSplat(pk: Record<string, unknown>, primaryKeyNames: string[]) {
-  return primaryKeyNames
-    .map((name) => encodeURIComponent(String(pk[name])))
-    .join("/")
-}
-
 export function EditRecordTrigger({
   pk,
   primaryKeyNames,
@@ -68,13 +62,13 @@ export function EditRecordTrigger({
     )
   }
 
-  const splat = encodePkSplat(pk, primaryKeyNames)
+  const resourceId = String(pk[primaryKeyNames[0]] ?? "")
 
   return (
     <Link
       className={cn(buttonVariants({ size, variant }), className)}
-      to="/$schema/resource/$resource/update/$"
-      params={{ schema, resource, _splat: splat } as never}
+      to="/$schema/resource/$resource/$resourceId/update"
+      params={{ schema, resource, resourceId } as never}
       search={redirect ? { redirect } : undefined}
       onClick={(e) => {
         e.stopPropagation()

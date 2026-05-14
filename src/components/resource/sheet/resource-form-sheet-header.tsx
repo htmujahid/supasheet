@@ -52,14 +52,12 @@ export function ResourceFormSheetHeader(props: Props) {
           </Link>
         ) : (
           <Link
-            to="/$schema/resource/$resource/update/$"
+            to="/$schema/resource/$resource/$resourceId/update"
             params={
               {
                 schema,
                 resource,
-                _splat: Object.values(props.pk)
-                  .map((v) => String(v))
-                  .join("/"),
+                resourceId: String(Object.values(props.pk)[0] ?? ""),
               } as never
             }
             search={{ redirect: redirectTo } as never}

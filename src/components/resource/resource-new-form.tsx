@@ -78,21 +78,19 @@ export function ResourceNewForm({
       })
       toast.success("Record created")
 
-      const splat =
+      const resourceId =
         inserted && primaryKeys.length
-          ? primaryKeys
-              .map((key) => encodeURIComponent(String(inserted[key.name])))
-              .join("/")
+          ? String(inserted[primaryKeys[0].name] ?? "")
           : ""
 
       const target = (meta as { target?: string } | undefined)?.target ?? "stay"
 
       if (safeRedirect) {
         navigate({ to: safeRedirect })
-      } else if (target === "stay" && splat) {
+      } else if (target === "stay" && resourceId) {
         navigate({
-          to: "/$schema/resource/$resource/update/$",
-          params: { schema, resource: table, _splat: splat },
+          to: "/$schema/resource/$resource/$resourceId/update",
+          params: { schema, resource: table, resourceId },
         })
       } else {
         navigate({

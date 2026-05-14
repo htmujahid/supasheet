@@ -15,26 +15,26 @@ import {
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-export const Route = createFileRoute("/$schema/resource/$resource/audit/$")({
+export const Route = createFileRoute(
+  "/$schema/resource/$resource/$resourceId/audit"
+)({
   beforeLoad: ({ context, params: { schema, resource } }) => {
     const hasAudit = context.permissions?.some(
       (p) => p.permission === `${schema}.${resource}:audit`
     )
     if (!hasAudit) throw notFound()
   },
-  loader: async ({ context, params: { schema, resource, _splat } }) => {
-    const recordId = _splat || undefined
-
+  loader: async ({ context, params: { schema, resource, resourceId } }) => {
     const [tableSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
         tableSchemaQueryOptions(schema, resource)
       ),
       context.queryClient.ensureQueryData(
-        resourceAuditLogsQueryOptions(schema, resource, recordId)
+        resourceAuditLogsQueryOptions(schema, resource, resourceId)
       ),
     ])
 
-    return { tableSchema, recordId }
+    return { tableSchema }
   },
   head: ({ params }) => ({
     meta: [
@@ -48,8 +48,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/audit/$")({
 })
 
 function PendingComponent() {
-  const { schema, resource, _splat } = Route.useParams()
-  const recordId = _splat || undefined
+  const { schema, resource, resourceId } = Route.useParams()
 
   return (
     <>
@@ -59,14 +58,10 @@ function PendingComponent() {
             title: formatTitle(resource),
             url: `/${schema}/resource/${resource}/table`,
           },
-          ...(recordId
-            ? [
-                {
-                  title: recordId.slice(0, 8) + "…",
-                  url: `/${schema}/resource/${resource}/detail/${recordId}`,
-                },
-              ]
-            : []),
+          {
+            title: resourceId.slice(0, 8) + "…",
+            url: `/${schema}/resource/${resource}/${resourceId}/detail`,
+          },
           { title: "Audit Log" },
         ]}
       />
@@ -91,19 +86,18 @@ function PendingComponent() {
 }
 
 function AuditTimelineBody() {
-  const { schema, resource, _splat } = Route.useParams()
-  const recordId = _splat || undefined
+  const { schema, resource, resourceId } = Route.useParams()
 
   const { data: logs } = useSuspenseQuery(
-    resourceAuditLogsQueryOptions(schema, resource, recordId)
+    resourceAuditLogsQueryOptions(schema, resource, resourceId)
   )
 
   return <ResourceAuditTimeline logs={logs} />
 }
 
 function RouteComponent() {
-  const { schema, resource } = Route.useParams()
-  const { tableSchema, recordId } = Route.useLoaderData()
+  const { schema, resource, resourceId } = Route.useParams()
+  const { tableSchema } = Route.useLoaderData()
   const resourceTitle = tableSchema?.comment
     ? (() => {
         try {
@@ -123,14 +117,10 @@ function RouteComponent() {
             title: resourceTitle,
             url: `/${schema}/resource/${resource}/table`,
           },
-          ...(recordId
-            ? [
-                {
-                  title: recordId.slice(0, 8) + "…",
-                  url: `/${schema}/resource/${resource}/detail/${recordId}`,
-                },
-              ]
-            : []),
+          {
+            title: resourceId.slice(0, 8) + "…",
+            url: `/${schema}/resource/${resource}/${resourceId}/detail`,
+          },
           { title: "Audit Log" },
         ]}
       />
@@ -140,9 +130,7 @@ function RouteComponent() {
             <div className="mb-4 flex items-center gap-2">
               <HistoryIcon className="h-4 w-4 text-muted-foreground" />
               <h2 className="text-sm font-medium text-muted-foreground">
-                {recordId
-                  ? `Change history for record ${recordId.slice(0, 8)}…`
-                  : `Change history for ${resourceTitle}`}
+                {`Change history for record ${resourceId.slice(0, 8)}…`}
               </h2>
             </div>
             <Suspense fallback={null}>

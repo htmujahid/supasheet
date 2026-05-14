@@ -3,19 +3,10 @@ import type { Column, ColumnDef } from "@tanstack/react-table"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
-  PrimaryKey,
   TableSchema,
 } from "#/lib/database-meta.types"
 
 import { ResourceGridColumnHeader } from "./resource-grid-column-header"
-
-export function parsePkSplat(
-  splat: string,
-  primaryKeys: PrimaryKey[]
-): Record<string, unknown> {
-  const values = splat.split("/").map(decodeURIComponent)
-  return Object.fromEntries(primaryKeys.map((pk, i) => [pk.name, values[i]]))
-}
 
 export function getResourceGridColumns({
   columnsSchema,

@@ -25,7 +25,7 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import { buildPkSplat } from "#/lib/fields"
+import { getPkValue } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   deleteResourceMutationOptions,
@@ -136,18 +136,18 @@ export function ResourceCalendar({
   }
 
   function onEventView(event: IEvent) {
-    const splat = buildPkSplat(event.data ?? {}, primaryKeys)
+    const resourceId = getPkValue(event.data ?? {}, primaryKeys)
     void navigate({
-      to: "/$schema/resource/$resource/detail/$",
-      params: { schema, resource, _splat: splat },
+      to: "/$schema/resource/$resource/$resourceId/detail",
+      params: { schema, resource, resourceId },
     })
   }
 
   function onEventUpdate(event: IEvent) {
-    const splat = buildPkSplat(event.data ?? {}, primaryKeys)
+    const resourceId = getPkValue(event.data ?? {}, primaryKeys)
     void navigate({
-      to: "/$schema/resource/$resource/update/$",
-      params: { schema, resource, _splat: splat },
+      to: "/$schema/resource/$resource/$resourceId/update",
+      params: { schema, resource, resourceId },
     })
   }
 

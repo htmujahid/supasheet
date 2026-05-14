@@ -36,7 +36,7 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import { buildPkSplat } from "#/lib/fields"
+import { getPkValue } from "#/lib/fields"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 import { cn } from "#/lib/utils"
@@ -82,14 +82,14 @@ export function ResourceGallery({
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {data.map((item, index) => {
-            const pkSplat = buildPkSplat(item.data, primaryKeys)
+            const resourceId = getPkValue(item.data, primaryKeys)
             return (
               <GalleryContextMenu
                 key={index}
                 item={item}
                 schema={schema}
                 resource={resource}
-                pkSplat={pkSplat}
+                resourceId={resourceId}
                 primaryKeys={primaryKeys}
                 isTable={isTable}
               >
@@ -146,7 +146,7 @@ function GalleryContextMenu<S extends DatabaseSchemas>({
   item,
   schema,
   resource,
-  pkSplat,
+  resourceId,
   primaryKeys,
   isTable,
 }: {
@@ -154,7 +154,7 @@ function GalleryContextMenu<S extends DatabaseSchemas>({
   item: GalleryViewData
   schema: S
   resource: DatabaseViews<S> | DatabaseTables<S>
-  pkSplat: string
+  resourceId: string
   primaryKeys: PrimaryKey[]
   isTable: boolean
 }) {
@@ -194,8 +194,8 @@ function GalleryContextMenu<S extends DatabaseSchemas>({
         <ContextMenuItem
           onClick={() =>
             navigate({
-              to: "/$schema/resource/$resource/detail/$",
-              params: { schema, resource, _splat: pkSplat },
+              to: "/$schema/resource/$resource/$resourceId/detail",
+              params: { schema, resource, resourceId },
             })
           }
         >
@@ -206,8 +206,8 @@ function GalleryContextMenu<S extends DatabaseSchemas>({
           <ContextMenuItem
             onClick={() =>
               navigate({
-                to: "/$schema/resource/$resource/update/$",
-                params: { schema, resource, _splat: pkSplat },
+                to: "/$schema/resource/$resource/$resourceId/update",
+                params: { schema, resource, resourceId },
               })
             }
           >

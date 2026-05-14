@@ -14,7 +14,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, EyeIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
 import { Button, buttonVariants } from "#/components/ui/button"
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
@@ -34,7 +33,9 @@ import {
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
+export const Route = createFileRoute(
+  "/$schema/resource/$resource/$resourceId/update"
+)({
   validateSearch: (search: { redirect?: string } & SearchSchemaInput) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
       throw notFound()
   },
   loader: async ({ context, params }) => {
-    const { schema, resource, _splat } = params
+    const { schema, resource, resourceId } = params
     const [tableSchema, columnsSchema] = await Promise.all([
       context.queryClient.ensureQueryData(
         tableSchemaQueryOptions(schema, resource)
@@ -59,12 +60,13 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
     if (!tableSchema || !columnsSchema?.length) throw notFound()
     const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
     if (!primaryKeys.length) throw notFound()
-    const pk = parsePkSplat(_splat ?? "", primaryKeys)
+    const pkName = primaryKeys[0].name
+    const pk = { [pkName]: resourceId }
     const record = await context.queryClient.ensureQueryData(
       singleResourceDataQueryOptions(schema, resource, pk)
     )
     if (!record) throw notFound()
-    return { tableSchema, columnsSchema }
+    return { tableSchema, columnsSchema, pkName }
   },
   head: ({ params }) => ({
     meta: [
@@ -193,16 +195,16 @@ export const Route = createFileRoute("/$schema/resource/$resource/update/$")({
 })
 
 function RouteComponent() {
-  const { schema, resource, _splat } = Route.useParams()
+  const { schema, resource, resourceId } = Route.useParams()
   const { redirect } = Route.useSearch()
 
-  const { tableSchema, columnsSchema } = Route.useLoaderData()
+  const { tableSchema, columnsSchema, pkName } = Route.useLoaderData()
   const resourceDisplayName =
     (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).name ??
     formatTitle(resource)
 
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
-  const pk = parsePkSplat(_splat ?? "", primaryKeys)
+  const pk = { [pkName]: resourceId }
   const { data: record } = useSuspenseQuery(
     singleResourceDataQueryOptions(schema, resource, pk)
   )
@@ -220,8 +222,8 @@ function RouteComponent() {
       >
         <Link
           className={buttonVariants({ size: "sm", variant: "outline" })}
-          to="/$schema/resource/$resource/detail/$"
-          params={{ schema, resource, _splat: _splat ?? "" }}
+          to="/$schema/resource/$resource/$resourceId/detail"
+          params={{ schema, resource, resourceId }}
         >
           <EyeIcon className="mr-1.5 size-3.5" />
           View

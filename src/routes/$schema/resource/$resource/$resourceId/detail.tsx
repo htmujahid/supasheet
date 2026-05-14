@@ -25,7 +25,6 @@ import { ResourceMetadataView } from "#/components/resource/detail/resource-meta
 import { ResourceProgressField } from "#/components/resource/detail/resource-progress-field"
 import { ResourceSectionDetail } from "#/components/resource/detail/resource-section-detail"
 import { buildLayoutPlan } from "#/components/resource/resource-form-utils"
-import { parsePkSplat } from "#/components/resource/resource-table-columns"
 import { Button, buttonVariants } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 import {
@@ -62,7 +61,9 @@ import {
   viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
+export const Route = createFileRoute(
+  "/$schema/resource/$resource/$resourceId/detail"
+)({
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(
@@ -72,7 +73,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
       throw notFound()
   },
   loader: async ({ context, params }) => {
-    const { schema, resource, _splat } = params
+    const { schema, resource, resourceId } = params
     const [tableSchema, columnsSchema, relatedTablesSchema] = await Promise.all(
       [
         context.queryClient.ensureQueryData(
@@ -101,7 +102,8 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
     const primaryKeys = (
       isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
     ) as PrimaryKey[]
-    const pk = parsePkSplat(_splat ?? "", primaryKeys)
+    const pkName = primaryKeys[0]?.name ?? "id"
+    const pk = { [pkName]: resourceId }
 
     const joins: Required<TableMetadata>["query"]["join"] = []
 
@@ -249,6 +251,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
       oneToOneRelationships,
       allManyRelationships,
       joins,
+      pkName,
     }
   },
   head: ({ params }) => ({
@@ -374,20 +377,21 @@ export const Route = createFileRoute("/$schema/resource/$resource/detail/$")({
 })
 
 function RouteComponent() {
-  const { schema, resource, _splat } = Route.useParams()
+  const { schema, resource, resourceId } = Route.useParams()
   const {
     resourceSchema,
     columnsSchema,
     oneToOneRelationships,
     allManyRelationships,
     joins,
+    pkName,
   } = Route.useLoaderData()
 
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (
     tableSchema ? (tableSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
-  const pk = parsePkSplat(_splat ?? "", primaryKeys)
+  const pk = { [pkName]: resourceId }
   const { data: record } = useSuspenseQuery(
     singleResourceDataQueryOptions(schema, resource, pk, { join: joins })
   )
@@ -469,8 +473,8 @@ function RouteComponent() {
         {canViewAudit && (
           <Link
             className={buttonVariants({ size: "sm", variant: "outline" })}
-            to="/$schema/resource/$resource/audit/$"
-            params={{ schema, resource, _splat: _splat ?? "" }}
+            to="/$schema/resource/$resource/$resourceId/audit"
+            params={{ schema, resource, resourceId }}
           >
             <HistoryIcon className="mr-1.5 size-3.5" />
             Audit Log
@@ -479,8 +483,8 @@ function RouteComponent() {
         {tableSchema && canUpdate && (
           <Link
             className={buttonVariants({ size: "sm", variant: "outline" })}
-            to="/$schema/resource/$resource/update/$"
-            params={{ schema, resource, _splat: _splat ?? "" }}
+            to="/$schema/resource/$resource/$resourceId/update"
+            params={{ schema, resource, resourceId }}
           >
             <PencilIcon className="mr-1.5 size-3.5" />
             Edit

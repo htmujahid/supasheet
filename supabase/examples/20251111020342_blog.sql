@@ -720,9 +720,10 @@ create policy posts_delete on blog.posts for delete to authenticated using (
 -- Post categories junction
 ----------------------------------------------------------------
 create table if not exists blog.post_categories (
+  id uuid primary key default gen_random_uuid(),
   post_id uuid references blog.posts (id) on delete cascade,
   category_id uuid references blog.categories (id) on delete cascade,
-  primary key (post_id, category_id)
+  unique (post_id, category_id)
 );
 
 comment on table blog.post_categories is '{

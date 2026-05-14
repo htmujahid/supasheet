@@ -10,7 +10,7 @@ import type {
   DatabaseViews,
   PrimaryKey,
 } from "#/lib/database-meta.types"
-import { buildPkSplat } from "#/lib/fields"
+import { getPkValue } from "#/lib/fields"
 import { cn } from "#/lib/utils"
 
 import { readField } from "./read-field"
@@ -50,16 +50,16 @@ export function ResourceListRow<S extends DatabaseSchemas>({
       openEdit(pk)
       return
     }
-    const pkSplat = buildPkSplat(data, primaryKeys)
+    const resourceId = getPkValue(data, primaryKeys)
     if (canUpdate) {
       navigate({
-        to: "/$schema/resource/$resource/update/$",
-        params: { schema, resource, _splat: pkSplat },
+        to: "/$schema/resource/$resource/$resourceId/update",
+        params: { schema, resource, resourceId },
       })
     } else {
       navigate({
-        to: "/$schema/resource/$resource/detail/$",
-        params: { schema, resource, _splat: pkSplat },
+        to: "/$schema/resource/$resource/$resourceId/detail",
+        params: { schema, resource, resourceId },
       })
     }
   }
