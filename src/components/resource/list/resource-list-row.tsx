@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router"
 
 import type { Row } from "@tanstack/react-table"
 
-import { useEditRecordSheet } from "#/components/resource/sheet/resource-form-sheet-provider"
+import { useEditRecordSheet } from "#/components/resource/sheet/resource-sheet-provider"
 import { Checkbox } from "#/components/ui/checkbox"
 import type {
   DatabaseSchemas,

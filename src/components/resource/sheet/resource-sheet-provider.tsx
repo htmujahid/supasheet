@@ -74,7 +74,7 @@ const ResourceFormSheetContext = createContext<ContextValue | null>(null)
 
 const routeApi = getRouteApi("/$schema/resource/$resource")
 
-export function ResourceFormSheetProvider({
+export function ResourceSheetProvider({
   children,
 }: {
   children: ReactNode

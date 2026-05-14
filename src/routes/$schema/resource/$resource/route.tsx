@@ -2,7 +2,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router"
 
 import z from "zod"
 
-import { ResourceFormSheetProvider } from "#/components/resource/sheet/resource-form-sheet-provider"
+import { ResourceSheetProvider } from "#/components/resource/sheet/resource-sheet-provider"
 import type {
   DatabaseSchemas,
   DatabaseTables,
@@ -21,8 +21,8 @@ export const Route = createFileRoute("/$schema/resource/$resource")({
 
 function RouteComponent() {
   return (
-    <ResourceFormSheetProvider>
+    <ResourceSheetProvider>
       <Outlet />
-    </ResourceFormSheetProvider>
+    </ResourceSheetProvider>
   )
 }

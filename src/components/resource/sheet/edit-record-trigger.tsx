@@ -8,7 +8,7 @@ import { cn } from "#/lib/utils"
 import {
   useEditRecordSheet,
   useResourceFormSheet,
-} from "./resource-form-sheet-provider"
+} from "./resource-sheet-provider"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 

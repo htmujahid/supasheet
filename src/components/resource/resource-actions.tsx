@@ -12,7 +12,7 @@ import {
 import { toast } from "sonner"
 
 import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
-import { useImportSheet } from "#/components/resource/sheet/resource-form-sheet-provider"
+import { useImportSheet } from "#/components/resource/sheet/resource-sheet-provider"
 import { Button } from "#/components/ui/button"
 import { ButtonGroup } from "#/components/ui/button-group"
 import {
