@@ -19,10 +19,11 @@ import {
 } from "#/components/ui/dropdown-menu"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { AppPermission } from "#/lib/supabase/data/core"
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 
 interface ResourceRecordActionsProps {
-  schema: string
-  resource: string
+  schema: DatabaseSchemas
+  resource: never
   resourceId: string
   isTable?: boolean
   mode?: "detail" | "update"
@@ -47,8 +48,7 @@ export function ResourceRecordActions({
     `${schema}.${resource}:comment` as AppPermission
   )
 
-   
-  const params = { schema, resource, resourceId } as any
+  const params = { schema, resource, resourceId }
 
   const hasViewDetail = mode === "update"
   const hasEdit = mode === "detail" && isTable && canUpdate
