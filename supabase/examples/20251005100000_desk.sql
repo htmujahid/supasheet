@@ -158,7 +158,8 @@ create table desk.projects (
   notes text,
   -- Audit fields
   created_at timestamptz default current_timestamp,
-  updated_at timestamptz default current_timestamp
+  updated_at timestamptz default current_timestamp,
+  deleted_at timestamptz
 );
 
 comment on column desk.projects.status is '{
@@ -260,6 +261,7 @@ select
         auth.uid ()
     )
     and supasheet.has_permission ('desk.projects:select')
+    and deleted_at is null
   );
 
 create policy projects_insert on desk.projects for insert to authenticated
@@ -280,6 +282,7 @@ for update
         auth.uid ()
     )
     and supasheet.has_permission ('desk.projects:update')
+    and deleted_at is null
   )
 with
   check (
@@ -330,7 +333,8 @@ create table desk.tasks (
   notes text,
   -- Audit fields
   created_at timestamptz default current_timestamp,
-  updated_at timestamptz default current_timestamp
+  updated_at timestamptz default current_timestamp,
+  deleted_at timestamptz
 );
 
 comment on column desk.tasks.status is '{
@@ -441,6 +445,7 @@ select
         auth.uid ()
     )
     and supasheet.has_permission ('desk.tasks:select')
+    and deleted_at is null
   );
 
 create policy tasks_insert on desk.tasks for insert to authenticated
@@ -461,6 +466,7 @@ for update
         auth.uid ()
     )
     and supasheet.has_permission ('desk.tasks:update')
+    and deleted_at is null
   )
 with
   check (
@@ -488,7 +494,8 @@ create table desk.task_comments (
   user_id uuid default auth.uid () references supasheet.users (id) on delete cascade,
   content text not null,
   created_at timestamptz default current_timestamp,
-  updated_at timestamptz default current_timestamp
+  updated_at timestamptz default current_timestamp,
+  deleted_at timestamptz
 );
 
 comment on table desk.task_comments is '{
@@ -531,6 +538,7 @@ create policy task_comments_select on desk.task_comments for
 select
   to authenticated using (
     supasheet.has_permission ('desk.task_comments:select')
+    and deleted_at is null
     and (
       user_id = (
         select
@@ -581,6 +589,7 @@ for update
       select
         auth.uid ()
     )
+    and deleted_at is null
   )
 with
   check (
@@ -1654,7 +1663,8 @@ create table desk.timesheets (
   notes text,
   -- Audit fields
   created_at timestamptz default current_timestamp,
-  updated_at timestamptz default current_timestamp
+  updated_at timestamptz default current_timestamp,
+  deleted_at timestamptz
 );
 
 comment on column desk.timesheets.status is '{
@@ -1735,6 +1745,7 @@ select
         auth.uid ()
     )
     and supasheet.has_permission ('desk.timesheets:select')
+    and deleted_at is null
   );
 
 create policy timesheets_insert on desk.timesheets for insert to authenticated
@@ -1755,6 +1766,7 @@ for update
         auth.uid ()
     )
     and supasheet.has_permission ('desk.timesheets:update')
+    and deleted_at is null
   )
 with
   check (
@@ -2323,3 +2335,34 @@ after insert
 or
 update of status on desk.timesheets for each row
 execute function desk.trg_timesheets_notify ();
+
+----------------------------------------------------------------
+-- Soft delete: intercept DELETE and set deleted_at = now()
+-- Trigger names are prefixed so they fire BEFORE the
+-- `audit_<table>_delete` triggers and cancel the actual delete.
+-- The internal UPDATE then flows through the existing
+-- `audit_<table>_update` triggers, leaving one accurate audit row.
+----------------------------------------------------------------
+create or replace function desk.soft_delete () returns trigger as $$
+begin
+    execute format(
+        'update %I.%I set deleted_at = now() where id = $1 and deleted_at is null',
+        tg_table_schema, tg_table_name
+    ) using old.id;
+    return null;
+end;
+$$ language plpgsql security definer
+set
+  search_path = '';
+
+create trigger aa_soft_delete_projects before delete on desk.projects for each row
+execute function desk.soft_delete ();
+
+create trigger aa_soft_delete_tasks before delete on desk.tasks for each row
+execute function desk.soft_delete ();
+
+create trigger aa_soft_delete_task_comments before delete on desk.task_comments for each row
+execute function desk.soft_delete ();
+
+create trigger aa_soft_delete_timesheets before delete on desk.timesheets for each row
+execute function desk.soft_delete ();

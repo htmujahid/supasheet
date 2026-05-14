@@ -355,13 +355,25 @@ export const deleteResourceMutationOptions = <S extends DatabaseSchemas>(
 ) =>
   mutationOptions({
     mutationFn: async (pk: Record<string, unknown>) => {
-      let query = supabase.schema(schema).from(resource).delete().select()
+      let query = supabase.schema(schema).from(resource).delete()
       for (const [col, val] of Object.entries(pk)) {
         query = query.eq(col, val as never)
       }
-      const { data: deleted, error } = await query
+      const { error } = await query
       if (error) throw error
-      if (!deleted || deleted.length === 0) {
+
+      // Verify the delete (hard or soft) actually took effect by checking
+      // whether the row is still visible. If it is, RLS denied the operation.
+      let checkQuery = supabase
+        .schema(schema)
+        .from(resource)
+        .select("*", { head: true, count: "exact" })
+      for (const [col, val] of Object.entries(pk)) {
+        checkQuery = checkQuery.eq(col, val as never)
+      }
+      const { count, error: checkError } = await checkQuery
+      if (checkError) throw checkError
+      if (count && count > 0) {
         throw new Error(
           "Delete failed: you may not have permission to delete this record"
         )
