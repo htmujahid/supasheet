@@ -62,6 +62,9 @@ add value 'crm.companies:delete';
 alter type supasheet.app_permission
 add value 'crm.companies:audit';
 
+alter type supasheet.app_permission
+add value 'crm.companies:comment';
+
 -- Contacts
 alter type supasheet.app_permission
 add value 'crm.contacts:select';
@@ -78,6 +81,9 @@ add value 'crm.contacts:delete';
 alter type supasheet.app_permission
 add value 'crm.contacts:audit';
 
+alter type supasheet.app_permission
+add value 'crm.contacts:comment';
+
 -- Contact ↔ Company junction (no :update — junction rows are insert/delete only)
 alter type supasheet.app_permission
 add value 'crm.contact_companies:select';
@@ -90,6 +96,9 @@ add value 'crm.contact_companies:delete';
 
 alter type supasheet.app_permission
 add value 'crm.contact_companies:audit';
+
+alter type supasheet.app_permission
+add value 'crm.contact_companies:comment';
 
 -- Deals
 alter type supasheet.app_permission
@@ -107,6 +116,9 @@ add value 'crm.deals:delete';
 alter type supasheet.app_permission
 add value 'crm.deals:audit';
 
+alter type supasheet.app_permission
+add value 'crm.deals:comment';
+
 -- Activities
 alter type supasheet.app_permission
 add value 'crm.activities:select';
@@ -122,6 +134,9 @@ add value 'crm.activities:delete';
 
 alter type supasheet.app_permission
 add value 'crm.activities:audit';
+
+alter type supasheet.app_permission
+add value 'crm.activities:comment';
 
 -- Users mirror view (so PostgREST joins from crm.* tables can resolve)
 alter type supasheet.app_permission
@@ -1342,25 +1357,30 @@ values
   ('x-admin', 'crm.companies:update'),
   ('x-admin', 'crm.companies:delete'),
   ('x-admin', 'crm.companies:audit'),
+  ('x-admin', 'crm.companies:comment'),
   ('x-admin', 'crm.contacts:select'),
   ('x-admin', 'crm.contacts:insert'),
   ('x-admin', 'crm.contacts:update'),
   ('x-admin', 'crm.contacts:delete'),
   ('x-admin', 'crm.contacts:audit'),
+  ('x-admin', 'crm.contacts:comment'),
   ('x-admin', 'crm.contact_companies:select'),
   ('x-admin', 'crm.contact_companies:insert'),
   ('x-admin', 'crm.contact_companies:delete'),
   ('x-admin', 'crm.contact_companies:audit'),
+  ('x-admin', 'crm.contact_companies:comment'),
   ('x-admin', 'crm.deals:select'),
   ('x-admin', 'crm.deals:insert'),
   ('x-admin', 'crm.deals:update'),
   ('x-admin', 'crm.deals:delete'),
   ('x-admin', 'crm.deals:audit'),
+  ('x-admin', 'crm.deals:comment'),
   ('x-admin', 'crm.activities:select'),
   ('x-admin', 'crm.activities:insert'),
   ('x-admin', 'crm.activities:update'),
   ('x-admin', 'crm.activities:delete'),
   ('x-admin', 'crm.activities:audit'),
+  ('x-admin', 'crm.activities:comment'),
   ('x-admin', 'crm.users:select'),
   ('x-admin', 'crm.companies_report:select'),
   ('x-admin', 'crm.contacts_report:select'),

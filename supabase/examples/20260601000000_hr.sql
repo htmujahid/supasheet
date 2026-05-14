@@ -65,6 +65,9 @@ add value 'hr.departments:delete';
 alter type supasheet.app_permission
 add value 'hr.departments:audit';
 
+alter type supasheet.app_permission
+add value 'hr.departments:comment';
+
 -- Positions
 alter type supasheet.app_permission
 add value 'hr.positions:select';
@@ -80,6 +83,9 @@ add value 'hr.positions:delete';
 
 alter type supasheet.app_permission
 add value 'hr.positions:audit';
+
+alter type supasheet.app_permission
+add value 'hr.positions:comment';
 
 -- Employees
 alter type supasheet.app_permission
@@ -97,6 +103,9 @@ add value 'hr.employees:delete';
 alter type supasheet.app_permission
 add value 'hr.employees:audit';
 
+alter type supasheet.app_permission
+add value 'hr.employees:comment';
+
 -- Leave requests
 alter type supasheet.app_permission
 add value 'hr.leave_requests:select';
@@ -112,6 +121,9 @@ add value 'hr.leave_requests:delete';
 
 alter type supasheet.app_permission
 add value 'hr.leave_requests:audit';
+
+alter type supasheet.app_permission
+add value 'hr.leave_requests:comment';
 
 -- Performance reviews
 alter type supasheet.app_permission
@@ -129,6 +141,9 @@ add value 'hr.performance_reviews:delete';
 alter type supasheet.app_permission
 add value 'hr.performance_reviews:audit';
 
+alter type supasheet.app_permission
+add value 'hr.performance_reviews:comment';
+
 -- Job postings
 alter type supasheet.app_permission
 add value 'hr.job_postings:select';
@@ -145,6 +160,9 @@ add value 'hr.job_postings:delete';
 alter type supasheet.app_permission
 add value 'hr.job_postings:audit';
 
+alter type supasheet.app_permission
+add value 'hr.job_postings:comment';
+
 -- Candidates
 alter type supasheet.app_permission
 add value 'hr.candidates:select';
@@ -160,6 +178,9 @@ add value 'hr.candidates:delete';
 
 alter type supasheet.app_permission
 add value 'hr.candidates:audit';
+
+alter type supasheet.app_permission
+add value 'hr.candidates:comment';
 
 -- Users mirror
 alter type supasheet.app_permission
@@ -1465,36 +1486,43 @@ values
   ('x-admin', 'hr.departments:update'),
   ('x-admin', 'hr.departments:delete'),
   ('x-admin', 'hr.departments:audit'),
+  ('x-admin', 'hr.departments:comment'),
   ('x-admin', 'hr.positions:select'),
   ('x-admin', 'hr.positions:insert'),
   ('x-admin', 'hr.positions:update'),
   ('x-admin', 'hr.positions:delete'),
   ('x-admin', 'hr.positions:audit'),
+  ('x-admin', 'hr.positions:comment'),
   ('x-admin', 'hr.employees:select'),
   ('x-admin', 'hr.employees:insert'),
   ('x-admin', 'hr.employees:update'),
   ('x-admin', 'hr.employees:delete'),
   ('x-admin', 'hr.employees:audit'),
+  ('x-admin', 'hr.employees:comment'),
   ('x-admin', 'hr.leave_requests:select'),
   ('x-admin', 'hr.leave_requests:insert'),
   ('x-admin', 'hr.leave_requests:update'),
   ('x-admin', 'hr.leave_requests:delete'),
   ('x-admin', 'hr.leave_requests:audit'),
+  ('x-admin', 'hr.leave_requests:comment'),
   ('x-admin', 'hr.performance_reviews:select'),
   ('x-admin', 'hr.performance_reviews:insert'),
   ('x-admin', 'hr.performance_reviews:update'),
   ('x-admin', 'hr.performance_reviews:delete'),
   ('x-admin', 'hr.performance_reviews:audit'),
+  ('x-admin', 'hr.performance_reviews:comment'),
   ('x-admin', 'hr.job_postings:select'),
   ('x-admin', 'hr.job_postings:insert'),
   ('x-admin', 'hr.job_postings:update'),
   ('x-admin', 'hr.job_postings:delete'),
   ('x-admin', 'hr.job_postings:audit'),
+  ('x-admin', 'hr.job_postings:comment'),
   ('x-admin', 'hr.candidates:select'),
   ('x-admin', 'hr.candidates:insert'),
   ('x-admin', 'hr.candidates:update'),
   ('x-admin', 'hr.candidates:delete'),
   ('x-admin', 'hr.candidates:audit'),
+  ('x-admin', 'hr.candidates:comment'),
   ('x-admin', 'hr.users:select'),
   ('x-admin', 'hr.employees_report:select'),
   ('x-admin', 'hr.leave_requests_report:select'),

@@ -79,6 +79,9 @@ add value 'inventory.warehouses:delete';
 alter type supasheet.app_permission
 add value 'inventory.warehouses:audit';
 
+alter type supasheet.app_permission
+add value 'inventory.warehouses:comment';
+
 -- Suppliers
 alter type supasheet.app_permission
 add value 'inventory.suppliers:select';
@@ -94,6 +97,9 @@ add value 'inventory.suppliers:delete';
 
 alter type supasheet.app_permission
 add value 'inventory.suppliers:audit';
+
+alter type supasheet.app_permission
+add value 'inventory.suppliers:comment';
 
 -- Products
 alter type supasheet.app_permission
@@ -111,6 +117,9 @@ add value 'inventory.products:delete';
 alter type supasheet.app_permission
 add value 'inventory.products:audit';
 
+alter type supasheet.app_permission
+add value 'inventory.products:comment';
+
 -- Stock levels
 alter type supasheet.app_permission
 add value 'inventory.stock_levels:select';
@@ -126,6 +135,9 @@ add value 'inventory.stock_levels:delete';
 
 alter type supasheet.app_permission
 add value 'inventory.stock_levels:audit';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_levels:comment';
 
 -- Purchase orders
 alter type supasheet.app_permission
@@ -143,6 +155,9 @@ add value 'inventory.purchase_orders:delete';
 alter type supasheet.app_permission
 add value 'inventory.purchase_orders:audit';
 
+alter type supasheet.app_permission
+add value 'inventory.purchase_orders:comment';
+
 -- Purchase order items
 alter type supasheet.app_permission
 add value 'inventory.purchase_order_items:select';
@@ -158,6 +173,9 @@ add value 'inventory.purchase_order_items:delete';
 
 alter type supasheet.app_permission
 add value 'inventory.purchase_order_items:audit';
+
+alter type supasheet.app_permission
+add value 'inventory.purchase_order_items:comment';
 
 -- Shipments
 alter type supasheet.app_permission
@@ -175,6 +193,9 @@ add value 'inventory.shipments:delete';
 alter type supasheet.app_permission
 add value 'inventory.shipments:audit';
 
+alter type supasheet.app_permission
+add value 'inventory.shipments:comment';
+
 -- Shipment items
 alter type supasheet.app_permission
 add value 'inventory.shipment_items:select';
@@ -191,6 +212,9 @@ add value 'inventory.shipment_items:delete';
 alter type supasheet.app_permission
 add value 'inventory.shipment_items:audit';
 
+alter type supasheet.app_permission
+add value 'inventory.shipment_items:comment';
+
 -- Stock movements
 alter type supasheet.app_permission
 add value 'inventory.stock_movements:select';
@@ -206,6 +230,9 @@ add value 'inventory.stock_movements:delete';
 
 alter type supasheet.app_permission
 add value 'inventory.stock_movements:audit';
+
+alter type supasheet.app_permission
+add value 'inventory.stock_movements:comment';
 
 -- Users mirror
 alter type supasheet.app_permission
@@ -1768,26 +1795,31 @@ values
   ('x-admin', 'inventory.warehouses:update'),
   ('x-admin', 'inventory.warehouses:delete'),
   ('x-admin', 'inventory.warehouses:audit'),
+  ('x-admin', 'inventory.warehouses:comment'),
   ('x-admin', 'inventory.suppliers:select'),
   ('x-admin', 'inventory.suppliers:insert'),
   ('x-admin', 'inventory.suppliers:update'),
   ('x-admin', 'inventory.suppliers:delete'),
   ('x-admin', 'inventory.suppliers:audit'),
+  ('x-admin', 'inventory.suppliers:comment'),
   ('x-admin', 'inventory.products:select'),
   ('x-admin', 'inventory.products:insert'),
   ('x-admin', 'inventory.products:update'),
   ('x-admin', 'inventory.products:delete'),
   ('x-admin', 'inventory.products:audit'),
+  ('x-admin', 'inventory.products:comment'),
   ('x-admin', 'inventory.stock_levels:select'),
   ('x-admin', 'inventory.stock_levels:insert'),
   ('x-admin', 'inventory.stock_levels:update'),
   ('x-admin', 'inventory.stock_levels:delete'),
   ('x-admin', 'inventory.stock_levels:audit'),
+  ('x-admin', 'inventory.stock_levels:comment'),
   ('x-admin', 'inventory.purchase_orders:select'),
   ('x-admin', 'inventory.purchase_orders:insert'),
   ('x-admin', 'inventory.purchase_orders:update'),
   ('x-admin', 'inventory.purchase_orders:delete'),
   ('x-admin', 'inventory.purchase_orders:audit'),
+  ('x-admin', 'inventory.purchase_orders:comment'),
   (
     'x-admin',
     'inventory.purchase_order_items:select'
@@ -1805,21 +1837,25 @@ values
     'inventory.purchase_order_items:delete'
   ),
   ('x-admin', 'inventory.purchase_order_items:audit'),
+  ('x-admin', 'inventory.purchase_order_items:comment'),
   ('x-admin', 'inventory.shipments:select'),
   ('x-admin', 'inventory.shipments:insert'),
   ('x-admin', 'inventory.shipments:update'),
   ('x-admin', 'inventory.shipments:delete'),
   ('x-admin', 'inventory.shipments:audit'),
+  ('x-admin', 'inventory.shipments:comment'),
   ('x-admin', 'inventory.shipment_items:select'),
   ('x-admin', 'inventory.shipment_items:insert'),
   ('x-admin', 'inventory.shipment_items:update'),
   ('x-admin', 'inventory.shipment_items:delete'),
   ('x-admin', 'inventory.shipment_items:audit'),
+  ('x-admin', 'inventory.shipment_items:comment'),
   ('x-admin', 'inventory.stock_movements:select'),
   ('x-admin', 'inventory.stock_movements:insert'),
   ('x-admin', 'inventory.stock_movements:update'),
   ('x-admin', 'inventory.stock_movements:delete'),
   ('x-admin', 'inventory.stock_movements:audit'),
+  ('x-admin', 'inventory.stock_movements:comment'),
   ('x-admin', 'inventory.users:select'),
   ('x-admin', 'inventory.products_report:select'),
   (

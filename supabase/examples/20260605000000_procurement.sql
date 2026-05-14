@@ -105,6 +105,9 @@ add value 'procurement.suppliers:delete';
 alter type supasheet.app_permission
 add value 'procurement.suppliers:audit';
 
+alter type supasheet.app_permission
+add value 'procurement.suppliers:comment';
+
 -- Contracts
 alter type supasheet.app_permission
 add value 'procurement.contracts:select';
@@ -120,6 +123,9 @@ add value 'procurement.contracts:delete';
 
 alter type supasheet.app_permission
 add value 'procurement.contracts:audit';
+
+alter type supasheet.app_permission
+add value 'procurement.contracts:comment';
 
 -- Requisitions
 alter type supasheet.app_permission
@@ -137,6 +143,9 @@ add value 'procurement.requisitions:delete';
 alter type supasheet.app_permission
 add value 'procurement.requisitions:audit';
 
+alter type supasheet.app_permission
+add value 'procurement.requisitions:comment';
+
 -- Requisition items
 alter type supasheet.app_permission
 add value 'procurement.requisition_items:select';
@@ -152,6 +161,9 @@ add value 'procurement.requisition_items:delete';
 
 alter type supasheet.app_permission
 add value 'procurement.requisition_items:audit';
+
+alter type supasheet.app_permission
+add value 'procurement.requisition_items:comment';
 
 -- RFQs
 alter type supasheet.app_permission
@@ -169,6 +181,9 @@ add value 'procurement.rfqs:delete';
 alter type supasheet.app_permission
 add value 'procurement.rfqs:audit';
 
+alter type supasheet.app_permission
+add value 'procurement.rfqs:comment';
+
 -- Quotes
 alter type supasheet.app_permission
 add value 'procurement.quotes:select';
@@ -184,6 +199,9 @@ add value 'procurement.quotes:delete';
 
 alter type supasheet.app_permission
 add value 'procurement.quotes:audit';
+
+alter type supasheet.app_permission
+add value 'procurement.quotes:comment';
 
 -- Asset categories
 alter type supasheet.app_permission
@@ -201,6 +219,9 @@ add value 'procurement.asset_categories:delete';
 alter type supasheet.app_permission
 add value 'procurement.asset_categories:audit';
 
+alter type supasheet.app_permission
+add value 'procurement.asset_categories:comment';
+
 -- Assets
 alter type supasheet.app_permission
 add value 'procurement.assets:select';
@@ -216,6 +237,9 @@ add value 'procurement.assets:delete';
 
 alter type supasheet.app_permission
 add value 'procurement.assets:audit';
+
+alter type supasheet.app_permission
+add value 'procurement.assets:comment';
 
 -- Asset assignments
 alter type supasheet.app_permission
@@ -233,6 +257,9 @@ add value 'procurement.asset_assignments:delete';
 alter type supasheet.app_permission
 add value 'procurement.asset_assignments:audit';
 
+alter type supasheet.app_permission
+add value 'procurement.asset_assignments:comment';
+
 -- Asset maintenance
 alter type supasheet.app_permission
 add value 'procurement.asset_maintenance:select';
@@ -248,6 +275,9 @@ add value 'procurement.asset_maintenance:delete';
 
 alter type supasheet.app_permission
 add value 'procurement.asset_maintenance:audit';
+
+alter type supasheet.app_permission
+add value 'procurement.asset_maintenance:comment';
 
 -- Users mirror
 alter type supasheet.app_permission
@@ -2202,51 +2232,61 @@ values
   ('x-admin', 'procurement.suppliers:update'),
   ('x-admin', 'procurement.suppliers:delete'),
   ('x-admin', 'procurement.suppliers:audit'),
+  ('x-admin', 'procurement.suppliers:comment'),
   ('x-admin', 'procurement.contracts:select'),
   ('x-admin', 'procurement.contracts:insert'),
   ('x-admin', 'procurement.contracts:update'),
   ('x-admin', 'procurement.contracts:delete'),
   ('x-admin', 'procurement.contracts:audit'),
+  ('x-admin', 'procurement.contracts:comment'),
   ('x-admin', 'procurement.requisitions:select'),
   ('x-admin', 'procurement.requisitions:insert'),
   ('x-admin', 'procurement.requisitions:update'),
   ('x-admin', 'procurement.requisitions:delete'),
   ('x-admin', 'procurement.requisitions:audit'),
+  ('x-admin', 'procurement.requisitions:comment'),
   ('x-admin', 'procurement.requisition_items:select'),
   ('x-admin', 'procurement.requisition_items:insert'),
   ('x-admin', 'procurement.requisition_items:update'),
   ('x-admin', 'procurement.requisition_items:delete'),
   ('x-admin', 'procurement.requisition_items:audit'),
+  ('x-admin', 'procurement.requisition_items:comment'),
   ('x-admin', 'procurement.rfqs:select'),
   ('x-admin', 'procurement.rfqs:insert'),
   ('x-admin', 'procurement.rfqs:update'),
   ('x-admin', 'procurement.rfqs:delete'),
   ('x-admin', 'procurement.rfqs:audit'),
+  ('x-admin', 'procurement.rfqs:comment'),
   ('x-admin', 'procurement.quotes:select'),
   ('x-admin', 'procurement.quotes:insert'),
   ('x-admin', 'procurement.quotes:update'),
   ('x-admin', 'procurement.quotes:delete'),
   ('x-admin', 'procurement.quotes:audit'),
+  ('x-admin', 'procurement.quotes:comment'),
   ('x-admin', 'procurement.asset_categories:select'),
   ('x-admin', 'procurement.asset_categories:insert'),
   ('x-admin', 'procurement.asset_categories:update'),
   ('x-admin', 'procurement.asset_categories:delete'),
   ('x-admin', 'procurement.asset_categories:audit'),
+  ('x-admin', 'procurement.asset_categories:comment'),
   ('x-admin', 'procurement.assets:select'),
   ('x-admin', 'procurement.assets:insert'),
   ('x-admin', 'procurement.assets:update'),
   ('x-admin', 'procurement.assets:delete'),
   ('x-admin', 'procurement.assets:audit'),
+  ('x-admin', 'procurement.assets:comment'),
   ('x-admin', 'procurement.asset_assignments:select'),
   ('x-admin', 'procurement.asset_assignments:insert'),
   ('x-admin', 'procurement.asset_assignments:update'),
   ('x-admin', 'procurement.asset_assignments:delete'),
   ('x-admin', 'procurement.asset_assignments:audit'),
+  ('x-admin', 'procurement.asset_assignments:comment'),
   ('x-admin', 'procurement.asset_maintenance:select'),
   ('x-admin', 'procurement.asset_maintenance:insert'),
   ('x-admin', 'procurement.asset_maintenance:update'),
   ('x-admin', 'procurement.asset_maintenance:delete'),
   ('x-admin', 'procurement.asset_maintenance:audit'),
+  ('x-admin', 'procurement.asset_maintenance:comment'),
   ('x-admin', 'procurement.users:select'),
   (
     'x-admin',

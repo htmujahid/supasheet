@@ -69,6 +69,9 @@ add value 'hostel.hostels:delete';
 alter type supasheet.app_permission
 add value 'hostel.hostels:audit';
 
+alter type supasheet.app_permission
+add value 'hostel.hostels:comment';
+
 -- Room permissions
 alter type supasheet.app_permission
 add value 'hostel.rooms:select';
@@ -84,6 +87,9 @@ add value 'hostel.rooms:delete';
 
 alter type supasheet.app_permission
 add value 'hostel.rooms:audit';
+
+alter type supasheet.app_permission
+add value 'hostel.rooms:comment';
 
 -- Resident permissions
 alter type supasheet.app_permission
@@ -101,6 +107,9 @@ add value 'hostel.residents:delete';
 alter type supasheet.app_permission
 add value 'hostel.residents:audit';
 
+alter type supasheet.app_permission
+add value 'hostel.residents:comment';
+
 -- Allocation permissions
 alter type supasheet.app_permission
 add value 'hostel.allocations:select';
@@ -116,6 +125,9 @@ add value 'hostel.allocations:delete';
 
 alter type supasheet.app_permission
 add value 'hostel.allocations:audit';
+
+alter type supasheet.app_permission
+add value 'hostel.allocations:comment';
 
 -- Payment permissions
 alter type supasheet.app_permission
@@ -133,6 +145,9 @@ add value 'hostel.payments:delete';
 alter type supasheet.app_permission
 add value 'hostel.payments:audit';
 
+alter type supasheet.app_permission
+add value 'hostel.payments:comment';
+
 -- Complaint permissions
 alter type supasheet.app_permission
 add value 'hostel.complaints:select';
@@ -149,6 +164,9 @@ add value 'hostel.complaints:delete';
 alter type supasheet.app_permission
 add value 'hostel.complaints:audit';
 
+alter type supasheet.app_permission
+add value 'hostel.complaints:comment';
+
 -- Visitor permissions
 alter type supasheet.app_permission
 add value 'hostel.visitors:select';
@@ -164,6 +182,9 @@ add value 'hostel.visitors:delete';
 
 alter type supasheet.app_permission
 add value 'hostel.visitors:audit';
+
+alter type supasheet.app_permission
+add value 'hostel.visitors:comment';
 
 -- Users mirror view
 alter type supasheet.app_permission
@@ -1601,36 +1622,43 @@ values
   ('x-admin', 'hostel.hostels:update'),
   ('x-admin', 'hostel.hostels:delete'),
   ('x-admin', 'hostel.hostels:audit'),
+  ('x-admin', 'hostel.hostels:comment'),
   ('x-admin', 'hostel.rooms:select'),
   ('x-admin', 'hostel.rooms:insert'),
   ('x-admin', 'hostel.rooms:update'),
   ('x-admin', 'hostel.rooms:delete'),
   ('x-admin', 'hostel.rooms:audit'),
+  ('x-admin', 'hostel.rooms:comment'),
   ('x-admin', 'hostel.residents:select'),
   ('x-admin', 'hostel.residents:insert'),
   ('x-admin', 'hostel.residents:update'),
   ('x-admin', 'hostel.residents:delete'),
   ('x-admin', 'hostel.residents:audit'),
+  ('x-admin', 'hostel.residents:comment'),
   ('x-admin', 'hostel.allocations:select'),
   ('x-admin', 'hostel.allocations:insert'),
   ('x-admin', 'hostel.allocations:update'),
   ('x-admin', 'hostel.allocations:delete'),
   ('x-admin', 'hostel.allocations:audit'),
+  ('x-admin', 'hostel.allocations:comment'),
   ('x-admin', 'hostel.payments:select'),
   ('x-admin', 'hostel.payments:insert'),
   ('x-admin', 'hostel.payments:update'),
   ('x-admin', 'hostel.payments:delete'),
   ('x-admin', 'hostel.payments:audit'),
+  ('x-admin', 'hostel.payments:comment'),
   ('x-admin', 'hostel.complaints:select'),
   ('x-admin', 'hostel.complaints:insert'),
   ('x-admin', 'hostel.complaints:update'),
   ('x-admin', 'hostel.complaints:delete'),
   ('x-admin', 'hostel.complaints:audit'),
+  ('x-admin', 'hostel.complaints:comment'),
   ('x-admin', 'hostel.visitors:select'),
   ('x-admin', 'hostel.visitors:insert'),
   ('x-admin', 'hostel.visitors:update'),
   ('x-admin', 'hostel.visitors:delete'),
   ('x-admin', 'hostel.visitors:audit'),
+  ('x-admin', 'hostel.visitors:comment'),
   ('x-admin', 'hostel.users:select'),
   ('x-admin', 'hostel.occupancy_report:select'),
   ('x-admin', 'hostel.payment_report:select'),

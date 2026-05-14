@@ -67,6 +67,7 @@ import { Route as SchemaResourceResourceGalleryGalleryIdRouteImport } from './ro
 import { Route as SchemaResourceResourceCalendarCalendarIdRouteImport } from './routes/$schema/resource/$resource/calendar/$calendarId'
 import { Route as SchemaResourceResourceResourceIdUpdateRouteImport } from './routes/$schema/resource/$resource/$resourceId/update'
 import { Route as SchemaResourceResourceResourceIdDetailRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail'
+import { Route as SchemaResourceResourceResourceIdCommentRouteImport } from './routes/$schema/resource/$resource/$resourceId/comment'
 import { Route as SchemaResourceResourceResourceIdAuditRouteImport } from './routes/$schema/resource/$resource/$resourceId/audit'
 
 const InitRoute = InitRouteImport.update({
@@ -375,6 +376,12 @@ const SchemaResourceResourceResourceIdDetailRoute =
     path: '/$resourceId/detail',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
+const SchemaResourceResourceResourceIdCommentRoute =
+  SchemaResourceResourceResourceIdCommentRouteImport.update({
+    id: '/$resourceId/comment',
+    path: '/$resourceId/comment',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
 const SchemaResourceResourceResourceIdAuditRoute =
   SchemaResourceResourceResourceIdAuditRouteImport.update({
     id: '/$resourceId/audit',
@@ -436,6 +443,7 @@ export interface FileRoutesByFullPath {
   '/$schema/template/$template/': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId/': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/$resourceId/audit': typeof SchemaResourceResourceResourceIdAuditRoute
+  '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
   '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRoute
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
@@ -490,6 +498,7 @@ export interface FileRoutesByTo {
   '/$schema/template/$template': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/$resourceId/audit': typeof SchemaResourceResourceResourceIdAuditRoute
+  '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
   '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRoute
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
@@ -552,6 +561,7 @@ export interface FileRoutesById {
   '/$schema/template/$template/': typeof SchemaTemplateTemplateIndexRoute
   '/core/users/$userId/': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/$resourceId/audit': typeof SchemaResourceResourceResourceIdAuditRoute
+  '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
   '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRoute
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRoute
@@ -615,6 +625,7 @@ export interface FileRouteTypes {
     | '/$schema/template/$template/'
     | '/core/users/$userId/'
     | '/$schema/resource/$resource/$resourceId/audit'
+    | '/$schema/resource/$resource/$resourceId/comment'
     | '/$schema/resource/$resource/$resourceId/detail'
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
@@ -669,6 +680,7 @@ export interface FileRouteTypes {
     | '/$schema/template/$template'
     | '/core/users/$userId'
     | '/$schema/resource/$resource/$resourceId/audit'
+    | '/$schema/resource/$resource/$resourceId/comment'
     | '/$schema/resource/$resource/$resourceId/detail'
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
@@ -730,6 +742,7 @@ export interface FileRouteTypes {
     | '/$schema/template/$template/'
     | '/core/users/$userId/'
     | '/$schema/resource/$resource/$resourceId/audit'
+    | '/$schema/resource/$resource/$resourceId/comment'
     | '/$schema/resource/$resource/$resourceId/detail'
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
@@ -1157,6 +1170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceResourceIdDetailRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/$resourceId/comment': {
+      id: '/$schema/resource/$resource/$resourceId/comment'
+      path: '/$resourceId/comment'
+      fullPath: '/$schema/resource/$resource/$resourceId/comment'
+      preLoaderRoute: typeof SchemaResourceResourceResourceIdCommentRouteImport
+      parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
     '/$schema/resource/$resource/$resourceId/audit': {
       id: '/$schema/resource/$resource/$resourceId/audit'
       path: '/$resourceId/audit'
@@ -1174,6 +1194,7 @@ interface SchemaResourceResourceRouteRouteChildren {
   SchemaResourceResourceTableRoute: typeof SchemaResourceResourceTableRoute
   SchemaResourceResourceIndexRoute: typeof SchemaResourceResourceIndexRoute
   SchemaResourceResourceResourceIdAuditRoute: typeof SchemaResourceResourceResourceIdAuditRoute
+  SchemaResourceResourceResourceIdCommentRoute: typeof SchemaResourceResourceResourceIdCommentRoute
   SchemaResourceResourceResourceIdDetailRoute: typeof SchemaResourceResourceResourceIdDetailRoute
   SchemaResourceResourceResourceIdUpdateRoute: typeof SchemaResourceResourceResourceIdUpdateRoute
   SchemaResourceResourceCalendarCalendarIdRoute: typeof SchemaResourceResourceCalendarCalendarIdRoute
@@ -1191,6 +1212,8 @@ const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRoute
     SchemaResourceResourceIndexRoute: SchemaResourceResourceIndexRoute,
     SchemaResourceResourceResourceIdAuditRoute:
       SchemaResourceResourceResourceIdAuditRoute,
+    SchemaResourceResourceResourceIdCommentRoute:
+      SchemaResourceResourceResourceIdCommentRoute,
     SchemaResourceResourceResourceIdDetailRoute:
       SchemaResourceResourceResourceIdDetailRoute,
     SchemaResourceResourceResourceIdUpdateRoute:

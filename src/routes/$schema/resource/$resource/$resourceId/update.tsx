@@ -11,11 +11,12 @@ import type {
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, EyeIcon, FileXIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceRecordActions } from "#/components/resource/resource-record-actions"
 import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
-import { Button, buttonVariants } from "#/components/ui/button"
+import { Button } from "#/components/ui/button"
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
 import {
   Empty,
@@ -220,14 +221,12 @@ function RouteComponent() {
           { title: "Edit record" },
         ]}
       >
-        <Link
-          className={buttonVariants({ size: "sm", variant: "outline" })}
-          to="/$schema/resource/$resource/$resourceId/detail"
-          params={{ schema, resource, resourceId }}
-        >
-          <EyeIcon className="mr-1.5 size-3.5" />
-          View
-        </Link>
+        <ResourceRecordActions
+          schema={schema}
+          resource={resource}
+          resourceId={resourceId}
+          mode="update"
+        />
       </DefaultHeader>
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-7xl px-4 py-4">

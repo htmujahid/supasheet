@@ -76,6 +76,9 @@ add value 'lms.courses:delete';
 alter type supasheet.app_permission
 add value 'lms.courses:audit';
 
+alter type supasheet.app_permission
+add value 'lms.courses:comment';
+
 -- Modules
 alter type supasheet.app_permission
 add value 'lms.modules:select';
@@ -91,6 +94,9 @@ add value 'lms.modules:delete';
 
 alter type supasheet.app_permission
 add value 'lms.modules:audit';
+
+alter type supasheet.app_permission
+add value 'lms.modules:comment';
 
 -- Lessons
 alter type supasheet.app_permission
@@ -108,6 +114,9 @@ add value 'lms.lessons:delete';
 alter type supasheet.app_permission
 add value 'lms.lessons:audit';
 
+alter type supasheet.app_permission
+add value 'lms.lessons:comment';
+
 -- Enrollments
 alter type supasheet.app_permission
 add value 'lms.enrollments:select';
@@ -123,6 +132,9 @@ add value 'lms.enrollments:delete';
 
 alter type supasheet.app_permission
 add value 'lms.enrollments:audit';
+
+alter type supasheet.app_permission
+add value 'lms.enrollments:comment';
 
 -- Lesson progress
 alter type supasheet.app_permission
@@ -140,6 +152,9 @@ add value 'lms.lesson_progress:delete';
 alter type supasheet.app_permission
 add value 'lms.lesson_progress:audit';
 
+alter type supasheet.app_permission
+add value 'lms.lesson_progress:comment';
+
 -- Assignments
 alter type supasheet.app_permission
 add value 'lms.assignments:select';
@@ -155,6 +170,9 @@ add value 'lms.assignments:delete';
 
 alter type supasheet.app_permission
 add value 'lms.assignments:audit';
+
+alter type supasheet.app_permission
+add value 'lms.assignments:comment';
 
 -- Submissions
 alter type supasheet.app_permission
@@ -172,6 +190,9 @@ add value 'lms.submissions:delete';
 alter type supasheet.app_permission
 add value 'lms.submissions:audit';
 
+alter type supasheet.app_permission
+add value 'lms.submissions:comment';
+
 -- Certificates
 alter type supasheet.app_permission
 add value 'lms.certificates:select';
@@ -188,6 +209,9 @@ add value 'lms.certificates:delete';
 alter type supasheet.app_permission
 add value 'lms.certificates:audit';
 
+alter type supasheet.app_permission
+add value 'lms.certificates:comment';
+
 -- Learning paths
 alter type supasheet.app_permission
 add value 'lms.learning_paths:select';
@@ -203,6 +227,9 @@ add value 'lms.learning_paths:delete';
 
 alter type supasheet.app_permission
 add value 'lms.learning_paths:audit';
+
+alter type supasheet.app_permission
+add value 'lms.learning_paths:comment';
 
 -- Users mirror
 alter type supasheet.app_permission
@@ -1903,46 +1930,55 @@ values
   ('x-admin', 'lms.courses:update'),
   ('x-admin', 'lms.courses:delete'),
   ('x-admin', 'lms.courses:audit'),
+  ('x-admin', 'lms.courses:comment'),
   ('x-admin', 'lms.modules:select'),
   ('x-admin', 'lms.modules:insert'),
   ('x-admin', 'lms.modules:update'),
   ('x-admin', 'lms.modules:delete'),
   ('x-admin', 'lms.modules:audit'),
+  ('x-admin', 'lms.modules:comment'),
   ('x-admin', 'lms.lessons:select'),
   ('x-admin', 'lms.lessons:insert'),
   ('x-admin', 'lms.lessons:update'),
   ('x-admin', 'lms.lessons:delete'),
   ('x-admin', 'lms.lessons:audit'),
+  ('x-admin', 'lms.lessons:comment'),
   ('x-admin', 'lms.enrollments:select'),
   ('x-admin', 'lms.enrollments:insert'),
   ('x-admin', 'lms.enrollments:update'),
   ('x-admin', 'lms.enrollments:delete'),
   ('x-admin', 'lms.enrollments:audit'),
+  ('x-admin', 'lms.enrollments:comment'),
   ('x-admin', 'lms.lesson_progress:select'),
   ('x-admin', 'lms.lesson_progress:insert'),
   ('x-admin', 'lms.lesson_progress:update'),
   ('x-admin', 'lms.lesson_progress:delete'),
   ('x-admin', 'lms.lesson_progress:audit'),
+  ('x-admin', 'lms.lesson_progress:comment'),
   ('x-admin', 'lms.assignments:select'),
   ('x-admin', 'lms.assignments:insert'),
   ('x-admin', 'lms.assignments:update'),
   ('x-admin', 'lms.assignments:delete'),
   ('x-admin', 'lms.assignments:audit'),
+  ('x-admin', 'lms.assignments:comment'),
   ('x-admin', 'lms.submissions:select'),
   ('x-admin', 'lms.submissions:insert'),
   ('x-admin', 'lms.submissions:update'),
   ('x-admin', 'lms.submissions:delete'),
   ('x-admin', 'lms.submissions:audit'),
+  ('x-admin', 'lms.submissions:comment'),
   ('x-admin', 'lms.certificates:select'),
   ('x-admin', 'lms.certificates:insert'),
   ('x-admin', 'lms.certificates:update'),
   ('x-admin', 'lms.certificates:delete'),
   ('x-admin', 'lms.certificates:audit'),
+  ('x-admin', 'lms.certificates:comment'),
   ('x-admin', 'lms.learning_paths:select'),
   ('x-admin', 'lms.learning_paths:insert'),
   ('x-admin', 'lms.learning_paths:update'),
   ('x-admin', 'lms.learning_paths:delete'),
   ('x-admin', 'lms.learning_paths:audit'),
+  ('x-admin', 'lms.learning_paths:comment'),
   ('x-admin', 'lms.users:select'),
   ('x-admin', 'lms.courses_report:select'),
   ('x-admin', 'lms.enrollments_report:select'),

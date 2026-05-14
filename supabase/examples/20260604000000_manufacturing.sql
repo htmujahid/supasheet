@@ -62,6 +62,9 @@ add value 'manufacturing.work_centers:delete';
 alter type supasheet.app_permission
 add value 'manufacturing.work_centers:audit';
 
+alter type supasheet.app_permission
+add value 'manufacturing.work_centers:comment';
+
 -- BOMs
 alter type supasheet.app_permission
 add value 'manufacturing.boms:select';
@@ -77,6 +80,9 @@ add value 'manufacturing.boms:delete';
 
 alter type supasheet.app_permission
 add value 'manufacturing.boms:audit';
+
+alter type supasheet.app_permission
+add value 'manufacturing.boms:comment';
 
 -- BOM items
 alter type supasheet.app_permission
@@ -94,6 +100,9 @@ add value 'manufacturing.bom_items:delete';
 alter type supasheet.app_permission
 add value 'manufacturing.bom_items:audit';
 
+alter type supasheet.app_permission
+add value 'manufacturing.bom_items:comment';
+
 -- Routings
 alter type supasheet.app_permission
 add value 'manufacturing.routings:select';
@@ -109,6 +118,9 @@ add value 'manufacturing.routings:delete';
 
 alter type supasheet.app_permission
 add value 'manufacturing.routings:audit';
+
+alter type supasheet.app_permission
+add value 'manufacturing.routings:comment';
 
 -- Routing operations
 alter type supasheet.app_permission
@@ -126,6 +138,9 @@ add value 'manufacturing.routing_operations:delete';
 alter type supasheet.app_permission
 add value 'manufacturing.routing_operations:audit';
 
+alter type supasheet.app_permission
+add value 'manufacturing.routing_operations:comment';
+
 -- Work orders
 alter type supasheet.app_permission
 add value 'manufacturing.work_orders:select';
@@ -141,6 +156,9 @@ add value 'manufacturing.work_orders:delete';
 
 alter type supasheet.app_permission
 add value 'manufacturing.work_orders:audit';
+
+alter type supasheet.app_permission
+add value 'manufacturing.work_orders:comment';
 
 -- Work order operations
 alter type supasheet.app_permission
@@ -158,6 +176,9 @@ add value 'manufacturing.work_order_operations:delete';
 alter type supasheet.app_permission
 add value 'manufacturing.work_order_operations:audit';
 
+alter type supasheet.app_permission
+add value 'manufacturing.work_order_operations:comment';
+
 -- Material issues
 alter type supasheet.app_permission
 add value 'manufacturing.material_issues:select';
@@ -174,6 +195,9 @@ add value 'manufacturing.material_issues:delete';
 alter type supasheet.app_permission
 add value 'manufacturing.material_issues:audit';
 
+alter type supasheet.app_permission
+add value 'manufacturing.material_issues:comment';
+
 -- Production outputs
 alter type supasheet.app_permission
 add value 'manufacturing.production_outputs:select';
@@ -189,6 +213,9 @@ add value 'manufacturing.production_outputs:delete';
 
 alter type supasheet.app_permission
 add value 'manufacturing.production_outputs:audit';
+
+alter type supasheet.app_permission
+add value 'manufacturing.production_outputs:comment';
 
 -- Users mirror
 alter type supasheet.app_permission
@@ -1810,21 +1837,25 @@ values
   ('x-admin', 'manufacturing.work_centers:update'),
   ('x-admin', 'manufacturing.work_centers:delete'),
   ('x-admin', 'manufacturing.work_centers:audit'),
+  ('x-admin', 'manufacturing.work_centers:comment'),
   ('x-admin', 'manufacturing.boms:select'),
   ('x-admin', 'manufacturing.boms:insert'),
   ('x-admin', 'manufacturing.boms:update'),
   ('x-admin', 'manufacturing.boms:delete'),
   ('x-admin', 'manufacturing.boms:audit'),
+  ('x-admin', 'manufacturing.boms:comment'),
   ('x-admin', 'manufacturing.bom_items:select'),
   ('x-admin', 'manufacturing.bom_items:insert'),
   ('x-admin', 'manufacturing.bom_items:update'),
   ('x-admin', 'manufacturing.bom_items:delete'),
   ('x-admin', 'manufacturing.bom_items:audit'),
+  ('x-admin', 'manufacturing.bom_items:comment'),
   ('x-admin', 'manufacturing.routings:select'),
   ('x-admin', 'manufacturing.routings:insert'),
   ('x-admin', 'manufacturing.routings:update'),
   ('x-admin', 'manufacturing.routings:delete'),
   ('x-admin', 'manufacturing.routings:audit'),
+  ('x-admin', 'manufacturing.routings:comment'),
   (
     'x-admin',
     'manufacturing.routing_operations:select'
@@ -1845,11 +1876,16 @@ values
     'x-admin',
     'manufacturing.routing_operations:audit'
   ),
+  (
+    'x-admin',
+    'manufacturing.routing_operations:comment'
+  ),
   ('x-admin', 'manufacturing.work_orders:select'),
   ('x-admin', 'manufacturing.work_orders:insert'),
   ('x-admin', 'manufacturing.work_orders:update'),
   ('x-admin', 'manufacturing.work_orders:delete'),
   ('x-admin', 'manufacturing.work_orders:audit'),
+  ('x-admin', 'manufacturing.work_orders:comment'),
   (
     'x-admin',
     'manufacturing.work_order_operations:select'
@@ -1870,11 +1906,16 @@ values
     'x-admin',
     'manufacturing.work_order_operations:audit'
   ),
+  (
+    'x-admin',
+    'manufacturing.work_order_operations:comment'
+  ),
   ('x-admin', 'manufacturing.material_issues:select'),
   ('x-admin', 'manufacturing.material_issues:insert'),
   ('x-admin', 'manufacturing.material_issues:update'),
   ('x-admin', 'manufacturing.material_issues:delete'),
   ('x-admin', 'manufacturing.material_issues:audit'),
+  ('x-admin', 'manufacturing.material_issues:comment'),
   (
     'x-admin',
     'manufacturing.production_outputs:select'
@@ -1894,6 +1935,10 @@ values
   (
     'x-admin',
     'manufacturing.production_outputs:audit'
+  ),
+  (
+    'x-admin',
+    'manufacturing.production_outputs:comment'
   ),
   ('x-admin', 'manufacturing.users:select'),
   (

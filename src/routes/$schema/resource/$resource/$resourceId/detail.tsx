@@ -10,12 +10,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import {
-  AlertCircleIcon,
-  FileXIcon,
-  HistoryIcon,
-  PencilIcon,
-} from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
@@ -25,7 +20,8 @@ import { ResourceMetadataView } from "#/components/resource/detail/resource-meta
 import { ResourceProgressField } from "#/components/resource/detail/resource-progress-field"
 import { ResourceSectionDetail } from "#/components/resource/detail/resource-section-detail"
 import { buildLayoutPlan } from "#/components/resource/resource-form-utils"
-import { Button, buttonVariants } from "#/components/ui/button"
+import { ResourceRecordActions } from "#/components/resource/resource-record-actions"
+import { Button } from "#/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 import {
   Empty,
@@ -39,7 +35,6 @@ import { Input } from "#/components/ui/input"
 import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs"
-import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
   EnumColumnMetadata,
@@ -51,7 +46,6 @@ import type {
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   columnsSchemaQueryOptions,
   joinAlias,
@@ -398,13 +392,6 @@ function RouteComponent() {
 
   if (!record) return null
 
-  const canUpdate = useHasPermission(
-    `${schema}.${resource}:update` as AppPermission
-  )
-  const canViewAudit = useHasPermission(
-    `${schema}.${resource}:audit` as AppPermission
-  )
-
   const resourceDisplayName =
     (JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ??
     formatTitle(resource)
@@ -470,26 +457,13 @@ function RouteComponent() {
           { title: "Detail" },
         ]}
       >
-        {canViewAudit && (
-          <Link
-            className={buttonVariants({ size: "sm", variant: "outline" })}
-            to="/$schema/resource/$resource/$resourceId/audit"
-            params={{ schema, resource, resourceId }}
-          >
-            <HistoryIcon className="mr-1.5 size-3.5" />
-            Audit Log
-          </Link>
-        )}
-        {tableSchema && canUpdate && (
-          <Link
-            className={buttonVariants({ size: "sm", variant: "outline" })}
-            to="/$schema/resource/$resource/$resourceId/update"
-            params={{ schema, resource, resourceId }}
-          >
-            <PencilIcon className="mr-1.5 size-3.5" />
-            Edit
-          </Link>
-        )}
+        <ResourceRecordActions
+          schema={schema}
+          resource={resource}
+          resourceId={resourceId}
+          isTable={!!tableSchema}
+          mode="detail"
+        />
       </DefaultHeader>
       <div className="flex flex-1 flex-col">
         <div className="mx-auto w-full max-w-7xl space-y-4 px-4 py-4">

@@ -89,6 +89,9 @@ add value 'finance.accounts:delete';
 alter type supasheet.app_permission
 add value 'finance.accounts:audit';
 
+alter type supasheet.app_permission
+add value 'finance.accounts:comment';
+
 -- Vendors
 alter type supasheet.app_permission
 add value 'finance.vendors:select';
@@ -104,6 +107,9 @@ add value 'finance.vendors:delete';
 
 alter type supasheet.app_permission
 add value 'finance.vendors:audit';
+
+alter type supasheet.app_permission
+add value 'finance.vendors:comment';
 
 -- Invoices
 alter type supasheet.app_permission
@@ -121,6 +127,9 @@ add value 'finance.invoices:delete';
 alter type supasheet.app_permission
 add value 'finance.invoices:audit';
 
+alter type supasheet.app_permission
+add value 'finance.invoices:comment';
+
 -- Bills
 alter type supasheet.app_permission
 add value 'finance.bills:select';
@@ -136,6 +145,9 @@ add value 'finance.bills:delete';
 
 alter type supasheet.app_permission
 add value 'finance.bills:audit';
+
+alter type supasheet.app_permission
+add value 'finance.bills:comment';
 
 -- Expenses
 alter type supasheet.app_permission
@@ -153,6 +165,9 @@ add value 'finance.expenses:delete';
 alter type supasheet.app_permission
 add value 'finance.expenses:audit';
 
+alter type supasheet.app_permission
+add value 'finance.expenses:comment';
+
 -- Payments
 alter type supasheet.app_permission
 add value 'finance.payments:select';
@@ -168,6 +183,9 @@ add value 'finance.payments:delete';
 
 alter type supasheet.app_permission
 add value 'finance.payments:audit';
+
+alter type supasheet.app_permission
+add value 'finance.payments:comment';
 
 -- Budgets
 alter type supasheet.app_permission
@@ -185,6 +203,9 @@ add value 'finance.budgets:delete';
 alter type supasheet.app_permission
 add value 'finance.budgets:audit';
 
+alter type supasheet.app_permission
+add value 'finance.budgets:comment';
+
 -- Payroll runs
 alter type supasheet.app_permission
 add value 'finance.payroll_runs:select';
@@ -200,6 +221,9 @@ add value 'finance.payroll_runs:delete';
 
 alter type supasheet.app_permission
 add value 'finance.payroll_runs:audit';
+
+alter type supasheet.app_permission
+add value 'finance.payroll_runs:comment';
 
 -- Payslips
 alter type supasheet.app_permission
@@ -217,6 +241,9 @@ add value 'finance.payslips:delete';
 alter type supasheet.app_permission
 add value 'finance.payslips:audit';
 
+alter type supasheet.app_permission
+add value 'finance.payslips:comment';
+
 -- Journal entries
 alter type supasheet.app_permission
 add value 'finance.journal_entries:select';
@@ -232,6 +259,9 @@ add value 'finance.journal_entries:delete';
 
 alter type supasheet.app_permission
 add value 'finance.journal_entries:audit';
+
+alter type supasheet.app_permission
+add value 'finance.journal_entries:comment';
 
 -- Users mirror
 alter type supasheet.app_permission
@@ -1998,51 +2028,61 @@ values
   ('x-admin', 'finance.accounts:update'),
   ('x-admin', 'finance.accounts:delete'),
   ('x-admin', 'finance.accounts:audit'),
+  ('x-admin', 'finance.accounts:comment'),
   ('x-admin', 'finance.vendors:select'),
   ('x-admin', 'finance.vendors:insert'),
   ('x-admin', 'finance.vendors:update'),
   ('x-admin', 'finance.vendors:delete'),
   ('x-admin', 'finance.vendors:audit'),
+  ('x-admin', 'finance.vendors:comment'),
   ('x-admin', 'finance.invoices:select'),
   ('x-admin', 'finance.invoices:insert'),
   ('x-admin', 'finance.invoices:update'),
   ('x-admin', 'finance.invoices:delete'),
   ('x-admin', 'finance.invoices:audit'),
+  ('x-admin', 'finance.invoices:comment'),
   ('x-admin', 'finance.bills:select'),
   ('x-admin', 'finance.bills:insert'),
   ('x-admin', 'finance.bills:update'),
   ('x-admin', 'finance.bills:delete'),
   ('x-admin', 'finance.bills:audit'),
+  ('x-admin', 'finance.bills:comment'),
   ('x-admin', 'finance.expenses:select'),
   ('x-admin', 'finance.expenses:insert'),
   ('x-admin', 'finance.expenses:update'),
   ('x-admin', 'finance.expenses:delete'),
   ('x-admin', 'finance.expenses:audit'),
+  ('x-admin', 'finance.expenses:comment'),
   ('x-admin', 'finance.payments:select'),
   ('x-admin', 'finance.payments:insert'),
   ('x-admin', 'finance.payments:update'),
   ('x-admin', 'finance.payments:delete'),
   ('x-admin', 'finance.payments:audit'),
+  ('x-admin', 'finance.payments:comment'),
   ('x-admin', 'finance.budgets:select'),
   ('x-admin', 'finance.budgets:insert'),
   ('x-admin', 'finance.budgets:update'),
   ('x-admin', 'finance.budgets:delete'),
   ('x-admin', 'finance.budgets:audit'),
+  ('x-admin', 'finance.budgets:comment'),
   ('x-admin', 'finance.payroll_runs:select'),
   ('x-admin', 'finance.payroll_runs:insert'),
   ('x-admin', 'finance.payroll_runs:update'),
   ('x-admin', 'finance.payroll_runs:delete'),
   ('x-admin', 'finance.payroll_runs:audit'),
+  ('x-admin', 'finance.payroll_runs:comment'),
   ('x-admin', 'finance.payslips:select'),
   ('x-admin', 'finance.payslips:insert'),
   ('x-admin', 'finance.payslips:update'),
   ('x-admin', 'finance.payslips:delete'),
   ('x-admin', 'finance.payslips:audit'),
+  ('x-admin', 'finance.payslips:comment'),
   ('x-admin', 'finance.journal_entries:select'),
   ('x-admin', 'finance.journal_entries:insert'),
   ('x-admin', 'finance.journal_entries:update'),
   ('x-admin', 'finance.journal_entries:delete'),
   ('x-admin', 'finance.journal_entries:audit'),
+  ('x-admin', 'finance.journal_entries:comment'),
   ('x-admin', 'finance.users:select'),
   ('x-admin', 'finance.invoices_report:select'),
   ('x-admin', 'finance.bills_report:select'),

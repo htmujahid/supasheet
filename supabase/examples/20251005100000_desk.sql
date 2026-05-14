@@ -35,6 +35,9 @@ alter type supasheet.app_permission
 add value 'desk.tasks:audit';
 
 alter type supasheet.app_permission
+add value 'desk.tasks:comment';
+
+alter type supasheet.app_permission
 add value 'desk.user_tasks:select';
 
 alter type supasheet.app_permission
@@ -87,6 +90,9 @@ alter type supasheet.app_permission
 add value 'desk.projects:audit';
 
 alter type supasheet.app_permission
+add value 'desk.projects:comment';
+
+alter type supasheet.app_permission
 add value 'desk.project_report:select';
 
 alter type supasheet.app_permission
@@ -122,6 +128,9 @@ add value 'desk.task_comments:delete';
 
 alter type supasheet.app_permission
 add value 'desk.task_comments:audit';
+
+alter type supasheet.app_permission
+add value 'desk.task_comments:comment';
 
 alter type supasheet.app_permission
 add value 'desk.users:select';
@@ -1287,6 +1296,11 @@ values
 insert into
   supasheet.role_permissions (role, permission)
 values
+  ('x-admin', 'desk.tasks:comment');
+
+insert into
+  supasheet.role_permissions (role, permission)
+values
   ('x-admin', 'desk.user_tasks:select');
 
 insert into
@@ -1327,6 +1341,11 @@ values
 insert into
   supasheet.role_permissions (role, permission)
 values
+  ('x-admin', 'desk.projects:comment');
+
+insert into
+  supasheet.role_permissions (role, permission)
+values
   ('x-admin', 'desk.project_report:select');
 
 insert into
@@ -1353,6 +1372,11 @@ insert into
   supasheet.role_permissions (role, permission)
 values
   ('x-admin', 'desk.task_comments:audit');
+
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'desk.task_comments:comment');
 
 insert into
   supasheet.role_permissions (role, permission)
@@ -1565,6 +1589,9 @@ add value 'desk.timesheets:delete';
 
 alter type supasheet.app_permission
 add value 'desk.timesheets:audit';
+
+alter type supasheet.app_permission
+add value 'desk.timesheets:comment';
 
 -- Dashboard widget permissions
 alter type supasheet.app_permission
@@ -2205,6 +2232,11 @@ insert into
   supasheet.role_permissions (role, permission)
 values
   ('x-admin', 'desk.timesheets:audit');
+
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'desk.timesheets:comment');
 
 ----------------------------------------------------------------
 -- Audit triggers for timesheets

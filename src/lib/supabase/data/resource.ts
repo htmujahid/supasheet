@@ -411,6 +411,81 @@ export const resourceAuditLogsQueryOptions = (
     },
   })
 
+export type ResourceComment = {
+  id: string
+  created_at: string
+  updated_at: string
+  schema_name: string
+  table_name: string
+  record_id: string
+  content: string
+  created_by: string | null
+  created_by_name: string | null
+  created_by_email: string | null
+  created_by_picture_url: string | null
+}
+
+export const resourceCommentsQueryOptions = (
+  schema: string,
+  resource: string,
+  recordId: string
+) =>
+  queryOptions({
+    queryKey: ["supasheet", "resource-comments", schema, resource, recordId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("supasheet")
+        .rpc("get_comments" as never, {
+          p_schema: schema,
+          p_table: resource,
+          p_record_id: recordId,
+        } as never)
+      if (error) throw error
+      return ((data ?? []) as unknown) as ResourceComment[]
+    },
+  })
+
+export const insertCommentMutationOptions = () =>
+  mutationOptions({
+    mutationFn: async (payload: {
+      schema_name: string
+      table_name: string
+      record_id: string
+      content: string
+      created_by: string
+    }) => {
+      const { error } = await supabase
+        .schema("supasheet")
+        .from("comments" as never)
+        .insert(payload as never)
+      if (error) throw error
+    },
+  })
+
+export const updateCommentMutationOptions = () =>
+  mutationOptions({
+    mutationFn: async ({ id, content }: { id: string; content: string }) => {
+      const { error } = await supabase
+        .schema("supasheet")
+        .from("comments" as never)
+        .update({ content, updated_at: new Date().toISOString() } as never)
+        .eq("id", id)
+      if (error) throw error
+    },
+  })
+
+export const deleteCommentMutationOptions = () =>
+  mutationOptions({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .schema("supasheet")
+        .from("comments" as never)
+        .delete()
+        .eq("id", id)
+      if (error) throw error
+    },
+  })
+
 export const relatedTablesSchemaQueryOptions = <S extends DatabaseSchemas>(
   schema: S,
   id: DatabaseTables<S> | DatabaseViews<S>
