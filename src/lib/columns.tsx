@@ -171,7 +171,9 @@ export function getColumnMetadata(
     columnSchema.is_nullable === false && !columnSchema.default_value
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable
   const isArray = columnSchema.data_type === "ARRAY"
-  const isMetadata = getMetaFields(tableSchema as ResourceSchema | null).includes(name)
+  const isMetadata = getMetaFields(
+    tableSchema as ResourceSchema | null
+  ).includes(name)
 
   const isRelationship = !!(
     tableSchema &&

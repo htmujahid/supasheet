@@ -18,8 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import type { DatabaseSchemas } from "#/lib/database-meta.types"
+import type { AppPermission } from "#/lib/supabase/data/core"
 
 interface ResourceRecordActionsProps {
   schema: DatabaseSchemas

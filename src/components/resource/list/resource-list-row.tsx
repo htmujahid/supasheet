@@ -37,9 +37,7 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   const navigate = useNavigate()
   const inlineForm = useInlineFormFlag(schema, resource)
   const data = row.original
-  const pk = Object.fromEntries(
-    primaryKeys.map((k) => [k.name, data[k.name]])
-  )
+  const pk = Object.fromEntries(primaryKeys.map((k) => [k.name, data[k.name]]))
   const sheetLink = useSheetHref({ mode: "update", pk })
 
   const titleValue = readField(data, listView.title)
