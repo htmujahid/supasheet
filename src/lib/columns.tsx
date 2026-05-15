@@ -21,13 +21,13 @@ import {
 } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 
-import { METADATA_COLUMNS } from "#/config/database.config"
-import { isTableSchema } from "#/lib/database-meta.types"
+import { getMetaFields, isTableSchema } from "#/lib/database-meta.types"
 import type {
   ColumnMetadata,
   ColumnSchema,
   PrimaryKey,
   Relationship,
+  ResourceSchema,
   TableSchema,
   ViewSchema,
 } from "#/lib/database-meta.types"
@@ -171,7 +171,7 @@ export function getColumnMetadata(
     columnSchema.is_nullable === false && !columnSchema.default_value
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable
   const isArray = columnSchema.data_type === "ARRAY"
-  const isMetadata = METADATA_COLUMNS.includes(name)
+  const isMetadata = getMetaFields(tableSchema as ResourceSchema | null).includes(name)
 
   const isRelationship = !!(
     tableSchema &&

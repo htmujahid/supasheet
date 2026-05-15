@@ -6,9 +6,9 @@ import { ResourceAvatarDisplay } from "#/components/resource/detail/resource-ava
 import { ResourceFileDisplay } from "#/components/resource/detail/resource-file-display"
 import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
-import { METADATA_COLUMNS } from "#/config/database.config"
 import { getColumnMetadata } from "#/lib/columns"
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type { ColumnSchema, ResourceSchema, TableSchema } from "#/lib/database-meta.types"
+import { getMetaFields } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
@@ -45,7 +45,7 @@ export function ResourceDetailSheetBody({
   }
 
   const detailColumns = (columnsSchema as ColumnSchema[]).filter(
-    (col) => !METADATA_COLUMNS.includes(col.name as string)
+    (col) => !getMetaFields(tableSchema as ResourceSchema | null).includes(col.name as string)
   )
 
   return (

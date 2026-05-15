@@ -1,3 +1,5 @@
+import { METADATA_COLUMNS } from "#/config/database.config"
+
 import type { Database } from "./database.types"
 
 export type ResourceDataSchema = Record<string, unknown>
@@ -43,6 +45,15 @@ export function isTableSchema<S extends DatabaseSchemas>(
   schema: ResourceSchema<S>
 ): schema is TableSchema<S> {
   return "primary_keys" in schema
+}
+
+export function getMetaFields(resourceSchema: ResourceSchema | null): string[] {
+  if (!resourceSchema || !isTableSchema(resourceSchema)) return METADATA_COLUMNS
+  const meta = resourceSchema.comment
+    ? (JSON.parse(resourceSchema.comment) as TableMetadata)
+    : {}
+  if (meta.metadataColumns === undefined) return METADATA_COLUMNS
+  return meta.metadataColumns
 }
 
 export type PrimaryKey = {
@@ -165,6 +176,7 @@ export type TableMetadata = {
   items?: MetaViewItem[]
   filterTemplates?: FilterTemplate[]
   sections?: FieldSection[]
+  metadataColumns?: string[]
 }
 
 export type ViewMetadata = {

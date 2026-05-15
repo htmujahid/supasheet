@@ -7,10 +7,9 @@ import {
 } from "#/components/ui/card"
 import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
-import { METADATA_COLUMNS } from "#/config/database.config"
 import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
-import { isTableSchema } from "#/lib/database-meta.types"
+import { getMetaFields, isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 
 import { AllCells } from "../cells/all-cells"
@@ -28,7 +27,7 @@ export function ResourceMetadataView({
   const metadataColumns =
     columnsSchema?.filter((column) => {
       const name = column.name as string
-      return METADATA_COLUMNS.includes(name)
+      return getMetaFields(resourceSchema).includes(name)
     }) ?? []
 
   if (!metadataColumns.length) return null
