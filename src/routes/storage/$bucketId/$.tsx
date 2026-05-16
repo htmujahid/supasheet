@@ -1,14 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
-import { FilePreviewSheet } from "#/components/storage/file-preview-sheet"
+import { XIcon } from "lucide-react"
+
+import { FilePreviewDrawer } from "#/components/storage/file-preview-drawer"
 import { Button } from "#/components/ui/button"
-import { Separator } from "#/components/ui/separator"
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-} from "#/components/ui/sheet"
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+} from "#/components/ui/drawer"
+import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import type { FileObject } from "#/lib/supabase/data/storage"
 import { storageFilesQueryOptions } from "#/lib/supabase/data/storage"
@@ -35,13 +37,9 @@ export const Route = createFileRoute("/storage/$bucketId/$")({
     return { meta: [{ title: `${name} | Storage | Supasheet` }] }
   },
   pendingComponent: () => (
-    <Sheet open>
-      <SheetContent
-        side="right"
-        showCloseButton={false}
-        className="flex flex-col gap-0 p-0 sm:max-w-md"
-      >
-        <SheetHeader className="flex flex-row items-center justify-between p-4 pb-3">
+    <Drawer open direction="right">
+      <DrawerContent className="flex flex-col gap-0 p-0 sm:max-w-md">
+        <DrawerHeader className="flex flex-row items-center justify-between p-4 pb-3">
           <div className="min-w-0 flex-1 space-y-2">
             <div className="font-heading text-base leading-snug font-medium">
               <Skeleton className="h-5 w-40" />
@@ -50,11 +48,14 @@ export const Route = createFileRoute("/storage/$bucketId/$")({
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <Skeleton className="size-8 rounded-md" />
-            <SheetClose render={<Button variant="ghost" size="icon-sm" />}>
-              <span className="sr-only">Close</span>
-            </SheetClose>
+            <DrawerClose asChild>
+              <Button variant="ghost" size="icon-sm">
+                <XIcon className="size-4" />
+                <span className="sr-only">Close</span>
+              </Button>
+            </DrawerClose>
           </div>
-        </SheetHeader>
+        </DrawerHeader>
         <Separator />
         <div className="flex max-h-72 min-h-48 items-center justify-center bg-muted/30 p-4">
           <Skeleton className="h-48 w-full max-w-xs rounded-md" />
@@ -68,8 +69,8 @@ export const Route = createFileRoute("/storage/$bucketId/$")({
             </div>
           ))}
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   ),
   component: RouteComponent,
 })
@@ -85,7 +86,7 @@ function RouteComponent() {
   }
 
   return (
-    <FilePreviewSheet
+    <FilePreviewDrawer
       open
       onOpenChange={(open) => {
         if (!open) handleClose()

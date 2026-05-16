@@ -6,12 +6,12 @@ import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
 import type {
   Relationship,
   ResourceDataSchema,
@@ -27,23 +27,25 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import { useIsMobile } from "#/hooks/use-mobile"
 import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
 } from "#/lib/supabase/data/resource"
+import { cn } from "#/lib/utils"
 
 import { foreignTableColumns } from "./foreign-table-columns"
 
-type ForeignTableSheetProps = React.ComponentPropsWithRef<typeof Sheet> & {
+type ForeignTableDrawerProps = React.ComponentPropsWithRef<typeof Drawer> & {
   relationship: Relationship
   setRecord: (record: ResourceDataSchema) => void
 }
 
-export function ForeignTableSheet({
+export function ForeignTableDrawer({
   relationship,
   setRecord,
   ...props
-}: ForeignTableSheetProps) {
+}: ForeignTableDrawerProps) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 100,
@@ -51,6 +53,8 @@ export function ForeignTableSheet({
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const isMobile = useIsMobile()
+  const direction = isMobile ? "bottom" : "right"
 
   const sortCol = sorting[0]
 
@@ -103,16 +107,21 @@ export function ForeignTableSheet({
   })
 
   return (
-    <Sheet {...props}>
-      <SheetContent className="flex h-full w-full flex-col overflow-hidden sm:max-w-lg!">
-        <SheetHeader>
-          <SheetTitle>
+    <Drawer direction={direction} {...props}>
+      <DrawerContent
+        className={cn(
+          "flex h-full w-full flex-col overflow-hidden",
+          direction === "right" && "sm:max-w-lg!"
+        )}
+      >
+        <DrawerHeader>
+          <DrawerTitle>
             Select to reference from {relationship.target_table_name}
-          </SheetTitle>
-          <SheetDescription>
+          </DrawerTitle>
+          <DrawerDescription>
             Select a record from the table to create a reference.
-          </SheetDescription>
-        </SheetHeader>
+          </DrawerDescription>
+        </DrawerHeader>
         <div className="data-table-container px-4">
           {columnsSchema && !columnsSchema.length ? (
             <Empty>
@@ -149,7 +158,7 @@ export function ForeignTableSheet({
             </DataTable>
           )}
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   )
 }

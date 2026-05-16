@@ -5,14 +5,14 @@ import { CheckCircle, PlusCircle, Trash2, XCircle } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
 import { Badge } from "#/components/ui/badge"
-import { ScrollArea } from "#/components/ui/scroll-area"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "#/components/ui/sheet"
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "#/components/ui/drawer"
+import { ScrollArea } from "#/components/ui/scroll-area"
 import {
   Timeline,
   TimelineConnector,
@@ -24,7 +24,9 @@ import {
   TimelineTime,
   TimelineTitle,
 } from "#/components/ui/timeline"
+import { useIsMobile } from "#/hooks/use-mobile"
 import type { ResourceAuditLog } from "#/lib/supabase/data/resource"
+import { cn } from "#/lib/utils"
 
 import { ResourceAuditLogDetail, opVariant } from "./resource-audit-log-detail"
 
@@ -121,6 +123,8 @@ function AuditTimelineItem({
 
 export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
   const [selected, setSelected] = useState<ResourceAuditLog | null>(null)
+  const isMobile = useIsMobile()
+  const direction = isMobile ? "bottom" : "right"
 
   if (logs.length === 0) {
     return (
@@ -145,24 +149,30 @@ export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
         ))}
       </Timeline>
 
-      <Sheet
+      <Drawer
         open={selected !== null}
         onOpenChange={(open) => {
           if (!open) setSelected(null)
         }}
+        direction={direction}
       >
-        <SheetContent className="w-full sm:max-w-lg!">
-          <SheetHeader>
-            <SheetTitle>Audit Log Entry</SheetTitle>
-            <SheetDescription>
+        <DrawerContent
+          className={cn(
+            "gap-0",
+            direction === "right" && "h-full w-full sm:max-w-lg!"
+          )}
+        >
+          <DrawerHeader>
+            <DrawerTitle>Audit Log Entry</DrawerTitle>
+            <DrawerDescription>
               {selected && format(new Date(selected.created_at), "PPpp")}
-            </SheetDescription>
-          </SheetHeader>
+            </DrawerDescription>
+          </DrawerHeader>
           <ScrollArea className="h-[calc(100vh-5rem)] px-4 pb-4">
             {selected && <ResourceAuditLogDetail data={selected} />}
           </ScrollArea>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }

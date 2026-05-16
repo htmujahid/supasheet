@@ -9,22 +9,24 @@ import {
 } from "lucide-react"
 
 import { Button } from "#/components/ui/button"
-import { Separator } from "#/components/ui/separator"
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "#/components/ui/sheet"
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "#/components/ui/drawer"
+import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
+import { useIsMobile } from "#/hooks/use-mobile"
 import { createSignedUrl, getPublicUrl } from "#/lib/supabase/data/storage"
 import type { FileObject } from "#/lib/supabase/data/storage"
+import { cn } from "#/lib/utils"
 
 import { FileActionsMenu } from "./file-actions-menu"
 
-interface FilePreviewSheetProps {
+interface FilePreviewDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   bucketId: string
@@ -49,7 +51,7 @@ function formatDate(value: string | undefined) {
   }).format(new Date(value))
 }
 
-export function FilePreviewSheet({
+export function FilePreviewDrawer({
   open,
   onOpenChange,
   bucketId,
@@ -57,7 +59,10 @@ export function FilePreviewSheet({
   file,
   filePath,
   onSuccess,
-}: FilePreviewSheetProps) {
+}: FilePreviewDrawerProps) {
+  const isMobile = useIsMobile()
+  const direction = isMobile ? "bottom" : "right"
+
   const mime: string = file?.metadata?.mimetype ?? ""
   const isImage = mime.startsWith("image/")
   const isVideo = mime.startsWith("video/")
@@ -89,19 +94,20 @@ export function FilePreviewSheet({
   )
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        showCloseButton={false}
-        className="flex flex-col gap-0 p-0 sm:max-w-md"
+    <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
+      <DrawerContent
+        className={cn(
+          "flex flex-col gap-0 p-0",
+          direction === "right" && "sm:max-w-md"
+        )}
       >
-        <SheetHeader className="flex flex-row items-center justify-between p-4 pb-3">
+        <DrawerHeader className="flex flex-row items-center justify-between p-4 pb-3">
           <div className="min-w-0 flex-1">
-            <SheetTitle className="truncate text-sm">{fileName}</SheetTitle>
+            <DrawerTitle className="truncate text-sm">{fileName}</DrawerTitle>
             {mime && (
-              <SheetDescription className="truncate text-xs">
+              <DrawerDescription className="truncate text-xs">
                 {mime}
-              </SheetDescription>
+              </DrawerDescription>
             )}
           </div>
           <div className="flex shrink-0 items-center gap-1">
@@ -114,12 +120,14 @@ export function FilePreviewSheet({
                 onNavigate={onSuccess}
               />
             )}
-            <SheetClose render={<Button variant="ghost" size="icon-sm" />}>
-              <XIcon className="size-4" />
-              <span className="sr-only">Close</span>
-            </SheetClose>
+            <DrawerClose asChild>
+              <Button variant="ghost" size="icon-sm">
+                <XIcon className="size-4" />
+                <span className="sr-only">Close</span>
+              </Button>
+            </DrawerClose>
           </div>
-        </SheetHeader>
+        </DrawerHeader>
 
         <Separator />
 
@@ -172,7 +180,7 @@ export function FilePreviewSheet({
             )}
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   )
 }

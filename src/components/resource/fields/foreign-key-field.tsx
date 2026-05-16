@@ -6,7 +6,7 @@ import { Input } from "#/components/ui/input"
 import type { Relationship } from "#/lib/database-meta.types"
 import type { FieldProps } from "#/types/fields"
 
-import { ForeignTableSheet } from "../foreign-table"
+import { ForeignTableDrawer } from "../foreign-table"
 import { useFieldContext } from "../form-hook"
 import { FieldOptionDropdown } from "./field-option-dropdown"
 
@@ -47,7 +47,7 @@ export function ForeignKeyField({
         </DropdownMenuItem>
       </FieldOptionDropdown>
       {open && (
-        <ForeignTableSheet
+        <ForeignTableDrawer
           open={open}
           onOpenChange={setOpen}
           relationship={relationship}

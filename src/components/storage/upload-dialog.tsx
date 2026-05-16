@@ -19,20 +19,20 @@ import { toast } from "sonner"
 import { Badge } from "#/components/ui/badge"
 import { Button } from "#/components/ui/button"
 import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "#/components/ui/drawer"
+import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "#/components/ui/sheet"
 import {
   Table,
   TableBody,
@@ -41,8 +41,9 @@ import {
   TableHeader,
   TableRow,
 } from "#/components/ui/table"
-import { formatBytes, useFileUpload } from "#/hooks/use-file-upload"
+import { useFileUpload, formatBytes } from "#/hooks/use-file-upload"
 import type { FileWithPreview } from "#/hooks/use-file-upload"
+import { useIsMobile } from "#/hooks/use-mobile"
 import {
   sanitizeStorageKey,
   storageUploadMutationOptions,
@@ -86,6 +87,8 @@ function getFileTypeLabel(file: File) {
 export function UploadDialog({ bucketId, path, onSuccess }: UploadDialogProps) {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
+  const isMobile = useIsMobile()
+  const direction = isMobile ? "bottom" : "right"
 
   const { mutateAsync: upload, isPending } = useMutation(
     storageUploadMutationOptions
@@ -105,7 +108,7 @@ export function UploadDialog({ bucketId, path, onSuccess }: UploadDialogProps) {
     },
   ] = useFileUpload({ multiple: true })
 
-  // Reset files when sheet closes
+  // Reset files when drawer closes
   useEffect(() => {
     if (!open) clearFiles()
   }, [open])
@@ -134,19 +137,22 @@ export function UploadDialog({ bucketId, path, onSuccess }: UploadDialogProps) {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        render={
-          <Button size="sm" variant="outline">
-            <UploadIcon className="mr-1.5 size-3.5" />
-            Upload
-          </Button>
-        }
-      />
-      <SheetContent side="right" className="flex flex-col sm:max-w-lg">
-        <SheetHeader>
-          <SheetTitle>Upload Files</SheetTitle>
-        </SheetHeader>
+    <Drawer open={open} onOpenChange={setOpen} direction={direction}>
+      <DrawerTrigger asChild>
+        <Button size="sm" variant="outline">
+          <UploadIcon className="mr-1.5 size-3.5" />
+          Upload
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent
+        className={cn(
+          "flex flex-col",
+          direction === "right" && "h-full w-full sm:max-w-lg!"
+        )}
+      >
+        <DrawerHeader>
+          <DrawerTitle>Upload Files</DrawerTitle>
+        </DrawerHeader>
 
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-2">
           <input {...getInputProps()} className="sr-only" />
@@ -293,15 +299,15 @@ export function UploadDialog({ bucketId, path, onSuccess }: UploadDialogProps) {
           )}
         </div>
 
-        <SheetFooter>
+        <DrawerFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
           <Button onClick={handleUpload} disabled={!files.length || isPending}>
             {isPending ? "Uploading…" : "Upload"}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
