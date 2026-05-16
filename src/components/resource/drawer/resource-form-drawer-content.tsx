@@ -3,9 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
+import { DrawerFooter } from "#/components/ui/drawer"
 import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
-import { SheetFooter } from "#/components/ui/sheet"
 import type {
   ColumnSchema,
   PrimaryKey,
@@ -29,7 +29,7 @@ import {
 
 type Mode = "create" | "update"
 
-export function ResourceFormSheetForm({
+export function ResourceFormDrawerContent({
   mode,
   tableSchema,
   columnsSchema,
@@ -161,7 +161,7 @@ export function ResourceFormSheetForm({
           />
         ))}
       </div>
-      <SheetFooter className="flex-row justify-end border-t">
+      <DrawerFooter className="flex-row justify-end border-t">
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -177,7 +177,7 @@ export function ResourceFormSheetForm({
             </Button>
           )}
         </form.Subscribe>
-      </SheetFooter>
+      </DrawerFooter>
     </form>
   )
 }

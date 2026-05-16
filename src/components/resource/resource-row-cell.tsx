@@ -17,7 +17,7 @@ import { cn } from "#/lib/utils"
 
 import { AllCells } from "./cells/all-cells"
 import { ArrayCell } from "./cells/array-cell"
-import { DetailRecordTrigger } from "./sheet/detail-record-trigger"
+import { DetailRecordTrigger } from "./drawer/detail-record-trigger"
 
 export const ResourceRowCell = memo(function ({
   row,

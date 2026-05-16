@@ -1,22 +1,22 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
 import {
   columnsSchemaQueryOptions,
+  singleResourceDataQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-import { ResourceFormSheetForm } from "./resource-form-sheet-form"
+import { ResourceFormDrawerContent } from "./resource-form-drawer-content"
 
-export function ResourceFormSheetCreateBody({
+export function ResourceFormDrawerUpdateBody({
   schema,
   resource,
-  defaults,
+  pk,
   onClose,
 }: {
   schema: string
   resource: string
-  defaults?: Record<string, string>
+  pk: Record<string, unknown>
   onClose: () => void
 }) {
   const { data: tableSchema } = useSuspenseQuery(
@@ -25,22 +25,24 @@ export function ResourceFormSheetCreateBody({
   const { data: columnsSchema } = useSuspenseQuery(
     columnsSchemaQueryOptions(schema as never, resource as never)
   )
+  const { data: record } = useSuspenseQuery(
+    singleResourceDataQueryOptions(schema as never, resource as never, pk)
+  )
 
-  if (!tableSchema || !columnsSchema?.length) {
+  if (!tableSchema || !columnsSchema?.length || !record) {
     return (
       <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
-        Schema unavailable.
+        Record unavailable.
       </div>
     )
   }
 
   return (
-    <ResourceFormSheetForm
-      mode="create"
-      tableSchema={tableSchema as TableSchema}
-      columnsSchema={columnsSchema as ColumnSchema[]}
-      record={null}
-      defaults={defaults}
+    <ResourceFormDrawerContent
+      mode="update"
+      tableSchema={tableSchema}
+      columnsSchema={columnsSchema}
+      record={record}
       onClose={onClose}
     />
   )

@@ -4,8 +4,8 @@ import { Link, getRouteApi } from "@tanstack/react-router"
 
 import { buttonVariants } from "#/components/ui/button"
 import type { Button } from "#/components/ui/button"
+import { useDrawerHref } from "#/hooks/use-drawer-href"
 import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
-import { useSheetHref } from "#/hooks/use-sheet-href"
 import { cn } from "#/lib/utils"
 
 type ButtonProps = React.ComponentProps<typeof Button>
@@ -42,19 +42,19 @@ export function EditRecordTrigger({
   const resource = resourceOverride ?? params.resource
 
   const inlineForm = useInlineFormFlag(schema, resource)
-  const sheetLink = useSheetHref({
+  const drawerLink = useDrawerHref({
     mode: "update",
     pk,
     schema: schemaOverride,
     resource: resourceOverride,
   })
 
-  if ((inlineForm || schemaOverride) && sheetLink) {
+  if ((inlineForm || schemaOverride) && drawerLink) {
     return (
       <Link
         className={cn(buttonVariants({ size, variant }), className)}
-        to={sheetLink.to as never}
-        search={sheetLink.search as never}
+        to={drawerLink.to as never}
+        search={drawerLink.search as never}
         onClick={(e: MouseEvent) => {
           e.stopPropagation()
         }}

@@ -2,8 +2,8 @@ import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
 import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
 
-import { DetailRecordTrigger } from "#/components/resource/sheet/detail-record-trigger"
-import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
+import { DetailRecordTrigger } from "#/components/resource/drawer/detail-record-trigger"
+import { EditRecordTrigger } from "#/components/resource/drawer/edit-record-trigger"
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 import type {

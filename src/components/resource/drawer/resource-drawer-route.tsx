@@ -1,15 +1,15 @@
 import z from "zod"
 
-import { ResourceDetailSheet } from "./resource-detail-sheet"
-import { ResourceFormSheet } from "./resource-form-sheet"
-import { ResourceImportSheet } from "./resource-import-sheet"
+import { ResourceDetailDrawer } from "./resource-detail-drawer"
+import { ResourceFormDrawer } from "./resource-form-drawer"
+import { ResourceImportDrawer } from "./resource-import-drawer"
 
 const overrideShape = {
   schema: z.string().optional(),
   resource: z.string().optional(),
 }
 
-export const sheetSearchSchema = z.discriminatedUnion("mode", [
+export const drawerSearchSchema = z.discriminatedUnion("mode", [
   z.object({
     ...overrideShape,
     mode: z.literal("create"),
@@ -28,16 +28,16 @@ export const sheetSearchSchema = z.discriminatedUnion("mode", [
   z.object({ ...overrideShape, mode: z.literal("import") }),
 ])
 
-export type SheetSearch = z.infer<typeof sheetSearchSchema>
+export type DrawerSearch = z.infer<typeof drawerSearchSchema>
 
 type Props = {
   schema: string
   resource: string
-  search: SheetSearch
+  search: DrawerSearch
   onClose: () => void
 }
 
-export function ResourceSheetRoute({
+export function ResourceDrawerRoute({
   schema,
   resource,
   search,
@@ -53,7 +53,7 @@ export function ResourceSheetRoute({
   switch (search.mode) {
     case "create":
       return (
-        <ResourceFormSheet
+        <ResourceFormDrawer
           mode="create"
           schema={targetSchema}
           resource={targetResource}
@@ -64,7 +64,7 @@ export function ResourceSheetRoute({
       )
     case "update":
       return (
-        <ResourceFormSheet
+        <ResourceFormDrawer
           mode="update"
           schema={targetSchema}
           resource={targetResource}
@@ -75,7 +75,7 @@ export function ResourceSheetRoute({
       )
     case "detail":
       return (
-        <ResourceDetailSheet
+        <ResourceDetailDrawer
           schema={targetSchema}
           resource={targetResource}
           pk={search.pk}
@@ -85,7 +85,7 @@ export function ResourceSheetRoute({
       )
     case "import":
       return (
-        <ResourceImportSheet
+        <ResourceImportDrawer
           schema={targetSchema}
           resource={targetResource}
           open

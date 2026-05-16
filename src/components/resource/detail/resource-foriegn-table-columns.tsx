@@ -10,12 +10,12 @@ import { isTableSchema } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
 import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
 
-import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
+import { EditRecordTrigger } from "#/components/resource/drawer/edit-record-trigger"
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 
+import { DetailRecordTrigger } from "../drawer/detail-record-trigger"
 import { ResourceRowCell } from "../resource-row-cell"
-import { DetailRecordTrigger } from "../sheet/detail-record-trigger"
 
 export function getResourceForeignTableColumns({
   columnsSchema,

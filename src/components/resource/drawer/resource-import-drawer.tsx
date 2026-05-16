@@ -8,20 +8,27 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query"
 
-import { AlertCircleIcon, CheckCircle2Icon, UploadIcon } from "lucide-react"
+import {
+  AlertCircleIcon,
+  CheckCircle2Icon,
+  UploadIcon,
+  XIcon,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "#/components/ui/drawer"
 import { Progress } from "#/components/ui/progress"
 import { ScrollArea } from "#/components/ui/scroll-area"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "#/components/ui/sheet"
+import { useIsMobile } from "#/hooks/use-mobile"
 import {
   IMPORT_BATCH_SIZE,
   buildColumnMap,
@@ -34,36 +41,56 @@ import {
   columnsSchemaQueryOptions,
   insertBulkResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
+import { cn } from "#/lib/utils"
 
-import { ResourceFormSheetSkeleton } from "./resource-form-sheet-skeleton"
+import { ResourceFormDrawerSkeleton } from "./resource-form-drawer-skeleton"
 
-interface ResourceImportSheetProps {
+interface ResourceImportDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   schema: string
   resource: string
 }
 
-export function ResourceImportSheet(props: ResourceImportSheetProps) {
+export function ResourceImportDrawer(props: ResourceImportDrawerProps) {
+  const isMobile = useIsMobile()
+  const direction = isMobile ? "bottom" : "right"
+
   return (
-    <Sheet open={props.open} onOpenChange={props.onOpenChange}>
-      <SheetContent
-        side="right"
-        className="flex h-full w-full flex-col gap-0 sm:max-w-lg!"
+    <Drawer
+      open={props.open}
+      onOpenChange={props.onOpenChange}
+      direction={direction}
+    >
+      <DrawerContent
+        className={cn(
+          "gap-0",
+          direction === "right" && "h-full w-full sm:max-w-lg!"
+        )}
       >
-        <React.Suspense fallback={<ResourceFormSheetSkeleton />}>
-          <ResourceImportSheetBody {...props} />
+        <React.Suspense fallback={<ResourceFormDrawerSkeleton />}>
+          <ResourceImportDrawerBody {...props} />
         </React.Suspense>
-      </SheetContent>
-    </Sheet>
+        <DrawerClose asChild>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="absolute top-3 right-3"
+            aria-label="Close"
+          >
+            <XIcon />
+          </Button>
+        </DrawerClose>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
-function ResourceImportSheetBody({
+function ResourceImportDrawerBody({
   onOpenChange,
   schema,
   resource,
-}: ResourceImportSheetProps) {
+}: ResourceImportDrawerProps) {
   const queryClient = useQueryClient()
   const { data: columnsSchema = [] } = useSuspenseQuery(
     columnsSchemaQueryOptions(schema as never, resource as never)
@@ -180,14 +207,14 @@ function ResourceImportSheetBody({
 
   return (
     <>
-      <SheetHeader className="border-b p-4">
-        <SheetTitle>Import CSV</SheetTitle>
-        <SheetDescription>
+      <DrawerHeader className="border-b p-4 pr-10">
+        <DrawerTitle>Import CSV</DrawerTitle>
+        <DrawerDescription>
           Upload a CSV file to import records into{" "}
           <strong className="text-foreground">{resource}</strong>. Column
           headers must match table column names.
-        </SheetDescription>
-      </SheetHeader>
+        </DrawerDescription>
+      </DrawerHeader>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
         {!parsed ? (
@@ -346,7 +373,7 @@ function ResourceImportSheetBody({
         )}
       </div>
 
-      <SheetFooter className="border-t">
+      <DrawerFooter className="border-t">
         {!parsed && (
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
@@ -383,7 +410,7 @@ function ResourceImportSheetBody({
             <Button onClick={() => handleOpenChange(false)}>Done</Button>
           </>
         )}
-      </SheetFooter>
+      </DrawerFooter>
     </>
   )
 }

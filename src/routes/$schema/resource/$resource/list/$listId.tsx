@@ -22,10 +22,10 @@ import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { NewRecordTrigger } from "#/components/resource/drawer/new-record-trigger"
 import { ResourceList } from "#/components/resource/list/resource-list"
 import type { ListView } from "#/components/resource/list/resource-list"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import {
   Empty,

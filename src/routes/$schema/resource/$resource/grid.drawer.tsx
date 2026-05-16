@@ -1,13 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import {
-  ResourceSheetRoute,
-  sheetSearchSchema,
-} from "#/components/resource/sheet/resource-sheet-route"
+  ResourceDrawerRoute,
+  drawerSearchSchema,
+} from "#/components/resource/drawer/resource-drawer-route"
 
-export const Route = createFileRoute("/$schema/resource/$resource/table/sheet")(
+export const Route = createFileRoute("/$schema/resource/$resource/grid/drawer")(
   {
-    validateSearch: sheetSearchSchema,
+    validateSearch: drawerSearchSchema,
     component: RouteComponent,
   }
 )
@@ -18,13 +18,13 @@ function RouteComponent() {
   const navigate = useNavigate()
 
   return (
-    <ResourceSheetRoute
+    <ResourceDrawerRoute
       schema={schema}
       resource={resource}
       search={search}
       onClose={() =>
         navigate({
-          to: "/$schema/resource/$resource/table",
+          to: "/$schema/resource/$resource/grid",
           params: { schema, resource },
         })
       }

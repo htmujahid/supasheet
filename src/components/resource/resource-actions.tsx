@@ -13,7 +13,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
+import { NewRecordTrigger } from "#/components/resource/drawer/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import { ButtonGroup } from "#/components/ui/button-group"
 import {
@@ -24,7 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
-import { useSheetHref } from "#/hooks/use-sheet-href"
+import { useDrawerHref } from "#/hooks/use-drawer-href"
 import type { ColumnSchema } from "#/lib/database-meta.types"
 
 interface RecordActionsProps {
@@ -57,7 +57,7 @@ export function ResourceActions({
 }: RecordActionsProps) {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const importLink = useSheetHref({ mode: "import" })
+  const importLink = useDrawerHref({ mode: "import" })
 
   function handleRefresh() {
     queryClient.invalidateQueries({
