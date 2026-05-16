@@ -41,7 +41,7 @@ import {
   TableHeader,
   TableRow,
 } from "#/components/ui/table"
-import { useFileUpload, formatBytes } from "#/hooks/use-file-upload"
+import { formatBytes, useFileUpload } from "#/hooks/use-file-upload"
 import type { FileWithPreview } from "#/hooks/use-file-upload"
 import { useIsMobile } from "#/hooks/use-mobile"
 import {
