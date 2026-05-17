@@ -5,13 +5,6 @@ import { useQuery } from "@tanstack/react-query"
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer"
 import type {
   Relationship,
   ResourceDataSchema,
@@ -27,34 +20,37 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
-import { useIsMobile } from "#/hooks/use-mobile"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "#/components/ui/dialog"
 import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
 } from "#/lib/supabase/data/resource"
-import { cn } from "#/lib/utils"
 
 import { foreignTableColumns } from "./foreign-table-columns"
 
-type ForeignTableDrawerProps = React.ComponentPropsWithRef<typeof Drawer> & {
+type ForeignTableDialogProps = React.ComponentPropsWithRef<typeof Dialog> & {
   relationship: Relationship
   setRecord: (record: ResourceDataSchema) => void
 }
 
-export function ForeignTableDrawer({
+export function ForeignTableDialog({
   relationship,
   setRecord,
   ...props
-}: ForeignTableDrawerProps) {
+}: ForeignTableDialogProps) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 100,
+    pageSize: 10,
   })
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const isMobile = useIsMobile()
-  const direction = isMobile ? "bottom" : "right"
 
   const sortCol = sorting[0]
 
@@ -107,58 +103,53 @@ export function ForeignTableDrawer({
   })
 
   return (
-    <Drawer direction={direction} {...props}>
-      <DrawerContent
-        className={cn(
-          "flex h-full w-full flex-col overflow-hidden",
-          direction === "right" && "sm:max-w-lg!"
-        )}
-      >
-        <DrawerHeader>
-          <DrawerTitle>
+    <Dialog {...props}>
+      <DialogContent className="sm:max-w-4xl">
+        <DialogHeader>
+          <DialogTitle>
             Select to reference from {relationship.target_table_name}
-          </DrawerTitle>
-          <DrawerDescription>
+          </DialogTitle>
+          <DialogDescription>
             Select a record from the table to create a reference.
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="data-table-container px-4">
-          {columnsSchema && !columnsSchema.length ? (
-            <Empty>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                </EmptyMedia>
-                <EmptyTitle>Access Denied</EmptyTitle>
-              </EmptyHeader>
-              <EmptyContent>
-                <EmptyDescription>
-                  You don&apos;t have permission to access this table.
-                </EmptyDescription>
-              </EmptyContent>
-            </Empty>
-          ) : (
+          </DialogDescription>
+        </DialogHeader>
+        {columnsSchema && !columnsSchema.length ? (
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </EmptyMedia>
+              <EmptyTitle>Access Denied</EmptyTitle>
+            </EmptyHeader>
+            <EmptyContent>
+              <EmptyDescription>
+                You don&apos;t have permission to access this table.
+              </EmptyDescription>
+            </EmptyContent>
+          </Empty>
+        ) : (
+          <div className="flex max-h-[60vh] flex-col overflow-hidden">
             <DataTable
               table={table}
-              className="[&>div:nth-child(2)]:h-[calc(100svh-174px)]"
+              className="min-h-0 flex-1 [&>div:nth-child(2)]:min-h-0 [&>div:nth-child(2)]:flex-1 [&>div:nth-child(2)]:overflow-x-hidden [&>div:nth-child(2)]:overflow-y-auto"
             >
               <DataTableToolbar table={table} />
             </DataTable>
-          )}
-        </div>
-      </DrawerContent>
-    </Drawer>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }

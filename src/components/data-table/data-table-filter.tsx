@@ -5,7 +5,6 @@ import type { Column, ColumnFiltersState, Table } from "@tanstack/react-table"
 import { format } from "date-fns"
 import {
   CalendarIcon,
-  CheckIcon,
   ChevronsUpDownIcon,
   ListFilterIcon,
   Trash2Icon,
@@ -233,18 +232,13 @@ function DataTableFilterItem<TData>({
                   <CommandItem
                     key={col.id}
                     value={col.id}
+                    data-checked={col.id === filter.id}
                     onSelect={(value) => {
                       onFieldChange(value)
                       setFieldOpen(false)
                     }}
                   >
                     <span className="truncate">{col.columnDef.meta?.name}</span>
-                    <CheckIcon
-                      className={cn(
-                        "ml-auto size-4",
-                        col.id === filter.id ? "opacity-100" : "opacity-0"
-                      )}
-                    />
                   </CommandItem>
                 ))}
               </CommandGroup>
