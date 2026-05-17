@@ -63,7 +63,7 @@ export function getResourceForeignTableColumns({
                   onCheckedChange={(checked) => row.toggleSelected(!!checked)}
                   aria-label="Select row"
                 />
-                {!canUpdate ? (
+                {canUpdate ? (
                   <EditRecordTrigger
                     pk={pk}
                     primaryKeyNames={primaryKeyNames}
