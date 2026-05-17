@@ -265,7 +265,15 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
   defaultQuery?: TableMetadata["query"]
 ) =>
   queryOptions({
-    queryKey: ["supasheet", "resource-data", schema, resource, "single", pk],
+    queryKey: [
+      "supasheet",
+      "resource-data",
+      schema,
+      resource,
+      "single",
+      pk,
+      defaultQuery?.join ?? null,
+    ],
     queryFn: async () => {
       const joins =
         defaultQuery?.join?.map(

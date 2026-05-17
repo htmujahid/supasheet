@@ -6,13 +6,13 @@ import {
   CardTitle,
 } from "#/components/ui/card"
 import { Label } from "#/components/ui/label"
-import { Separator } from "#/components/ui/separator"
 import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
 import { getMetaFields, isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 
 import { AllCells } from "../cells/all-cells"
+import { getColumnFieldSpan } from "../resource-form-utils"
 
 export function ResourceMetadataView({
   resourceSchema,
@@ -40,26 +40,29 @@ export function ResourceMetadataView({
           Timestamps and other metadata information
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-0">
-        {metadataColumns.map((column, index) => {
+      <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
+        {metadataColumns.map((column) => {
           const value =
             singleResourceData?.[column.name as keyof typeof singleResourceData]
 
           const columnMetadata = getColumnMetadata(tableSchema, column)
+          const span = getColumnFieldSpan(column, tableSchema)
 
           return (
-            <div key={column.id}>
-              <div className="flex items-start gap-4 py-3">
-                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                  <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    {columnMetadata.icon} {formatTitle(columnMetadata.name)}
-                  </Label>
-                  <div className="text-sm text-muted-foreground">
-                    <AllCells columnMetadata={columnMetadata} value={value} />
-                  </div>
-                </div>
+            <div
+              key={column.id}
+              className={
+                span === 2
+                  ? "flex min-w-0 flex-col gap-1.5 md:col-span-2"
+                  : "flex min-w-0 flex-col gap-1.5"
+              }
+            >
+              <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+                {columnMetadata.icon} {formatTitle(columnMetadata.name)}
+              </Label>
+              <div className="text-sm text-muted-foreground">
+                <AllCells columnMetadata={columnMetadata} value={value} />
               </div>
-              {index < metadataColumns.length - 1 && <Separator />}
             </div>
           )
         })}

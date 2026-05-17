@@ -1,9 +1,11 @@
+import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
   FieldSection,
   FieldSectionFields,
   FormMode,
   PrimaryKey,
+  TableSchema,
 } from "#/lib/database-meta.types"
 
 export function isSkippedForUpdate(
@@ -86,6 +88,19 @@ export function buildCreatePayload(
     }
   }
   return payload
+}
+
+const FULL_WIDTH_VARIANTS = new Set(["rich_text", "long_text", "json"])
+
+export function getColumnFieldSpan(
+  col: ColumnSchema,
+  tableSchema: TableSchema | null
+): 1 | 2 {
+  if (col.format === "file") return 2
+  if (col.data_type === "ARRAY") return 2
+  const meta = getColumnMetadata(tableSchema, col)
+  if (FULL_WIDTH_VARIANTS.has(meta.variant)) return 2
+  return 1
 }
 
 export function getSectionFields(

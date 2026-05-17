@@ -31,7 +31,7 @@ import type {
 import { ResourceFormField } from "./fields/resource-form-field"
 import type { ResourceFormApi } from "./form-hook"
 import type { ResolvedFieldSection } from "./resource-form-utils"
-import { buildLayoutPlan } from "./resource-form-utils"
+import { buildLayoutPlan, getColumnFieldSpan } from "./resource-form-utils"
 
 type PrimaryKeyDisplay = { name: string; value: string }
 
@@ -140,37 +140,46 @@ export function ResourceFormLayout({
   // unmigrated tables don't change visually.
   if (!plan) {
     return (
-      <Card>
-        <CardHeader className="border-b">
-          <CardTitle>{headerTitle}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 py-4">
-          {primaryKeyDisplay?.map((pk) => (
-            <Field key={pk.name}>
-              <FieldLabel>{pk.name}</FieldLabel>
-              <Input
-                value={pk.value}
-                disabled
-                className="font-mono text-xs text-muted-foreground"
-              />
-            </Field>
-          ))}
-          {writableCols.map((col) => (
-            <ResourceFormField
-              key={col.id}
-              columnSchema={col}
-              tableSchema={tableSchema}
-              form={form}
-            />
-          ))}
-        </CardContent>
-        <CardFooter className="flex-wrap justify-end gap-2 border-t pt-4">
-          <Button type="button" variant="outline" onClick={handleCancel}>
-            Cancel
-          </Button>
-          {submitButtons}
-        </CardFooter>
-      </Card>
+      <div className="mx-auto w-full max-w-5xl">
+        <Card>
+          <CardHeader className="border-b">
+            <CardTitle>{headerTitle}</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
+            {primaryKeyDisplay?.map((pk) => (
+              <Field key={pk.name} className="md:col-span-2">
+                <FieldLabel>{pk.name}</FieldLabel>
+                <Input
+                  value={pk.value}
+                  disabled
+                  className="font-mono text-xs text-muted-foreground"
+                />
+              </Field>
+            ))}
+            {writableCols.map((col) => {
+              const span = getColumnFieldSpan(col, tableSchema)
+              return (
+                <div
+                  key={col.id}
+                  className={span === 2 ? "md:col-span-2" : undefined}
+                >
+                  <ResourceFormField
+                    columnSchema={col}
+                    tableSchema={tableSchema}
+                    form={form}
+                  />
+                </div>
+              )
+            })}
+          </CardContent>
+          <CardFooter className="flex-wrap justify-end gap-2 border-t pt-4">
+            <Button type="button" variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            {submitButtons}
+          </CardFooter>
+        </Card>
+      </div>
     )
   }
 
@@ -180,9 +189,9 @@ export function ResourceFormLayout({
         <CardHeader>
           <CardTitle>Identifiers</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 py-4">
+        <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
           {primaryKeyDisplay.map((pk) => (
-            <Field key={pk.name}>
+            <Field key={pk.name} className="md:col-span-2">
               <FieldLabel>{pk.name}</FieldLabel>
               <Input
                 value={pk.value}
@@ -195,42 +204,20 @@ export function ResourceFormLayout({
       </Card>
     ) : null
 
-  // Single section: narrow centered column (no empty right-hand column).
-  if (plan.sections.length === 1) {
-    return (
-      <div className="mx-auto w-full max-w-3xl space-y-4">
-        {pkCard}
+  return (
+    <div className="mx-auto w-full max-w-5xl space-y-4">
+      {pkCard}
+      {plan.sections.map((s) => (
         <SectionCard
-          section={plan.sections[0]}
+          key={s.id}
+          section={s}
           colByName={colByName}
           tableSchema={tableSchema}
           form={form}
         />
-        {footer}
-      </div>
-    )
-  }
-
-  // Multi-section: same CSS multi-column flow used by the view page.
-  return (
-    <>
-      <div className="columns-1 gap-4 lg:columns-2">
-        {pkCard ? (
-          <div className="mb-4 break-inside-avoid">{pkCard}</div>
-        ) : null}
-        {plan.sections.map((s) => (
-          <div key={s.id} className="mb-4 break-inside-avoid">
-            <SectionCard
-              section={s}
-              colByName={colByName}
-              tableSchema={tableSchema}
-              form={form}
-            />
-          </div>
-        ))}
-      </div>
+      ))}
       {footer}
-    </>
+    </div>
   )
 }
 
@@ -246,17 +233,22 @@ function SectionCard({
   form: ResourceFormApi
 }) {
   const body = (
-    <CardContent className="space-y-4 py-4">
+    <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
       {section.fields.map((name) => {
         const col = colByName.get(name)
         if (!col) return null
+        const span = getColumnFieldSpan(col, tableSchema)
         return (
-          <ResourceFormField
+          <div
             key={col.id}
-            columnSchema={col}
-            tableSchema={tableSchema}
-            form={form}
-          />
+            className={span === 2 ? "md:col-span-2" : undefined}
+          >
+            <ResourceFormField
+              columnSchema={col}
+              tableSchema={tableSchema}
+              form={form}
+            />
+          </div>
         )
       })}
     </CardContent>

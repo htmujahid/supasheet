@@ -71,11 +71,14 @@ import { Route as SchemaResourceResourceResourceIdUpdateRouteImport } from './ro
 import { Route as SchemaResourceResourceResourceIdDetailRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail'
 import { Route as SchemaResourceResourceResourceIdCommentRouteImport } from './routes/$schema/resource/$resource/$resourceId/comment'
 import { Route as SchemaResourceResourceResourceIdAuditRouteImport } from './routes/$schema/resource/$resource/$resourceId/audit'
+import { Route as SchemaResourceResourceResourceIdDetailIndexRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail.index'
 import { Route as SchemaResourceResourceListListIdSheetRouteImport } from './routes/$schema/resource/$resource/list/$listId.sheet'
 import { Route as SchemaResourceResourceKanbanKanbanIdSheetRouteImport } from './routes/$schema/resource/$resource/kanban/$kanbanId.sheet'
 import { Route as SchemaResourceResourceGalleryGalleryIdSheetRouteImport } from './routes/$schema/resource/$resource/gallery/$galleryId.sheet'
 import { Route as SchemaResourceResourceCalendarCalendarIdSheetRouteImport } from './routes/$schema/resource/$resource/calendar/$calendarId.sheet'
 import { Route as SchemaResourceResourceResourceIdDetailSheetRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail.sheet'
+import { Route as SchemaResourceResourceResourceIdDetailTabRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail.$tab'
+import { Route as SchemaResourceResourceResourceIdDetailTabSheetRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail.$tab.sheet'
 
 const InitRoute = InitRouteImport.update({
   id: '/init',
@@ -407,6 +410,12 @@ const SchemaResourceResourceResourceIdAuditRoute =
     path: '/$resourceId/audit',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
+const SchemaResourceResourceResourceIdDetailIndexRoute =
+  SchemaResourceResourceResourceIdDetailIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => SchemaResourceResourceResourceIdDetailRoute,
+  } as any)
 const SchemaResourceResourceListListIdSheetRoute =
   SchemaResourceResourceListListIdSheetRouteImport.update({
     id: '/sheet',
@@ -436,6 +445,18 @@ const SchemaResourceResourceResourceIdDetailSheetRoute =
     id: '/sheet',
     path: '/sheet',
     getParentRoute: () => SchemaResourceResourceResourceIdDetailRoute,
+  } as any)
+const SchemaResourceResourceResourceIdDetailTabRoute =
+  SchemaResourceResourceResourceIdDetailTabRouteImport.update({
+    id: '/$tab',
+    path: '/$tab',
+    getParentRoute: () => SchemaResourceResourceResourceIdDetailRoute,
+  } as any)
+const SchemaResourceResourceResourceIdDetailTabSheetRoute =
+  SchemaResourceResourceResourceIdDetailTabSheetRouteImport.update({
+    id: '/sheet',
+    path: '/sheet',
+    getParentRoute: () => SchemaResourceResourceResourceIdDetailTabRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -501,11 +522,14 @@ export interface FileRoutesByFullPath {
   '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
   '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRouteWithChildren
   '/$schema/resource/$resource/table/sheet': typeof SchemaResourceResourceTableSheetRoute
+  '/$schema/resource/$resource/$resourceId/detail/$tab': typeof SchemaResourceResourceResourceIdDetailTabRouteWithChildren
   '/$schema/resource/$resource/$resourceId/detail/sheet': typeof SchemaResourceResourceResourceIdDetailSheetRoute
   '/$schema/resource/$resource/calendar/$calendarId/sheet': typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
   '/$schema/resource/$resource/gallery/$galleryId/sheet': typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
   '/$schema/resource/$resource/kanban/$kanbanId/sheet': typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
   '/$schema/resource/$resource/list/$listId/sheet': typeof SchemaResourceResourceListListIdSheetRoute
+  '/$schema/resource/$resource/$resourceId/detail/': typeof SchemaResourceResourceResourceIdDetailIndexRoute
+  '/$schema/resource/$resource/$resourceId/detail/$tab/sheet': typeof SchemaResourceResourceResourceIdDetailTabSheetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -555,7 +579,6 @@ export interface FileRoutesByTo {
   '/core/users/$userId': typeof CoreUsersUserIdIndexRoute
   '/$schema/resource/$resource/$resourceId/audit': typeof SchemaResourceResourceResourceIdAuditRoute
   '/$schema/resource/$resource/$resourceId/comment': typeof SchemaResourceResourceResourceIdCommentRoute
-  '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailRouteWithChildren
   '/$schema/resource/$resource/$resourceId/update': typeof SchemaResourceResourceResourceIdUpdateRoute
   '/$schema/resource/$resource/calendar/$calendarId': typeof SchemaResourceResourceCalendarCalendarIdRouteWithChildren
   '/$schema/resource/$resource/gallery/$galleryId': typeof SchemaResourceResourceGalleryGalleryIdRouteWithChildren
@@ -563,11 +586,14 @@ export interface FileRoutesByTo {
   '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
   '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRouteWithChildren
   '/$schema/resource/$resource/table/sheet': typeof SchemaResourceResourceTableSheetRoute
+  '/$schema/resource/$resource/$resourceId/detail/$tab': typeof SchemaResourceResourceResourceIdDetailTabRouteWithChildren
   '/$schema/resource/$resource/$resourceId/detail/sheet': typeof SchemaResourceResourceResourceIdDetailSheetRoute
   '/$schema/resource/$resource/calendar/$calendarId/sheet': typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
   '/$schema/resource/$resource/gallery/$galleryId/sheet': typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
   '/$schema/resource/$resource/kanban/$kanbanId/sheet': typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
   '/$schema/resource/$resource/list/$listId/sheet': typeof SchemaResourceResourceListListIdSheetRoute
+  '/$schema/resource/$resource/$resourceId/detail': typeof SchemaResourceResourceResourceIdDetailIndexRoute
+  '/$schema/resource/$resource/$resourceId/detail/$tab/sheet': typeof SchemaResourceResourceResourceIdDetailTabSheetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -633,11 +659,14 @@ export interface FileRoutesById {
   '/$schema/resource/$resource/kanban/$kanbanId': typeof SchemaResourceResourceKanbanKanbanIdRouteWithChildren
   '/$schema/resource/$resource/list/$listId': typeof SchemaResourceResourceListListIdRouteWithChildren
   '/$schema/resource/$resource/table/sheet': typeof SchemaResourceResourceTableSheetRoute
+  '/$schema/resource/$resource/$resourceId/detail/$tab': typeof SchemaResourceResourceResourceIdDetailTabRouteWithChildren
   '/$schema/resource/$resource/$resourceId/detail/sheet': typeof SchemaResourceResourceResourceIdDetailSheetRoute
   '/$schema/resource/$resource/calendar/$calendarId/sheet': typeof SchemaResourceResourceCalendarCalendarIdSheetRoute
   '/$schema/resource/$resource/gallery/$galleryId/sheet': typeof SchemaResourceResourceGalleryGalleryIdSheetRoute
   '/$schema/resource/$resource/kanban/$kanbanId/sheet': typeof SchemaResourceResourceKanbanKanbanIdSheetRoute
   '/$schema/resource/$resource/list/$listId/sheet': typeof SchemaResourceResourceListListIdSheetRoute
+  '/$schema/resource/$resource/$resourceId/detail/': typeof SchemaResourceResourceResourceIdDetailIndexRoute
+  '/$schema/resource/$resource/$resourceId/detail/$tab/sheet': typeof SchemaResourceResourceResourceIdDetailTabSheetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -704,11 +733,14 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/kanban/$kanbanId'
     | '/$schema/resource/$resource/list/$listId'
     | '/$schema/resource/$resource/table/sheet'
+    | '/$schema/resource/$resource/$resourceId/detail/$tab'
     | '/$schema/resource/$resource/$resourceId/detail/sheet'
     | '/$schema/resource/$resource/calendar/$calendarId/sheet'
     | '/$schema/resource/$resource/gallery/$galleryId/sheet'
     | '/$schema/resource/$resource/kanban/$kanbanId/sheet'
     | '/$schema/resource/$resource/list/$listId/sheet'
+    | '/$schema/resource/$resource/$resourceId/detail/'
+    | '/$schema/resource/$resource/$resourceId/detail/$tab/sheet'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -758,7 +790,6 @@ export interface FileRouteTypes {
     | '/core/users/$userId'
     | '/$schema/resource/$resource/$resourceId/audit'
     | '/$schema/resource/$resource/$resourceId/comment'
-    | '/$schema/resource/$resource/$resourceId/detail'
     | '/$schema/resource/$resource/$resourceId/update'
     | '/$schema/resource/$resource/calendar/$calendarId'
     | '/$schema/resource/$resource/gallery/$galleryId'
@@ -766,11 +797,14 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/kanban/$kanbanId'
     | '/$schema/resource/$resource/list/$listId'
     | '/$schema/resource/$resource/table/sheet'
+    | '/$schema/resource/$resource/$resourceId/detail/$tab'
     | '/$schema/resource/$resource/$resourceId/detail/sheet'
     | '/$schema/resource/$resource/calendar/$calendarId/sheet'
     | '/$schema/resource/$resource/gallery/$galleryId/sheet'
     | '/$schema/resource/$resource/kanban/$kanbanId/sheet'
     | '/$schema/resource/$resource/list/$listId/sheet'
+    | '/$schema/resource/$resource/$resourceId/detail'
+    | '/$schema/resource/$resource/$resourceId/detail/$tab/sheet'
   id:
     | '__root__'
     | '/'
@@ -835,11 +869,14 @@ export interface FileRouteTypes {
     | '/$schema/resource/$resource/kanban/$kanbanId'
     | '/$schema/resource/$resource/list/$listId'
     | '/$schema/resource/$resource/table/sheet'
+    | '/$schema/resource/$resource/$resourceId/detail/$tab'
     | '/$schema/resource/$resource/$resourceId/detail/sheet'
     | '/$schema/resource/$resource/calendar/$calendarId/sheet'
     | '/$schema/resource/$resource/gallery/$galleryId/sheet'
     | '/$schema/resource/$resource/kanban/$kanbanId/sheet'
     | '/$schema/resource/$resource/list/$listId/sheet'
+    | '/$schema/resource/$resource/$resourceId/detail/'
+    | '/$schema/resource/$resource/$resourceId/detail/$tab/sheet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1289,6 +1326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceResourceIdAuditRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/$resourceId/detail/': {
+      id: '/$schema/resource/$resource/$resourceId/detail/'
+      path: '/'
+      fullPath: '/$schema/resource/$resource/$resourceId/detail/'
+      preLoaderRoute: typeof SchemaResourceResourceResourceIdDetailIndexRouteImport
+      parentRoute: typeof SchemaResourceResourceResourceIdDetailRoute
+    }
     '/$schema/resource/$resource/list/$listId/sheet': {
       id: '/$schema/resource/$resource/list/$listId/sheet'
       path: '/sheet'
@@ -1324,6 +1368,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceResourceIdDetailSheetRouteImport
       parentRoute: typeof SchemaResourceResourceResourceIdDetailRoute
     }
+    '/$schema/resource/$resource/$resourceId/detail/$tab': {
+      id: '/$schema/resource/$resource/$resourceId/detail/$tab'
+      path: '/$tab'
+      fullPath: '/$schema/resource/$resource/$resourceId/detail/$tab'
+      preLoaderRoute: typeof SchemaResourceResourceResourceIdDetailTabRouteImport
+      parentRoute: typeof SchemaResourceResourceResourceIdDetailRoute
+    }
+    '/$schema/resource/$resource/$resourceId/detail/$tab/sheet': {
+      id: '/$schema/resource/$resource/$resourceId/detail/$tab/sheet'
+      path: '/sheet'
+      fullPath: '/$schema/resource/$resource/$resourceId/detail/$tab/sheet'
+      preLoaderRoute: typeof SchemaResourceResourceResourceIdDetailTabSheetRouteImport
+      parentRoute: typeof SchemaResourceResourceResourceIdDetailTabRoute
+    }
   }
 }
 
@@ -1356,14 +1414,35 @@ const SchemaResourceResourceTableRouteWithChildren =
     SchemaResourceResourceTableRouteChildren,
   )
 
+interface SchemaResourceResourceResourceIdDetailTabRouteChildren {
+  SchemaResourceResourceResourceIdDetailTabSheetRoute: typeof SchemaResourceResourceResourceIdDetailTabSheetRoute
+}
+
+const SchemaResourceResourceResourceIdDetailTabRouteChildren: SchemaResourceResourceResourceIdDetailTabRouteChildren =
+  {
+    SchemaResourceResourceResourceIdDetailTabSheetRoute:
+      SchemaResourceResourceResourceIdDetailTabSheetRoute,
+  }
+
+const SchemaResourceResourceResourceIdDetailTabRouteWithChildren =
+  SchemaResourceResourceResourceIdDetailTabRoute._addFileChildren(
+    SchemaResourceResourceResourceIdDetailTabRouteChildren,
+  )
+
 interface SchemaResourceResourceResourceIdDetailRouteChildren {
+  SchemaResourceResourceResourceIdDetailTabRoute: typeof SchemaResourceResourceResourceIdDetailTabRouteWithChildren
   SchemaResourceResourceResourceIdDetailSheetRoute: typeof SchemaResourceResourceResourceIdDetailSheetRoute
+  SchemaResourceResourceResourceIdDetailIndexRoute: typeof SchemaResourceResourceResourceIdDetailIndexRoute
 }
 
 const SchemaResourceResourceResourceIdDetailRouteChildren: SchemaResourceResourceResourceIdDetailRouteChildren =
   {
+    SchemaResourceResourceResourceIdDetailTabRoute:
+      SchemaResourceResourceResourceIdDetailTabRouteWithChildren,
     SchemaResourceResourceResourceIdDetailSheetRoute:
       SchemaResourceResourceResourceIdDetailSheetRoute,
+    SchemaResourceResourceResourceIdDetailIndexRoute:
+      SchemaResourceResourceResourceIdDetailIndexRoute,
   }
 
 const SchemaResourceResourceResourceIdDetailRouteWithChildren =

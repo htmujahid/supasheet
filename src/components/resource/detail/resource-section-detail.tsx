@@ -14,7 +14,6 @@ import {
   CollapsibleTrigger,
 } from "#/components/ui/collapsible"
 import { Label } from "#/components/ui/label"
-import { Separator } from "#/components/ui/separator"
 import { getColumnMetadata } from "#/lib/columns"
 import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
@@ -22,6 +21,7 @@ import type { FileObject } from "#/types/fields"
 
 import { AllCells } from "../cells/all-cells"
 import type { ResolvedFieldSection } from "../resource-form-utils"
+import { getColumnFieldSpan } from "../resource-form-utils"
 import { ResourceAvatarDisplay } from "./resource-avatar-display"
 import { ResourceFileDisplay } from "./resource-file-display"
 
@@ -45,55 +45,45 @@ export function ResourceSectionDetail({
   if (!cols.length) return null
 
   const body = (
-    <CardContent className="space-y-0">
-      {cols.map((column, index) => {
+    <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
+      {cols.map((column) => {
         const value = record[column.name as keyof typeof record]
         const columnMetadata = getColumnMetadata(tableSchema, column)
-
-        // if (columnMetadata.variant === "avatar") {
-        //   return (
-        //     <div key={column.id}>
-        //       <ResourceAvatarDisplay
-        //         column={column}
-        //         columnMetadata={columnMetadata}
-        //         value={(value as FileObject | null) ?? null}
-        //       />
-        //       {index < cols.length - 1 && <Separator />}
-        //     </div>
-        //   )
-        // }
+        const span = getColumnFieldSpan(column, tableSchema)
 
         return (
-          <div key={column.id}>
-            <div className="flex items-start gap-4 py-2">
-              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                  {columnMetadata.icon} {formatTitle(columnMetadata.name)}
-                </Label>
-                <div className="text-sm text-muted-foreground">
-                  {value ? (
-                    columnMetadata.variant === "rich_text" ? (
-                      <Editor
-                        name={columnMetadata.name}
-                        value={value as string}
-                        disabled
-                      />
-                    ) : columnMetadata.variant === "file" ? (
-                      <ResourceFileDisplay value={value as FileObject[]} />
-                    ) : columnMetadata.variant === "avatar" ? (
-                      <ResourceAvatarDisplay
-                        value={(value as FileObject | null) ?? null}
-                      />
-                    ) : (
-                      <AllCells columnMetadata={columnMetadata} value={value} />
-                    )
-                  ) : (
-                    <div className="text-muted">N/A</div>
-                  )}
-                </div>
-              </div>
+          <div
+            key={column.id}
+            className={
+              span === 2
+                ? "flex min-w-0 flex-col gap-1.5 md:col-span-2"
+                : "flex min-w-0 flex-col gap-1.5"
+            }
+          >
+            <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+              {columnMetadata.icon} {formatTitle(columnMetadata.name)}
+            </Label>
+            <div className="text-sm text-muted-foreground">
+              {value ? (
+                columnMetadata.variant === "rich_text" ? (
+                  <Editor
+                    name={columnMetadata.name}
+                    value={value as string}
+                    disabled
+                  />
+                ) : columnMetadata.variant === "file" ? (
+                  <ResourceFileDisplay value={value as FileObject[]} />
+                ) : columnMetadata.variant === "avatar" ? (
+                  <ResourceAvatarDisplay
+                    value={(value as FileObject | null) ?? null}
+                  />
+                ) : (
+                  <AllCells columnMetadata={columnMetadata} value={value} />
+                )
+              ) : (
+                <div className="text-muted">N/A</div>
+              )}
             </div>
-            {index < cols.length - 1 && <Separator />}
           </div>
         )
       })}

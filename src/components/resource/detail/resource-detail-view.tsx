@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "#/components/ui/card"
 import { Label } from "#/components/ui/label"
-import { Separator } from "#/components/ui/separator"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
@@ -19,6 +18,7 @@ import { formatTitle } from "#/lib/format"
 import type { FileObject } from "#/types/fields"
 
 import { AllCells } from "../cells/all-cells"
+import { getColumnFieldSpan } from "../resource-form-utils"
 import { ResourceAvatarDisplay } from "./resource-avatar-display"
 import { ResourceFileDisplay } from "./resource-file-display"
 
@@ -54,49 +54,47 @@ export function ResourceDetailView({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-0">
-        {detailColumns.map((column, index) => {
+      <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
+        {detailColumns.map((column) => {
           const value =
             singleResourceData?.[column.name as keyof typeof singleResourceData]
 
           const columnMetadata = getColumnMetadata(tableSchema, column)
+          const span = getColumnFieldSpan(column, tableSchema)
 
           return (
-            <div key={column.id}>
-              <div className="flex items-start gap-4">
-                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                  <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
-                    {columnMetadata.icon} {formatTitle(columnMetadata.name)}
-                  </Label>
-                  <div className="text-sm text-muted-foreground">
-                    {value ? (
-                      columnMetadata.variant === "rich_text" ? (
-                        <Editor
-                          name={columnMetadata.name}
-                          value={value as string}
-                          disabled
-                        />
-                      ) : columnMetadata.variant === "file" ? (
-                        <ResourceFileDisplay value={value as FileObject[]} />
-                      ) : columnMetadata.variant === "avatar" ? (
-                        <ResourceAvatarDisplay
-                          value={(value as FileObject | null) ?? null}
-                        />
-                      ) : (
-                        <AllCells
-                          columnMetadata={columnMetadata}
-                          value={value}
-                        />
-                      )
-                    ) : (
-                      <div className="text-muted">N/A</div>
-                    )}
-                  </div>
-                </div>
+            <div
+              key={column.id}
+              className={
+                span === 2
+                  ? "flex min-w-0 flex-col gap-1.5 md:col-span-2"
+                  : "flex min-w-0 flex-col gap-1.5"
+              }
+            >
+              <Label className="inline-flex items-center gap-1.5 text-sm font-medium">
+                {columnMetadata.icon} {formatTitle(columnMetadata.name)}
+              </Label>
+              <div className="text-sm text-muted-foreground">
+                {value ? (
+                  columnMetadata.variant === "rich_text" ? (
+                    <Editor
+                      name={columnMetadata.name}
+                      value={value as string}
+                      disabled
+                    />
+                  ) : columnMetadata.variant === "file" ? (
+                    <ResourceFileDisplay value={value as FileObject[]} />
+                  ) : columnMetadata.variant === "avatar" ? (
+                    <ResourceAvatarDisplay
+                      value={(value as FileObject | null) ?? null}
+                    />
+                  ) : (
+                    <AllCells columnMetadata={columnMetadata} value={value} />
+                  )
+                ) : (
+                  <div className="text-muted">N/A</div>
+                )}
               </div>
-              {index < detailColumns.length - 1 && (
-                <Separator className="my-2" />
-              )}
             </div>
           )
         })}

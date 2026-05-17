@@ -99,24 +99,29 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
           ]}
         />
         <div className="flex flex-1 flex-col">
-          <div className="mx-auto w-full max-w-7xl px-4 py-4">
-            <div className="columns-1 gap-4 lg:columns-2">
+          <div className="mx-auto w-full max-w-5xl px-4 py-4">
+            <div className="space-y-4">
               {Array.from({ length: 2 }).map((_outer, i) => (
-                <div key={i} className="mb-4 break-inside-avoid">
-                  <Card>
-                    <CardHeader>
-                      <Skeleton className="h-5 w-24" />
-                    </CardHeader>
-                    <CardContent className="space-y-4 py-4">
-                      {Array.from({ length: 3 }).map((_inner, j) => (
-                        <div key={j} className="space-y-1.5">
-                          <Skeleton className="h-4 w-28" />
-                          <Skeleton className="h-9 w-full" />
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card key={i}>
+                  <CardHeader>
+                    <Skeleton className="h-5 w-24" />
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
+                    {Array.from({ length: 4 }).map((_inner, j) => (
+                      <div
+                        key={j}
+                        className={
+                          j === 3
+                            ? "space-y-1.5 md:col-span-2"
+                            : "space-y-1.5"
+                        }
+                      >
+                        <Skeleton className="h-4 w-28" />
+                        <Skeleton className="h-9 w-full" />
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
               ))}
             </div>
             <div className="flex justify-end gap-2 pt-4">
