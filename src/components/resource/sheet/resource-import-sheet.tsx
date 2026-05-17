@@ -8,14 +8,12 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query"
 
-import {
-  AlertCircleIcon,
-  CheckCircle2Icon,
-  UploadIcon,
-} from "lucide-react"
+import { AlertCircleIcon, CheckCircle2Icon, UploadIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
+import { Progress } from "#/components/ui/progress"
+import { ScrollArea } from "#/components/ui/scroll-area"
 import {
   Sheet,
   SheetContent,
@@ -24,8 +22,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "#/components/ui/sheet"
-import { Progress } from "#/components/ui/progress"
-import { ScrollArea } from "#/components/ui/scroll-area"
 import { useIsMobile } from "#/hooks/use-mobile"
 import {
   IMPORT_BATCH_SIZE,
@@ -58,7 +54,11 @@ export function ResourceImportSheet(props: ResourceImportSheetProps) {
     <Sheet open={props.open} onOpenChange={props.onOpenChange}>
       <SheetContent
         side={side}
-        className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
+        className={cn(
+          "gap-0",
+          side === "right" && "w-full! sm:max-w-lg!",
+          side === "bottom" && "max-h-[80vh] overflow-hidden"
+        )}
       >
         <React.Suspense fallback={<ResourceFormSheetSkeleton />}>
           <ResourceImportSheetBody {...props} />

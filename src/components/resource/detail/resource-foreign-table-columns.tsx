@@ -14,8 +14,8 @@ import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigg
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 
-import { DetailRecordTrigger } from "../sheet/detail-record-trigger"
 import { ResourceRowCell } from "../resource-row-cell"
+import { DetailRecordTrigger } from "../sheet/detail-record-trigger"
 
 export function getResourceForeignTableColumns({
   columnsSchema,

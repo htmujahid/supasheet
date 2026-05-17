@@ -37,7 +37,9 @@ export function ResourceFormSheetHeader(props: Props) {
             to="/$schema/resource/$resource/new"
             params={{ schema, resource } as never}
             search={
-              props.defaults ? ({ defaults: props.defaults } as never) : undefined
+              props.defaults
+                ? ({ defaults: props.defaults } as never)
+                : undefined
             }
             target="_blank"
             onClick={onClose}

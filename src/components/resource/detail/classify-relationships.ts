@@ -106,8 +106,7 @@ export function classifyRelationships(
         (r) =>
           table.primary_keys.some((k) => k.name === r.source_column_name) &&
           !(
-            r.target_table_schema === schema &&
-            r.target_table_name === resource
+            r.target_table_schema === schema && r.target_table_name === resource
           )
       )
       manyToManyRelationships.push({
@@ -129,9 +128,7 @@ export function classifyRelationships(
           table.columns
             .filter((col) => col.is_unique)
             .some((col) => col.name === rel.source_column_name) ||
-          table.primary_keys.some(
-            (key) => key.name === rel.source_column_name
-          )
+          table.primary_keys.some((key) => key.name === rel.source_column_name)
         )
     )
     if (oneToManyRel) {

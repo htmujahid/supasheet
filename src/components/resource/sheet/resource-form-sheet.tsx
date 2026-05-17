@@ -37,7 +37,11 @@ export function ResourceFormSheet(props: Props) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side={side}
-        className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
+        className={cn(
+          "gap-0",
+          side === "right" && "w-full! sm:max-w-lg!",
+          side === "bottom" && "max-h-[80vh] overflow-hidden"
+        )}
       >
         {mode === "create" ? (
           <ResourceFormSheetHeader

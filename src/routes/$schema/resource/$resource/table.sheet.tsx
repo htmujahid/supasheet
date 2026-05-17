@@ -5,12 +5,12 @@ import {
   sheetSearchSchema,
 } from "#/components/resource/sheet/resource-sheet-route"
 
-export const Route = createFileRoute(
-  "/$schema/resource/$resource/table/sheet"
-)({
-  validateSearch: sheetSearchSchema,
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/$schema/resource/$resource/table/sheet")(
+  {
+    validateSearch: sheetSearchSchema,
+    component: RouteComponent,
+  }
+)
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()

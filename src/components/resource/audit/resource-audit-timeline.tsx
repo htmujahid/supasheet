@@ -5,6 +5,7 @@ import { CheckCircle, PlusCircle, Trash2, XCircle } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
 import { Badge } from "#/components/ui/badge"
+import { ScrollArea } from "#/components/ui/scroll-area"
 import {
   Sheet,
   SheetContent,
@@ -12,7 +13,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "#/components/ui/sheet"
-import { ScrollArea } from "#/components/ui/scroll-area"
 import {
   Timeline,
   TimelineConnector,
@@ -157,7 +157,11 @@ export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
       >
         <SheetContent
           side={side}
-          className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
+          className={cn(
+            "gap-0",
+            side === "right" && "w-full! sm:max-w-lg!",
+            side === "bottom" && "max-h-[80vh] overflow-hidden"
+          )}
         >
           <SheetHeader>
             <SheetTitle>Audit Log Entry</SheetTitle>

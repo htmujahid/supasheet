@@ -12,7 +12,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { ResourceKanban } from "#/components/resource/resource-kanban"
 import type {
   KanbanLayout,
@@ -20,6 +19,7 @@ import type {
   KanbanViewReducedData,
 } from "#/components/resource/resource-kanban"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
+import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { Button } from "#/components/ui/button"
 import {
   Empty,

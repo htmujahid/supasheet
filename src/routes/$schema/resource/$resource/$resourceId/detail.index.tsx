@@ -1,8 +1,4 @@
-import {
-  createFileRoute,
-  getRouteApi,
-  notFound,
-} from "@tanstack/react-router"
+import { createFileRoute, getRouteApi, notFound } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 

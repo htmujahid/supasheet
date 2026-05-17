@@ -4,13 +4,13 @@ import { XIcon } from "lucide-react"
 
 import { FilePreviewSheet } from "#/components/storage/file-preview-sheet"
 import { Button } from "#/components/ui/button"
+import { Separator } from "#/components/ui/separator"
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetHeader,
 } from "#/components/ui/sheet"
-import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import type { FileObject } from "#/lib/supabase/data/storage"
 import { storageFilesQueryOptions } from "#/lib/supabase/data/storage"

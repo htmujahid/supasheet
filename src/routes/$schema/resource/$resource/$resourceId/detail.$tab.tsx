@@ -13,10 +13,7 @@ import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { classifyRelationships } from "#/components/resource/detail/classify-relationships"
 import { ResourceForeignTable } from "#/components/resource/detail/resource-foreign-table"
 import { ResourceFullDetail } from "#/components/resource/detail/resource-full-detail"
-import type {
-  PrimaryKey,
-  ResourceSchema,
-} from "#/lib/database-meta.types"
+import type { PrimaryKey, ResourceSchema } from "#/lib/database-meta.types"
 import {
   relatedTablesSchemaQueryOptions,
   singleResourceDataQueryOptions,

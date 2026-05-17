@@ -3,9 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
-import { SheetFooter } from "#/components/ui/sheet"
 import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
+import { SheetFooter } from "#/components/ui/sheet"
 import type {
   ColumnSchema,
   PrimaryKey,

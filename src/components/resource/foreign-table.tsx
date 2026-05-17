@@ -5,11 +5,6 @@ import { useQuery } from "@tanstack/react-query"
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
-import type {
-  Relationship,
-  ResourceDataSchema,
-} from "#/lib/database-meta.types"
-
 import { DataTable } from "#/components/data-table/data-table"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import {
@@ -28,6 +23,10 @@ import {
   SheetTitle,
 } from "#/components/ui/sheet"
 import { useIsMobile } from "#/hooks/use-mobile"
+import type {
+  Relationship,
+  ResourceDataSchema,
+} from "#/lib/database-meta.types"
 import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,

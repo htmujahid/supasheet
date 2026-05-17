@@ -98,9 +98,7 @@ export const Route = createFileRoute(
                       <div
                         key={j}
                         className={
-                          j === 3
-                            ? "space-y-1.5 md:col-span-2"
-                            : "space-y-1.5"
+                          j === 3 ? "space-y-1.5 md:col-span-2" : "space-y-1.5"
                         }
                       >
                         <Skeleton className="h-4 w-28" />

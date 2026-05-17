@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "#/components/ui/button"
+import { Separator } from "#/components/ui/separator"
 import {
   Sheet,
   SheetClose,
@@ -17,7 +18,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "#/components/ui/sheet"
-import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useIsMobile } from "#/hooks/use-mobile"
 import { createSignedUrl, getPublicUrl } from "#/lib/supabase/data/storage"

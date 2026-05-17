@@ -3,8 +3,8 @@ import type { ReactNode } from "react"
 import { Link, getRouteApi } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
-import { useSheetHref } from "#/hooks/use-sheet-href"
 import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 
@@ -56,10 +56,7 @@ export function NewRecordTrigger({
         className={className}
         nativeButton={false}
         render={
-          <Link
-            to={sheetLink.to as never}
-            search={sheetLink.search as never}
-          />
+          <Link to={sheetLink.to as never} search={sheetLink.search as never} />
         }
       >
         {children}

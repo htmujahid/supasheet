@@ -63,14 +63,17 @@ export function ForeignDataCombobox({
     <Combobox<Record<string, unknown>>
       value={selectedRecord}
       onValueChange={(record) =>
-        field.handleChange(record ? record[relationship.target_column_name] : null)
+        field.handleChange(
+          record ? record[relationship.target_column_name] : null
+        )
       }
       items={records}
       itemToStringLabel={(record) =>
         String(record[relationship.target_column_name] ?? "")
       }
       isItemEqualToValue={(item, val) =>
-        item[relationship.target_column_name] === val[relationship.target_column_name]
+        item[relationship.target_column_name] ===
+        val[relationship.target_column_name]
       }
       disabled={columnMetadata.disabled}
     >
