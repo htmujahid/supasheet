@@ -372,7 +372,7 @@ export const notificationsQueryOptions = queryOptions({
       .order("created_at", { ascending: false })
 
     if (error) throw error
-    return (data ?? []) as unknown as UserNotificationRow[]
+    return data ?? []
   },
   staleTime: 1000 * 30,
 })
@@ -384,7 +384,7 @@ export const unreadNotificationsCountQueryOptions = queryOptions({
       .schema("supasheet")
       .rpc("unread_notifications_count" as never)
     if (error) throw error
-    return (data as number) ?? 0
+    return (data) ?? 0
   },
   staleTime: 1000 * 30,
 })

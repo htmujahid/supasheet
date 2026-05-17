@@ -48,9 +48,7 @@ export function DataGrid<TData>({
     .getHeaderGroups()
     .flatMap((headerGroup) =>
       headerGroup.headers.map((header) => {
-        const meta = header.column.columnDef.meta as
-          | ColumnFieldMetadata
-          | undefined
+        const meta = header.column.columnDef.meta
         return {
           key: header.id,
           name: header.id,
@@ -59,7 +57,7 @@ export function DataGrid<TData>({
               ? null
               : flexRender(header.column.columnDef.header, header.getContext()),
           renderEditCell: isEditable ? getEditCell(meta) : undefined,
-        } as Column<GridRow>
+        }
       })
     )
 

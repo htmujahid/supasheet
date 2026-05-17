@@ -80,15 +80,9 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
 
-  const canUpdate = useHasPermission(
-    `${schema}.${table}:update`
-  )
-  const canDelete = useHasPermission(
-    `${schema}.${table}:delete`
-  )
-  const canInsert = useHasPermission(
-    `${schema}.${table}:insert`
-  )
+  const canUpdate = useHasPermission(`${schema}.${table}:update`)
+  const canDelete = useHasPermission(`${schema}.${table}:delete`)
+  const canInsert = useHasPermission(`${schema}.${table}:insert`)
 
   const hasParentValue =
     parentValue !== undefined && parentValue !== null && parentValue !== ""

@@ -130,7 +130,7 @@ export function IdentityProvidersCard() {
             const Icon = PROVIDER_ICONS[provider]
             const isLinked = !!identity
             const email = isLinked
-              ? ((identity.identity_data as Record<string, unknown> | undefined)
+              ? ((identity.identity_data)
                   ?.email as string | undefined)
               : undefined
             const isActionPending =

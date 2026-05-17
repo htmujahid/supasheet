@@ -198,7 +198,7 @@ function RouteComponent() {
   const sorting = (
     sortId ? [{ id: sortId, desc: sortDesc }] : []
   ) as SortingState
-  const pagination = { pageIndex: page - 1, pageSize } as PaginationState
+  const pagination = { pageIndex: page - 1, pageSize }
   const pageCount = Math.ceil((templateData?.count ?? 0) / pageSize)
 
   return (

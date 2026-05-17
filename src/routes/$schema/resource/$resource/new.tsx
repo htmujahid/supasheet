@@ -41,7 +41,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
     let defaults: Record<string, string> | undefined
     let source: Record<string, unknown> | undefined
     if (raw && typeof raw === "object" && !Array.isArray(raw)) {
-      source = raw as Record<string, unknown>
+      source = raw
     } else if (typeof raw === "string") {
       try {
         const parsed = JSON.parse(raw)

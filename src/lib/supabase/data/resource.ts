@@ -454,7 +454,7 @@ export const resourceCommentsQueryOptions = (
         } as never
       )
       if (error) throw error
-      return (data ?? []) as unknown as ResourceComment[]
+      return data ?? []
     },
   })
 

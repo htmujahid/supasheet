@@ -195,7 +195,7 @@ function RouteComponent() {
   const sorting = (
     sortId ? [{ id: sortId, desc: sortDesc }] : []
   ) as SortingState
-  const pagination = { pageIndex: page - 1, pageSize } as PaginationState
+  const pagination = { pageIndex: page - 1, pageSize }
   const pageCount = Math.ceil((reportData?.count ?? 0) / pageSize)
 
   return (

@@ -57,7 +57,7 @@ export function DataTableFilter<TData>({ table }: DataTableFilterProps<TData>) {
     const used = new Set(columnFilters.map((f) => f.id))
     const col =
       filterableColumns.find((c) => !used.has(c.id)) ??
-      (filterableColumns[0] as (typeof filterableColumns)[0] | undefined)
+      (filterableColumns[0])
     if (!col) return
     const variant = col.columnDef.meta?.filterVariant ?? "text"
     const defaultOp = getDefaultFilterOperator(variant)

@@ -37,15 +37,9 @@ export function ResourceRecordActions({
 }: ResourceRecordActionsProps) {
   const navigate = useNavigate()
 
-  const canUpdate = useHasPermission(
-    `${schema}.${resource}:update`
-  )
-  const canViewAudit = useHasPermission(
-    `${schema}.${resource}:audit`
-  )
-  const canViewComments = useHasPermission(
-    `${schema}.${resource}:comment`
-  )
+  const canUpdate = useHasPermission(`${schema}.${resource}:update`)
+  const canViewAudit = useHasPermission(`${schema}.${resource}:audit`)
+  const canViewComments = useHasPermission(`${schema}.${resource}:comment`)
 
   const params = { schema, resource, resourceId }
 

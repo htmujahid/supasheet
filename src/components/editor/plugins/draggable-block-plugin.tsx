@@ -25,8 +25,8 @@ export function DraggableBlockPlugin({
   return (
     <DraggableBlockPlugin_EXPERIMENTAL
       anchorElem={anchorElem}
-      menuRef={menuRef as React.RefObject<HTMLDivElement>}
-      targetLineRef={targetLineRef as React.RefObject<HTMLDivElement>}
+      menuRef={menuRef}
+      targetLineRef={targetLineRef}
       menuComponent={
         <div
           ref={menuRef}

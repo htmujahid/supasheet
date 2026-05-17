@@ -172,7 +172,7 @@ export function getColumnMetadata(
   const disabled = columnSchema.is_generated || !columnSchema.is_updatable
   const isArray = columnSchema.data_type === "ARRAY"
   const isMetadata = getMetaFields(
-    tableSchema as ResourceSchema | null
+    tableSchema
   ).includes(name)
 
   const isRelationship = !!(

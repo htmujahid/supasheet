@@ -46,7 +46,7 @@ export function ResourceDetailView({
           <div className="space-y-1.5">
             <CardTitle>
               {(JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata)
-                .name ?? formatTitle(resourceSchema.name as string)}
+                .name ?? formatTitle(resourceSchema.name)}
             </CardTitle>
             <CardDescription>
               View resource details and properties

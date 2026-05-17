@@ -260,9 +260,7 @@ function RouteComponent() {
 
   const metaItems = meta.items ?? []
   const isTable = isTableSchema(resourceSchema)
-  const canInsert = useHasPermission(
-    `${schema}.${resource}:insert`
-  )
+  const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
   return (
     <>

@@ -12,10 +12,7 @@ import type {
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import type {
-  ColumnFiltersState,
-  SortingState,
-} from "@tanstack/react-table"
+import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
@@ -239,9 +236,7 @@ function RouteComponent() {
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const metaItems = meta.items ?? []
   const isTable = isTableSchema(resourceSchema)
-  const canInsert = useHasPermission(
-    `${schema}.${resource}:insert`
-  )
+  const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
   const { data: resourceData } = useSuspenseQuery(
     resourceDataQueryOptions(

@@ -165,12 +165,8 @@ export function ResourceCalendar({
   }
 
   const hasPk = primaryKeys.length > 0
-  const canUpdate = useHasPermission(
-    `${schema}.${resource}:update`
-  )
-  const canDelete = useHasPermission(
-    `${schema}.${resource}:delete`
-  )
+  const canUpdate = useHasPermission(`${schema}.${resource}:update`)
+  const canDelete = useHasPermission(`${schema}.${resource}:delete`)
 
   return (
     <div className="flex h-full flex-col gap-2">

@@ -60,7 +60,7 @@ export function ResourceDetailDrawerBody({
       {detailColumns.map((column, index) => {
         const value = record[column.name as string]
         const columnMetadata = getColumnMetadata(
-          tableSchema as TableSchema,
+          tableSchema,
           column
         )
 

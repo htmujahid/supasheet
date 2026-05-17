@@ -145,7 +145,7 @@ export function getResourceForeignTableColumns({
             enableColumnFilter: false,
             enableSorting: true,
             enableHiding: true,
-          } as ColumnDef<ResourceDataSchema, unknown>
+          }
         })
       : []
     ).filter((c) => c !== null),
