@@ -30,7 +30,7 @@ export function getFilterOperators(variant: FilterVariant) {
 export function getDefaultFilterOperator(
   variant: FilterVariant
 ): FilterOperator {
-  return (getFilterOperators(variant)[0]?.value ?? "eq")
+  return getFilterOperators(variant)[0]?.value ?? "eq"
 }
 
 /**

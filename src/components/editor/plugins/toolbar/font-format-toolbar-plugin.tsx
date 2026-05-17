@@ -61,10 +61,7 @@ export function FontFormatToolbarPlugin() {
           value={format}
           aria-label={label}
           onClick={() => {
-            activeEditor.dispatchCommand(
-              FORMAT_TEXT_COMMAND,
-              format
-            )
+            activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, format)
           }}
         >
           <Icon className="size-4" />

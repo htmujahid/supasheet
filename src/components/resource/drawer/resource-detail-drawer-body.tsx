@@ -7,10 +7,7 @@ import { ResourceFileDisplay } from "#/components/resource/detail/resource-file-
 import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
 import { getColumnMetadata } from "#/lib/columns"
-import type {
-  ColumnSchema,
-  ResourceSchema,
-} from "#/lib/database-meta.types"
+import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
 import { getMetaFields } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
@@ -58,10 +55,7 @@ export function ResourceDetailDrawerBody({
     <div className="flex-1 overflow-y-auto p-4">
       {detailColumns.map((column, index) => {
         const value = record[column.name as string]
-        const columnMetadata = getColumnMetadata(
-          tableSchema,
-          column
-        )
+        const columnMetadata = getColumnMetadata(tableSchema, column)
 
         return (
           <div key={column.id}>

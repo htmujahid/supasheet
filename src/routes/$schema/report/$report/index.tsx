@@ -9,10 +9,7 @@ import type {
   SearchSchemaInput,
 } from "@tanstack/react-router"
 
-import type {
-  ColumnFiltersState,
-  SortingState,
-} from "@tanstack/react-table"
+import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
 import z from "zod"

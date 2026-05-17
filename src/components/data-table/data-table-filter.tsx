@@ -56,8 +56,7 @@ export function DataTableFilter<TData>({ table }: DataTableFilterProps<TData>) {
     // Pick first column that doesn't already have a filter
     const used = new Set(columnFilters.map((f) => f.id))
     const col =
-      filterableColumns.find((c) => !used.has(c.id)) ??
-      (filterableColumns[0])
+      filterableColumns.find((c) => !used.has(c.id)) ?? filterableColumns[0]
     if (!col) return
     const variant = col.columnDef.meta?.filterVariant ?? "text"
     const defaultOp = getDefaultFilterOperator(variant)
