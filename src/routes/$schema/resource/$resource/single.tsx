@@ -211,7 +211,6 @@ function RouteComponent() {
             <ResourceNewForm
               columnsSchema={columnsSchema}
               tableSchema={tableSchema}
-              redirect={`/${schema}/resource/${resource}/single`}
               saveOnly
             />
           )}

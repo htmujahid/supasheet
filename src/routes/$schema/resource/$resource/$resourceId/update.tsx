@@ -37,9 +37,7 @@ import {
 export const Route = createFileRoute(
   "/$schema/resource/$resource/$resourceId/update"
 )({
-  validateSearch: (search: { redirect?: string } & SearchSchemaInput) => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-  }),
+  validateSearch: (_search: SearchSchemaInput) => ({}),
   beforeLoad: ({ context, params: { schema, resource } }) => {
     if (
       !context.permissions?.some(
@@ -202,7 +200,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schema, resource, resourceId } = Route.useParams()
-  const { redirect } = Route.useSearch()
 
   const { tableSchema, columnsSchema, pkName } = Route.useLoaderData()
   const resourceDisplayName =
@@ -240,7 +237,6 @@ function RouteComponent() {
             primaryKeys={primaryKeys}
             record={record!}
             tableSchema={tableSchema}
-            redirect={redirect}
           />
         </div>
       </div>

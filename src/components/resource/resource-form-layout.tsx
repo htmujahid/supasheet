@@ -42,7 +42,6 @@ type ResourceFormLayoutProps = {
   mode: FormMode
   primaryKeyDisplay?: PrimaryKeyDisplay[]
   headerTitle: string
-  redirect?: string
   saveOnly?: boolean
 }
 
@@ -53,7 +52,6 @@ export function ResourceFormLayout({
   mode,
   primaryKeyDisplay,
   headerTitle,
-  redirect,
   saveOnly,
 }: ResourceFormLayoutProps) {
   const navigate = useNavigate()
@@ -75,10 +73,6 @@ export function ResourceFormLayout({
   }, [tableMeta.sections, writableCols, mode])
 
   const handleCancel = () => {
-    if (redirect) {
-      navigate({ to: redirect })
-      return
-    }
     if (!schema || !resource) return
     navigate({
       to: "/$schema/resource/$resource",

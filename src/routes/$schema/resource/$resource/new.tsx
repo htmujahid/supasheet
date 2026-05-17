@@ -33,7 +33,6 @@ import {
 export const Route = createFileRoute("/$schema/resource/$resource/new")({
   validateSearch: (
     search: {
-      redirect?: string
       defaults?: string | Record<string, string>
     } & SearchSchemaInput
   ) => {
@@ -56,8 +55,6 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
       ) as Record<string, string>
     }
     return {
-      redirect:
-        typeof search.redirect === "string" ? search.redirect : undefined,
       defaults,
     }
   },
@@ -210,7 +207,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
-  const { redirect, defaults } = Route.useSearch()
+  const { defaults } = Route.useSearch()
 
   const { columnsSchema, tableSchema } = Route.useLoaderData()
   const resourceDisplayName =
@@ -233,7 +230,6 @@ function RouteComponent() {
           <ResourceNewForm
             columnsSchema={columnsSchema}
             tableSchema={tableSchema}
-            redirect={redirect}
             defaults={defaults}
           />
         </div>

@@ -22,13 +22,11 @@ export function getResourceForeignTableColumns({
   resourceSchema,
   data,
   canUpdate = false,
-  redirect,
 }: {
   columnsSchema: ColumnSchema[]
   resourceSchema: ResourceSchema
   data: ResourceDataSchema[]
   canUpdate?: boolean
-  redirect?: string
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
@@ -69,7 +67,6 @@ export function getResourceForeignTableColumns({
                     primaryKeyNames={primaryKeyNames}
                     schema={resourceSchema.schema}
                     resource={resourceSchema.name}
-                    redirect={redirect}
                     size="icon-xs"
                     variant="outline"
                     className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"

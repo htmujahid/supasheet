@@ -24,7 +24,6 @@ interface ResourceUpdateFormProps {
   primaryKeys: PrimaryKey[]
   record: Record<string, unknown>
   tableSchema: TableSchema
-  redirect?: string
   saveOnly?: boolean
 }
 
@@ -33,7 +32,6 @@ export function ResourceUpdateForm({
   primaryKeys,
   record,
   tableSchema,
-  redirect,
   saveOnly,
 }: ResourceUpdateFormProps) {
   const schema = tableSchema?.schema
@@ -41,10 +39,6 @@ export function ResourceUpdateForm({
 
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const safeRedirect =
-    redirect?.startsWith("/") && !redirect.startsWith("//")
-      ? redirect
-      : undefined
 
   const pk = Object.fromEntries(
     primaryKeys.map((k) => [k.name, record[k.name]])
@@ -78,14 +72,10 @@ export function ResourceUpdateForm({
       })
       toast.success("Record updated")
       if ((meta as { target?: string } | undefined)?.target === "close") {
-        if (safeRedirect) {
-          navigate({ to: safeRedirect })
-        } else {
-          navigate({
-            to: "/$schema/resource/$resource",
-            params: { schema, resource },
-          })
-        }
+        navigate({
+          to: "/$schema/resource/$resource",
+          params: { schema, resource },
+        })
       }
     },
   })
@@ -109,7 +99,6 @@ export function ResourceUpdateForm({
         mode="update"
         primaryKeyDisplay={primaryKeyDisplay}
         headerTitle="Edit record"
-        redirect={safeRedirect}
         saveOnly={saveOnly}
       />
     </form>

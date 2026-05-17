@@ -22,13 +22,11 @@ import {
 export function ResourceNewForm({
   columnsSchema,
   tableSchema,
-  redirect,
   defaults,
   saveOnly,
 }: {
   columnsSchema: ColumnSchema[]
   tableSchema: TableSchema
-  redirect?: string
   defaults?: Record<string, string>
   saveOnly?: boolean
 }) {
@@ -37,10 +35,6 @@ export function ResourceNewForm({
 
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const safeRedirect =
-    redirect?.startsWith("/") && !redirect.startsWith("//")
-      ? redirect
-      : undefined
 
   const writableCols = columnsSchema.filter((col) => !isSkippedForCreate(col))
 
@@ -85,9 +79,7 @@ export function ResourceNewForm({
 
       const target = (meta as { target?: string } | undefined)?.target ?? "stay"
 
-      if (safeRedirect) {
-        navigate({ to: safeRedirect })
-      } else if (target === "stay" && resourceId) {
+      if (target === "stay" && resourceId) {
         navigate({
           to: "/$schema/resource/$resource/$resourceId/update",
           params: { schema, resource: table, resourceId },
@@ -114,7 +106,6 @@ export function ResourceNewForm({
         form={form}
         mode="create"
         headerTitle="New record"
-        redirect={safeRedirect}
         saveOnly={saveOnly}
       />
     </form>

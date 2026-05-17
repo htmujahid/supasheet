@@ -21,7 +21,6 @@ type Props = {
   // instead of the route-level default (e.g. foreign-table rows).
   schema?: string
   resource?: string
-  redirect?: string
 }
 
 const routeApi = getRouteApi("/$schema/resource/$resource")
@@ -35,7 +34,6 @@ export function EditRecordTrigger({
   children,
   schema: schemaOverride,
   resource: resourceOverride,
-  redirect,
 }: Props) {
   const params = routeApi.useParams()
   const schema = schemaOverride ?? params.schema
@@ -71,7 +69,6 @@ export function EditRecordTrigger({
       className={cn(buttonVariants({ size, variant }), className)}
       to="/$schema/resource/$resource/$resourceId/update"
       params={{ schema, resource, resourceId } as never}
-      search={redirect ? { redirect } : undefined}
       onClick={(e) => {
         e.stopPropagation()
       }}
