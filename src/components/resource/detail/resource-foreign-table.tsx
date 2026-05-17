@@ -40,7 +40,7 @@ import {
   foreignTableDataQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-import { getResourceForeignTableColumns } from "./resource-foriegn-table-columns"
+import { getResourceForeignTableColumns } from "./resource-foreign-table-columns"
 
 type ResourceForeignTableProps<S extends DatabaseSchemas> = {
   schema: S
