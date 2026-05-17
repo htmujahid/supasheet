@@ -4,7 +4,7 @@ import { Link, getRouteApi } from "@tanstack/react-router"
 
 import { buttonVariants } from "#/components/ui/button"
 import type { Button } from "#/components/ui/button"
-import { useDrawerHref } from "#/hooks/use-drawer-href"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
 import { cn } from "#/lib/utils"
 
@@ -17,13 +17,16 @@ type Props = {
   variant?: ButtonProps["variant"]
   className?: string
   children: ReactNode
+  // Optional overrides — when set, the trigger targets this schema/resource
+  // instead of the route-level default (e.g. foreign-table rows).
   schema?: string
   resource?: string
+  redirect?: string
 }
 
 const routeApi = getRouteApi("/$schema/resource/$resource")
 
-export function DetailRecordTrigger({
+export function EditRecordTrigger({
   pk,
   primaryKeyNames,
   size,
@@ -32,25 +35,26 @@ export function DetailRecordTrigger({
   children,
   schema: schemaOverride,
   resource: resourceOverride,
+  redirect,
 }: Props) {
   const params = routeApi.useParams()
   const schema = schemaOverride ?? params.schema
   const resource = resourceOverride ?? params.resource
 
   const inlineForm = useInlineFormFlag(schema, resource)
-  const drawerLink = useDrawerHref({
-    mode: "detail",
+  const sheetLink = useSheetHref({
+    mode: "update",
     pk,
     schema: schemaOverride,
     resource: resourceOverride,
   })
 
-  if ((inlineForm || schemaOverride) && drawerLink) {
+  if ((inlineForm || schemaOverride) && sheetLink) {
     return (
       <Link
         className={cn(buttonVariants({ size, variant }), className)}
-        to={drawerLink.to as never}
-        search={drawerLink.search as never}
+        to={sheetLink.to as never}
+        search={sheetLink.search as never}
         onClick={(e: MouseEvent) => {
           e.stopPropagation()
         }}
@@ -65,8 +69,9 @@ export function DetailRecordTrigger({
   return (
     <Link
       className={cn(buttonVariants({ size, variant }), className)}
-      to="/$schema/resource/$resource/$resourceId/detail"
+      to="/$schema/resource/$resource/$resourceId/update"
       params={{ schema, resource, resourceId } as never}
+      search={redirect ? { redirect } : undefined}
       onClick={(e) => {
         e.stopPropagation()
       }}

@@ -3,14 +3,14 @@ import { useLocation } from "@tanstack/react-router"
 const SUPPORTED_VIEW_RE =
   /\/(table|grid|kanban\/[^/]+|calendar\/[^/]+|gallery\/[^/]+|list\/[^/]+|[^/]+\/detail)$/
 
-export type DrawerLink = {
+export type SheetLink = {
   to: string
   search: Record<string, unknown>
 }
 
-export function useDrawerHref(
+export function useSheetHref(
   search: Record<string, unknown>
-): DrawerLink | null {
+): SheetLink | null {
   const { pathname } = useLocation()
   if (!SUPPORTED_VIEW_RE.test(pathname)) return null
   const cleaned: Record<string, unknown> = {}
@@ -18,5 +18,5 @@ export function useDrawerHref(
     if (value === undefined) continue
     cleaned[key] = value
   }
-  return { to: `${pathname}/drawer`, search: cleaned }
+  return { to: `${pathname}/sheet`, search: cleaned }
 }

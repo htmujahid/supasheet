@@ -5,9 +5,9 @@ import {
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
-import { ResourceFormDrawerContent } from "./resource-form-drawer-content"
+import { ResourceFormSheetContent } from "./resource-form-sheet-content"
 
-export function ResourceFormDrawerCreateBody({
+export function ResourceFormSheetCreateBody({
   schema,
   resource,
   defaults,
@@ -34,7 +34,7 @@ export function ResourceFormDrawerCreateBody({
   }
 
   return (
-    <ResourceFormDrawerContent
+    <ResourceFormSheetContent
       mode="create"
       tableSchema={tableSchema}
       columnsSchema={columnsSchema}

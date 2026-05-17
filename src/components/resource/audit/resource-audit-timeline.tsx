@@ -6,12 +6,12 @@ import { CheckCircle, PlusCircle, Trash2, XCircle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
 import { Badge } from "#/components/ui/badge"
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "#/components/ui/drawer"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "#/components/ui/sheet"
 import { ScrollArea } from "#/components/ui/scroll-area"
 import {
   Timeline,
@@ -124,7 +124,7 @@ function AuditTimelineItem({
 export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
   const [selected, setSelected] = useState<ResourceAuditLog | null>(null)
   const isMobile = useIsMobile()
-  const direction = isMobile ? "bottom" : "right"
+  const side = isMobile ? "bottom" : "right"
 
   if (logs.length === 0) {
     return (
@@ -149,30 +149,27 @@ export function ResourceAuditTimeline({ logs }: { logs: ResourceAuditLog[] }) {
         ))}
       </Timeline>
 
-      <Drawer
+      <Sheet
         open={selected !== null}
         onOpenChange={(open) => {
           if (!open) setSelected(null)
         }}
-        direction={direction}
       >
-        <DrawerContent
-          className={cn(
-            "gap-0",
-            direction === "right" && "h-full w-full sm:max-w-lg!"
-          )}
+        <SheetContent
+          side={side}
+          className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
         >
-          <DrawerHeader>
-            <DrawerTitle>Audit Log Entry</DrawerTitle>
-            <DrawerDescription>
+          <SheetHeader>
+            <SheetTitle>Audit Log Entry</SheetTitle>
+            <SheetDescription>
               {selected && format(new Date(selected.created_at), "PPpp")}
-            </DrawerDescription>
-          </DrawerHeader>
+            </SheetDescription>
+          </SheetHeader>
           <ScrollArea className="h-[calc(100vh-5rem)] px-4 pb-4">
             {selected && <ResourceAuditLogDetail data={selected} />}
           </ScrollArea>
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
     </>
   )
 }

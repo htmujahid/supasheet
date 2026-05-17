@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import type { Row } from "@tanstack/react-table"
 
 import { Checkbox } from "#/components/ui/checkbox"
-import { useDrawerHref } from "#/hooks/use-drawer-href"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
 import type {
   DatabaseSchemas,
@@ -38,7 +38,7 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   const inlineForm = useInlineFormFlag(schema, resource)
   const data = row.original
   const pk = Object.fromEntries(primaryKeys.map((k) => [k.name, data[k.name]]))
-  const drawerLink = useDrawerHref({ mode: "update", pk })
+  const sheetLink = useSheetHref({ mode: "update", pk })
 
   const titleValue = readField(data, listView.title)
   const descriptionValue = readField(data, listView.description)
@@ -46,10 +46,10 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   const field2Value = readField(data, listView.field2)
 
   function handleClick() {
-    if (canUpdate && inlineForm && drawerLink) {
+    if (canUpdate && inlineForm && sheetLink) {
       navigate({
-        to: drawerLink.to as never,
-        search: drawerLink.search as never,
+        to: sheetLink.to as never,
+        search: sheetLink.search as never,
       })
       return
     }

@@ -17,7 +17,7 @@ import {
 } from "#/lib/supabase/data/resource"
 import type { FileObject } from "#/types/fields"
 
-export function ResourceDetailDrawerBody({
+export function ResourceDetailSheetBody({
   schema,
   resource,
   pk,

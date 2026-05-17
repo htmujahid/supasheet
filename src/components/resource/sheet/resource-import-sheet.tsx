@@ -12,20 +12,18 @@ import {
   AlertCircleIcon,
   CheckCircle2Icon,
   UploadIcon,
-  XIcon,
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "#/components/ui/drawer"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "#/components/ui/sheet"
 import { Progress } from "#/components/ui/progress"
 import { ScrollArea } from "#/components/ui/scroll-area"
 import { useIsMobile } from "#/hooks/use-mobile"
@@ -43,54 +41,38 @@ import {
 } from "#/lib/supabase/data/resource"
 import { cn } from "#/lib/utils"
 
-import { ResourceFormDrawerSkeleton } from "./resource-form-drawer-skeleton"
+import { ResourceFormSheetSkeleton } from "./resource-form-sheet-skeleton"
 
-interface ResourceImportDrawerProps {
+interface ResourceImportSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   schema: string
   resource: string
 }
 
-export function ResourceImportDrawer(props: ResourceImportDrawerProps) {
+export function ResourceImportSheet(props: ResourceImportSheetProps) {
   const isMobile = useIsMobile()
-  const direction = isMobile ? "bottom" : "right"
+  const side = isMobile ? "bottom" : "right"
 
   return (
-    <Drawer
-      open={props.open}
-      onOpenChange={props.onOpenChange}
-      direction={direction}
-    >
-      <DrawerContent
-        className={cn(
-          "gap-0",
-          direction === "right" && "h-full w-full sm:max-w-lg!"
-        )}
+    <Sheet open={props.open} onOpenChange={props.onOpenChange}>
+      <SheetContent
+        side={side}
+        className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
       >
-        <React.Suspense fallback={<ResourceFormDrawerSkeleton />}>
-          <ResourceImportDrawerBody {...props} />
+        <React.Suspense fallback={<ResourceFormSheetSkeleton />}>
+          <ResourceImportSheetBody {...props} />
         </React.Suspense>
-        <DrawerClose asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className="absolute top-3 right-3"
-            aria-label="Close"
-          >
-            <XIcon />
-          </Button>
-        </DrawerClose>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }
 
-function ResourceImportDrawerBody({
+function ResourceImportSheetBody({
   onOpenChange,
   schema,
   resource,
-}: ResourceImportDrawerProps) {
+}: ResourceImportSheetProps) {
   const queryClient = useQueryClient()
   const { data: columnsSchema = [] } = useSuspenseQuery(
     columnsSchemaQueryOptions(schema as never, resource as never)
@@ -207,14 +189,14 @@ function ResourceImportDrawerBody({
 
   return (
     <>
-      <DrawerHeader className="border-b p-4 pr-10">
-        <DrawerTitle>Import CSV</DrawerTitle>
-        <DrawerDescription>
+      <SheetHeader className="border-b p-4 pr-10">
+        <SheetTitle>Import CSV</SheetTitle>
+        <SheetDescription>
           Upload a CSV file to import records into{" "}
           <strong className="text-foreground">{resource}</strong>. Column
           headers must match table column names.
-        </DrawerDescription>
-      </DrawerHeader>
+        </SheetDescription>
+      </SheetHeader>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
         {!parsed ? (
@@ -373,7 +355,7 @@ function ResourceImportDrawerBody({
         )}
       </div>
 
-      <DrawerFooter className="border-t">
+      <SheetFooter className="border-t">
         {!parsed && (
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
@@ -410,7 +392,7 @@ function ResourceImportDrawerBody({
             <Button onClick={() => handleOpenChange(false)}>Done</Button>
           </>
         )}
-      </DrawerFooter>
+      </SheetFooter>
     </>
   )
 }

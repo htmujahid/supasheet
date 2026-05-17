@@ -4,10 +4,10 @@ import { ExternalLinkIcon } from "lucide-react"
 
 import { buttonVariants } from "#/components/ui/button"
 import {
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "#/components/ui/drawer"
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "#/components/ui/sheet"
 import { formatTitle } from "#/lib/format"
 
 type Props =
@@ -26,13 +26,13 @@ type Props =
       onClose: () => void
     }
 
-export function ResourceFormDrawerHeader(props: Props) {
+export function ResourceFormSheetHeader(props: Props) {
   const { mode, schema, resource, onClose } = props
   const location = useLocation()
   const redirectTo = location.href
 
   return (
-    <DrawerHeader className="border-b">
+    <SheetHeader className="border-b">
       <div className="flex items-center gap-2 pr-10">
         {mode === "create" ? (
           <Link
@@ -69,12 +69,12 @@ export function ResourceFormDrawerHeader(props: Props) {
           </Link>
         )}
         <div className="space-y-1">
-          <DrawerTitle>
+          <SheetTitle>
             {mode === "create" ? "New record" : "Edit record"}
-          </DrawerTitle>
-          <DrawerDescription>{formatTitle(resource)}</DrawerDescription>
+          </SheetTitle>
+          <SheetDescription>{formatTitle(resource)}</SheetDescription>
         </div>
       </div>
-    </DrawerHeader>
+    </SheetHeader>
   )
 }

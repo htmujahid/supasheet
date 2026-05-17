@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { Link, getRouteApi } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
-import { useDrawerHref } from "#/hooks/use-drawer-href"
+import { useSheetHref } from "#/hooks/use-sheet-href"
 import { useInlineFormFlag } from "#/hooks/use-inline-form-flag"
 
 type ButtonProps = React.ComponentProps<typeof Button>
@@ -15,7 +15,7 @@ type Props = {
   children: ReactNode
   schema?: string
   resource?: string
-  // Pre-filled field values. Applied to both inline (drawer) and full-page flows.
+  // Pre-filled field values. Applied to both inline (sheet) and full-page flows.
   // For the link path, callers can either pass `defaults` and let the trigger
   // build the URL, or pass a fully-formed `url`.
   defaults?: Record<string, string>
@@ -41,14 +41,14 @@ export function NewRecordTrigger({
   const resource = resourceOverride ?? params.resource
 
   const inlineForm = useInlineFormFlag(schema, resource)
-  const drawerLink = useDrawerHref({
+  const sheetLink = useSheetHref({
     mode: "create",
     defaults,
     schema: schemaOverride,
     resource: resourceOverride,
   })
 
-  if ((inlineForm || schemaOverride) && drawerLink) {
+  if ((inlineForm || schemaOverride) && sheetLink) {
     return (
       <Button
         size={size}
@@ -57,8 +57,8 @@ export function NewRecordTrigger({
         nativeButton={false}
         render={
           <Link
-            to={drawerLink.to as never}
-            search={drawerLink.search as never}
+            to={sheetLink.to as never}
+            search={sheetLink.search as never}
           />
         }
       >

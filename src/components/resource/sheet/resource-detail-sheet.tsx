@@ -2,23 +2,22 @@ import { Suspense } from "react"
 
 import { Link } from "@tanstack/react-router"
 
-import { ExternalLinkIcon, XIcon } from "lucide-react"
+import { ExternalLinkIcon } from "lucide-react"
 
-import { Button, buttonVariants } from "#/components/ui/button"
+import { buttonVariants } from "#/components/ui/button"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "#/components/ui/drawer"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "#/components/ui/sheet"
 import { useIsMobile } from "#/hooks/use-mobile"
 import { formatTitle } from "#/lib/format"
 import { cn } from "#/lib/utils"
 
-import { ResourceDetailDrawerBody } from "./resource-detail-drawer-body"
-import { ResourceFormDrawerSkeleton } from "./resource-form-drawer-skeleton"
+import { ResourceDetailSheetBody } from "./resource-detail-sheet-body"
+import { ResourceFormSheetSkeleton } from "./resource-form-sheet-skeleton"
 
 type Props = {
   schema: string
@@ -28,7 +27,7 @@ type Props = {
   onOpenChange: (open: boolean) => void
 }
 
-export function ResourceDetailDrawer({
+export function ResourceDetailSheet({
   schema,
   resource,
   pk,
@@ -37,17 +36,15 @@ export function ResourceDetailDrawer({
 }: Props) {
   const onClose = () => onOpenChange(false)
   const isMobile = useIsMobile()
-  const direction = isMobile ? "bottom" : "right"
+  const side = isMobile ? "bottom" : "right"
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
-      <DrawerContent
-        className={cn(
-          "gap-0",
-          direction === "right" && "h-full w-full sm:max-w-lg!"
-        )}
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side={side}
+        className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
       >
-        <DrawerHeader className="border-b">
+        <SheetHeader className="border-b">
           <div className="flex items-center gap-2 pr-10">
             <Link
               to="/$schema/resource/$resource/$resourceId/detail"
@@ -65,29 +62,19 @@ export function ResourceDetailDrawer({
               <ExternalLinkIcon className="size-4" />
             </Link>
             <div className="space-y-1">
-              <DrawerTitle>View record</DrawerTitle>
-              <DrawerDescription>{formatTitle(resource)}</DrawerDescription>
+              <SheetTitle>View record</SheetTitle>
+              <SheetDescription>{formatTitle(resource)}</SheetDescription>
             </div>
           </div>
-        </DrawerHeader>
-        <Suspense fallback={<ResourceFormDrawerSkeleton />}>
-          <ResourceDetailDrawerBody
+        </SheetHeader>
+        <Suspense fallback={<ResourceFormSheetSkeleton />}>
+          <ResourceDetailSheetBody
             schema={schema}
             resource={resource}
             pk={pk}
           />
         </Suspense>
-        <DrawerClose asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className="absolute top-3 right-3"
-            aria-label="Close"
-          >
-            <XIcon />
-          </Button>
-        </DrawerClose>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }

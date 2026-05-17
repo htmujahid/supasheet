@@ -1,16 +1,13 @@
 import { Suspense } from "react"
 
-import { XIcon } from "lucide-react"
-
-import { Button } from "#/components/ui/button"
-import { Drawer, DrawerClose, DrawerContent } from "#/components/ui/drawer"
+import { Sheet, SheetContent } from "#/components/ui/sheet"
 import { useIsMobile } from "#/hooks/use-mobile"
 import { cn } from "#/lib/utils"
 
-import { ResourceFormDrawerCreateBody } from "./resource-form-drawer-create-body"
-import { ResourceFormDrawerHeader } from "./resource-form-drawer-header"
-import { ResourceFormDrawerSkeleton } from "./resource-form-drawer-skeleton"
-import { ResourceFormDrawerUpdateBody } from "./resource-form-drawer-update-body"
+import { ResourceFormSheetCreateBody } from "./resource-form-sheet-create-body"
+import { ResourceFormSheetHeader } from "./resource-form-sheet-header"
+import { ResourceFormSheetSkeleton } from "./resource-form-sheet-skeleton"
+import { ResourceFormSheetUpdateBody } from "./resource-form-sheet-update-body"
 
 type Props =
   | {
@@ -30,22 +27,20 @@ type Props =
       onOpenChange: (open: boolean) => void
     }
 
-export function ResourceFormDrawer(props: Props) {
+export function ResourceFormSheet(props: Props) {
   const { mode, schema, resource, open, onOpenChange } = props
   const onClose = () => onOpenChange(false)
   const isMobile = useIsMobile()
-  const direction = isMobile ? "bottom" : "right"
+  const side = isMobile ? "bottom" : "right"
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
-      <DrawerContent
-        className={cn(
-          "gap-0",
-          direction === "right" && "h-full w-full sm:max-w-lg!"
-        )}
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side={side}
+        className={cn("gap-0", side === "right" && "w-full! sm:max-w-lg!", side === "bottom" && "max-h-[80vh] overflow-hidden")}
       >
         {mode === "create" ? (
-          <ResourceFormDrawerHeader
+          <ResourceFormSheetHeader
             mode="create"
             schema={schema}
             resource={resource}
@@ -53,7 +48,7 @@ export function ResourceFormDrawer(props: Props) {
             onClose={onClose}
           />
         ) : (
-          <ResourceFormDrawerHeader
+          <ResourceFormSheetHeader
             mode="update"
             schema={schema}
             resource={resource}
@@ -61,16 +56,16 @@ export function ResourceFormDrawer(props: Props) {
             onClose={onClose}
           />
         )}
-        <Suspense fallback={<ResourceFormDrawerSkeleton />}>
+        <Suspense fallback={<ResourceFormSheetSkeleton />}>
           {mode === "create" ? (
-            <ResourceFormDrawerCreateBody
+            <ResourceFormSheetCreateBody
               schema={schema}
               resource={resource}
               defaults={props.defaults}
               onClose={onClose}
             />
           ) : (
-            <ResourceFormDrawerUpdateBody
+            <ResourceFormSheetUpdateBody
               schema={schema}
               resource={resource}
               pk={props.pk}
@@ -78,17 +73,7 @@ export function ResourceFormDrawer(props: Props) {
             />
           )}
         </Suspense>
-        <DrawerClose asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className="absolute top-3 right-3"
-            aria-label="Close"
-          >
-            <XIcon />
-          </Button>
-        </DrawerClose>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }

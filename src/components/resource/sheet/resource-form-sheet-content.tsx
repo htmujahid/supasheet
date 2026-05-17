@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import { Button } from "#/components/ui/button"
-import { DrawerFooter } from "#/components/ui/drawer"
+import { SheetFooter } from "#/components/ui/sheet"
 import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
 import type {
@@ -29,7 +29,7 @@ import {
 
 type Mode = "create" | "update"
 
-export function ResourceFormDrawerContent({
+export function ResourceFormSheetContent({
   mode,
   tableSchema,
   columnsSchema,
@@ -161,7 +161,7 @@ export function ResourceFormDrawerContent({
           />
         ))}
       </div>
-      <DrawerFooter className="flex-row justify-end border-t">
+      <SheetFooter className="flex-row justify-end border-t">
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -177,7 +177,7 @@ export function ResourceFormDrawerContent({
             </Button>
           )}
         </form.Subscribe>
-      </DrawerFooter>
+      </SheetFooter>
     </form>
   )
 }

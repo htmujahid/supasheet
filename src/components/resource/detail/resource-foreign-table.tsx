@@ -24,7 +24,7 @@ import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
-import { NewRecordTrigger } from "#/components/resource/drawer/new-record-trigger"
+import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,

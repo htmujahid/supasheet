@@ -10,13 +10,13 @@ import {
 
 import { Button } from "#/components/ui/button"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "#/components/ui/drawer"
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "#/components/ui/sheet"
 import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useIsMobile } from "#/hooks/use-mobile"
@@ -26,7 +26,7 @@ import { cn } from "#/lib/utils"
 
 import { FileActionsMenu } from "./file-actions-menu"
 
-interface FilePreviewDrawerProps {
+interface FilePreviewSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   bucketId: string
@@ -51,7 +51,7 @@ function formatDate(value: string | undefined) {
   }).format(new Date(value))
 }
 
-export function FilePreviewDrawer({
+export function FilePreviewSheet({
   open,
   onOpenChange,
   bucketId,
@@ -59,9 +59,9 @@ export function FilePreviewDrawer({
   file,
   filePath,
   onSuccess,
-}: FilePreviewDrawerProps) {
+}: FilePreviewSheetProps) {
   const isMobile = useIsMobile()
-  const direction = isMobile ? "bottom" : "right"
+  const side = isMobile ? "bottom" : "right"
 
   const mime: string = file?.metadata?.mimetype ?? ""
   const isImage = mime.startsWith("image/")
@@ -94,20 +94,23 @@ export function FilePreviewDrawer({
   )
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
-      <DrawerContent
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side={side}
+        showCloseButton={false}
         className={cn(
           "flex flex-col gap-0 p-0",
-          direction === "right" && "sm:max-w-md"
+          side === "right" && "sm:max-w-md",
+          side === "bottom" && "max-h-[80vh] overflow-hidden"
         )}
       >
-        <DrawerHeader className="flex flex-row items-center justify-between p-4 pb-3">
+        <SheetHeader className="flex flex-row items-center justify-between p-4 pb-3">
           <div className="min-w-0 flex-1">
-            <DrawerTitle className="truncate text-sm">{fileName}</DrawerTitle>
+            <SheetTitle className="truncate text-sm">{fileName}</SheetTitle>
             {mime && (
-              <DrawerDescription className="truncate text-xs">
+              <SheetDescription className="truncate text-xs">
                 {mime}
-              </DrawerDescription>
+              </SheetDescription>
             )}
           </div>
           <div className="flex shrink-0 items-center gap-1">
@@ -120,14 +123,12 @@ export function FilePreviewDrawer({
                 onNavigate={onSuccess}
               />
             )}
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon-sm">
-                <XIcon className="size-4" />
-                <span className="sr-only">Close</span>
-              </Button>
-            </DrawerClose>
+            <SheetClose render={<Button variant="ghost" size="icon-sm" />}>
+              <XIcon className="size-4" />
+              <span className="sr-only">Close</span>
+            </SheetClose>
           </div>
-        </DrawerHeader>
+        </SheetHeader>
 
         <Separator />
 
@@ -180,7 +181,7 @@ export function FilePreviewDrawer({
             )}
           </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }

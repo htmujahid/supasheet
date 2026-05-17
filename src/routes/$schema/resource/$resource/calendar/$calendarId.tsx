@@ -12,7 +12,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { NewRecordTrigger } from "#/components/resource/drawer/new-record-trigger"
+import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import {
   ResourceCalendar,
   colorFromString,
