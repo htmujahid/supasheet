@@ -21,7 +21,6 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 
 import { ResourceFilterTemplates } from "./resource-filter-templates"
@@ -56,10 +55,10 @@ export function ResourceTable({
   ) as PrimaryKey[]
 
   const canDelete = useHasPermission(
-    `${schema}.${resource}:delete` as AppPermission
+    `${schema}.${resource}:delete`
   )
   const canUpdate = useHasPermission(
-    `${schema}.${resource}:update` as AppPermission
+    `${schema}.${resource}:update`
   )
 
   const { mutateAsync: deleteRow } = useMutation(

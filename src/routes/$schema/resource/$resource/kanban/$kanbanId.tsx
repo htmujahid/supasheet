@@ -33,7 +33,6 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import type { KanbanViewItem, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
@@ -262,7 +261,7 @@ function RouteComponent() {
   const metaItems = meta.items ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(
-    `${schema}.${resource}:insert` as AppPermission
+    `${schema}.${resource}:insert`
   )
 
   return (

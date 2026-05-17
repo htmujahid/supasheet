@@ -37,7 +37,6 @@ import type {
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { getPkValue } from "#/lib/fields"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
 import { cn } from "#/lib/utils"
 
@@ -161,10 +160,10 @@ function GalleryContextMenu<S extends DatabaseSchemas>({
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const canUpdate = useHasPermission(
-    `${schema}.${resource}:update` as AppPermission
+    `${schema}.${resource}:update`
   )
   const canDelete = useHasPermission(
-    `${schema}.${resource}:delete` as AppPermission
+    `${schema}.${resource}:delete`
   )
   const { mutateAsync: deleteRow } = useMutation(
     deleteResourceMutationOptions(schema, resource)

@@ -14,7 +14,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import type {
   ColumnFiltersState,
-  PaginationState,
   SortingState,
 } from "@tanstack/react-table"
 
@@ -36,7 +35,6 @@ import {
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
@@ -218,7 +216,7 @@ function RouteComponent() {
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const metaItems = meta.items ?? []
   const canInsert = useHasPermission(
-    `${schema}.${resource}:insert` as AppPermission
+    `${schema}.${resource}:insert`
   )
 
   const { data: resourceData } = useSuspenseQuery(
@@ -237,7 +235,7 @@ function RouteComponent() {
   const sorting = (
     sortId ? [{ id: sortId, desc: sortDesc }] : []
   ) as SortingState
-  const pagination = { pageIndex: page - 1, pageSize } as PaginationState
+  const pagination = { pageIndex: page - 1, pageSize }
   const pageCount = Math.ceil((resourceData?.count ?? 0) / pageSize)
 
   return (

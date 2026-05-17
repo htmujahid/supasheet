@@ -26,7 +26,6 @@ import type {
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { getPkValue } from "#/lib/fields"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   deleteResourceMutationOptions,
   updateResourceMutationOptions,
@@ -167,10 +166,10 @@ export function ResourceCalendar({
 
   const hasPk = primaryKeys.length > 0
   const canUpdate = useHasPermission(
-    `${schema}.${resource}:update` as AppPermission
+    `${schema}.${resource}:update`
   )
   const canDelete = useHasPermission(
-    `${schema}.${resource}:delete` as AppPermission
+    `${schema}.${resource}:delete`
   )
 
   return (

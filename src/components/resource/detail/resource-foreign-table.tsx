@@ -35,7 +35,6 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   deleteResourceMutationOptions,
   foreignTableDataQueryOptions,
@@ -82,13 +81,13 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
   ) as PrimaryKey[]
 
   const canUpdate = useHasPermission(
-    `${schema}.${table}:update` as AppPermission
+    `${schema}.${table}:update`
   )
   const canDelete = useHasPermission(
-    `${schema}.${table}:delete` as AppPermission
+    `${schema}.${table}:delete`
   )
   const canInsert = useHasPermission(
-    `${schema}.${table}:insert` as AppPermission
+    `${schema}.${table}:insert`
   )
 
   const hasParentValue =

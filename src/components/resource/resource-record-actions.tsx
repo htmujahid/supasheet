@@ -19,7 +19,6 @@ import {
 } from "#/components/ui/dropdown-menu"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { DatabaseSchemas } from "#/lib/database-meta.types"
-import type { AppPermission } from "#/lib/supabase/data/core"
 
 interface ResourceRecordActionsProps {
   schema: DatabaseSchemas
@@ -39,13 +38,13 @@ export function ResourceRecordActions({
   const navigate = useNavigate()
 
   const canUpdate = useHasPermission(
-    `${schema}.${resource}:update` as AppPermission
+    `${schema}.${resource}:update`
   )
   const canViewAudit = useHasPermission(
-    `${schema}.${resource}:audit` as AppPermission
+    `${schema}.${resource}:audit`
   )
   const canViewComments = useHasPermission(
-    `${schema}.${resource}:comment` as AppPermission
+    `${schema}.${resource}:comment`
   )
 
   const params = { schema, resource, resourceId }
