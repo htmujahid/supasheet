@@ -8,7 +8,6 @@ import type { Column, RowsChangeData } from "react-data-grid"
 
 import { DataGrid as ReactDataGrid } from "#/components/ui/data-grid"
 import { cn } from "#/lib/utils"
-import type { ColumnFieldMetadata } from "#/types/fields"
 
 import { DataTablePagination } from "../data-table/data-table-pagination"
 import { getEditCell } from "./data-grid-edit-cell"

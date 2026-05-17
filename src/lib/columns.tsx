@@ -27,7 +27,6 @@ import type {
   ColumnSchema,
   PrimaryKey,
   Relationship,
-  ResourceSchema,
   TableSchema,
   ViewSchema,
 } from "#/lib/database-meta.types"

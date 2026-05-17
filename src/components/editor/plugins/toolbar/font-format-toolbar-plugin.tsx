@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 
 import { $isTableSelection } from "@lexical/table"
 import { $isRangeSelection, FORMAT_TEXT_COMMAND } from "lexical"
-import type { BaseSelection, TextFormatType } from "lexical"
+import type { BaseSelection } from "lexical"
 import {
   BoldIcon,
   ItalicIcon,

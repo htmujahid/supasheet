@@ -10,7 +10,6 @@ import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
   ResourceSchema,
-  TableSchema,
 } from "#/lib/database-meta.types"
 import { getMetaFields } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
