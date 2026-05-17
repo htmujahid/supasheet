@@ -9,6 +9,7 @@ import type {
   ColumnSchema,
   DatabaseSchemas,
   Relationship,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
@@ -67,6 +68,10 @@ export function ResourceFormField<S extends DatabaseSchemas>({
       r.source_schema === columnSchema.schema
   )
 
+  const tableMeta = tableSchema?.comment
+    ? (JSON.parse(tableSchema.comment) as TableMetadata)
+    : ({} as TableMetadata)
+
   const name = columnSchema.name as string
 
   return (
@@ -96,6 +101,7 @@ export function ResourceFormField<S extends DatabaseSchemas>({
               <ForeignKeyField
                 columnMetadata={columnMetadata}
                 relationship={relationship}
+                tableMetadata={tableMeta}
               />
             ) : (
               <AllFields columnMetadata={columnMetadata} />
