@@ -237,7 +237,7 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
         .schema(schema)
         .from(resource)
         .select(selectClause, { count: "exact" })
-        .eq(parentColumn, parentValue as never)
+        .eq(parentColumn as never, parentValue as never)
 
       if (page && pageSize) {
         query = query.range((page - 1) * pageSize, page * pageSize - 1)
@@ -278,7 +278,7 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
         .from(resource)
         .select("*" + joins.join(""))
       for (const [col, val] of Object.entries(pk)) {
-        query = query.eq(col, val as never)
+        query = query.eq(col as never, val as never)
       }
       const { data, error } = await query.maybeSingle()
       if (error) throw error
@@ -337,7 +337,7 @@ export const updateResourceMutationOptions = <S extends DatabaseSchemas>(
         .update(data as never)
         .select()
       for (const [col, val] of Object.entries(pk)) {
-        query = query.eq(col, val as never)
+        query = query.eq(col as never, val as never)
       }
       const { data: updated, error } = await query
       if (error) throw error
@@ -357,7 +357,7 @@ export const deleteResourceMutationOptions = <S extends DatabaseSchemas>(
     mutationFn: async (pk: Record<string, unknown>) => {
       let query = supabase.schema(schema).from(resource).delete()
       for (const [col, val] of Object.entries(pk)) {
-        query = query.eq(col, val as never)
+        query = query.eq(col as never, val as never)
       }
       const { error } = await query
       if (error) throw error
@@ -369,7 +369,7 @@ export const deleteResourceMutationOptions = <S extends DatabaseSchemas>(
         .from(resource)
         .select("*", { head: true, count: "exact" })
       for (const [col, val] of Object.entries(pk)) {
-        checkQuery = checkQuery.eq(col, val as never)
+        checkQuery = checkQuery.eq(col as never, val as never)
       }
       const { count, error: checkError } = await checkQuery
       if (checkError) throw checkError
