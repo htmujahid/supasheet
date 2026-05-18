@@ -76,7 +76,6 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
 
-  const canUpdate = useHasPermission(`${schema}.${table}:update`)
   const canDelete = useHasPermission(`${schema}.${table}:delete`)
   const canInsert = useHasPermission(`${schema}.${table}:insert`)
 
@@ -135,9 +134,8 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
         data,
         columnsSchema,
         resourceSchema,
-        canUpdate,
       }),
-    [data, columnsSchema, resourceSchema, canUpdate]
+    [data, columnsSchema, resourceSchema]
   )
 
   const tableInstance = useReactTable({

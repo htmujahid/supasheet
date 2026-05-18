@@ -1,9 +1,8 @@
 import type { Column, ColumnDef, Row } from "@tanstack/react-table"
 
-import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 
 import { DetailRecordTrigger } from "#/components/resource/sheet/detail-record-trigger"
-import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
@@ -21,11 +20,9 @@ import { ResourceRowCell } from "./resource-row-cell"
 export function getResourceTableColumns({
   columnsSchema,
   resourceSchema,
-  canUpdate = false,
 }: {
   columnsSchema: ColumnSchema[]
   resourceSchema: ResourceSchema
-  canUpdate?: boolean
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
 
@@ -62,27 +59,15 @@ export function getResourceTableColumns({
               onCheckedChange={(checked) => row.toggleSelected(!!checked)}
               aria-label="Select row"
             />
-            {canUpdate ? (
-              <EditRecordTrigger
-                pk={pk}
-                primaryKeyNames={primaryKeyNames}
-                size="icon-xs"
-                variant="outline"
-                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
-              >
-                <PencilIcon />
-              </EditRecordTrigger>
-            ) : (
-              <DetailRecordTrigger
-                pk={pk}
-                primaryKeyNames={primaryKeyNames}
-                size="icon-xs"
-                variant="outline"
-                className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
-              >
-                <ArrowUpRightIcon />
-              </DetailRecordTrigger>
-            )}
+            <DetailRecordTrigger
+              pk={pk}
+              primaryKeyNames={primaryKeyNames}
+              size="icon-xs"
+              variant="outline"
+              className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
+            >
+              <ArrowUpRightIcon />
+            </DetailRecordTrigger>
           </div>
         )
       },

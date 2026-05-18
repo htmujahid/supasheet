@@ -23,7 +23,6 @@ interface ResourceListRowProps<S extends DatabaseSchemas> {
   schema: S
   resource: DatabaseTables<S> | DatabaseViews<S>
   primaryKeys: PrimaryKey[]
-  canUpdate: boolean
 }
 
 export function ResourceListRow<S extends DatabaseSchemas>({
@@ -32,13 +31,12 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   schema,
   resource,
   primaryKeys,
-  canUpdate,
 }: ResourceListRowProps<S>) {
   const navigate = useNavigate()
   const inlineForm = useInlineFormFlag(schema, resource)
   const data = row.original
   const pk = Object.fromEntries(primaryKeys.map((k) => [k.name, data[k.name]]))
-  const sheetLink = useSheetHref({ mode: "update", pk })
+  const sheetLink = useSheetHref({ mode: "detail", pk })
 
   const titleValue = readField(data, listView.title)
   const descriptionValue = readField(data, listView.description)
@@ -46,7 +44,7 @@ export function ResourceListRow<S extends DatabaseSchemas>({
   const field2Value = readField(data, listView.field2)
 
   function handleClick() {
-    if (canUpdate && inlineForm && sheetLink) {
+    if (inlineForm && sheetLink) {
       navigate({
         to: sheetLink.to as never,
         search: sheetLink.search as never,
@@ -54,17 +52,10 @@ export function ResourceListRow<S extends DatabaseSchemas>({
       return
     }
     const resourceId = getPkValue(data, primaryKeys)
-    if (canUpdate) {
-      navigate({
-        to: "/$schema/resource/$resource/$resourceId/update",
-        params: { schema, resource, resourceId },
-      })
-    } else {
-      navigate({
-        to: "/$schema/resource/$resource/$resourceId/detail",
-        params: { schema, resource, resourceId },
-      })
-    }
+    navigate({
+      to: "/$schema/resource/$resource/$resourceId/detail",
+      params: { schema, resource, resourceId },
+    })
   }
 
   return (

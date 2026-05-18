@@ -81,7 +81,7 @@ export function ResourceNewForm({
 
       if (target === "stay" && resourceId) {
         navigate({
-          to: "/$schema/resource/$resource/$resourceId/update",
+          to: "/$schema/resource/$resource/$resourceId/detail",
           params: { schema, resource: table, resourceId },
         })
       } else {

@@ -142,14 +142,6 @@ export function ResourceCalendar({
     })
   }
 
-  function onEventUpdate(event: IEvent) {
-    const resourceId = getPkValue(event.data ?? {}, primaryKeys)
-    void navigate({
-      to: "/$schema/resource/$resource/$resourceId/update",
-      params: { schema, resource, resourceId },
-    })
-  }
-
   async function onEventDelete(event: IEvent) {
     try {
       await deleteRow(getPk(event))
@@ -184,7 +176,6 @@ export function ResourceCalendar({
         onDragEvent={canUpdate ? onDragEvent : undefined}
         onAddEvent={hasPk ? onAddEvent : undefined}
         onEventView={hasPk ? onEventView : undefined}
-        onEventUpdate={hasPk && canUpdate ? onEventUpdate : undefined}
         onEventDelete={hasPk && canDelete ? onEventDelete : undefined}
       >
         <EventCalendarHeader>

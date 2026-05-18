@@ -8,7 +8,6 @@ import {
   AlignStartHorizontalIcon,
   AlignStartVerticalIcon,
   Eye,
-  Pencil,
   Trash,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -280,7 +279,6 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
 }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const canUpdate = useHasPermission(`${schema}.${resource}:update`)
   const canDelete = useHasPermission(`${schema}.${resource}:delete`)
   const { mutateAsync: deleteRow } = useMutation(
     deleteResourceMutationOptions(schema, resource)
@@ -318,19 +316,6 @@ function KanbanContextMenu<S extends DatabaseSchemas>({
           <Eye className="size-4" />
           View Details
         </ContextMenuItem>
-        {isTable && canUpdate && (
-          <ContextMenuItem
-            onClick={() =>
-              navigate({
-                to: "/$schema/resource/$resource/$resourceId/update",
-                params: { schema, resource, resourceId },
-              })
-            }
-          >
-            <Pencil className="size-4" />
-            Edit Details
-          </ContextMenuItem>
-        )}
         {isTable && canDelete && (
           <>
             <ContextMenuSeparator />

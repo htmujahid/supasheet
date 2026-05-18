@@ -8,9 +8,8 @@ import type {
 } from "@/lib/database-meta.types"
 import { isTableSchema } from "@/lib/database-meta.types"
 import { formatTitle } from "@/lib/format"
-import { ArrowUpRightIcon, PencilIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 
-import { EditRecordTrigger } from "#/components/resource/sheet/edit-record-trigger"
 import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 
@@ -21,12 +20,10 @@ export function getResourceForeignTableColumns({
   columnsSchema,
   resourceSchema,
   data,
-  canUpdate = false,
 }: {
   columnsSchema: ColumnSchema[]
   resourceSchema: ResourceSchema
   data: ResourceDataSchema[]
-  canUpdate?: boolean
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
@@ -61,31 +58,17 @@ export function getResourceForeignTableColumns({
                   onCheckedChange={(checked) => row.toggleSelected(!!checked)}
                   aria-label="Select row"
                 />
-                {canUpdate ? (
-                  <EditRecordTrigger
-                    pk={pk}
-                    primaryKeyNames={primaryKeyNames}
-                    schema={resourceSchema.schema}
-                    resource={resourceSchema.name}
-                    size="icon-xs"
-                    variant="outline"
-                    className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
-                  >
-                    <PencilIcon />
-                  </EditRecordTrigger>
-                ) : (
-                  <DetailRecordTrigger
-                    pk={pk}
-                    primaryKeyNames={primaryKeyNames}
-                    schema={resourceSchema.schema}
-                    resource={resourceSchema.name}
-                    size="icon-xs"
-                    variant="outline"
-                    className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
-                  >
-                    <ArrowUpRightIcon />
-                  </DetailRecordTrigger>
-                )}
+                <DetailRecordTrigger
+                  pk={pk}
+                  primaryKeyNames={primaryKeyNames}
+                  schema={resourceSchema.schema}
+                  resource={resourceSchema.name}
+                  size="icon-xs"
+                  variant="outline"
+                  className="opacity-0 transition-opacity group-hover:opacity-100 [&_svg]:size-3 size-5"
+                >
+                  <ArrowUpRightIcon />
+                </DetailRecordTrigger>
               </div>
             )
           },

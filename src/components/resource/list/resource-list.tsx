@@ -64,13 +64,11 @@ export function ResourceList({
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
   const resource = resourceSchema.name
-  const isTable = isTableSchema(resourceSchema)
   const primaryKeys = (
-    isTable ? (resourceSchema.primary_keys ?? []) : []
+    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
 
   const canDelete = useHasPermission(`${schema}.${resource}:delete`)
-  const canUpdate = useHasPermission(`${schema}.${resource}:update`)
 
   const { mutateAsync: deleteRow } = useMutation(
     deleteResourceMutationOptions(schema, resource)
@@ -100,8 +98,8 @@ export function ResourceList({
   }
 
   const columns = useMemo(
-    () => getResourceTableColumns({ columnsSchema, resourceSchema, canUpdate }),
-    [columnsSchema, resourceSchema, canUpdate]
+    () => getResourceTableColumns({ columnsSchema, resourceSchema }),
+    [columnsSchema, resourceSchema]
   )
 
   const table = useDataTable({
@@ -138,7 +136,6 @@ export function ResourceList({
               schema={schema}
               resource={resource}
               primaryKeys={primaryKeys}
-              canUpdate={isTable && canUpdate}
             />
           ))}
         </div>

@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 
 import {
+  Link,
   Outlet,
   createFileRoute,
   getRouteApi,
@@ -9,11 +10,27 @@ import {
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
+import { LinkIcon } from "lucide-react"
+
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { classifyRelationships } from "#/components/resource/detail/classify-relationships"
 import { ResourceForeignTable } from "#/components/resource/detail/resource-foreign-table"
 import { ResourceFullDetail } from "#/components/resource/detail/resource-full-detail"
+import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
+import { buttonVariants } from "#/components/ui/button"
+import { Card, CardContent } from "#/components/ui/card"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "#/components/ui/empty"
+import { useHasPermission } from "#/hooks/use-permissions"
 import type { PrimaryKey, ResourceSchema } from "#/lib/database-meta.types"
+import { formatTitle } from "#/lib/format"
+import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   relatedTablesSchemaQueryOptions,
   singleResourceDataQueryOptions,
@@ -103,9 +120,85 @@ function RouteComponent() {
     })
   )
 
+  const canUpdateOneToOne = useHasPermission(
+    oneToOne
+      ? `${oneToOne.schema}.${oneToOne.name}:update`
+      : ("__none__" as AppPermission)
+  )
+  const canUpdateParent = useHasPermission(`${schema}.${resource}:update`)
+
   if (oneToOne) {
-    const embedded =
-      (record?.[oneToOne.__embedKey] as Record<string, unknown>) ?? {}
+    const fkValue = record?.[oneToOne.__fkColumn]
+    const embedded = record?.[oneToOne.__embedKey] as
+      | Record<string, unknown>
+      | null
+      | undefined
+    const primaryKeys = oneToOne.primary_keys ?? []
+    const hasPkValues =
+      primaryKeys.length > 0 &&
+      primaryKeys.every((k) => embedded != null && embedded[k.name] != null)
+
+    const isUnlinked = fkValue == null || embedded == null || !hasPkValues
+
+    if (isUnlinked) {
+      const relatedName = formatTitle(oneToOne.name)
+      const parentName = formatTitle(resource)
+      const parentDetailHref = `/${schema}/resource/${resource}/${resourceId}/detail`
+      return (
+        <>
+          <div className="mx-auto w-full max-w-5xl space-y-4">
+            <Card>
+              <CardContent className="py-8">
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <LinkIcon />
+                    </EmptyMedia>
+                    <EmptyTitle>No linked {relatedName}</EmptyTitle>
+                    <EmptyDescription>
+                      This {parentName} record is not linked to a {relatedName}.
+                      {canUpdateParent
+                        ? ` Edit this record and set "${oneToOne.__fkColumn}" to link one.`
+                        : null}
+                    </EmptyDescription>
+                  </EmptyHeader>
+                  {canUpdateParent ? (
+                    <EmptyContent>
+                      <Link
+                        to={parentDetailHref}
+                        className={buttonVariants({
+                          size: "sm",
+                          variant: "outline",
+                        })}
+                      >
+                        Edit {parentName}
+                      </Link>
+                    </EmptyContent>
+                  ) : null}
+                </Empty>
+              </CardContent>
+            </Card>
+          </div>
+          <Outlet />
+        </>
+      )
+    }
+
+    if (canUpdateOneToOne) {
+      return (
+        <>
+          <ResourceUpdateForm
+            columnsSchema={oneToOne.columns ?? []}
+            primaryKeys={primaryKeys}
+            record={embedded}
+            tableSchema={oneToOne}
+            saveOnly
+          />
+          <Outlet />
+        </>
+      )
+    }
+
     return (
       <>
         <ResourceFullDetail

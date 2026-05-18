@@ -17,11 +17,6 @@ export const sheetSearchSchema = z.discriminatedUnion("mode", [
   }),
   z.object({
     ...overrideShape,
-    mode: z.literal("update"),
-    pk: z.record(z.string(), z.unknown()),
-  }),
-  z.object({
-    ...overrideShape,
     mode: z.literal("detail"),
     pk: z.record(z.string(), z.unknown()),
   }),
@@ -54,21 +49,9 @@ export function ResourceSheetRoute({
     case "create":
       return (
         <ResourceFormSheet
-          mode="create"
           schema={targetSchema}
           resource={targetResource}
           defaults={search.defaults}
-          open
-          onOpenChange={onOpenChange}
-        />
-      )
-    case "update":
-      return (
-        <ResourceFormSheet
-          mode="update"
-          schema={targetSchema}
-          resource={targetResource}
-          pk={search.pk}
           open
           onOpenChange={onOpenChange}
         />

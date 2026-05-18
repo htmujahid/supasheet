@@ -76,6 +76,7 @@ export function ResourceDetailSheet({
             schema={schema}
             resource={resource}
             pk={pk}
+            onClose={onClose}
           />
         </Suspense>
       </SheetContent>

@@ -1,12 +1,6 @@
 import { useNavigate } from "@tanstack/react-router"
 
-import {
-  ChevronDownIcon,
-  EyeIcon,
-  HistoryIcon,
-  MessageSquareIcon,
-  PencilIcon,
-} from "lucide-react"
+import { ChevronDownIcon, HistoryIcon, MessageSquareIcon } from "lucide-react"
 
 import { Button } from "#/components/ui/button"
 import {
@@ -14,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
 import { useHasPermission } from "#/hooks/use-permissions"
@@ -24,31 +17,21 @@ interface ResourceRecordActionsProps {
   schema: DatabaseSchemas
   resource: never
   resourceId: string
-  isTable?: boolean
-  mode?: "detail" | "update"
 }
 
 export function ResourceRecordActions({
   schema,
   resource,
   resourceId,
-  isTable = false,
-  mode = "detail",
 }: ResourceRecordActionsProps) {
   const navigate = useNavigate()
 
-  const canUpdate = useHasPermission(`${schema}.${resource}:update`)
   const canViewAudit = useHasPermission(`${schema}.${resource}:audit`)
   const canViewComments = useHasPermission(`${schema}.${resource}:comment`)
 
   const params = { schema, resource, resourceId }
 
-  const hasViewDetail = mode === "update"
-  const hasEdit = mode === "detail" && isTable && canUpdate
-  const hasMetaActions = canViewComments || canViewAudit
-  const hasCrudActions = hasViewDetail || hasEdit
-
-  if (!hasMetaActions && !hasCrudActions) return null
+  if (!canViewAudit && !canViewComments) return null
 
   return (
     <DropdownMenu>
@@ -61,67 +44,34 @@ export function ResourceRecordActions({
         }
       />
       <DropdownMenuContent align="end" className="w-44">
-        {hasCrudActions && (
-          <DropdownMenuGroup>
-            {hasViewDetail && (
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate({
-                    to: "/$schema/resource/$resource/$resourceId/detail",
-                    params,
-                  })
-                }
-              >
-                <EyeIcon />
-                View Detail
-              </DropdownMenuItem>
-            )}
-            {hasEdit && (
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate({
-                    to: "/$schema/resource/$resource/$resourceId/update",
-                    params,
-                  })
-                }
-              >
-                <PencilIcon />
-                Edit
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuGroup>
-        )}
-        {hasCrudActions && hasMetaActions && <DropdownMenuSeparator />}
-        {hasMetaActions && (
-          <DropdownMenuGroup>
-            {canViewComments && (
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate({
-                    to: "/$schema/resource/$resource/$resourceId/comment",
-                    params,
-                  })
-                }
-              >
-                <MessageSquareIcon />
-                Comments
-              </DropdownMenuItem>
-            )}
-            {canViewAudit && (
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate({
-                    to: "/$schema/resource/$resource/$resourceId/audit",
-                    params,
-                  })
-                }
-              >
-                <HistoryIcon />
-                Audit Log
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuGroup>
-        )}
+        <DropdownMenuGroup>
+          {canViewComments && (
+            <DropdownMenuItem
+              onClick={() =>
+                navigate({
+                  to: "/$schema/resource/$resource/$resourceId/comment",
+                  params,
+                })
+              }
+            >
+              <MessageSquareIcon />
+              Comments
+            </DropdownMenuItem>
+          )}
+          {canViewAudit && (
+            <DropdownMenuItem
+              onClick={() =>
+                navigate({
+                  to: "/$schema/resource/$resource/$resourceId/audit",
+                  params,
+                })
+              }
+            >
+              <HistoryIcon />
+              Audit Log
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )

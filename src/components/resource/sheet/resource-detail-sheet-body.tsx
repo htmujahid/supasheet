@@ -6,10 +6,16 @@ import { ResourceAvatarDisplay } from "#/components/resource/detail/resource-ava
 import { ResourceFileDisplay } from "#/components/resource/detail/resource-file-display"
 import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
+import { useHasPermission } from "#/hooks/use-permissions"
 import { getColumnMetadata } from "#/lib/columns"
-import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  PrimaryKey,
+  ResourceSchema,
+} from "#/lib/database-meta.types"
 import { getMetaFields } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   columnsSchemaQueryOptions,
   singleResourceDataQueryOptions,
@@ -17,14 +23,18 @@ import {
 } from "#/lib/supabase/data/resource"
 import type { FileObject } from "#/types/fields"
 
+import { ResourceFormSheetContent } from "./resource-form-sheet-content"
+
 export function ResourceDetailSheetBody({
   schema,
   resource,
   pk,
+  onClose,
 }: {
   schema: string
   resource: string
   pk: Record<string, unknown>
+  onClose: () => void
 }) {
   const { data: tableSchema } = useSuspenseQuery(
     tableSchemaQueryOptions(schema as never, resource as never)
@@ -36,11 +46,30 @@ export function ResourceDetailSheetBody({
     singleResourceDataQueryOptions(schema as never, resource as never, pk)
   )
 
+  const canUpdate = useHasPermission(
+    `${schema}.${resource}:update` as AppPermission
+  )
+
   if (!tableSchema || !columnsSchema?.length || !record) {
     return (
       <div className="flex flex-1 items-center justify-center p-4 text-sm text-muted-foreground">
         Record unavailable.
       </div>
+    )
+  }
+
+  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+  const canEdit = primaryKeys.length > 0 && canUpdate
+
+  if (canEdit) {
+    return (
+      <ResourceFormSheetContent
+        mode="update"
+        tableSchema={tableSchema}
+        columnsSchema={columnsSchema}
+        record={record}
+        onClose={onClose}
+      />
     )
   }
 

@@ -88,6 +88,7 @@ export const Route = createFileRoute(
       resourceSchema,
       columnsSchema,
       pkName,
+      primaryKeys,
       ...classification,
     }
   },
@@ -226,8 +227,6 @@ function RouteComponent() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-
   const resourceDisplayName =
     (JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ??
     formatTitle(resource)
@@ -276,8 +275,6 @@ function RouteComponent() {
           schema={schema}
           resource={resource}
           resourceId={resourceId}
-          isTable={!!tableSchema}
-          mode="detail"
         />
       </DefaultHeader>
       <div className="flex flex-1 flex-col">
