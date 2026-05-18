@@ -275,8 +275,9 @@ comment on table hr.departments is '{
     "query": {
         "sort": [{"id":"name","desc":false}]
     },
-    "primaryItem": "gallery",
+    "primaryItem": "tree",
     "items": [
+        {"id":"tree","name":"Org Tree","type":"tree","parent":"parent_id","title":"name","secondary":"code"},
         {"id":"gallery","name":"Department Gallery","type":"gallery","cover":"cover","title":"name","description":"description","badge":"code"}
     ],
     "sections": [

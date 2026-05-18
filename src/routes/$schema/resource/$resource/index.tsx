@@ -52,6 +52,12 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
         params: { schema, resource, listId: primaryItem.id },
       })
     }
+    if (primaryItem?.type === "tree") {
+      throw redirect({
+        to: "/$schema/resource/$resource/tree/$treeId",
+        params: { schema, resource, treeId: primaryItem.id },
+      })
+    }
     if (primary === "grid") {
       throw redirect({
         to: "/$schema/resource/$resource/grid",

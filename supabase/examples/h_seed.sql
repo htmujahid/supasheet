@@ -84,6 +84,108 @@ values
     '#60a5fa',
     current_timestamp - interval '700 days',
     current_timestamp - interval '40 days'
+  ),
+  -- Level 2: more sub-departments under top-level orgs
+  (
+    'e0000000-0000-0000-0000-000000000008',
+    'Platform',
+    'ENG-PLAT',
+    'Shared platform services and developer tooling.',
+    'e0000000-0000-0000-0000-000000000001',
+    '#2563eb',
+    current_timestamp - interval '680 days',
+    current_timestamp - interval '35 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-000000000009',
+    'Design Systems',
+    'ENG-DS',
+    'Component library and design tokens.',
+    'e0000000-0000-0000-0000-000000000007',
+    '#93c5fd',
+    current_timestamp - interval '640 days',
+    current_timestamp - interval '20 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-00000000000a',
+    'Inside Sales',
+    'SLS-IN',
+    'SMB and self-serve revenue motion.',
+    'e0000000-0000-0000-0000-000000000003',
+    '#34d399',
+    current_timestamp - interval '720 days',
+    current_timestamp - interval '60 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-00000000000b',
+    'Field Sales',
+    'SLS-FLD',
+    'Enterprise account executives.',
+    'e0000000-0000-0000-0000-000000000003',
+    '#059669',
+    current_timestamp - interval '720 days',
+    current_timestamp - interval '60 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-00000000000c',
+    'Recruiting',
+    'POPS-REC',
+    'Talent acquisition and sourcing.',
+    'e0000000-0000-0000-0000-000000000005',
+    '#f472b6',
+    current_timestamp - interval '650 days',
+    current_timestamp - interval '25 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-00000000000d',
+    'Content',
+    'MKT-CON',
+    'Editorial, blog and product marketing.',
+    'e0000000-0000-0000-0000-000000000004',
+    '#fb923c',
+    current_timestamp - interval '700 days',
+    current_timestamp - interval '50 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-00000000000e',
+    'Demand Generation',
+    'MKT-DG',
+    'Paid acquisition and lifecycle campaigns.',
+    'e0000000-0000-0000-0000-000000000004',
+    '#fdba74',
+    current_timestamp - interval '700 days',
+    current_timestamp - interval '50 days'
+  ),
+  -- Level 3: teams within sub-departments
+  (
+    'e0000000-0000-0000-0000-000000000010',
+    'Site Reliability',
+    'ENG-PLAT-SRE',
+    'Production reliability, observability and oncall.',
+    'e0000000-0000-0000-0000-000000000008',
+    '#1e3a8a',
+    current_timestamp - interval '500 days',
+    current_timestamp - interval '15 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-000000000011',
+    'Database',
+    'ENG-PLAT-DB',
+    'Database operations and data infrastructure.',
+    'e0000000-0000-0000-0000-000000000008',
+    '#1e40af',
+    current_timestamp - interval '500 days',
+    current_timestamp - interval '15 days'
+  ),
+  (
+    'e0000000-0000-0000-0000-000000000012',
+    'API Platform',
+    'ENG-BE-API',
+    'Public API surface and SDK maintenance.',
+    'e0000000-0000-0000-0000-000000000006',
+    '#1d4ed8',
+    current_timestamp - interval '500 days',
+    current_timestamp - interval '15 days'
   );
 
 ----------------------------------------------------------------

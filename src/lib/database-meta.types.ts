@@ -135,11 +135,22 @@ export type ListViewItem = {
   type: "list"
 }
 
+export type TreeViewItem = {
+  id: string
+  name: string
+  query?: { [key: string]: unknown }
+  type: "tree"
+  parent: string
+  title: string
+  secondary?: string
+}
+
 export type MetaViewItem =
   | KanbanViewItem
   | CalendarViewItem
   | GalleryViewItem
   | ListViewItem
+  | TreeViewItem
 
 export type FilterTemplate = {
   id: string

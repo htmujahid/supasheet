@@ -6,6 +6,7 @@ import {
   ImageIcon,
   LayoutGridIcon,
   ListIcon,
+  ListTreeIcon,
   SquareKanbanIcon,
   TableIcon,
 } from "lucide-react"
@@ -43,6 +44,7 @@ function getMetaItemIcon(item: MetaItem) {
   if (item.type === "calendar") return <Grid3X3Icon className="size-3" />
   if (item.type === "gallery") return <ImageIcon className="size-3" />
   if (item.type === "list") return <ListIcon className="size-3" />
+  if (item.type === "tree") return <ListTreeIcon className="size-3" />
   return null
 }
 
@@ -104,6 +106,11 @@ export function ResourceViewSwitcher<S extends DatabaseSchemas>({
       navigate({
         to: "/$schema/resource/$resource/list/$listId",
         params: () => ({ schema, resource, listId: item.id }),
+      })
+    } else if (item.type === "tree") {
+      navigate({
+        to: "/$schema/resource/$resource/tree/$treeId",
+        params: () => ({ schema, resource, treeId: item.id }),
       })
     }
   }
