@@ -227,9 +227,11 @@ function RouteComponent() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const resourceDisplayName =
-    (JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata).name ??
-    formatTitle(resource)
+  const tableMeta = JSON.parse(
+    resourceSchema.comment ?? "{}"
+  ) as TableMetadata
+  const resourceDisplayName = tableMeta.name ?? formatTitle(resource)
+  const allowedTabs = tableMeta.tabs
 
   const basePath = `/${schema}/resource/${resource}/${resourceId}/detail`
   const MAIN_TAB = "__main__"
@@ -241,7 +243,7 @@ function RouteComponent() {
     return seg
   })()
 
-  const tabs: { id: string; label: string; path: string }[] = [
+  const allTabs: { id: string; label: string; path: string }[] = [
     { id: MAIN_TAB, label: "Detail", path: basePath },
     ...oneToOneRelationships.map((r) => ({
       id: r.__embedKey,
@@ -259,6 +261,10 @@ function RouteComponent() {
       path: `${basePath}/${r.name ?? ""}`,
     })),
   ]
+
+  const tabs = allowedTabs
+    ? allTabs.filter((t) => t.id === MAIN_TAB || allowedTabs.includes(t.id))
+    : allTabs
 
   return (
     <>

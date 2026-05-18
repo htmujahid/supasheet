@@ -28,7 +28,11 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey, ResourceSchema } from "#/lib/database-meta.types"
+import type {
+  PrimaryKey,
+  ResourceSchema,
+  TableMetadata,
+} from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
 import {
@@ -59,6 +63,11 @@ export const Route = createFileRoute(
       resource,
       relatedTablesSchema
     )
+
+    const allowedTabs = (
+      JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+    ).tabs
+    if (allowedTabs && !allowedTabs.includes(tab)) throw notFound()
 
     const oneToOne = classification.oneToOneRelationships.find(
       (r) => r.__embedKey === tab

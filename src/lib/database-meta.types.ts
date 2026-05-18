@@ -177,6 +177,7 @@ export type TableMetadata = {
   filterTemplates?: FilterTemplate[]
   sections?: FieldSection[]
   metadataColumns?: string[]
+  tabs?: string[]
 }
 
 export type ViewMetadata = {
