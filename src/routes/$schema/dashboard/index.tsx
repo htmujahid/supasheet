@@ -105,13 +105,27 @@ function RouteComponent() {
     )
   }
 
+  const cardWidgets = widgets.filter((w) => w.widget_type.startsWith("card_"))
+  const tableWidgets = widgets.filter((w) => w.widget_type.startsWith("table_"))
+
   return (
     <div className="w-full flex-1">
       <DefaultHeader breadcrumbs={[{ title: "Dashboard" }]} />
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-2.5 p-4 md:grid-cols-2 lg:grid-cols-4">
-        {widgets.map((widget) => (
-          <DashboardWidget key={widget.view_name} widget={widget} />
-        ))}
+      <div className="mx-auto max-w-6xl space-y-2.5 p-4">
+        {cardWidgets.length > 0 && (
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-4">
+            {cardWidgets.map((widget) => (
+              <DashboardWidget key={widget.view_name} widget={widget} />
+            ))}
+          </div>
+        )}
+        {tableWidgets.length > 0 && (
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-4">
+            {tableWidgets.sort((a, b) => a.widget_type.localeCompare(b.widget_type)).map((widget) => (
+              <DashboardWidget key={widget.view_name} widget={widget} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
