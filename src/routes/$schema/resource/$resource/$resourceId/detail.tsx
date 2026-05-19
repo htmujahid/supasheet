@@ -279,7 +279,6 @@ function RouteComponent() {
           schema={schema}
           resource={resource}
           resourceId={resourceId}
-          historyTable={tableMeta.history?.table}
         />
       </DefaultHeader>
       <div className="flex flex-1 flex-col">

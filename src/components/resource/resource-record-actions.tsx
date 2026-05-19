@@ -2,7 +2,6 @@ import { useNavigate } from "@tanstack/react-router"
 
 import {
   ChevronDownIcon,
-  ClockIcon,
   HistoryIcon,
   MessageSquareIcon,
 } from "lucide-react"
@@ -17,34 +16,26 @@ import {
 } from "#/components/ui/dropdown-menu"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { DatabaseSchemas } from "#/lib/database-meta.types"
-import type { AppPermission } from "#/lib/supabase/data/core"
 
 interface ResourceRecordActionsProps {
   schema: DatabaseSchemas
   resource: never
   resourceId: string
-  historyTable?: string
 }
 
 export function ResourceRecordActions({
   schema,
   resource,
   resourceId,
-  historyTable,
 }: ResourceRecordActionsProps) {
   const navigate = useNavigate()
 
   const canViewAudit = useHasPermission(`${schema}.${resource}:audit`)
   const canViewComments = useHasPermission(`${schema}.${resource}:comment`)
-  const canViewHistory = useHasPermission(
-    historyTable
-      ? (`${schema}.${historyTable}:select` as AppPermission)
-      : ("__none__" as AppPermission)
-  )
 
   const params = { schema, resource, resourceId }
 
-  if (!canViewAudit && !canViewComments && !canViewHistory) return null
+  if (!canViewAudit && !canViewComments) return null
 
   return (
     <DropdownMenu>
@@ -69,19 +60,6 @@ export function ResourceRecordActions({
             >
               <MessageSquareIcon />
               Comments
-            </DropdownMenuItem>
-          )}
-          {canViewHistory && historyTable && (
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  to: "/$schema/resource/$resource/$resourceId/history",
-                  params,
-                })
-              }
-            >
-              <ClockIcon />
-              History
             </DropdownMenuItem>
           )}
           {canViewAudit && (
