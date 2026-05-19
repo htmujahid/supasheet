@@ -235,3 +235,25 @@ from
 
 grant
 execute on FUNCTION supasheet.get_permissions (text) to authenticated;
+
+----------------------------------------------------------------
+-- Function: supasheet.set_updated_at
+----------------------------------------------------------------
+create or replace function supasheet.set_updated_at () returns trigger as $$
+begin
+    new.updated_at := now();
+    return new;
+end;
+$$ language plpgsql;
+
+----------------------------------------------------------------
+-- Function: supasheet.set_updated_by
+----------------------------------------------------------------
+create or replace function supasheet.set_updated_by () returns trigger as $$
+begin
+    if auth.uid () is not null then
+        new.updated_by := auth.uid ();
+    end if;
+    return new;
+end;
+$$ language plpgsql;

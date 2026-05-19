@@ -26,11 +26,9 @@ import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
-  DatabaseSchemas,
-  DatabaseTables,
-  DatabaseViews,
   PrimaryKey,
   ResourceSchema,
+  TableMetadata,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import {
@@ -40,25 +38,21 @@ import {
 
 import { getResourceForeignTableColumns } from "./resource-foreign-table-columns"
 
-type ResourceForeignTableProps<S extends DatabaseSchemas> = {
-  schema: S
-  table: DatabaseTables<S> | DatabaseViews<S>
+type ResourceForeignTableProps = {
   parentColumn: string
   parentValue: unknown
-  resourceSchema: ResourceSchema & { columns: ColumnSchema[] }
+  resourceSchema: ResourceSchema
   columnsSchema: ColumnSchema[]
   selectClause?: string
 }
 
-export function ResourceForeignTable<S extends DatabaseSchemas>({
-  schema,
-  table,
+export function ResourceForeignTable({
   parentColumn,
   parentValue,
   resourceSchema,
   columnsSchema,
-  selectClause = "*",
-}: ResourceForeignTableProps<S>) {
+  selectClause,
+}: ResourceForeignTableProps) {
   const queryClient = useQueryClient()
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
@@ -76,11 +70,23 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
 
+  const schema = resourceSchema.schema
+  const table = resourceSchema.name
+
   const canDelete = useHasPermission(`${schema}.${table}:delete`)
   const canInsert = useHasPermission(`${schema}.${table}:insert`)
 
   const hasParentValue =
     parentValue !== undefined && parentValue !== null && parentValue !== ""
+
+  const defaultQuery = useMemo<TableMetadata["query"]>(() => {
+    if (!resourceSchema.comment) return undefined
+    try {
+      return (JSON.parse(resourceSchema.comment) as TableMetadata).query
+    } catch {
+      return undefined
+    }
+  }, [resourceSchema.comment])
 
   const { data: queryResult } = useSuspenseQuery(
     foreignTableDataQueryOptions(
@@ -88,6 +94,7 @@ export function ResourceForeignTable<S extends DatabaseSchemas>({
       table,
       parentColumn,
       hasParentValue ? parentValue : "__noop__",
+      defaultQuery,
       selectClause,
       pagination.pageIndex + 1,
       pagination.pageSize,

@@ -165,6 +165,10 @@ export type FilterTemplate = {
   }[]
 }
 
+export type HistoryMetadata = {
+  table: DatabaseTables<DatabaseSchemas>
+}
+
 export type TableMetadata = {
   display?: "block" | "none"
   name?: string
@@ -189,6 +193,7 @@ export type TableMetadata = {
   sections?: FieldSection[]
   metadataColumns?: string[]
   tabs?: string[]
+  history?: HistoryMetadata
 }
 
 export type ViewMetadata = {

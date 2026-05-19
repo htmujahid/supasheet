@@ -135,6 +135,10 @@ add value 'desk.task_comments:comment';
 alter type supasheet.app_permission
 add value 'desk.users:select';
 
+-- Task history permissions
+alter type supasheet.app_permission
+add value 'desk.tasks_history:select';
+
 commit;
 
 ----------------------------------------------------------------
@@ -418,7 +422,8 @@ comment on table desk.tasks is '{
         {"id":"organization","title":"Organization","fields":["project_id","tags","is_important"]},
         {"id":"progress","title":"Progress","fields":["completion","estimated_duration","duration"]},
         {"id":"extras","title":"Attachments & notes","description":"Files, color tag, and free-form notes","collapsible":true,"fields":["attachments","color","notes"]}
-    ]
+    ],
+    "history": {"table":"tasks_history"}
 }';
 
 comment on column desk.tasks.cover is '{"accept":"image/*"}';
@@ -498,6 +503,89 @@ create policy tasks_delete on desk.tasks for delete to authenticated using (
   )
   and supasheet.has_permission ('desk.tasks:delete')
 );
+
+----------------------------------------------------------------
+-- Tasks history (per-resource change log for tracked columns)
+----------------------------------------------------------------
+create table desk.tasks_history (
+  id uuid primary key default extensions.uuid_generate_v4 (),
+  task_id uuid not null references desk.tasks (id) on delete cascade,
+  status desk.task_status,
+  priority desk.task_priority,
+  assignee_id uuid references supasheet.users (id) on delete set null,
+  updated_by uuid references supasheet.users (id) on delete set null,
+  updated_at timestamptz
+);
+
+comment on table desk.tasks_history is '{
+    "icon": "History",
+    "display": "none",
+    "query": {
+        "sort": [{"id":"updated_at","desc":true}],
+        "join": [
+            {"table":"users","on":"updated_by","columns":["name"]},
+            {"table":"tasks","on":"task_id","columns":["title"]}
+        ]
+    }
+}';
+
+revoke all on table desk.tasks_history
+from
+  authenticated,
+  service_role;
+
+grant
+select
+  on table desk.tasks_history to authenticated;
+
+create index idx_tasks_history_task_id on desk.tasks_history (task_id);
+
+create index idx_tasks_history_updated_at on desk.tasks_history (updated_at desc);
+
+alter table desk.tasks_history enable row level security;
+
+create policy tasks_history_select on desk.tasks_history for
+select
+  to authenticated using (
+    supasheet.has_permission ('desk.tasks_history:select')
+    and exists (
+      select
+        1
+      from
+        desk.tasks t
+      where
+        t.id = task_id
+        and t.user_id = (
+          select
+            auth.uid ()
+        )
+    )
+  );
+
+insert into
+  supasheet.role_permissions (role, permission)
+values
+  ('x-admin', 'desk.tasks_history:select');
+
+create or replace function desk.tasks_record_history () returns trigger as $$
+begin
+    if new.status is distinct from old.status
+       or new.priority is distinct from old.priority
+       or new.assignee_id is distinct from old.assignee_id then
+        insert into desk.tasks_history (task_id, status, priority, assignee_id, updated_by, updated_at)
+        values (old.id, old.status, old.priority, old.assignee_id, auth.uid (), old.updated_at);
+    end if;
+    return new;
+end;
+$$ language plpgsql security definer
+set
+  search_path = '';
+
+create trigger tasks_record_history before
+update of status,
+priority,
+assignee_id on desk.tasks for each row
+execute function desk.tasks_record_history ();
 
 ----------------------------------------------------------------
 -- Task comments (threaded discussion on a task)
@@ -2387,3 +2475,15 @@ execute function desk.soft_delete ();
 
 create trigger aa_soft_delete_timesheets before delete on desk.timesheets for each row
 execute function desk.soft_delete ();
+
+create trigger set_updated_at_projects before update on desk.projects for each row
+execute function supasheet.set_updated_at ();
+
+create trigger set_updated_at_tasks before update on desk.tasks for each row
+execute function supasheet.set_updated_at ();
+
+create trigger set_updated_at_task_comments before update on desk.task_comments for each row
+execute function supasheet.set_updated_at ();
+
+create trigger set_updated_at_timesheets before update on desk.timesheets for each row
+execute function supasheet.set_updated_at ();

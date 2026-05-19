@@ -227,19 +227,25 @@ function RouteComponent() {
 
   if (!many) return null
 
-  const parentValue = record?.[many.__targetColumn]
+  const {
+    columns,
+    __parentColumn,
+    __targetColumn,
+    __selectClause,
+    ...resourceSchema
+  } = many
+
+  const parentValue = record?.[__targetColumn]
 
   return (
     <>
       <Suspense fallback={<DataTableSkeleton columnCount={10} />}>
         <ResourceForeignTable
-          schema={many.schema ?? schema}
-          table={many.name}
-          parentColumn={many.__parentColumn}
+          parentColumn={__parentColumn}
           parentValue={parentValue}
-          resourceSchema={many}
-          columnsSchema={many.columns ?? []}
-          selectClause={many.__selectClause}
+          resourceSchema={resourceSchema}
+          columnsSchema={columns ?? []}
+          selectClause={__selectClause}
         />
       </Suspense>
       <Outlet />

@@ -189,9 +189,20 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
         query = query.range((page - 1) * pageSize, page * pageSize - 1)
       }
 
-      if (sortId) query = query.order(sortId, { ascending: !sortDesc })
+      if (sortId) {
+        query = query.order(sortId, { ascending: !sortDesc })
+      } else if (defaultQuery?.sort?.length) {
+        for (const s of defaultQuery.sort) {
+          query = query.order(s.id, { ascending: !s.desc })
+        }
+      }
 
-      query = applyFilters(query, filters)
+      const metaFilters: ColumnFiltersState =
+        defaultQuery?.filter?.map((f) => ({
+          id: f.id,
+          value: `${f.operator}.${Array.isArray(f.value) ? f.value.join(",") : f.value}`,
+        })) ?? []
+      query = applyFilters(query, [...metaFilters, ...filters])
 
       const { data, count, error } = await query
       if (error) throw error
@@ -209,7 +220,8 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
   resource: DatabaseTables<S> | DatabaseViews<S>,
   parentColumn: string,
   parentValue: unknown,
-  selectClause: string = "*",
+  defaultQuery?: TableMetadata["query"],
+  selectClause?: string,
   page?: number,
   pageSize?: number,
   sortId?: string,
@@ -225,6 +237,7 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
       "foreign",
       parentColumn,
       parentValue,
+      defaultQuery,
       selectClause,
       page,
       pageSize,
@@ -233,19 +246,39 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
       filters,
     ],
     queryFn: async () => {
+      const joins =
+        defaultQuery?.join?.map(
+          (j) =>
+            `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
+        ) || []
+
+      const baseSelect =
+        selectClause ?? defaultQuery?.select?.join(",") ?? "*"
+
       let query = supabase
         .schema(schema)
         .from(resource)
-        .select(selectClause, { count: "exact" })
+        .select(baseSelect + joins.join(""), { count: "exact" })
         .eq(parentColumn as never, parentValue as never)
 
       if (page && pageSize) {
         query = query.range((page - 1) * pageSize, page * pageSize - 1)
       }
 
-      if (sortId) query = query.order(sortId, { ascending: !sortDesc })
+      if (sortId) {
+        query = query.order(sortId, { ascending: !sortDesc })
+      } else if (defaultQuery?.sort?.length) {
+        for (const s of defaultQuery.sort) {
+          query = query.order(s.id, { ascending: !s.desc })
+        }
+      }
 
-      query = applyFilters(query, filters)
+      const metaFilters: ColumnFiltersState =
+        defaultQuery?.filter?.map((f) => ({
+          id: f.id,
+          value: `${f.operator}.${Array.isArray(f.value) ? f.value.join(",") : f.value}`,
+        })) ?? []
+      query = applyFilters(query, [...metaFilters, ...filters])
 
       const { data, count, error } = await query
       if (error) throw error

@@ -110,7 +110,7 @@ function RouteComponent() {
                 params={{ schema: params.schema }}
               >
                 <Card className="transition-colors hover:bg-accent/50">
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <div className="flex items-center gap-3">
                       <span className="text-muted-foreground">{link.icon}</span>
                       <div>
