@@ -34,7 +34,6 @@ import type {
   TableMetadata,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
-import type { AppPermission } from "#/lib/supabase/data/core"
 import {
   relatedTablesSchemaQueryOptions,
   singleResourceDataQueryOptions,
@@ -130,9 +129,7 @@ function RouteComponent() {
   )
 
   const canUpdateOneToOne = useHasPermission(
-    oneToOne
-      ? `${oneToOne.schema}.${oneToOne.name}:update`
-      : ("__none__" as AppPermission)
+    oneToOne ? `${oneToOne.schema}.${oneToOne.name}:update` : undefined
   )
   const canUpdateParent = useHasPermission(`${schema}.${resource}:update`)
 

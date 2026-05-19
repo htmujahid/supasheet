@@ -1,6 +1,10 @@
 import { useRouterState } from "@tanstack/react-router"
 
+import { useQuery } from "@tanstack/react-query"
+
+import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import type { AppPermission } from "#/lib/supabase/data/core"
+import { userPermissionsQueryOptions } from "#/lib/supabase/data/core"
 
 type PermissionRow = { permission: AppPermission }
 
@@ -16,7 +20,26 @@ function usePermissions(): PermissionRow[] | null {
   })
 }
 
-export function useHasPermission(permission: AppPermission): boolean {
-  const permissions = usePermissions()
+function getSchema(
+  permission: AppPermission | undefined
+): DatabaseSchemas | undefined {
+  return permission?.split(".")[0] as DatabaseSchemas | undefined
+}
+
+export function useHasPermission(
+  permission: AppPermission | undefined
+): boolean {
+  const contextPermissions = usePermissions()
+  const targetSchema = getSchema(permission)
+  const activeSchema = getSchema(contextPermissions?.[0]?.permission)
+  const isActiveSchema = !!targetSchema && targetSchema === activeSchema
+
+  const { data: fetchedPermissions } = useQuery({
+    ...userPermissionsQueryOptions(targetSchema),
+    enabled: !!permission && !isActiveSchema,
+  })
+
+  if (!permission) return false
+  const permissions = isActiveSchema ? contextPermissions : fetchedPermissions
   return permissions?.some((p) => p.permission === permission) ?? false
 }
