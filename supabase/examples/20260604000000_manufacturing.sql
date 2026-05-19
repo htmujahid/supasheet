@@ -2150,7 +2150,7 @@ begin
             'quantity_planned',  new.quantity_planned,
             'quantity_completed',new.quantity_completed
         ),
-        '/manufacturing/resource/work_orders/detail/' || new.id::text
+        '/manufacturing/resource/work_orders/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2211,7 +2211,7 @@ begin
             'quantity_good',           new.quantity_good,
             'quantity_scrap',          new.quantity_scrap
         ),
-        '/manufacturing/resource/work_order_operations/detail/' || new.id::text
+        '/manufacturing/resource/work_order_operations/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2271,7 +2271,7 @@ begin
             'quantity',             new.quantity,
             'lot_number',           new.lot_number
         ),
-        '/manufacturing/resource/production_outputs/detail/' || new.id::text
+        '/manufacturing/resource/production_outputs/' || new.id::text || '/detail'
     );
     return new;
 end;

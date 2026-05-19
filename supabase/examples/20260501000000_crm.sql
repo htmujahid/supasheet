@@ -1485,7 +1485,7 @@ begin
     perform supasheet.create_notification(
         v_type, v_title, v_body, v_recipients,
         jsonb_build_object('company_id', new.id, 'type', new.type),
-        '/crm/resource/companies/detail/' || new.id::text
+        '/crm/resource/companies/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1543,7 +1543,7 @@ begin
             'stage',             new.stage,
             'value',             new.value
         ),
-        '/crm/resource/deals/detail/' || new.id::text
+        '/crm/resource/deals/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1604,7 +1604,7 @@ begin
             'type',        new.type,
             'status',      new.status
         ),
-        '/crm/resource/activities/detail/' || new.id::text
+        '/crm/resource/activities/' || new.id::text || '/detail'
     );
     return new;
 end;

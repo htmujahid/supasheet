@@ -1570,7 +1570,7 @@ begin
     perform supasheet.create_notification(
         v_type, v_title, v_body, v_recipients,
         jsonb_build_object('project_id', new.id, 'status', new.status),
-        '/desk/resource/projects/detail/' || new.id::text
+        '/desk/resource/projects/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1624,7 +1624,7 @@ begin
             'status',      new.status,
             'assignee_id', new.assignee_id
         ),
-        '/desk/resource/tasks/detail/' || new.id::text
+        '/desk/resource/tasks/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1664,7 +1664,7 @@ begin
             'comment_id',   new.id,
             'commenter_id', new.user_id
         ),
-        '/desk/resource/tasks/detail/' || new.task_id::text
+        '/desk/resource/tasks/' || new.task_id::text || '/detail'
     );
     return new;
 end;
@@ -2429,7 +2429,7 @@ begin
             'project_id',   new.project_id,
             'status',       new.status
         ),
-        '/desk/resource/timesheets/detail/' || new.id::text
+        '/desk/resource/timesheets/' || new.id::text || '/detail'
     );
     return new;
 end;

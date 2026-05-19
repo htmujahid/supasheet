@@ -2514,7 +2514,7 @@ begin
             'priority',        new.priority,
             'estimated_total', new.estimated_total
         ),
-        '/procurement/resource/requisitions/detail/' || new.id::text
+        '/procurement/resource/requisitions/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2573,7 +2573,7 @@ begin
             'end_date',    new.end_date,
             'value',       new.value
         ),
-        '/procurement/resource/contracts/detail/' || new.id::text
+        '/procurement/resource/contracts/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2640,7 +2640,7 @@ begin
             'status',         new.status,
             'scheduled_date', new.scheduled_date
         ),
-        '/procurement/resource/asset_maintenance/detail/' || new.id::text
+        '/procurement/resource/asset_maintenance/' || new.id::text || '/detail'
     );
     return new;
 end;

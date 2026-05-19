@@ -1681,7 +1681,7 @@ begin
             'type',             new.type,
             'status',           new.status
         ),
-        '/hr/resource/leave_requests/detail/' || new.id::text
+        '/hr/resource/leave_requests/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1736,7 +1736,7 @@ begin
             'status',      new.status,
             'rating',      new.rating
         ),
-        '/hr/resource/performance_reviews/detail/' || new.id::text
+        '/hr/resource/performance_reviews/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1784,7 +1784,7 @@ begin
             'posting_id',   new.posting_id,
             'status',       new.status
         ),
-        '/hr/resource/candidates/detail/' || new.id::text
+        '/hr/resource/candidates/' || new.id::text || '/detail'
     );
     return new;
 end;

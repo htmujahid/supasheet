@@ -2266,7 +2266,7 @@ begin
             'status',     new.status,
             'total',      new.total
         ),
-        '/finance/resource/invoices/detail/' || new.id::text
+        '/finance/resource/invoices/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2318,7 +2318,7 @@ begin
             'amount',     new.amount,
             'category',   new.category
         ),
-        '/finance/resource/expenses/detail/' || new.id::text
+        '/finance/resource/expenses/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2364,7 +2364,7 @@ begin
             'total_net',      new.total_net,
             'employee_count', new.employee_count
         ),
-        '/finance/resource/payroll_runs/detail/' || new.id::text
+        '/finance/resource/payroll_runs/' || new.id::text || '/detail'
     );
     return new;
 end;

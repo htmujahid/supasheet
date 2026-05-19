@@ -2348,7 +2348,7 @@ begin
             'product_sku',       new.product_sku,
             'quantity_affected', new.quantity_affected
         ),
-        '/quality/resource/non_conformances/detail/' || new.id::text
+        '/quality/resource/non_conformances/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2400,7 +2400,7 @@ begin
             'target_close_date', new.target_close_date,
             'ncr_id',           new.ncr_id
         ),
-        '/quality/resource/capa/detail/' || new.id::text
+        '/quality/resource/capa/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2454,7 +2454,7 @@ begin
             'expiry_date',        new.expiry_date,
             'next_audit_date',    new.next_audit_date
         ),
-        '/quality/resource/certifications/detail/' || new.id::text
+        '/quality/resource/certifications/' || new.id::text || '/detail'
     );
     return new;
 end;

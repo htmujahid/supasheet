@@ -1428,7 +1428,7 @@ begin
                 'slug',      new.slug,
                 'author_id', new.author_id
             ),
-            '/blog/resource/posts/detail/' || new.id::text
+            '/blog/resource/posts/' || new.id::text || '/detail'
         );
     end if;
     return new;
@@ -1480,7 +1480,7 @@ begin
             'comment_id', new.id,
             'status',     new.status
         ),
-        '/blog/resource/posts/detail/' || new.post_id::text
+        '/blog/resource/posts/' || new.post_id::text || '/detail'
     );
     return new;
 end;

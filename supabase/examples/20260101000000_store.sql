@@ -1238,7 +1238,7 @@ begin
             'status',       new.status,
             'total',        new.total
         ),
-        '/store/resource/orders/detail/' || new.id::text
+        '/store/resource/orders/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1275,7 +1275,7 @@ begin
                 'sku',        new.sku,
                 'stock',      new.stock
             ),
-            '/store/resource/products/detail/' || new.id::text
+            '/store/resource/products/' || new.id::text || '/detail'
         );
     end if;
     return new;
@@ -1327,7 +1327,7 @@ begin
             'rating',     new.rating,
             'status',     new.status
         ),
-        '/store/resource/reviews/detail/' || new.id::text
+        '/store/resource/reviews/' || new.id::text || '/detail'
     );
     return new;
 end;

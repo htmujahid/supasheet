@@ -2157,7 +2157,7 @@ begin
             'progress_pct',    new.progress_pct,
             'final_score',     new.final_score
         ),
-        '/lms/resource/enrollments/detail/' || new.id::text
+        '/lms/resource/enrollments/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2218,7 +2218,7 @@ begin
             'score',           new.score,
             'is_passing',      new.is_passing
         ),
-        '/lms/resource/submissions/detail/' || new.id::text
+        '/lms/resource/submissions/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2273,7 +2273,7 @@ begin
             'issued_at',       new.issued_at,
             'expires_at',      new.expires_at
         ),
-        '/lms/resource/certificates/detail/' || new.id::text
+        '/lms/resource/certificates/' || new.id::text || '/detail'
     );
     return new;
 end;

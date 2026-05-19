@@ -2048,7 +2048,7 @@ begin
             'quantity_on_hand',   new.quantity_on_hand,
             'status',             new.status
         ),
-        '/inventory/resource/stock_levels/detail/' || new.id::text
+        '/inventory/resource/stock_levels/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2102,7 +2102,7 @@ begin
             'status',            new.status,
             'total',             new.total
         ),
-        '/inventory/resource/purchase_orders/detail/' || new.id::text
+        '/inventory/resource/purchase_orders/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2156,7 +2156,7 @@ begin
             'carrier',         new.carrier,
             'tracking_number', new.tracking_number
         ),
-        '/inventory/resource/shipments/detail/' || new.id::text
+        '/inventory/resource/shipments/' || new.id::text || '/detail'
     );
     return new;
 end;

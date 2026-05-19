@@ -1889,7 +1889,7 @@ begin
             'resident_id',   new.resident_id,
             'room_id',       new.room_id
         ),
-        '/hostel/resource/allocations/detail/' || new.id::text
+        '/hostel/resource/allocations/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -1953,7 +1953,7 @@ begin
             'due_date',     new.due_date,
             'resident_id',  new.resident_id
         ),
-        '/hostel/resource/payments/detail/' || new.id::text
+        '/hostel/resource/payments/' || new.id::text || '/detail'
     );
     return new;
 end;
@@ -2020,7 +2020,7 @@ begin
             'priority',     new.priority,
             'status',       new.status
         ),
-        '/hostel/resource/complaints/detail/' || new.id::text
+        '/hostel/resource/complaints/' || new.id::text || '/detail'
     );
     return new;
 end;
