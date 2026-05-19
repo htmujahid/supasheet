@@ -2,7 +2,6 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 
 import {
   ArrowRightIcon,
-  BellIcon,
   ClipboardListIcon,
   KeyRoundIcon,
   ShieldIcon,
@@ -40,12 +39,6 @@ const sections = [
     description: "Review a full history of actions taken across the system.",
     url: "/core/audit_logs",
     icon: <ClipboardListIcon className="size-5" />,
-  },
-  {
-    title: "Notifications",
-    description: "Stay informed with system alerts and activity updates.",
-    url: "/core/notifications",
-    icon: <BellIcon className="size-5" />,
   },
 ]
 

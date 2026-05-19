@@ -35,7 +35,6 @@ import { Route as StorageBucketIdIndexRouteImport } from './routes/storage/$buck
 import { Route as CoreUsersIndexRouteImport } from './routes/core/users/index'
 import { Route as CoreUser_rolesIndexRouteImport } from './routes/core/user_roles/index'
 import { Route as CoreRole_permissionsIndexRouteImport } from './routes/core/role_permissions/index'
-import { Route as CoreNotificationsIndexRouteImport } from './routes/core/notifications/index'
 import { Route as CoreAudit_logsIndexRouteImport } from './routes/core/audit_logs/index'
 import { Route as SchemaTemplateIndexRouteImport } from './routes/$schema/template/index'
 import { Route as SchemaReportIndexRouteImport } from './routes/$schema/report/index'
@@ -212,11 +211,6 @@ const CoreRole_permissionsIndexRoute =
     path: '/role_permissions/',
     getParentRoute: () => CoreRouteRoute,
   } as any)
-const CoreNotificationsIndexRoute = CoreNotificationsIndexRouteImport.update({
-  id: '/notifications/',
-  path: '/notifications/',
-  getParentRoute: () => CoreRouteRoute,
-} as any)
 const CoreAudit_logsIndexRoute = CoreAudit_logsIndexRouteImport.update({
   id: '/audit_logs/',
   path: '/audit_logs/',
@@ -502,7 +496,6 @@ export interface FileRoutesByFullPath {
   '/$schema/report/': typeof SchemaReportIndexRoute
   '/$schema/template/': typeof SchemaTemplateIndexRoute
   '/core/audit_logs/': typeof CoreAudit_logsIndexRoute
-  '/core/notifications/': typeof CoreNotificationsIndexRoute
   '/core/role_permissions/': typeof CoreRole_permissionsIndexRoute
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
@@ -568,7 +561,6 @@ export interface FileRoutesByTo {
   '/$schema/report': typeof SchemaReportIndexRoute
   '/$schema/template': typeof SchemaTemplateIndexRoute
   '/core/audit_logs': typeof CoreAudit_logsIndexRoute
-  '/core/notifications': typeof CoreNotificationsIndexRoute
   '/core/role_permissions': typeof CoreRole_permissionsIndexRoute
   '/core/user_roles': typeof CoreUser_rolesIndexRoute
   '/core/users': typeof CoreUsersIndexRoute
@@ -641,7 +633,6 @@ export interface FileRoutesById {
   '/$schema/report/': typeof SchemaReportIndexRoute
   '/$schema/template/': typeof SchemaTemplateIndexRoute
   '/core/audit_logs/': typeof CoreAudit_logsIndexRoute
-  '/core/notifications/': typeof CoreNotificationsIndexRoute
   '/core/role_permissions/': typeof CoreRole_permissionsIndexRoute
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
@@ -716,7 +707,6 @@ export interface FileRouteTypes {
     | '/$schema/report/'
     | '/$schema/template/'
     | '/core/audit_logs/'
-    | '/core/notifications/'
     | '/core/role_permissions/'
     | '/core/user_roles/'
     | '/core/users/'
@@ -782,7 +772,6 @@ export interface FileRouteTypes {
     | '/$schema/report'
     | '/$schema/template'
     | '/core/audit_logs'
-    | '/core/notifications'
     | '/core/role_permissions'
     | '/core/user_roles'
     | '/core/users'
@@ -854,7 +843,6 @@ export interface FileRouteTypes {
     | '/$schema/report/'
     | '/$schema/template/'
     | '/core/audit_logs/'
-    | '/core/notifications/'
     | '/core/role_permissions/'
     | '/core/user_roles/'
     | '/core/users/'
@@ -1085,13 +1073,6 @@ declare module '@tanstack/react-router' {
       path: '/role_permissions'
       fullPath: '/core/role_permissions/'
       preLoaderRoute: typeof CoreRole_permissionsIndexRouteImport
-      parentRoute: typeof CoreRouteRoute
-    }
-    '/core/notifications/': {
-      id: '/core/notifications/'
-      path: '/notifications'
-      fullPath: '/core/notifications/'
-      preLoaderRoute: typeof CoreNotificationsIndexRouteImport
       parentRoute: typeof CoreRouteRoute
     }
     '/core/audit_logs/': {
@@ -1698,7 +1679,6 @@ interface CoreRouteRouteChildren {
   CoreUsersInviteRoute: typeof CoreUsersInviteRoute
   CoreUsersNewRoute: typeof CoreUsersNewRoute
   CoreAudit_logsIndexRoute: typeof CoreAudit_logsIndexRoute
-  CoreNotificationsIndexRoute: typeof CoreNotificationsIndexRoute
   CoreRole_permissionsIndexRoute: typeof CoreRole_permissionsIndexRoute
   CoreUser_rolesIndexRoute: typeof CoreUser_rolesIndexRoute
   CoreUsersIndexRoute: typeof CoreUsersIndexRoute
@@ -1713,7 +1693,6 @@ const CoreRouteRouteChildren: CoreRouteRouteChildren = {
   CoreUsersInviteRoute: CoreUsersInviteRoute,
   CoreUsersNewRoute: CoreUsersNewRoute,
   CoreAudit_logsIndexRoute: CoreAudit_logsIndexRoute,
-  CoreNotificationsIndexRoute: CoreNotificationsIndexRoute,
   CoreRole_permissionsIndexRoute: CoreRole_permissionsIndexRoute,
   CoreUser_rolesIndexRoute: CoreUser_rolesIndexRoute,
   CoreUsersIndexRoute: CoreUsersIndexRoute,
