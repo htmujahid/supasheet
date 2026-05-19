@@ -241,6 +241,7 @@ function RouteComponent() {
     <>
       <Suspense fallback={<DataTableSkeleton columnCount={10} />}>
         <ResourceForeignTable
+          parentResource={resource}
           parentColumn={__parentColumn}
           parentValue={parentValue}
           resourceSchema={resourceSchema}

@@ -39,6 +39,7 @@ import {
 import { getResourceForeignTableColumns } from "./resource-foreign-table-columns"
 
 type ResourceForeignTableProps = {
+  parentResource: string
   parentColumn: string
   parentValue: unknown
   resourceSchema: ResourceSchema
@@ -47,6 +48,7 @@ type ResourceForeignTableProps = {
 }
 
 export function ResourceForeignTable({
+  parentResource,
   parentColumn,
   parentValue,
   resourceSchema,
@@ -91,6 +93,7 @@ export function ResourceForeignTable({
   const { data: queryResult } = useSuspenseQuery(
     foreignTableDataQueryOptions(
       schema,
+      parentResource as never,
       table,
       parentColumn,
       hasParentValue ? parentValue : "__noop__",

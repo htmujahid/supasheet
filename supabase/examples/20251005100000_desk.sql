@@ -2476,14 +2476,18 @@ execute function desk.soft_delete ();
 create trigger aa_soft_delete_timesheets before delete on desk.timesheets for each row
 execute function desk.soft_delete ();
 
-create trigger set_updated_at_projects before update on desk.projects for each row
+create trigger set_updated_at_projects before
+update on desk.projects for each row
 execute function supasheet.set_updated_at ();
 
-create trigger set_updated_at_tasks before update on desk.tasks for each row
+create trigger set_updated_at_tasks before
+update on desk.tasks for each row
 execute function supasheet.set_updated_at ();
 
-create trigger set_updated_at_task_comments before update on desk.task_comments for each row
+create trigger set_updated_at_task_comments before
+update on desk.task_comments for each row
 execute function supasheet.set_updated_at ();
 
-create trigger set_updated_at_timesheets before update on desk.timesheets for each row
+create trigger set_updated_at_timesheets before
+update on desk.timesheets for each row
 execute function supasheet.set_updated_at ();

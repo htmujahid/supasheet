@@ -1,6 +1,11 @@
 import { useNavigate } from "@tanstack/react-router"
 
-import { ChevronDownIcon, HistoryIcon, MessageSquareIcon } from "lucide-react"
+import {
+  ChevronDownIcon,
+  ClockIcon,
+  HistoryIcon,
+  MessageSquareIcon,
+} from "lucide-react"
 
 import { Button } from "#/components/ui/button"
 import {
@@ -75,7 +80,7 @@ export function ResourceRecordActions({
                 })
               }
             >
-              <HistoryIcon />
+              <ClockIcon />
               History
             </DropdownMenuItem>
           )}

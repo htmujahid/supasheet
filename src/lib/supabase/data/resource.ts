@@ -217,6 +217,7 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
 
 export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
   schema: S,
+  parentResource: DatabaseTables<S> | DatabaseViews<S>,
   resource: DatabaseTables<S> | DatabaseViews<S>,
   parentColumn: string,
   parentValue: unknown,
@@ -233,8 +234,9 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
       "supasheet",
       "resource-data",
       schema,
-      resource,
+      parentResource,
       "foreign",
+      resource,
       parentColumn,
       parentValue,
       defaultQuery,
@@ -252,8 +254,7 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
             `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
-      const baseSelect =
-        selectClause ?? defaultQuery?.select?.join(",") ?? "*"
+      const baseSelect = selectClause ?? defaultQuery?.select?.join(",") ?? "*"
 
       let query = supabase
         .schema(schema)

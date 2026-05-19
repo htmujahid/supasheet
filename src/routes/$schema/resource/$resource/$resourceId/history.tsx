@@ -7,10 +7,7 @@ import { HistoryIcon } from "lucide-react"
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceForeignTable } from "#/components/resource/detail/resource-foreign-table"
-import type {
-  Relationship,
-  TableMetadata,
-} from "#/lib/database-meta.types"
+import type { Relationship, TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
@@ -117,7 +114,8 @@ function RouteComponent() {
       })()
     : formatTitle(resource)
 
-  const relationships = (historyTableSchema.relationships ?? []) as Relationship[]
+  const relationships = (historyTableSchema.relationships ??
+    []) as Relationship[]
   const parentColumn = relationships.find(
     (r) => r.target_table_name === resource && r.target_table_schema === schema
   )?.source_column_name
@@ -147,6 +145,7 @@ function RouteComponent() {
         {parentColumn ? (
           <Suspense fallback={<DataTableSkeleton columnCount={6} />}>
             <ResourceForeignTable
+              parentResource={resource}
               parentColumn={parentColumn}
               parentValue={resourceId}
               resourceSchema={historyTableSchema}
@@ -155,8 +154,9 @@ function RouteComponent() {
           </Suspense>
         ) : (
           <p className="text-sm text-muted-foreground">
-            No foreign-key relationship from {formatTitle(historyTableSchema.name)}{" "}
-            back to {formatTitle(resource)}.
+            No foreign-key relationship from{" "}
+            {formatTitle(historyTableSchema.name)} back to{" "}
+            {formatTitle(resource)}.
           </p>
         )}
       </div>

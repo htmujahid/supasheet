@@ -77,8 +77,7 @@ export const Route = createFileRoute(
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const treeView = meta.items?.find(
-      (item): item is TreeViewItem =>
-        item.id === treeId && item.type === "tree"
+      (item): item is TreeViewItem => item.id === treeId && item.type === "tree"
     )
     if (!treeView) throw notFound()
 
@@ -215,9 +214,7 @@ function RouteComponent() {
   const sheetLink = useSheetHref({ mode: "detail" })
 
   const handleSelect = (row: Record<string, unknown>) => {
-    const pk = Object.fromEntries(
-      primaryKeys.map((k) => [k.name, row[k.name]])
-    )
+    const pk = Object.fromEntries(primaryKeys.map((k) => [k.name, row[k.name]]))
     if (sheetLink) {
       navigate({
         to: sheetLink.to as never,

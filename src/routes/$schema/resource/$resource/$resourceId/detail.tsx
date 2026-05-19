@@ -227,9 +227,7 @@ function RouteComponent() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const tableMeta = JSON.parse(
-    resourceSchema.comment ?? "{}"
-  ) as TableMetadata
+  const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const resourceDisplayName = tableMeta.name ?? formatTitle(resource)
   const allowedTabs = tableMeta.tabs
 
