@@ -9,11 +9,7 @@ import {
   HomeIcon,
   LayoutTemplateIcon,
 } from "lucide-react"
-import * as LucideIcons from "lucide-react"
-import type { LucideIcon } from "lucide-react"
-
 import { DefaultHeader } from "#/components/layouts/default-header"
-import { Badge } from "#/components/ui/badge"
 import {
   Card,
   CardDescription,
@@ -21,6 +17,7 @@ import {
   CardTitle,
 } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
+import { ResourceGrid } from "#/components/resource/resource-grid"
 import { formatTitle } from "#/lib/format"
 import { resourcesQueryOptions } from "#/lib/supabase/data/resource"
 
@@ -30,17 +27,6 @@ export const Route = createFileRoute("/$schema/")({
   }),
   component: RouteComponent,
 })
-
-function ResourceIcon({
-  item,
-}: {
-  item: { type: "table" | "view"; meta: { icon: string | undefined } }
-}) {
-  const iconName = (item.meta?.icon ||
-    (item.type === "table" ? "Table2" : "Eye")) as keyof typeof LucideIcons
-  const Icon = LucideIcons[iconName] as LucideIcon
-  return <Icon className="size-4 shrink-0 text-muted-foreground" />
-}
 
 const quickLinks = [
   {
@@ -152,37 +138,7 @@ function RouteComponent() {
               No tables or views found in this schema.
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {resources.map((resource) => (
-                <Link
-                  key={resource.id}
-                  to="/$schema/resource/$resource"
-                  params={{ schema: params.schema, resource: resource.id }}
-                >
-                  <Card className="transition-colors hover:bg-accent/50">
-                    <CardHeader>
-                      <div className="flex items-center gap-2.5">
-                        <ResourceIcon
-                          item={{
-                            type: resource.type,
-                            meta: { icon: resource.meta.icon },
-                          }}
-                        />
-                        <CardTitle className="truncate text-sm">
-                          {formatTitle(resource.name)}
-                        </CardTitle>
-                        <Badge
-                          variant="secondary"
-                          className="ml-auto shrink-0 text-xs capitalize"
-                        >
-                          {resource.type}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+            <ResourceGrid resources={resources} />
           )}
         </section>
       </div>

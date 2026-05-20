@@ -200,6 +200,7 @@ export type TableMetadata = {
   name?: string
   description?: string
   icon?: string
+  group?: string
   single?: boolean
   inlineForm?: boolean
   query?: {
@@ -229,6 +230,7 @@ export type ViewMetadata = {
   name?: string
   description?: string
   icon?: string
+  group?: string
   single?: boolean
   primaryItem?: string
   items?: MetaViewItem[]

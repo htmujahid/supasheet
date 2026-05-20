@@ -367,6 +367,7 @@ comment on column finance.accounts.type is '{
 comment on table finance.accounts is '{
     "icon": "BookOpen",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"code","desc":false}]
     },
@@ -456,6 +457,7 @@ create table finance.vendors (
 comment on table finance.vendors is '{
     "icon": "Truck",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"name","desc":false}],
         "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
@@ -563,6 +565,7 @@ comment on column finance.invoices.status is '{
 comment on table finance.invoices is '{
     "icon": "Receipt",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"issue_date","desc":true}],
         "join": [
@@ -679,6 +682,7 @@ comment on column finance.bills.status is '{
 comment on table finance.bills is '{
     "icon": "FileText",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"issue_date","desc":true}],
         "join": [
@@ -813,6 +817,7 @@ comment on column finance.expenses.payment_method is '{
 comment on table finance.expenses is '{
     "icon": "Wallet",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"expense_date","desc":true}],
         "join": [
@@ -949,6 +954,7 @@ comment on column finance.payments.method is '{
 comment on table finance.payments is '{
     "icon": "ArrowLeftRight",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"payment_date","desc":true}],
         "join": [
@@ -1062,6 +1068,7 @@ comment on column finance.budgets.period is '{
 comment on table finance.budgets is '{
     "icon": "PiggyBank",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"period_start","desc":true}],
         "join": [
@@ -1168,6 +1175,7 @@ comment on column finance.payroll_runs.status is '{
 comment on table finance.payroll_runs is '{
     "icon": "Banknote",
     "display": "block",
+    "group": "Payroll",
     "query": {
         "sort": [{"id":"pay_date","desc":true}],
         "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
@@ -1277,6 +1285,7 @@ comment on column finance.payslips.status is '{
 comment on table finance.payslips is '{
     "icon": "FileSpreadsheet",
     "display": "block",
+    "group": "Payroll",
     "query": {
         "sort": [{"id":"created_at","desc":true}],
         "join": [
@@ -1383,6 +1392,7 @@ comment on column finance.journal_entries.status is '{
 comment on table finance.journal_entries is '{
     "icon": "BookText",
     "display": "block",
+    "group": "Operations",
     "query": {
         "sort": [{"id":"entry_date","desc":true}],
         "join": [
