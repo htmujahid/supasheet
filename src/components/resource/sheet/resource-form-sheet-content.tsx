@@ -86,20 +86,20 @@ export function ResourceFormSheetContent({
     updateResourceMutationOptions(schema, resource)
   )
 
-  const conditionalFields = (
+  const fieldBehavior = (
     JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).conditionalFields
+  ).fieldBehavior
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
         if (mode === "create") {
-          const payload = buildCreatePayload(value, writableCols, conditionalFields)
+          const payload = buildCreatePayload(value, writableCols, fieldBehavior)
           await insertMutation.mutateAsync(payload)
           toast.success("Record created")
         } else {
-          const data = buildUpdatePayload(value, writableCols, conditionalFields)
+          const data = buildUpdatePayload(value, writableCols, fieldBehavior)
           const pk = Object.fromEntries(
             primaryKeys.map((k) => [
               k.name,

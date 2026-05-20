@@ -787,9 +787,9 @@ comment on table hostel.payments is '{
         {"id": "method", "title": "Method", "fields": ["method", "reference"]},
         {"id": "extras", "title": "Notes", "collapsible": true, "fields": ["notes"]}
     ],
-    "conditionalFields": {
-        "paid_date": [{"id": "status", "value": "eq.paid"}],
-        "reference": [{"id": "method", "value": "in.bank_transfer,credit_card,upi,cheque"}]
+    "fieldBehavior": {
+        "paid_date": {"visible": [{"id": "status", "value": "eq.paid"}]},
+        "reference": {"visible": [{"id": "method", "value": "in.bank_transfer,credit_card,upi,cheque"}]}
     }
 }';
 
@@ -957,9 +957,9 @@ comment on table hostel.complaints is '{
         {"id": "triage", "title": "Triage", "fields": ["category", "priority", "status", "assigned_to"]},
         {"id": "resolution", "title": "Resolution", "collapsible": true, "fields": ["resolution", "resolved_at"]}
     ],
-    "conditionalFields": {
-        "resolution": [{"id": "status", "value": "in.resolved,closed"}],
-        "resolved_at": [{"id": "status", "value": "in.resolved,closed"}]
+    "fieldBehavior": {
+        "resolution": {"visible": [{"id": "status", "value": "in.resolved,closed"}]},
+        "resolved_at": {"visible": [{"id": "status", "value": "in.resolved,closed"}]}
     },
     "fkBehavior": {
         "room_id": {
@@ -1085,8 +1085,8 @@ comment on table hostel.visitors is '{
         {"id": "context", "title": "Context", "fields": ["resident_id", "purpose"]},
         {"id": "log", "title": "Check-in / Check-out", "fields": ["check_in", "check_out", "status"]}
     ],
-    "conditionalFields": {
-        "check_out": [{"id": "status", "value": "eq.checked_out"}]
+    "fieldBehavior": {
+        "check_out": {"visible": [{"id": "status", "value": "eq.checked_out"}]}
     }
 }';
 

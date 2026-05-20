@@ -38,10 +38,14 @@ export function ResourceFormField<S extends DatabaseSchemas>({
   columnSchema,
   tableSchema,
   form,
+  isRequired,
+  isReadOnly,
 }: {
   columnSchema: ColumnSchema<S>
   tableSchema: TableSchema<S> | null
   form: ResourceFormApi
+  isRequired?: boolean
+  isReadOnly?: boolean
 }) {
   let columnMetadata: ColumnFieldMetadata
 
@@ -61,6 +65,9 @@ export function ResourceFormField<S extends DatabaseSchemas>({
   }
 
   if (columnMetadata.isMetadata) return null
+
+  if (isRequired !== undefined) columnMetadata = { ...columnMetadata, required: isRequired }
+  if (isReadOnly !== undefined) columnMetadata = { ...columnMetadata, disabled: isReadOnly }
 
   const relationship = (tableSchema?.relationships as Relationship[])?.find(
     (r) =>

@@ -37,11 +37,6 @@ export function ResourceFullDetail({
     tableSchema ? (tableSchema.primary_keys ?? []) : []
   ) as PrimaryKey[]
 
-  const conditionalFields = useMemo(() => {
-    const tableMeta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-    return tableMeta.conditionalFields
-  }, [resourceSchema.comment])
-
   const { colByName, progressFields, filteredPlan } = useMemo(() => {
     const tableMeta = JSON.parse(
       resourceSchema.comment ?? "{}"
@@ -137,7 +132,6 @@ export function ResourceFullDetail({
               colByName={colByName}
               tableSchema={tableSchema}
               record={record}
-              conditionalFields={conditionalFields}
             />
           ))}
         </>

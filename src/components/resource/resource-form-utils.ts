@@ -3,6 +3,7 @@ import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
   ConditionalField,
+  FieldBehavior,
   FieldSection,
   FieldSectionFields,
   FormMode,
@@ -44,12 +45,12 @@ export function getCreateInitialValue(col: ColumnSchema): unknown {
 export function buildUpdatePayload(
   value: Record<string, unknown>,
   cols: ColumnSchema[],
-  conditionalFields?: Record<string, ConditionalField[]>
+  fieldBehavior?: Record<string, FieldBehavior>
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value)) {
-    const conditions = conditionalFields?.[k]
-    if (conditions?.length && !evaluateConditionalField(conditions, value)) {
+    const visible = fieldBehavior?.[k]?.visible
+    if (visible?.length && !evaluateConditionalField(visible, value)) {
       payload[k] = null
       continue
     }
@@ -76,12 +77,12 @@ export function buildUpdatePayload(
 export function buildCreatePayload(
   value: Record<string, unknown>,
   cols: ColumnSchema[],
-  conditionalFields?: Record<string, ConditionalField[]>
+  fieldBehavior?: Record<string, FieldBehavior>
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value)) {
-    const conditions = conditionalFields?.[k]
-    if (conditions?.length && !evaluateConditionalField(conditions, value)) continue
+    const visible = fieldBehavior?.[k]?.visible
+    if (visible?.length && !evaluateConditionalField(visible, value)) continue
     if (v === "" || v === null || v === undefined) continue
     const col = cols.find((c) => (c.name ?? c.id) === k)
     if (

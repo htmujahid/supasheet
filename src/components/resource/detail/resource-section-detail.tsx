@@ -17,7 +17,7 @@ import { Label } from "#/components/ui/label"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
-  ConditionalField,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
@@ -37,7 +37,6 @@ type Props = {
   colByName: Map<string, ColumnSchema>
   tableSchema: TableSchema | null
   record: Record<string, unknown>
-  conditionalFields?: Record<string, ConditionalField[]>
 }
 
 export function ResourceSectionDetail({
@@ -45,13 +44,16 @@ export function ResourceSectionDetail({
   colByName,
   tableSchema,
   record,
-  conditionalFields,
 }: Props) {
+  const fieldBehavior = (
+    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+  ).fieldBehavior
+
   const cols = section.fields
     .filter((name) => {
-      const conditions = conditionalFields?.[name]
-      if (!conditions?.length) return true
-      return evaluateConditionalField(conditions, record)
+      const visible = fieldBehavior?.[name]?.visible
+      if (!visible?.length) return true
+      return evaluateConditionalField(visible, record)
     })
     .map((name) => colByName.get(name))
     .filter((col): col is ColumnSchema => Boolean(col))

@@ -88,6 +88,12 @@ export type ConditionalField = {
   value: string
 }
 
+export type FieldBehavior = {
+  visible?: ConditionalField[]   // shown when ALL conditions match
+  required?: ConditionalField[]  // required when ALL conditions match
+  readOnly?: ConditionalField[]  // read-only when ALL conditions match
+}
+
 export type FKFillRule = {
   target: string  // local form field to populate
   source: string  // column from the FK target table
@@ -214,7 +220,7 @@ export type TableMetadata = {
   metadataColumns?: string[]
   tabs?: string[]
   history?: HistoryMetadata
-  conditionalFields?: Record<string, ConditionalField[]>
+  fieldBehavior?: Record<string, FieldBehavior>
   fkBehavior?: Record<string, FKBehavior>
 }
 

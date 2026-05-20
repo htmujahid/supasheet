@@ -56,14 +56,14 @@ export function ResourceNewForm({
 
   const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
 
-  const conditionalFields = (
+  const fieldBehavior = (
     JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).conditionalFields
+  ).fieldBehavior
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, meta }) => {
-      const payload = buildCreatePayload(value, writableCols, conditionalFields)
+      const payload = buildCreatePayload(value, writableCols, fieldBehavior)
       let inserted: Record<string, unknown> | null = null
       try {
         inserted = await insertRow(payload)

@@ -22,7 +22,7 @@ import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
-  ConditionalField,
+
   FormMode,
   PrimaryKey,
   TableMetadata,
@@ -69,7 +69,6 @@ export function ResourceFormLayout({
     () => JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata,
     [tableSchema?.comment]
   )
-  const conditionalFields = tableMeta.conditionalFields
   const { plan, colByName } = useMemo(() => {
     const writableNames = new Set(writableCols.map((c) => c.name ?? c.id ?? ""))
     return {
@@ -157,44 +156,16 @@ export function ResourceFormLayout({
               </Field>
             ))}
             {writableCols.map((col) => {
-              const name = col.name ?? col.id ?? ""
               const span = getColumnFieldSpan(col, tableSchema)
               const spanClass = span === 2 ? "md:col-span-2" : undefined
-              const conditions = conditionalFields?.[name]
-              if (!conditions?.length) {
-                return (
-                  <div key={col.id} className={spanClass}>
-                    <ResourceFormField
-                      columnSchema={col}
-                      tableSchema={tableSchema}
-                      form={form}
-                    />
-                  </div>
-                )
-              }
-              const conds = conditions
               return (
-                <form.Subscribe
+                <FieldWithBehavior
                   key={col.id}
-                  selector={(s) =>
-                    conds.reduce<Record<string, unknown>>((acc, c) => {
-                      acc[c.id] = s.values[c.id]
-                      return acc
-                    }, {})
-                  }
-                >
-                  {(watchedValues) =>
-                    evaluateConditionalField(conds, watchedValues) ? (
-                      <div className={spanClass}>
-                        <ResourceFormField
-                          columnSchema={col}
-                          tableSchema={tableSchema}
-                          form={form}
-                        />
-                      </div>
-                    ) : null
-                  }
-                </form.Subscribe>
+                  col={col}
+                  spanClass={spanClass}
+                  tableSchema={tableSchema}
+                  form={form}
+                />
               )
             })}
           </CardContent>
@@ -240,11 +211,75 @@ export function ResourceFormLayout({
           colByName={colByName}
           tableSchema={tableSchema}
           form={form}
-          conditionalFields={conditionalFields}
         />
       ))}
       {footer}
     </div>
+  )
+}
+
+function FieldWithBehavior({
+  col,
+  spanClass,
+  tableSchema,
+  form,
+}: {
+  col: ColumnSchema
+  spanClass?: string
+  tableSchema: TableSchema
+  form: ResourceFormApi
+}) {
+  const behavior = (
+    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  ).fieldBehavior?.[col.name ?? col.id ?? ""]
+
+  const allCondIds = new Set([
+    ...(behavior?.visible?.map((c) => c.id) ?? []),
+    ...(behavior?.required?.map((c) => c.id) ?? []),
+    ...(behavior?.readOnly?.map((c) => c.id) ?? []),
+  ])
+
+  if (!allCondIds.size) {
+    return (
+      <div className={spanClass}>
+        <ResourceFormField columnSchema={col} tableSchema={tableSchema} form={form} />
+      </div>
+    )
+  }
+
+  const watchedIds = [...allCondIds]
+
+  return (
+    <form.Subscribe
+      selector={(s) =>
+        watchedIds.reduce<Record<string, unknown>>((acc, id) => {
+          acc[id] = s.values[id]
+          return acc
+        }, {})
+      }
+    >
+      {(watchedValues) => {
+        if (behavior?.visible?.length && !evaluateConditionalField(behavior.visible, watchedValues))
+          return null
+        const isRequired = behavior?.required?.length
+          ? evaluateConditionalField(behavior.required, watchedValues)
+          : undefined
+        const isReadOnly = behavior?.readOnly?.length
+          ? evaluateConditionalField(behavior.readOnly, watchedValues)
+          : undefined
+        return (
+          <div className={spanClass}>
+            <ResourceFormField
+              columnSchema={col}
+              tableSchema={tableSchema}
+              form={form}
+              isRequired={isRequired}
+              isReadOnly={isReadOnly}
+            />
+          </div>
+        )
+      }}
+    </form.Subscribe>
   )
 }
 
@@ -253,13 +288,11 @@ function SectionCard({
   colByName,
   tableSchema,
   form,
-  conditionalFields,
 }: {
   section: ResolvedFieldSection
   colByName: Map<string, ColumnSchema>
   tableSchema: TableSchema
   form: ResourceFormApi
-  conditionalFields?: Record<string, ConditionalField[]>
 }) {
   const body = (
     <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
@@ -268,41 +301,14 @@ function SectionCard({
         if (!col) return null
         const span = getColumnFieldSpan(col, tableSchema)
         const spanClass = span === 2 ? "md:col-span-2" : undefined
-        const conditions = conditionalFields?.[name]
-        if (!conditions?.length) {
-          return (
-            <div key={col.id} className={spanClass}>
-              <ResourceFormField
-                columnSchema={col}
-                tableSchema={tableSchema}
-                form={form}
-              />
-            </div>
-          )
-        }
-        const conds = conditions
         return (
-          <form.Subscribe
+          <FieldWithBehavior
             key={col.id}
-            selector={(s) =>
-              conds.reduce<Record<string, unknown>>((acc, c) => {
-                acc[c.id] = s.values[c.id]
-                return acc
-              }, {})
-            }
-          >
-            {(watchedValues) =>
-              evaluateConditionalField(conds, watchedValues) ? (
-                <div className={spanClass}>
-                  <ResourceFormField
-                    columnSchema={col}
-                    tableSchema={tableSchema}
-                    form={form}
-                  />
-                </div>
-              ) : null
-            }
-          </form.Subscribe>
+            col={col}
+            spanClass={spanClass}
+            tableSchema={tableSchema}
+            form={form}
+          />
         )
       })}
     </CardContent>
