@@ -9,7 +9,7 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceKanban } from "#/components/resource/resource-kanban"
@@ -19,7 +19,7 @@ import type {
   KanbanViewReducedData,
 } from "#/components/resource/resource-kanban"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -34,6 +34,7 @@ import type { KanbanViewItem, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
+  columnsSchemaQueryOptions,
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
   viewSchemaQueryOptions,
@@ -59,9 +60,14 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, kanbanId } = params
 
-    const tableSchema = await context.queryClient.ensureQueryData(
-      tableSchemaQueryOptions(schema, resource)
-    )
+    const [tableSchema, columnsSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema, resource)
+      ),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema, resource)
+      ),
+    ])
 
     let viewSchema = null
     if (!tableSchema) {
@@ -84,7 +90,7 @@ export const Route = createFileRoute(
       resourceDataQueryOptions(schema, resource, meta.query)
     )
 
-    return { kanbanView, resourceSchema }
+    return { kanbanView, resourceSchema, columnsSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Kanban | ${formatTitle(params.resource)} | Supasheet` }],
@@ -220,7 +226,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { layout } = Route.useSearch()
-  const { kanbanView, resourceSchema } = Route.useLoaderData()
+  const { kanbanView, resourceSchema, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
@@ -280,10 +286,7 @@ function RouteComponent() {
           currentViewId={kanbanView.id}
         />
         {isTable && canInsert && (
-          <NewRecordTrigger size="sm">
-            <PlusIcon className="mr-1.5 size-3.5" />
-            New record
-          </NewRecordTrigger>
+          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">

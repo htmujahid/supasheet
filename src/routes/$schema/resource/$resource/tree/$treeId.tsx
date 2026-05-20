@@ -10,12 +10,12 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceTree } from "#/components/resource/resource-tree"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -195,7 +195,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
-  const { resourceSchema, treeView } = Route.useLoaderData()
+  const { resourceSchema, treeView, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const metaItems = meta.items ?? []
@@ -241,10 +241,7 @@ function RouteComponent() {
           currentViewId={treeView.id}
         />
         {isTable && canInsert && (
-          <NewRecordTrigger size="sm">
-            <PlusIcon className="mr-1.5 size-3.5" />
-            New record
-          </NewRecordTrigger>
+          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">

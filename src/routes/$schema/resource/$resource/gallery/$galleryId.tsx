@@ -9,13 +9,13 @@ import type { ErrorComponentProps } from "@tanstack/react-router"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceGallery } from "#/components/resource/resource-gallery"
 import type { GalleryViewData } from "#/components/resource/resource-gallery"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -30,6 +30,7 @@ import type { GalleryViewItem, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
+  columnsSchemaQueryOptions,
   resourceDataQueryOptions,
   tableSchemaQueryOptions,
   viewSchemaQueryOptions,
@@ -49,9 +50,14 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, galleryId } = params
 
-    const tableSchema = await context.queryClient.ensureQueryData(
-      tableSchemaQueryOptions(schema, resource)
-    )
+    const [tableSchema, columnsSchema] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema, resource)
+      ),
+      context.queryClient.ensureQueryData(
+        columnsSchemaQueryOptions(schema, resource)
+      ),
+    ])
 
     let viewSchema = null
     if (!tableSchema) {
@@ -74,7 +80,7 @@ export const Route = createFileRoute(
       resourceDataQueryOptions(schema, resource, meta.query)
     )
 
-    return { galleryView, resourceSchema }
+    return { galleryView, resourceSchema, columnsSchema }
   },
   head: ({ params }) => ({
     meta: [{ title: `Gallery | ${formatTitle(params.resource)} | Supasheet` }],
@@ -193,7 +199,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
-  const { galleryView, resourceSchema } = Route.useLoaderData()
+  const { galleryView, resourceSchema, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
@@ -241,10 +247,7 @@ function RouteComponent() {
           currentViewId={galleryView.id}
         />
         {isTable && canInsert && (
-          <NewRecordTrigger size="sm">
-            <PlusIcon className="mr-1.5 size-3.5" />
-            New record
-          </NewRecordTrigger>
+          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">

@@ -14,13 +14,13 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 
-import { AlertCircleIcon, FileXIcon, PlusIcon } from "lucide-react"
+import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceGrid } from "#/components/resource/grid/resource-grid"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -251,10 +251,7 @@ function RouteComponent() {
           currentViewId="grid"
         />
         {canInsert && (
-          <NewRecordTrigger size="sm">
-            <PlusIcon className="mr-1.5 size-3.5" />
-            New record
-          </NewRecordTrigger>
+          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
         )}
       </DefaultHeader>
       <div className="p-4">
