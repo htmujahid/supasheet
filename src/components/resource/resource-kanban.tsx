@@ -190,7 +190,9 @@ export function ResourceKanban({
               <KanbanColumn
                 key={columnValue}
                 value={columnValue}
-                className="w-sm"
+                className={cn(
+                  layout === "board" ? "min-w-sm max-w-2xl" : ""
+                )}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
