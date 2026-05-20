@@ -10,6 +10,7 @@ import {
   RefreshCwIcon,
   TableIcon,
   UploadIcon,
+  ZapIcon,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -25,12 +26,17 @@ import {
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
 import { useSheetHref } from "#/hooks/use-sheet-href"
-import type { ColumnSchema } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  ResourceSchema,
+  TableMetadata,
+} from "#/lib/database-meta.types"
 
 interface RecordActionsProps {
   schema: string
   resource: string
   columnsSchema: ColumnSchema[]
+  tableSchema?: ResourceSchema | null
 }
 
 function downloadTemplate(resource: string, columnsSchema: ColumnSchema[]) {
@@ -54,10 +60,16 @@ export function ResourceActions({
   schema,
   resource,
   columnsSchema,
+  tableSchema,
 }: RecordActionsProps) {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const importLink = useSheetHref({ mode: "import" })
+  const quickCreateLink = useSheetHref({ mode: "create", quick: true })
+
+  const quickCreateFields = (
+    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+  ).quickCreate
 
   function handleRefresh() {
     queryClient.invalidateQueries({
@@ -89,6 +101,22 @@ export function ResourceActions({
           }
         />
         <DropdownMenuContent align="end" className="w-48">
+          {quickCreateFields?.length && quickCreateLink ? (
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    to: quickCreateLink.to as never,
+                    search: quickCreateLink.search as never,
+                  })
+                }
+              >
+                <ZapIcon />
+                Quick create
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          ) : null}
+          {quickCreateFields?.length ? <DropdownMenuSeparator /> : null}
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={handleImport} disabled={!importLink}>
               <UploadIcon />

@@ -12,6 +12,7 @@ type Props = {
   schema: string
   resource: string
   defaults?: Record<string, string>
+  quick?: boolean
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -20,6 +21,7 @@ export function ResourceFormSheet({
   schema,
   resource,
   defaults,
+  quick,
   open,
   onOpenChange,
 }: Props) {
@@ -48,6 +50,7 @@ export function ResourceFormSheet({
             schema={schema}
             resource={resource}
             defaults={defaults}
+            quick={quick}
             onClose={onClose}
           />
         </Suspense>

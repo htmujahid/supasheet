@@ -36,6 +36,7 @@ export function ResourceFormSheetContent({
   columnsSchema,
   record,
   defaults,
+  quick,
   onClose,
 }: {
   mode: Mode
@@ -43,6 +44,7 @@ export function ResourceFormSheetContent({
   columnsSchema: ColumnSchema[]
   record: Record<string, unknown> | null
   defaults?: Record<string, string>
+  quick?: boolean
   onClose: () => void
 }) {
   const queryClient = useQueryClient()
@@ -51,14 +53,15 @@ export function ResourceFormSheetContent({
   const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
 
   const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  const quickCreate = mode === "create" ? tableMeta.quickCreate : undefined
 
   const writableCols = (() => {
     if (mode === "create") {
       const all = columnsSchema.filter((col) => !isSkippedForCreate(col))
-      if (!quickCreate?.length) return all
-      const nameSet = new Set(quickCreate)
-      return all.filter((col) => nameSet.has(col.name ?? ""))
+      if (quick && tableMeta.quickCreate?.length) {
+        const nameSet = new Set(tableMeta.quickCreate)
+        return all.filter((col) => nameSet.has(col.name ?? ""))
+      }
+      return all
     }
     return columnsSchema.filter(
       (col) => !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)

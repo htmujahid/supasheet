@@ -258,6 +258,7 @@ function RouteComponent() {
             schema={schema}
             resource={resource}
             columnsSchema={columnsSchema}
+            tableSchema={resourceSchema}
           />
         )}
       </DefaultHeader>

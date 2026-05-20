@@ -14,6 +14,7 @@ export const sheetSearchSchema = z.discriminatedUnion("mode", [
     ...overrideShape,
     mode: z.literal("create"),
     defaults: z.record(z.string(), z.string()).optional(),
+    quick: z.boolean().optional(),
   }),
   z.object({
     ...overrideShape,
@@ -52,6 +53,7 @@ export function ResourceSheetRoute({
           schema={targetSchema}
           resource={targetResource}
           defaults={search.defaults}
+          quick={search.quick}
           open
           onOpenChange={onOpenChange}
         />

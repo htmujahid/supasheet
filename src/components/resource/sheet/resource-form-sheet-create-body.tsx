@@ -11,11 +11,13 @@ export function ResourceFormSheetCreateBody({
   schema,
   resource,
   defaults,
+  quick,
   onClose,
 }: {
   schema: string
   resource: string
   defaults?: Record<string, string>
+  quick?: boolean
   onClose: () => void
 }) {
   const { data: tableSchema } = useSuspenseQuery(
@@ -40,6 +42,7 @@ export function ResourceFormSheetCreateBody({
       columnsSchema={columnsSchema}
       record={null}
       defaults={defaults}
+      quick={quick}
       onClose={onClose}
     />
   )
