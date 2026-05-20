@@ -74,7 +74,7 @@ export function ForeignDataCombobox({
       prevWatchedRef.current = watchedValues
       field.handleChange(null)
     }
-  }, [watchedValues]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [watchedValues])
 
   // Build dynamic filters from filter rules
   const dynamicFilters = filterRules

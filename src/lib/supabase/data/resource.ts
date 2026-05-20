@@ -27,7 +27,7 @@ export const navItemsQueryOptions = (schema: DatabaseSchemas) =>
         .schema("supasheet")
         .rpc("get_nav_items", { schema_name: schema })
       if (error) throw error
-      return (data ?? [])
+      return data ?? []
     },
     staleTime: 1000 * 60 * 5,
   })
