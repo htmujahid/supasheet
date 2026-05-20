@@ -182,6 +182,47 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          record_id: string
+          schema_name: string
+          table_name: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          record_id: string
+          schema_name: string
+          table_name: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          record_id?: string
+          schema_name?: string
+          table_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materialized_views: {
         Row: {
           comment: string | null
@@ -629,6 +670,22 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_comments: {
+        Args: { p_record_id: string; p_schema: string; p_table: string }
+        Returns: {
+          content: string
+          created_at: string
+          created_by: string
+          created_by_email: string
+          created_by_name: string
+          created_by_picture_url: string
+          id: string
+          record_id: string
+          schema_name: string
+          table_name: string
+          updated_at: string
+        }[]
+      }
       get_materialized_views: {
         Args: { schema_name?: string; view_name?: string }
         Returns: {
@@ -948,3 +1005,4 @@ export const Constants = {
     },
   },
 } as const
+
