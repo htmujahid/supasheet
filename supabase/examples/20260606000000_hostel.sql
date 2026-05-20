@@ -627,6 +627,7 @@ comment on table hostel.allocations is '{
         {"id": "amounts", "title": "Amounts", "fields": ["monthly_rent", "security_deposit"]},
         {"id": "extras", "title": "Notes", "collapsible": true, "fields": ["notes"]}
     ],
+    "quickCreate": ["resident_id", "room_id", "start_date"],
     "fkBehavior": {
         "room_id": {
             "fill": [

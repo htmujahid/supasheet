@@ -50,13 +50,20 @@ export function ResourceFormSheetContent({
   const resource = tableSchema.name
   const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
 
-  const writableCols =
-    mode === "create"
-      ? columnsSchema.filter((col) => !isSkippedForCreate(col))
-      : columnsSchema.filter(
-          (col) =>
-            !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)
-        )
+  const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  const quickCreate = mode === "create" ? tableMeta.quickCreate : undefined
+
+  const writableCols = (() => {
+    if (mode === "create") {
+      const all = columnsSchema.filter((col) => !isSkippedForCreate(col))
+      if (!quickCreate?.length) return all
+      const nameSet = new Set(quickCreate)
+      return all.filter((col) => nameSet.has(col.name ?? ""))
+    }
+    return columnsSchema.filter(
+      (col) => !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)
+    )
+  })()
 
   const primaryKeyCols =
     mode === "update"
@@ -86,9 +93,7 @@ export function ResourceFormSheetContent({
     updateResourceMutationOptions(schema, resource)
   )
 
-  const fieldBehavior = (
-    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).fieldBehavior
+  const fieldBehavior = tableMeta.fieldBehavior
 
   const form = useAppForm({
     defaultValues,

@@ -221,6 +221,7 @@ export type TableMetadata = {
   metadataColumns?: string[]
   tabs?: string[]
   history?: HistoryMetadata
+  quickCreate?: string[]
   fieldBehavior?: Record<string, FieldBehavior>
   fkBehavior?: Record<string, FKBehavior>
 }
