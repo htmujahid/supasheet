@@ -626,7 +626,15 @@ comment on table hostel.allocations is '{
         {"id": "term", "title": "Term", "fields": ["start_date", "end_date", "status"]},
         {"id": "amounts", "title": "Amounts", "fields": ["monthly_rent", "security_deposit"]},
         {"id": "extras", "title": "Notes", "collapsible": true, "fields": ["notes"]}
-    ]
+    ],
+    "fkBehavior": {
+        "room_id": {
+            "fill": [
+                {"target": "monthly_rent", "source": "monthly_rent"},
+                {"target": "security_deposit", "source": "security_deposit"}
+            ]
+        }
+    }
 }';
 
 revoke all on table hostel.allocations
@@ -952,6 +960,11 @@ comment on table hostel.complaints is '{
     "conditionalFields": {
         "resolution": [{"id": "status", "value": "in.resolved,closed"}],
         "resolved_at": [{"id": "status", "value": "in.resolved,closed"}]
+    },
+    "fkBehavior": {
+        "room_id": {
+            "filter": [{"on": "hostel_id", "column": "hostel_id"}]
+        }
     }
 }';
 

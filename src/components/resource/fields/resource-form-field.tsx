@@ -102,6 +102,7 @@ export function ResourceFormField<S extends DatabaseSchemas>({
                 columnMetadata={columnMetadata}
                 relationship={relationship}
                 tableMetadata={tableMeta}
+                form={form}
               />
             ) : (
               <AllFields columnMetadata={columnMetadata} />

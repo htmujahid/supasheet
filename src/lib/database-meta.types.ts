@@ -88,6 +88,21 @@ export type ConditionalField = {
   value: string
 }
 
+export type FKFillRule = {
+  target: string  // local form field to populate
+  source: string  // column from the FK target table
+}
+
+export type FKFilterRule = {
+  on: string      // local field to watch
+  column: string  // FK table column to match against
+}
+
+export type FKBehavior = {
+  fill?: FKFillRule[]
+  filter?: FKFilterRule[]
+}
+
 export type FieldSectionFields = string[] | Partial<Record<FormMode, string[]>>
 
 export type FieldSection = {
@@ -200,6 +215,7 @@ export type TableMetadata = {
   tabs?: string[]
   history?: HistoryMetadata
   conditionalFields?: Record<string, ConditionalField[]>
+  fkBehavior?: Record<string, FKBehavior>
 }
 
 export type ViewMetadata = {
