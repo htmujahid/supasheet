@@ -15,13 +15,20 @@ import {
 } from "#/components/ui/collapsible"
 import { Label } from "#/components/ui/label"
 import { getColumnMetadata } from "#/lib/columns"
-import type { ColumnSchema, TableSchema } from "#/lib/database-meta.types"
+import type {
+  ColumnSchema,
+  ConditionalField,
+  TableSchema,
+} from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { FileObject } from "#/types/fields"
 
 import { AllCells } from "../cells/all-cells"
 import type { ResolvedFieldSection } from "../resource-form-utils"
-import { getColumnFieldSpan } from "../resource-form-utils"
+import {
+  evaluateConditionalField,
+  getColumnFieldSpan,
+} from "../resource-form-utils"
 import { ResourceAvatarDisplay } from "./resource-avatar-display"
 import { ResourceFileDisplay } from "./resource-file-display"
 
@@ -30,6 +37,7 @@ type Props = {
   colByName: Map<string, ColumnSchema>
   tableSchema: TableSchema | null
   record: Record<string, unknown>
+  conditionalFields?: Record<string, ConditionalField[]>
 }
 
 export function ResourceSectionDetail({
@@ -37,8 +45,14 @@ export function ResourceSectionDetail({
   colByName,
   tableSchema,
   record,
+  conditionalFields,
 }: Props) {
   const cols = section.fields
+    .filter((name) => {
+      const conditions = conditionalFields?.[name]
+      if (!conditions?.length) return true
+      return evaluateConditionalField(conditions, record)
+    })
     .map((name) => colByName.get(name))
     .filter((col): col is ColumnSchema => Boolean(col))
 

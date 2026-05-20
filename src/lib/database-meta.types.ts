@@ -83,6 +83,11 @@ export type PaginatedData<T> = {
 
 export type FormMode = "create" | "update" | "read"
 
+export type ConditionalField = {
+  id: string
+  value: string
+}
+
 export type FieldSectionFields = string[] | Partial<Record<FormMode, string[]>>
 
 export type FieldSection = {
@@ -194,6 +199,7 @@ export type TableMetadata = {
   metadataColumns?: string[]
   tabs?: string[]
   history?: HistoryMetadata
+  conditionalFields?: Record<string, ConditionalField[]>
 }
 
 export type ViewMetadata = {

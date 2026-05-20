@@ -9,6 +9,7 @@ import { SheetFooter } from "#/components/ui/sheet"
 import type {
   ColumnSchema,
   PrimaryKey,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import {
@@ -85,16 +86,20 @@ export function ResourceFormSheetContent({
     updateResourceMutationOptions(schema, resource)
   )
 
+  const conditionalFields = (
+    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  ).conditionalFields
+
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
         if (mode === "create") {
-          const payload = buildCreatePayload(value, writableCols)
+          const payload = buildCreatePayload(value, writableCols, conditionalFields)
           await insertMutation.mutateAsync(payload)
           toast.success("Record created")
         } else {
-          const data = buildUpdatePayload(value, writableCols)
+          const data = buildUpdatePayload(value, writableCols, conditionalFields)
           const pk = Object.fromEntries(
             primaryKeys.map((k) => [
               k.name,

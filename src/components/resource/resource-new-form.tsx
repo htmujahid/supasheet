@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import type {
   ColumnSchema,
   PrimaryKey,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import { insertResourceMutationOptions } from "#/lib/supabase/data/resource"
@@ -55,10 +56,14 @@ export function ResourceNewForm({
 
   const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
 
+  const conditionalFields = (
+    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
+  ).conditionalFields
+
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, meta }) => {
-      const payload = buildCreatePayload(value, writableCols)
+      const payload = buildCreatePayload(value, writableCols, conditionalFields)
       let inserted: Record<string, unknown> | null = null
       try {
         inserted = await insertRow(payload)

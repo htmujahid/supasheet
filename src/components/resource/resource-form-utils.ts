@@ -1,6 +1,8 @@
+import { decodeFilterValue } from "#/lib/data-table"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
+  ConditionalField,
   FieldSection,
   FieldSectionFields,
   FormMode,
@@ -41,10 +43,16 @@ export function getCreateInitialValue(col: ColumnSchema): unknown {
 
 export function buildUpdatePayload(
   value: Record<string, unknown>,
-  cols: ColumnSchema[]
+  cols: ColumnSchema[],
+  conditionalFields?: Record<string, ConditionalField[]>
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value)) {
+    const conditions = conditionalFields?.[k]
+    if (conditions?.length && !evaluateConditionalField(conditions, value)) {
+      payload[k] = null
+      continue
+    }
     const col = cols.find((c) => (c.name ?? c.id) === k)
     if (v === "" || v === null || v === undefined) {
       payload[k] = null
@@ -67,10 +75,13 @@ export function buildUpdatePayload(
 
 export function buildCreatePayload(
   value: Record<string, unknown>,
-  cols: ColumnSchema[]
+  cols: ColumnSchema[],
+  conditionalFields?: Record<string, ConditionalField[]>
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value)) {
+    const conditions = conditionalFields?.[k]
+    if (conditions?.length && !evaluateConditionalField(conditions, value)) continue
     if (v === "" || v === null || v === undefined) continue
     const col = cols.find((c) => (c.name ?? c.id) === k)
     if (
@@ -88,6 +99,41 @@ export function buildCreatePayload(
     }
   }
   return payload
+}
+
+export function evaluateConditionalField(
+  conditions: ConditionalField[],
+  values: Record<string, unknown>
+): boolean {
+  return conditions.every((c) => {
+    const fieldValue = values[c.id]
+    const { operator, value } = decodeFilterValue(c.value)
+    const raw = String(fieldValue ?? "")
+    switch (operator) {
+      case "eq":
+        return raw === value
+      case "neq":
+        return raw !== value
+      case "in": {
+        const vals = value.split(",").filter(Boolean)
+        return vals.includes(raw)
+      }
+      case "not.in": {
+        const vals = value.split(",").filter(Boolean)
+        return !vals.includes(raw)
+      }
+      case "is":
+        return fieldValue === null || fieldValue === undefined || raw === ""
+      case "not.is":
+        return fieldValue !== null && fieldValue !== undefined && raw !== ""
+      case "ilike":
+        return raw.toLowerCase().includes(value.toLowerCase())
+      case "like":
+        return raw.toLowerCase().startsWith(value.toLowerCase())
+      default:
+        return true
+    }
+  })
 }
 
 const FULL_WIDTH_VARIANTS = new Set(["rich_text", "long_text", "json"])

@@ -22,6 +22,7 @@ import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
+  ConditionalField,
   FormMode,
   PrimaryKey,
   TableMetadata,
@@ -31,7 +32,11 @@ import type {
 import { ResourceFormField } from "./fields/resource-form-field"
 import type { ResourceFormApi } from "./form-hook"
 import type { ResolvedFieldSection } from "./resource-form-utils"
-import { buildLayoutPlan, getColumnFieldSpan } from "./resource-form-utils"
+import {
+  buildLayoutPlan,
+  evaluateConditionalField,
+  getColumnFieldSpan,
+} from "./resource-form-utils"
 
 type PrimaryKeyDisplay = { name: string; value: string }
 
@@ -64,6 +69,7 @@ export function ResourceFormLayout({
     () => JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata,
     [tableSchema?.comment]
   )
+  const conditionalFields = tableMeta.conditionalFields
   const { plan, colByName } = useMemo(() => {
     const writableNames = new Set(writableCols.map((c) => c.name ?? c.id ?? ""))
     return {
@@ -151,18 +157,44 @@ export function ResourceFormLayout({
               </Field>
             ))}
             {writableCols.map((col) => {
+              const name = col.name ?? col.id ?? ""
               const span = getColumnFieldSpan(col, tableSchema)
+              const spanClass = span === 2 ? "md:col-span-2" : undefined
+              const conditions = conditionalFields?.[name]
+              if (!conditions?.length) {
+                return (
+                  <div key={col.id} className={spanClass}>
+                    <ResourceFormField
+                      columnSchema={col}
+                      tableSchema={tableSchema}
+                      form={form}
+                    />
+                  </div>
+                )
+              }
+              const conds = conditions
               return (
-                <div
+                <form.Subscribe
                   key={col.id}
-                  className={span === 2 ? "md:col-span-2" : undefined}
+                  selector={(s) =>
+                    conds.reduce<Record<string, unknown>>((acc, c) => {
+                      acc[c.id] = s.values[c.id]
+                      return acc
+                    }, {})
+                  }
                 >
-                  <ResourceFormField
-                    columnSchema={col}
-                    tableSchema={tableSchema}
-                    form={form}
-                  />
-                </div>
+                  {(watchedValues) =>
+                    evaluateConditionalField(conds, watchedValues) ? (
+                      <div className={spanClass}>
+                        <ResourceFormField
+                          columnSchema={col}
+                          tableSchema={tableSchema}
+                          form={form}
+                        />
+                      </div>
+                    ) : null
+                  }
+                </form.Subscribe>
               )
             })}
           </CardContent>
@@ -208,6 +240,7 @@ export function ResourceFormLayout({
           colByName={colByName}
           tableSchema={tableSchema}
           form={form}
+          conditionalFields={conditionalFields}
         />
       ))}
       {footer}
@@ -220,11 +253,13 @@ function SectionCard({
   colByName,
   tableSchema,
   form,
+  conditionalFields,
 }: {
   section: ResolvedFieldSection
   colByName: Map<string, ColumnSchema>
   tableSchema: TableSchema
   form: ResourceFormApi
+  conditionalFields?: Record<string, ConditionalField[]>
 }) {
   const body = (
     <CardContent className="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
@@ -232,17 +267,42 @@ function SectionCard({
         const col = colByName.get(name)
         if (!col) return null
         const span = getColumnFieldSpan(col, tableSchema)
+        const spanClass = span === 2 ? "md:col-span-2" : undefined
+        const conditions = conditionalFields?.[name]
+        if (!conditions?.length) {
+          return (
+            <div key={col.id} className={spanClass}>
+              <ResourceFormField
+                columnSchema={col}
+                tableSchema={tableSchema}
+                form={form}
+              />
+            </div>
+          )
+        }
+        const conds = conditions
         return (
-          <div
+          <form.Subscribe
             key={col.id}
-            className={span === 2 ? "md:col-span-2" : undefined}
+            selector={(s) =>
+              conds.reduce<Record<string, unknown>>((acc, c) => {
+                acc[c.id] = s.values[c.id]
+                return acc
+              }, {})
+            }
           >
-            <ResourceFormField
-              columnSchema={col}
-              tableSchema={tableSchema}
-              form={form}
-            />
-          </div>
+            {(watchedValues) =>
+              evaluateConditionalField(conds, watchedValues) ? (
+                <div className={spanClass}>
+                  <ResourceFormField
+                    columnSchema={col}
+                    tableSchema={tableSchema}
+                    form={form}
+                  />
+                </div>
+              ) : null
+            }
+          </form.Subscribe>
         )
       })}
     </CardContent>

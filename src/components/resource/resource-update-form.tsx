@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import type {
   ColumnSchema,
   PrimaryKey,
+  TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
@@ -62,10 +63,14 @@ export function ResourceUpdateForm({
     updateResourceMutationOptions(schema, resource)
   )
 
+  const conditionalFields = (
+    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+  ).conditionalFields
+
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, meta }) => {
-      const data = buildUpdatePayload(value, editableCols)
+      const data = buildUpdatePayload(value, editableCols, conditionalFields)
       await updateRow({ pk, data })
       queryClient.invalidateQueries({
         queryKey: ["supasheet", "resource-data", schema, resource],
