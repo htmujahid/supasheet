@@ -35,6 +35,7 @@ import { isTableSchema } from "#/lib/database-meta.types"
 import {
   deleteResourceMutationOptions,
   foreignTableDataQueryOptions,
+  insertBulkResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 
 import { getResourceForeignTableColumns } from "./resource-foreign-table-columns"
@@ -115,6 +116,32 @@ export function ResourceForeignTable({
   const { mutateAsync: deleteRow } = useMutation(
     deleteResourceMutationOptions(schema, table)
   )
+  const { mutateAsync: insertBulkRows } = useMutation(
+    insertBulkResourceMutationOptions(schema, table)
+  )
+
+  const handleDuplicate = async (rows: Record<string, unknown>[]) => {
+    try {
+      const stripped = rows.map((row) => {
+        const copy = { ...row }
+        for (const key of primaryKeys) delete copy[key.name]
+        return copy
+      })
+      await insertBulkRows(stripped)
+      queryClient.invalidateQueries({
+        queryKey: ["supasheet", "resource-data", schema, table],
+      })
+      toast.success(
+        rows.length === 1
+          ? "Record duplicated"
+          : `${rows.length} records duplicated`
+      )
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to duplicate records"
+      )
+    }
+  }
 
   const handleDelete = async (rows: Record<string, unknown>[]) => {
     try {
@@ -203,6 +230,7 @@ export function ResourceForeignTable({
       </DataTableToolbar>
       <DataTableActionBar
         table={tableInstance}
+        onDuplicate={canInsert && primaryKeys.length ? handleDuplicate : undefined}
         onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
       />
     </DataTable>

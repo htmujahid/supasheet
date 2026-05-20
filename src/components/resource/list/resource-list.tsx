@@ -22,7 +22,10 @@ import type {
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
-import { deleteResourceMutationOptions } from "#/lib/supabase/data/resource"
+import {
+  deleteResourceMutationOptions,
+  insertBulkResourceMutationOptions,
+} from "#/lib/supabase/data/resource"
 
 import { ResourceFilterTemplates } from "../resource-filter-templates"
 import { getResourceTableColumns } from "../resource-table-columns"
@@ -70,10 +73,37 @@ export function ResourceList({
   ) as PrimaryKey[]
 
   const canDelete = useHasPermission(`${schema}.${resource}:delete`)
+  const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
   const { mutateAsync: deleteRow } = useMutation(
     deleteResourceMutationOptions(schema, resource)
   )
+  const { mutateAsync: insertBulkRows } = useMutation(
+    insertBulkResourceMutationOptions(schema, resource)
+  )
+
+  const handleDuplicate = async (rows: Record<string, unknown>[]) => {
+    try {
+      const stripped = rows.map((row) => {
+        const copy = { ...row }
+        for (const key of primaryKeys) delete copy[key.name]
+        return copy
+      })
+      await insertBulkRows(stripped)
+      queryClient.invalidateQueries({
+        queryKey: ["supasheet", "resource-data", schema, resource],
+      })
+      toast.success(
+        rows.length === 1
+          ? "Record duplicated"
+          : `${rows.length} records duplicated`
+      )
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to duplicate records"
+      )
+    }
+  }
 
   const handleDelete = async (rows: Record<string, unknown>[]) => {
     try {
@@ -123,6 +153,7 @@ export function ResourceList({
       </DataTableToolbar>
       <DataTableActionBar
         table={table}
+        onDuplicate={canInsert ? handleDuplicate : undefined}
         onDelete={canDelete ? handleDelete : undefined}
       />
       {rows.length === 0 ? (
