@@ -222,6 +222,7 @@ export type TableMetadata = {
   tabs?: string[]
   history?: HistoryMetadata
   quickCreate?: string[]
+  duplicatedFields?: string[]
   fieldBehavior?: Record<string, FieldBehavior>
   fkBehavior?: Record<string, FKBehavior>
 }

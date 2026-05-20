@@ -423,7 +423,8 @@ comment on table desk.tasks is '{
         {"id":"progress","title":"Progress","fields":["completion","estimated_duration","duration"]},
         {"id":"extras","title":"Attachments & notes","description":"Files, color tag, and free-form notes","collapsible":true,"fields":["attachments","color","notes"]}
     ],
-    "history": {"table":"tasks_history"}
+    "history": {"table":"tasks_history"},
+    "duplicatedFields": ["title","description","status","priority","project_id","assignee_id","tags","is_important","completion","estimated_duration","duration","color","notes"]
 }';
 
 comment on column desk.tasks.cover is '{"accept":"image/*"}';

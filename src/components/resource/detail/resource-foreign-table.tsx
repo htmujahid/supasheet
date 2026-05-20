@@ -120,21 +120,28 @@ export function ResourceForeignTable({
     insertBulkResourceMutationOptions(schema, table)
   )
 
+  const duplicatedFields = resourceSchema.comment
+    ? (JSON.parse(resourceSchema.comment) as TableMetadata).duplicatedFields
+    : undefined
+
   const handleDuplicate = async (rows: Record<string, unknown>[]) => {
     try {
-      const stripped = rows.map((row) => {
-        const copy = { ...row }
-        for (const key of primaryKeys) delete copy[key.name]
-        return copy
-      })
+      const pkNames = new Set(primaryKeys.map((k) => k.name))
+      const columnNames = new Set(columnsSchema.map((c) => c.name).filter((n): n is string => n !== null))
+      const fields = duplicatedFields ?? [...columnNames]
+      const stripped = rows.map((row) =>
+        Object.fromEntries(
+          fields
+            .filter((f) => !pkNames.has(f) && columnNames.has(f))
+            .map((f) => [f, row[f]])
+        )
+      )
       await insertBulkRows(stripped)
       queryClient.invalidateQueries({
         queryKey: ["supasheet", "resource-data", schema, table],
       })
       toast.success(
-        rows.length === 1
-          ? "Record duplicated"
-          : `${rows.length} records duplicated`
+        rows.length === 1 ? "Record duplicated" : `${rows.length} records duplicated`
       )
     } catch (err) {
       toast.error(
