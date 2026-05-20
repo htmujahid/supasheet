@@ -237,6 +237,58 @@ grant
 execute on FUNCTION supasheet.get_permissions (text) to authenticated;
 
 ----------------------------------------------------------------
+-- Function: supasheet.get_nav_items
+----------------------------------------------------------------
+create or replace function supasheet.get_nav_items (schema_name text default null)
+returns table (
+  type text,
+  count bigint
+) language sql security definer
+set
+  search_path = '' as $$
+  SELECT
+    combined.type,
+    count(*) AS count
+  FROM (
+    SELECT
+      v.comment::jsonb ->> 'type' AS type
+    FROM supasheet.views v
+    INNER JOIN supasheet.role_permissions rp
+        ON rp.permission::text = v.schema || '.' || v.name || ':select'
+    INNER JOIN supasheet.user_roles ur
+        ON ur.role = rp.role
+    WHERE ur.user_id = (SELECT auth.uid())
+      AND (schema_name IS NULL OR v.schema = schema_name)
+      AND v.comment IS NOT NULL
+      AND v.comment::jsonb ->> 'type' IN ('dashboard_widget', 'chart', 'report', 'template')
+
+    UNION ALL
+
+    SELECT
+      mv.comment::jsonb ->> 'type' AS type
+    FROM supasheet.materialized_views mv
+    INNER JOIN supasheet.role_permissions rp
+        ON rp.permission::text = mv.schema || '.' || mv.name || ':select'
+    INNER JOIN supasheet.user_roles ur
+        ON ur.role = rp.role
+    WHERE ur.user_id = (SELECT auth.uid())
+      AND (schema_name IS NULL OR mv.schema = schema_name)
+      AND mv.comment IS NOT NULL
+      AND mv.comment::jsonb ->> 'type' IN ('dashboard_widget', 'chart', 'report', 'template')
+  ) combined
+  GROUP BY combined.type;
+$$;
+
+revoke all on FUNCTION supasheet.get_nav_items (text)
+from
+  anon,
+  authenticated,
+  service_role;
+
+grant
+execute on FUNCTION supasheet.get_nav_items (text) to authenticated;
+
+----------------------------------------------------------------
 -- Function: supasheet.set_updated_at
 ----------------------------------------------------------------
 create or replace function supasheet.set_updated_at () returns trigger as $$

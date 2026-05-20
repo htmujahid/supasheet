@@ -640,6 +640,13 @@ export type Database = {
           schema: string
         }[]
       }
+      get_nav_items: {
+        Args: { schema_name?: string }
+        Returns: {
+          type: string
+          count: number
+        }[]
+      }
       get_columns: {
         Args: { schema_name?: string; table_name?: string }
         Returns: {

@@ -19,6 +19,19 @@ import { applyFilters } from "#/lib/supabase/filter"
 export const joinAlias = (on: string) =>
   on.endsWith("_id") ? on.slice(0, -3) : on
 
+export const navItemsQueryOptions = (schema: DatabaseSchemas) =>
+  queryOptions({
+    queryKey: ["supasheet", "nav-items", schema],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("supasheet")
+        .rpc("get_nav_items", { schema_name: schema })
+      if (error) throw error
+      return (data ?? []) as { type: string; count: number }[]
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+
 export const schemasQueryOptions = queryOptions({
   queryKey: ["supasheet", "schema", "schemas"],
   queryFn: async () => {

@@ -46,6 +46,7 @@ import type { DatabaseSchemas } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import { userPermissionsQueryOptions } from "#/lib/supabase/data/core"
 import {
+  navItemsQueryOptions,
   resourcesQueryOptions,
   schemasQueryOptions,
 } from "#/lib/supabase/data/resource"
@@ -66,6 +67,7 @@ export const Route = createFileRoute("/$schema")({
   loader: async ({ context, params }) => {
     context.queryClient.prefetchQuery(schemasQueryOptions)
     context.queryClient.prefetchQuery(resourcesQueryOptions(params.schema))
+    context.queryClient.prefetchQuery(navItemsQueryOptions(params.schema))
   },
   component: RouteComponent,
   errorComponent: ({ error }: ErrorComponentProps) => {
@@ -112,28 +114,17 @@ export const Route = createFileRoute("/$schema")({
   ),
 })
 
-const navMain = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: <HomeIcon />,
-  },
-  {
-    title: "Chart",
-    url: "/chart",
-    icon: <ChartBarIcon />,
-  },
-  {
-    title: "Report",
-    url: "/report",
-    icon: <FileChartColumnIcon />,
-  },
-  {
-    title: "Template",
-    url: "/template",
-    icon: <LayoutTemplateIcon />,
-  },
-]
+const NAV_TYPE_ORDER = ["dashboard_widget", "chart", "report", "template"]
+
+const NAV_TYPE_CONFIG: Record<
+  string,
+  { title: string; url: string; icon: React.ReactNode }
+> = {
+  dashboard_widget: { title: "Dashboard", url: "/dashboard", icon: <HomeIcon /> },
+  chart: { title: "Chart", url: "/chart", icon: <ChartBarIcon /> },
+  report: { title: "Report", url: "/report", icon: <FileChartColumnIcon /> },
+  template: { title: "Template", url: "/template", icon: <LayoutTemplateIcon /> },
+}
 
 function RouteComponent() {
   const params = Route.useParams()
@@ -146,6 +137,19 @@ function RouteComponent() {
   }))
   const { data: resources = [], isLoading: resourcesLoading } = useQuery(
     resourcesQueryOptions(params.schema)
+  )
+  const { data: navItemGroups = [] } = useQuery(
+    navItemsQueryOptions(params.schema)
+  )
+  const activeTypes = new Set(
+    navItemGroups.filter((g) => g.count > 0).map((g) => g.type)
+  )
+  const navMain = NAV_TYPE_ORDER.filter((type) => activeTypes.has(type)).map(
+    (type) => ({
+      title: NAV_TYPE_CONFIG[type].title,
+      url: NAV_TYPE_CONFIG[type].url,
+      icon: NAV_TYPE_CONFIG[type].icon,
+    })
   )
   return (
     <SidebarProvider
