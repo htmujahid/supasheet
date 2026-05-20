@@ -11,6 +11,7 @@ import type {
 import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableActionBar } from "#/components/data-table/data-table-action-bar"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
@@ -99,15 +100,16 @@ export function ResourceTable({
 
   return (
     <DataTable table={table}>
-      <DataTableToolbar
-        table={table}
-        onDelete={canDelete ? handleDelete : undefined}
-      >
+      <DataTableToolbar table={table}>
         <ResourceFilterTemplates
           filterTemplates={filterTemplates}
           currentFilters={columnFilters}
         />
       </DataTableToolbar>
+      <DataTableActionBar
+        table={table}
+        onDelete={canDelete ? handleDelete : undefined}
+      />
     </DataTable>
   )
 }

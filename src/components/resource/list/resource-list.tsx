@@ -10,6 +10,7 @@ import type {
 
 import { toast } from "sonner"
 
+import { DataTableActionBar } from "#/components/data-table/data-table-action-bar"
 import { DataTablePagination } from "#/components/data-table/data-table-pagination"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
@@ -114,16 +115,16 @@ export function ResourceList({
 
   return (
     <div className="flex w-full flex-col gap-2">
-      <DataTableToolbar
-        table={table}
-        onDelete={canDelete ? handleDelete : undefined}
-        hideColumnVisibility
-      >
+      <DataTableToolbar table={table} hideColumnVisibility>
         <ResourceFilterTemplates
           filterTemplates={filterTemplates}
           currentFilters={columnFilters}
         />
       </DataTableToolbar>
+      <DataTableActionBar
+        table={table}
+        onDelete={canDelete ? handleDelete : undefined}
+      />
       {rows.length === 0 ? (
         <ResourceListEmpty />
       ) : (

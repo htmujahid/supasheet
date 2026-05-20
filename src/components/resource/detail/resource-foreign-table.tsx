@@ -21,6 +21,7 @@ import { PlusIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableActionBar } from "#/components/data-table/data-table-action-bar"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger"
 import { useHasPermission } from "#/hooks/use-permissions"
@@ -186,10 +187,7 @@ export function ResourceForeignTable({
 
   return (
     <DataTable table={tableInstance}>
-      <DataTableToolbar
-        table={tableInstance}
-        onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
-      >
+      <DataTableToolbar table={tableInstance}>
         {canInsert && (
           <NewRecordTrigger
             schema={schema}
@@ -203,6 +201,10 @@ export function ResourceForeignTable({
           </NewRecordTrigger>
         )}
       </DataTableToolbar>
+      <DataTableActionBar
+        table={tableInstance}
+        onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
+      />
     </DataTable>
   )
 }

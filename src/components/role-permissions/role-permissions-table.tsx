@@ -11,6 +11,7 @@ import type {
 import { toast } from "sonner"
 
 import { DataTable } from "#/components/data-table/data-table"
+import { DataTableActionBar } from "#/components/data-table/data-table-action-bar"
 import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
@@ -70,7 +71,8 @@ export function RolePermissionsTable({
 
   return (
     <DataTable table={table}>
-      <DataTableToolbar
+      <DataTableToolbar table={table} />
+      <DataTableActionBar
         table={table}
         onDelete={
           canDelete
