@@ -1,10 +1,6 @@
 import { useNavigate } from "@tanstack/react-router"
 
-import {
-  ChevronDownIcon,
-  HistoryIcon,
-  MessageSquareIcon,
-} from "lucide-react"
+import { ChevronDownIcon, HistoryIcon, MessageSquareIcon } from "lucide-react"
 
 import { Button } from "#/components/ui/button"
 import {

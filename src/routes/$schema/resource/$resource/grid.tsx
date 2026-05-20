@@ -19,8 +19,8 @@ import { AlertCircleIcon, FileXIcon } from "lucide-react"
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceGrid } from "#/components/resource/grid/resource-grid"
-import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { ResourceActions } from "#/components/resource/resource-actions"
+import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -251,7 +251,11 @@ function RouteComponent() {
           currentViewId="grid"
         />
         {canInsert && (
-          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
+          <ResourceActions
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+          />
         )}
       </DefaultHeader>
       <div className="p-4">

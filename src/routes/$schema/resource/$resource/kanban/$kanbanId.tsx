@@ -12,6 +12,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { ResourceKanban } from "#/components/resource/resource-kanban"
 import type {
   KanbanLayout,
@@ -19,7 +20,6 @@ import type {
   KanbanViewReducedData,
 } from "#/components/resource/resource-kanban"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -226,7 +226,11 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
   const { layout } = Route.useSearch()
-  const { kanbanView, resourceSchema, columnsSchema = [] } = Route.useLoaderData()
+  const {
+    kanbanView,
+    resourceSchema,
+    columnsSchema = [],
+  } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
@@ -286,7 +290,11 @@ function RouteComponent() {
           currentViewId={kanbanView.id}
         />
         {isTable && canInsert && (
-          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
+          <ResourceActions
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+          />
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">

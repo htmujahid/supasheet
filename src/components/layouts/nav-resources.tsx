@@ -25,8 +25,20 @@ function LucideIconComponent({
 }
 
 type ResourceItem =
-  | { name: string; id: string; schema: string; type: "table"; meta: TableMetadata }
-  | { name: string; id: string; schema: string; type: "view"; meta: ViewMetadata }
+  | {
+      name: string
+      id: string
+      schema: string
+      type: "table"
+      meta: TableMetadata
+    }
+  | {
+      name: string
+      id: string
+      schema: string
+      type: "view"
+      meta: ViewMetadata
+    }
 
 function ResourceMenuItem({
   item,
@@ -40,7 +52,9 @@ function ResourceMenuItem({
     <LucideIconComponent
       iconName={
         (item.meta?.icon ||
-          (item.type === "table" ? "Table2" : "Eye")) as keyof typeof LucideIcons
+          (item.type === "table"
+            ? "Table2"
+            : "Eye")) as keyof typeof LucideIcons
       }
     />
   )
@@ -126,7 +140,10 @@ export function NavResources({
         </SidebarGroup>
       )}
       {namedGroups.map(([group, groupItems]) => (
-        <SidebarGroup key={group} className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroup
+          key={group}
+          className="group-data-[collapsible=icon]:hidden"
+        >
           <SidebarGroupLabel>{group}</SidebarGroupLabel>
           <SidebarMenu className="flex flex-col gap-1">
             {groupItems.map((item) => (

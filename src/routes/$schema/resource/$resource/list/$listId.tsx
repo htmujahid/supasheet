@@ -20,8 +20,8 @@ import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceList } from "#/components/resource/list/resource-list"
 import type { ListView } from "#/components/resource/list/resource-list"
-import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { ResourceActions } from "#/components/resource/resource-actions"
+import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -275,7 +275,11 @@ function RouteComponent() {
           currentViewId={listView.id}
         />
         {isTable && canInsert && (
-          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
+          <ResourceActions
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+          />
         )}
       </DefaultHeader>
       <div className="p-4">

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react"
 
-import { useStore } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
+
+import { useStore } from "@tanstack/react-form"
 
 import {
   Combobox,
@@ -48,12 +49,16 @@ export function ForeignDataCombobox({
   const watchedValues = useStore(
     // If no base store is provided, cast a minimal fallback to unknown first to
     // satisfy TypeScript when coercing to the expected BaseAtom type.
-    (form?.baseStore ?? ({ subscribe: () => () => {} } as unknown)) as
-      Parameters<typeof useStore>[0],
+    (form?.baseStore ??
+      ({ subscribe: () => () => {} } as unknown)) as Parameters<
+      typeof useStore
+    >[0],
     (s) => {
       const vals: Record<string, unknown> = {}
       for (const rule of filterRules) {
-        vals[rule.on] = (s as { values: Record<string, unknown> }).values?.[rule.on]
+        vals[rule.on] = (s as { values: Record<string, unknown> }).values?.[
+          rule.on
+        ]
       }
       return vals
     }

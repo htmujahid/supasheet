@@ -121,9 +121,11 @@ function RouteComponent() {
         )}
         {tableWidgets.length > 0 && (
           <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-4">
-            {tableWidgets.sort((a, b) => a.widget_type.localeCompare(b.widget_type)).map((widget) => (
-              <DashboardWidget key={widget.view_name} widget={widget} />
-            ))}
+            {tableWidgets
+              .sort((a, b) => a.widget_type.localeCompare(b.widget_type))
+              .map((widget) => (
+                <DashboardWidget key={widget.view_name} widget={widget} />
+              ))}
           </div>
         )}
       </div>

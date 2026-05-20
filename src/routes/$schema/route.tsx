@@ -120,10 +120,18 @@ const NAV_TYPE_CONFIG: Record<
   string,
   { title: string; url: string; icon: React.ReactNode }
 > = {
-  dashboard_widget: { title: "Dashboard", url: "/dashboard", icon: <HomeIcon /> },
+  dashboard_widget: {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: <HomeIcon />,
+  },
   chart: { title: "Chart", url: "/chart", icon: <ChartBarIcon /> },
   report: { title: "Report", url: "/report", icon: <FileChartColumnIcon /> },
-  template: { title: "Template", url: "/template", icon: <LayoutTemplateIcon /> },
+  template: {
+    title: "Template",
+    url: "/template",
+    icon: <LayoutTemplateIcon />,
+  },
 }
 
 function RouteComponent() {

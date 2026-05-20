@@ -3,10 +3,7 @@ import { useState } from "react"
 import { ButtonGroup } from "#/components/ui/button-group"
 import { DropdownMenuItem } from "#/components/ui/dropdown-menu"
 import { Input } from "#/components/ui/input"
-import type {
-  Relationship,
-  TableMetadata,
-} from "#/lib/database-meta.types"
+import type { Relationship, TableMetadata } from "#/lib/database-meta.types"
 import type { FieldProps } from "#/types/fields"
 
 import { ForeignTableSheet } from "../foreign-table"
@@ -46,7 +43,10 @@ export function ForeignKeyField({
     for (const rule of behavior.fill) {
       const val = record[rule.source]
       if (val !== undefined)
-        form.setFieldValue(rule.target as keyof typeof form.state.values, val as never)
+        form.setFieldValue(
+          rule.target,
+          val
+        )
     }
   }
 

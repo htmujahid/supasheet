@@ -22,7 +22,6 @@ import { Field, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
-
   FormMode,
   PrimaryKey,
   TableMetadata,
@@ -229,9 +228,8 @@ function FieldWithBehavior({
   tableSchema: TableSchema
   form: ResourceFormApi
 }) {
-  const behavior = (
-    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).fieldBehavior?.[col.name ?? col.id ?? ""]
+  const behavior = (JSON.parse(tableSchema.comment ?? "{}") as TableMetadata)
+    .fieldBehavior?.[col.name ?? col.id ?? ""]
 
   const allCondIds = new Set([
     ...(behavior?.visible?.map((c) => c.id) ?? []),
@@ -242,7 +240,11 @@ function FieldWithBehavior({
   if (!allCondIds.size) {
     return (
       <div className={spanClass}>
-        <ResourceFormField columnSchema={col} tableSchema={tableSchema} form={form} />
+        <ResourceFormField
+          columnSchema={col}
+          tableSchema={tableSchema}
+          form={form}
+        />
       </div>
     )
   }
@@ -259,7 +261,10 @@ function FieldWithBehavior({
       }
     >
       {(watchedValues) => {
-        if (behavior?.visible?.length && !evaluateConditionalField(behavior.visible, watchedValues))
+        if (
+          behavior?.visible?.length &&
+          !evaluateConditionalField(behavior.visible, watchedValues)
+        )
           return null
         const isRequired = behavior?.required?.length
           ? evaluateConditionalField(behavior.required, watchedValues)

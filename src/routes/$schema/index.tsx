@@ -9,7 +9,9 @@ import {
   HomeIcon,
   LayoutTemplateIcon,
 } from "lucide-react"
+
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceGrid } from "#/components/resource/resource-grid"
 import {
   Card,
   CardDescription,
@@ -17,7 +19,6 @@ import {
   CardTitle,
 } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
-import { ResourceGrid } from "#/components/resource/resource-grid"
 import { formatTitle } from "#/lib/format"
 import { resourcesQueryOptions } from "#/lib/supabase/data/resource"
 

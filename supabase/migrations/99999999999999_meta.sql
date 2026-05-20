@@ -239,11 +239,7 @@ execute on FUNCTION supasheet.get_permissions (text) to authenticated;
 ----------------------------------------------------------------
 -- Function: supasheet.get_nav_items
 ----------------------------------------------------------------
-create or replace function supasheet.get_nav_items (schema_name text default null)
-returns table (
-  type text,
-  count bigint
-) language sql security definer
+create or replace function supasheet.get_nav_items (schema_name text default null) returns table (type text, count bigint) language sql security definer
 set
   search_path = '' as $$
   SELECT

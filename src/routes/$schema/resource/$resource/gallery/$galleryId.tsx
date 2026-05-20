@@ -12,10 +12,10 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { ResourceGallery } from "#/components/resource/resource-gallery"
 import type { GalleryViewData } from "#/components/resource/resource-gallery"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -199,7 +199,11 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schema, resource } = Route.useParams()
-  const { galleryView, resourceSchema, columnsSchema = [] } = Route.useLoaderData()
+  const {
+    galleryView,
+    resourceSchema,
+    columnsSchema = [],
+  } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
   const { data: resourceData } = useSuspenseQuery(
@@ -247,7 +251,11 @@ function RouteComponent() {
           currentViewId={galleryView.id}
         />
         {isTable && canInsert && (
-          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
+          <ResourceActions
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+          />
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">

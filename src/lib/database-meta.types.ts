@@ -89,19 +89,19 @@ export type ConditionalField = {
 }
 
 export type FieldBehavior = {
-  visible?: ConditionalField[]   // shown when ALL conditions match
-  required?: ConditionalField[]  // required when ALL conditions match
-  readOnly?: ConditionalField[]  // read-only when ALL conditions match
+  visible?: ConditionalField[] // shown when ALL conditions match
+  required?: ConditionalField[] // required when ALL conditions match
+  readOnly?: ConditionalField[] // read-only when ALL conditions match
 }
 
 export type FKFillRule = {
-  target: string  // local form field to populate
-  source: string  // column from the FK target table
+  target: string // local form field to populate
+  source: string // column from the FK target table
 }
 
 export type FKFilterRule = {
-  on: string      // local field to watch
-  column: string  // FK table column to match against
+  on: string // local field to watch
+  column: string // FK table column to match against
 }
 
 export type FKBehavior = {

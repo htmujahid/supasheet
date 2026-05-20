@@ -4,12 +4,12 @@ import * as LucideIcons from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 import { Badge } from "#/components/ui/badge"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card"
-import type { DatabaseSchemas, TableMetadata, ViewMetadata } from "#/lib/database-meta.types"
+import { Card, CardHeader, CardTitle } from "#/components/ui/card"
+import type {
+  DatabaseSchemas,
+  TableMetadata,
+  ViewMetadata,
+} from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 
 export type Resource = {

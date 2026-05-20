@@ -13,9 +13,9 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { AlertCircleIcon, FileXIcon } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { ResourceActions } from "#/components/resource/resource-actions"
 import { ResourceTree } from "#/components/resource/resource-tree"
 import { ResourceViewSwitcher } from "#/components/resource/resource-view-switcher"
-import { ResourceActions } from "#/components/resource/resource-actions"
 import { Button } from "#/components/ui/button"
 import {
   Empty,
@@ -241,7 +241,11 @@ function RouteComponent() {
           currentViewId={treeView.id}
         />
         {isTable && canInsert && (
-          <ResourceActions schema={schema} resource={resource} columnsSchema={columnsSchema} />
+          <ResourceActions
+            schema={schema}
+            resource={resource}
+            columnsSchema={columnsSchema}
+          />
         )}
       </DefaultHeader>
       <div className="flex flex-1 flex-col px-4 py-4">
