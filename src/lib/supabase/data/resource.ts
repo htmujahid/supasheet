@@ -227,8 +227,8 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
 
 export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
   schema: S,
-  parentResource: DatabaseTables<S> | DatabaseViews<S>,
   resource: DatabaseTables<S> | DatabaseViews<S>,
+  parentResource: DatabaseTables<S> | DatabaseViews<S>,
   parentColumn: string,
   parentValue: unknown,
   defaultQuery?: TableMetadata["query"],
@@ -244,9 +244,9 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
       "supasheet",
       "resource-data",
       schema,
-      parentResource,
-      "foreign",
       resource,
+      "foreign",
+      parentResource,
       parentColumn,
       parentValue,
       defaultQuery,

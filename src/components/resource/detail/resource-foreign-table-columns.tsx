@@ -19,11 +19,9 @@ import { DetailRecordTrigger } from "../sheet/detail-record-trigger"
 export function getResourceForeignTableColumns({
   columnsSchema,
   resourceSchema,
-  data,
 }: {
   columnsSchema: ColumnSchema[]
   resourceSchema: ResourceSchema
-  data: ResourceDataSchema[]
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
@@ -102,32 +100,5 @@ export function getResourceForeignTableColumns({
       enableHiding: true,
       meta: getColumnMetadata(resourceSchema, c),
     })),
-    ...(data.length > 0
-      ? Object.keys(data[0]).map((key) => {
-          const existingColumn = columnsSchema.find((c) => c.name === key)
-          if (existingColumn) {
-            return null
-          }
-          return {
-            id: key,
-            accessorKey: key,
-            header: () => (
-              <div className="truncate select-none">{formatTitle(key)}</div>
-            ),
-            cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
-              <ResourceRowCell
-                row={row}
-                columnSchema={{ id: key, name: key } as ColumnSchema}
-                resourceSchema={resourceSchema}
-              />
-            ),
-            size: 150,
-            enableColumnFilter: false,
-            enableSorting: true,
-            enableHiding: true,
-          }
-        })
-      : []
-    ).filter((c) => c !== null),
   ] as ColumnDef<ResourceDataSchema, unknown>[]
 }

@@ -95,8 +95,8 @@ export function ResourceForeignTable({
   const { data: queryResult } = useSuspenseQuery(
     foreignTableDataQueryOptions(
       schema,
-      parentResource as never,
       table,
+      parentResource as never,
       parentColumn,
       hasParentValue ? parentValue : "__noop__",
       defaultQuery,
@@ -180,7 +180,6 @@ export function ResourceForeignTable({
   const columns = useMemo(
     () =>
       getResourceForeignTableColumns({
-        data,
         columnsSchema,
         resourceSchema,
       }),
