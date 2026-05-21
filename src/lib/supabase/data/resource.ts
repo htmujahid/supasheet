@@ -343,6 +343,33 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
     staleTime: 0,
   })
 
+export const singleForeignTableDataQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>,
+  match: Record<string, unknown>
+) =>
+  queryOptions({
+    queryKey: [
+      "supasheet",
+      "resource-data",
+      schema,
+      resource,
+      "single-foreign",
+      match,
+    ],
+    queryFn: async () => {
+      let query = supabase.schema(schema).from(resource).select("*")
+      for (const [col, val] of Object.entries(match)) {
+        query = query.eq(col as never, val as never)
+      }
+      const { data, error } = await query.maybeSingle()
+      if (error) throw error
+
+      return data ?? (null as Record<string, unknown> | null)
+    },
+    staleTime: 0,
+  })
+
 export const insertResourceMutationOptions = <S extends DatabaseSchemas>(
   schema: S,
   resource: DatabaseTables<S> | DatabaseViews<S>

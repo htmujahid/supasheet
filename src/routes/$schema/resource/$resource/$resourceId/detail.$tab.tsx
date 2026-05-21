@@ -1,8 +1,4 @@
-import { Suspense } from "react"
-
 import {
-  Link,
-  Outlet,
   createFileRoute,
   getRouteApi,
   notFound,
@@ -10,32 +6,13 @@ import {
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { LinkIcon } from "lucide-react"
-
-import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { classifyRelationships } from "#/components/resource/detail/classify-relationships"
-import { ResourceForeignTable } from "#/components/resource/detail/resource-foreign-table"
-import { ResourceFullDetail } from "#/components/resource/detail/resource-full-detail"
-import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
-import { buttonVariants } from "#/components/ui/button"
-import { Card, CardContent } from "#/components/ui/card"
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "#/components/ui/empty"
+import { ResourceDetailTab } from "#/components/resource/detail/resource-detail-tab"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type {
-  PrimaryKey,
-  ResourceSchema,
-  TableMetadata,
-} from "#/lib/database-meta.types"
-import { formatTitle } from "#/lib/format"
+import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
 import {
   relatedTablesSchemaQueryOptions,
+  singleForeignTableDataQueryOptions,
   singleResourceDataQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
@@ -75,14 +52,17 @@ export const Route = createFileRoute(
       const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
       const pkName = primaryKeys[0]?.name ?? "id"
       const pk = { [pkName]: resourceId }
-      const join = (classification.joins ?? []).find(
-        (j) => j.on === oneToOne.__fkColumn
+      const parent = await context.queryClient.ensureQueryData(
+        singleResourceDataQueryOptions(schema, resource, pk)
       )
-      await context.queryClient.ensureQueryData(
-        singleResourceDataQueryOptions(schema, resource, pk, {
-          join: join ? [join] : [],
-        })
-      )
+      const matchValue = parent?.[oneToOne.__parentMatchColumn]
+      if (matchValue != null) {
+        await context.queryClient.ensureQueryData(
+          singleForeignTableDataQueryOptions(oneToOne.schema, oneToOne.name, {
+            [oneToOne.__foreignMatchColumn]: matchValue,
+          })
+        )
+      }
       return
     }
 
@@ -107,7 +87,6 @@ function RouteComponent() {
     oneToOneRelationships,
     oneToManyRelationships,
     manyToManyRelationships,
-    joins,
     pkName,
   } = parentRoute.useLoaderData()
 
@@ -118,14 +97,8 @@ function RouteComponent() {
     oneToManyRelationships.find((r) => r.name === tab) ??
     manyToManyRelationships.find((r) => r.name === tab)
 
-  const join = oneToOne
-    ? (joins ?? []).find((j) => j.on === oneToOne.__fkColumn)
-    : undefined
-
   const { data: record } = useSuspenseQuery(
-    singleResourceDataQueryOptions(schema, resource, pk, {
-      join: oneToOne && join ? [join] : [],
-    })
+    singleResourceDataQueryOptions(schema, resource, pk)
   )
 
   const canUpdateOneToOne = useHasPermission(
@@ -133,120 +106,16 @@ function RouteComponent() {
   )
   const canUpdateParent = useHasPermission(`${schema}.${resource}:update`)
 
-  if (oneToOne) {
-    const fkValue = record?.[oneToOne.__fkColumn]
-    const embedded = record?.[oneToOne.__embedKey] as
-      | Record<string, unknown>
-      | null
-      | undefined
-    const primaryKeys = oneToOne.primary_keys ?? []
-    const hasPkValues =
-      primaryKeys.length > 0 &&
-      primaryKeys.every((k) => embedded != null && embedded[k.name] != null)
-
-    const isUnlinked = fkValue == null || embedded == null || !hasPkValues
-
-    if (isUnlinked) {
-      const relatedName = formatTitle(oneToOne.name)
-      const parentName = formatTitle(resource)
-      const parentDetailHref = `/${schema}/resource/${resource}/${resourceId}/detail`
-      return (
-        <>
-          <div className="mx-auto w-full max-w-5xl space-y-4">
-            <Card>
-              <CardContent className="py-8">
-                <Empty>
-                  <EmptyHeader>
-                    <EmptyMedia variant="icon">
-                      <LinkIcon />
-                    </EmptyMedia>
-                    <EmptyTitle>No linked {relatedName}</EmptyTitle>
-                    <EmptyDescription>
-                      This {parentName} record is not linked to a {relatedName}.
-                      {canUpdateParent
-                        ? ` Edit this record and set "${oneToOne.__fkColumn}" to link one.`
-                        : null}
-                    </EmptyDescription>
-                  </EmptyHeader>
-                  {canUpdateParent ? (
-                    <EmptyContent>
-                      <Link
-                        to={parentDetailHref}
-                        className={buttonVariants({
-                          size: "sm",
-                          variant: "outline",
-                        })}
-                      >
-                        Edit {parentName}
-                      </Link>
-                    </EmptyContent>
-                  ) : null}
-                </Empty>
-              </CardContent>
-            </Card>
-          </div>
-          <Outlet />
-        </>
-      )
-    }
-
-    if (canUpdateOneToOne) {
-      return (
-        <>
-          <ResourceUpdateForm
-            columnsSchema={oneToOne.columns ?? []}
-            primaryKeys={primaryKeys}
-            record={embedded}
-            tableSchema={oneToOne}
-            saveOnly
-          />
-          <Outlet />
-        </>
-      )
-    }
-
-    return (
-      <>
-        <ResourceFullDetail
-          resourceSchema={
-            {
-              ...oneToOne,
-              name: oneToOne.__embedKey,
-            } as unknown as ResourceSchema
-          }
-          columnsSchema={oneToOne.columns ?? []}
-          record={embedded}
-        />
-        <Outlet />
-      </>
-    )
-  }
-
-  if (!many) return null
-
-  const {
-    columns,
-    __parentColumn,
-    __targetColumn,
-    __selectClause,
-    ...resourceSchema
-  } = many
-
-  const parentValue = record?.[__targetColumn]
-
   return (
-    <>
-      <Suspense fallback={<DataTableSkeleton columnCount={10} />}>
-        <ResourceForeignTable
-          parentResource={resource}
-          parentColumn={__parentColumn}
-          parentValue={parentValue}
-          resourceSchema={resourceSchema}
-          columnsSchema={columns ?? []}
-          selectClause={__selectClause}
-        />
-      </Suspense>
-      <Outlet />
-    </>
+    <ResourceDetailTab
+      schema={schema}
+      resource={resource}
+      resourceId={resourceId}
+      parentRecord={record}
+      oneToOne={oneToOne}
+      many={many}
+      canUpdateOneToOne={canUpdateOneToOne}
+      canUpdateParent={canUpdateParent}
+    />
   )
 }

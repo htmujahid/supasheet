@@ -25,6 +25,8 @@ export type ManyRelation = RelatedTable & {
 export type OneToOneRelation = RelatedTable & {
   __embedKey: string
   __fkColumn: string
+  __foreignMatchColumn: string
+  __parentMatchColumn: string
 }
 
 export type ClassifiedRelationships = {
@@ -62,6 +64,8 @@ export function classifyRelationships(
           ...table,
           __embedKey: joinAlias(rel.source_column_name),
           __fkColumn: rel.source_column_name,
+          __foreignMatchColumn: rel.target_column_name,
+          __parentMatchColumn: rel.source_column_name,
         })
       }
       continue
@@ -89,6 +93,8 @@ export function classifyRelationships(
         ...table,
         __embedKey: joinAlias(oneToOneAsTarget.source_column_name),
         __fkColumn: oneToOneAsTarget.source_column_name,
+        __foreignMatchColumn: oneToOneAsTarget.source_column_name,
+        __parentMatchColumn: oneToOneAsTarget.target_column_name,
       })
       continue
     }
