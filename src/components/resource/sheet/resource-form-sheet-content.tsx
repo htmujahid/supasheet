@@ -64,7 +64,8 @@ export function ResourceFormSheetContent({
       return all
     }
     return columnsSchema.filter(
-      (col) => !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)
+      (col) =>
+        !isSkippedForUpdate(col, primaryKeys) && (col.is_updatable ?? true)
     )
   })()
 

@@ -1,124 +1,121 @@
-"use client";
+"use client"
 
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { useComposedRefs } from "@/lib/compose-refs";
-import { cn } from "@/lib/utils";
-import { useAsRef } from "@/hooks/use-as-ref";
-import { useIsomorphicLayoutEffect } from "@/hooks/use-isomorphic-layout-effect";
-import { Button } from "@/components/ui/button";
-import { useDirection } from "@/components/ui/direction";
+import * as React from "react"
 
-const ROOT_NAME = "ActionBar";
-const GROUP_NAME = "ActionBarGroup";
-const ITEM_NAME = "ActionBarItem";
-const CLOSE_NAME = "ActionBarClose";
-const SEPARATOR_NAME = "ActionBarSeparator";
-const ITEM_SELECT = "actionbar.itemSelect";
-const ENTRY_FOCUS = "actionbarFocusGroup.onEntryFocus";
-const EVENT_OPTIONS = { bubbles: false, cancelable: true };
+import * as ReactDOM from "react-dom"
 
-type Direction = "ltr" | "rtl";
-type Orientation = "horizontal" | "vertical";
+import { Button } from "@/components/ui/button"
+import { useDirection } from "@/components/ui/direction"
+import { useAsRef } from "@/hooks/use-as-ref"
+import { useIsomorphicLayoutEffect } from "@/hooks/use-isomorphic-layout-effect"
+import { useComposedRefs } from "@/lib/compose-refs"
+import { cn } from "@/lib/utils"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+
+const ROOT_NAME = "ActionBar"
+const GROUP_NAME = "ActionBarGroup"
+const ITEM_NAME = "ActionBarItem"
+const CLOSE_NAME = "ActionBarClose"
+const SEPARATOR_NAME = "ActionBarSeparator"
+const ITEM_SELECT = "actionbar.itemSelect"
+const ENTRY_FOCUS = "actionbarFocusGroup.onEntryFocus"
+const EVENT_OPTIONS = { bubbles: false, cancelable: true }
+
+type Direction = "ltr" | "rtl"
+type Orientation = "horizontal" | "vertical"
 
 interface DivProps
-  extends useRender.ComponentProps<"div">,
-    React.ComponentProps<"div"> {}
+  extends useRender.ComponentProps<"div">, React.ComponentProps<"div"> {}
 
-type RootElement = React.ComponentRef<typeof ActionBar>;
-type ItemElement = React.ComponentRef<typeof ActionBarItem>;
+type RootElement = React.ComponentRef<typeof ActionBar>
+type ItemElement = React.ComponentRef<typeof ActionBarItem>
 
 function focusFirst(
   candidates: React.RefObject<HTMLElement | null>[],
-  preventScroll = false,
+  preventScroll = false
 ) {
-  const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
+  const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement
   for (const candidateRef of candidates) {
-    const candidate = candidateRef.current;
-    if (!candidate) continue;
-    if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return;
-    candidate.focus({ preventScroll });
-    if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
+    const candidate = candidateRef.current
+    if (!candidate) continue
+    if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return
+    candidate.focus({ preventScroll })
+    if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return
   }
 }
 
 function wrapArray<T>(array: T[], startIndex: number) {
   return array.map<T>(
-    (_, index) => array[(startIndex + index) % array.length] as T,
-  );
+    (_, index) => array[(startIndex + index) % array.length] as T
+  )
 }
 
 function getDirectionAwareKey(key: string, dir?: Direction) {
-  if (dir !== "rtl") return key;
+  if (dir !== "rtl") return key
   return key === "ArrowLeft"
     ? "ArrowRight"
     : key === "ArrowRight"
       ? "ArrowLeft"
-      : key;
+      : key
 }
 
 interface ItemData {
-  id: string;
-  ref: React.RefObject<ItemElement | null>;
-  disabled: boolean;
+  id: string
+  ref: React.RefObject<ItemElement | null>
+  disabled: boolean
 }
 
 interface ActionBarContextValue {
-  onOpenChange?: (open: boolean) => void;
-  dir: Direction;
-  orientation: Orientation;
-  loop: boolean;
+  onOpenChange?: (open: boolean) => void
+  dir: Direction
+  orientation: Orientation
+  loop: boolean
 }
 
-const ActionBarContext = React.createContext<ActionBarContextValue | null>(
-  null,
-);
+const ActionBarContext = React.createContext<ActionBarContextValue | null>(null)
 
 function useActionBarContext(consumerName: string) {
-  const context = React.useContext(ActionBarContext);
+  const context = React.useContext(ActionBarContext)
   if (!context) {
-    throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``);
+    throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``)
   }
-  return context;
+  return context
 }
 
 interface FocusContextValue {
-  tabStopId: string | null;
-  onItemFocus: (tabStopId: string) => void;
-  onItemShiftTab: () => void;
-  onFocusableItemAdd: () => void;
-  onFocusableItemRemove: () => void;
-  onItemRegister: (item: ItemData) => void;
-  onItemUnregister: (id: string) => void;
-  getItems: () => ItemData[];
+  tabStopId: string | null
+  onItemFocus: (tabStopId: string) => void
+  onItemShiftTab: () => void
+  onFocusableItemAdd: () => void
+  onFocusableItemRemove: () => void
+  onItemRegister: (item: ItemData) => void
+  onItemUnregister: (id: string) => void
+  getItems: () => ItemData[]
 }
 
-const FocusContext = React.createContext<FocusContextValue | null>(null);
+const FocusContext = React.createContext<FocusContextValue | null>(null)
 
 function useFocusContext(consumerName: string) {
-  const context = React.useContext(FocusContext);
+  const context = React.useContext(FocusContext)
   if (!context) {
-    throw new Error(
-      `\`${consumerName}\` must be used within \`FocusProvider\``,
-    );
+    throw new Error(`\`${consumerName}\` must be used within \`FocusProvider\``)
   }
-  return context;
+  return context
 }
 
 interface ActionBarProps extends DivProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  onEscapeKeyDown?: (event: KeyboardEvent) => void;
-  align?: "start" | "center" | "end";
-  alignOffset?: number;
-  side?: "top" | "bottom";
-  sideOffset?: number;
-  portalContainer?: Element | DocumentFragment | null;
-  dir?: Direction;
-  orientation?: Orientation;
-  loop?: boolean;
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  onEscapeKeyDown?: (event: KeyboardEvent) => void
+  align?: "start" | "center" | "end"
+  alignOffset?: number
+  side?: "top" | "bottom"
+  sideOffset?: number
+  portalContainer?: Element | DocumentFragment | null
+  dir?: Direction
+  orientation?: Orientation
+  loop?: boolean
 }
 
 function ActionBar(props: ActionBarProps) {
@@ -139,42 +136,42 @@ function ActionBar(props: ActionBarProps) {
     ref,
     render,
     ...rootProps
-  } = props;
+  } = props
 
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false)
 
-  const rootRef = React.useRef<RootElement>(null);
-  const composedRef = useComposedRefs(ref, rootRef);
+  const rootRef = React.useRef<RootElement>(null)
+  const composedRef = useComposedRefs(ref, rootRef)
 
   const propsRef = useAsRef({
     onEscapeKeyDown,
     onOpenChange,
-  });
+  })
 
-  const contextDir = useDirection();
-  const dir = dirProp ?? contextDir;
+  const contextDir = useDirection()
+  const dir = dirProp ?? contextDir
 
   React.useLayoutEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open) return
 
-    const ownerDocument = rootRef.current?.ownerDocument ?? document;
+    const ownerDocument = rootRef.current?.ownerDocument ?? document
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        propsRef.current.onEscapeKeyDown?.(event);
+        propsRef.current.onEscapeKeyDown?.(event)
         if (!event.defaultPrevented) {
-          propsRef.current.onOpenChange?.(false);
+          propsRef.current.onOpenChange?.(false)
         }
       }
     }
 
-    ownerDocument.addEventListener("keydown", onKeyDown);
-    return () => ownerDocument.removeEventListener("keydown", onKeyDown);
-  }, [open, propsRef]);
+    ownerDocument.addEventListener("keydown", onKeyDown)
+    return () => ownerDocument.removeEventListener("keydown", onKeyDown)
+  }, [open, propsRef])
 
   const contextValue = React.useMemo<ActionBarContextValue>(
     () => ({
@@ -183,11 +180,11 @@ function ActionBar(props: ActionBarProps) {
       orientation,
       loop,
     }),
-    [onOpenChange, dir, orientation, loop],
-  );
+    [onOpenChange, dir, orientation, loop]
+  )
 
   const portalContainer =
-    portalContainerProp ?? (mounted ? globalThis.document?.body : null);
+    portalContainerProp ?? (mounted ? globalThis.document?.body : null)
 
   const element = useRender({
     defaultTagName: "div",
@@ -205,7 +202,7 @@ function ActionBar(props: ActionBarProps) {
           orientation === "horizontal"
             ? "flex flex-row items-center gap-2 px-2 py-1.5"
             : "flex flex-col items-start gap-2 px-1.5 py-2",
-          className,
+          className
         ),
         style: {
           [side]: `${sideOffset}px`,
@@ -218,7 +215,7 @@ function ActionBar(props: ActionBarProps) {
           ...style,
         },
       },
-      rootProps,
+      rootProps
     ),
     render,
     state: {
@@ -227,19 +224,19 @@ function ActionBar(props: ActionBarProps) {
       align,
       orientation,
     },
-  });
+  })
 
-  if (!portalContainer || !open) return null;
+  if (!portalContainer || !open) return null
 
   return (
     <ActionBarContext.Provider value={contextValue}>
       {ReactDOM.createPortal(element, portalContainer)}
     </ActionBarContext.Provider>
-  );
+  )
 }
 
 function ActionBarSelection(props: DivProps) {
-  const { className, render, ...selectionProps } = props;
+  const { className, render, ...selectionProps } = props
 
   return useRender({
     defaultTagName: "div",
@@ -247,16 +244,16 @@ function ActionBarSelection(props: DivProps) {
       {
         className: cn(
           "flex items-center gap-1 rounded-sm border px-2 py-1 font-medium text-sm tabular-nums",
-          className,
+          className
         ),
       },
-      selectionProps,
+      selectionProps
     ),
     render,
     state: {
       slot: "action-bar-selection",
     },
-  });
+  })
 }
 
 function ActionBarGroup(props: DivProps) {
@@ -268,112 +265,112 @@ function ActionBarGroup(props: DivProps) {
     render,
     ref,
     ...groupProps
-  } = props;
+  } = props
 
-  const [tabStopId, setTabStopId] = React.useState<string | null>(null);
-  const [isTabbingBackOut, setIsTabbingBackOut] = React.useState(false);
-  const [focusableItemCount, setFocusableItemCount] = React.useState(0);
+  const [tabStopId, setTabStopId] = React.useState<string | null>(null)
+  const [isTabbingBackOut, setIsTabbingBackOut] = React.useState(false)
+  const [focusableItemCount, setFocusableItemCount] = React.useState(0)
 
-  const groupRef = React.useRef<HTMLDivElement>(null);
-  const composedRef = useComposedRefs(ref, groupRef);
-  const isClickFocusRef = React.useRef(false);
-  const itemsRef = React.useRef<Map<string, ItemData>>(new Map());
+  const groupRef = React.useRef<HTMLDivElement>(null)
+  const composedRef = useComposedRefs(ref, groupRef)
+  const isClickFocusRef = React.useRef(false)
+  const itemsRef = React.useRef<Map<string, ItemData>>(new Map())
 
-  const { dir, orientation } = useActionBarContext(GROUP_NAME);
+  const { dir, orientation } = useActionBarContext(GROUP_NAME)
 
   const onItemFocus = React.useCallback((tabStopId: string) => {
-    setTabStopId(tabStopId);
-  }, []);
+    setTabStopId(tabStopId)
+  }, [])
 
   const onItemShiftTab = React.useCallback(() => {
-    setIsTabbingBackOut(true);
-  }, []);
+    setIsTabbingBackOut(true)
+  }, [])
 
   const onFocusableItemAdd = React.useCallback(() => {
-    setFocusableItemCount((prevCount) => prevCount + 1);
-  }, []);
+    setFocusableItemCount((prevCount) => prevCount + 1)
+  }, [])
 
   const onFocusableItemRemove = React.useCallback(() => {
-    setFocusableItemCount((prevCount) => prevCount - 1);
-  }, []);
+    setFocusableItemCount((prevCount) => prevCount - 1)
+  }, [])
 
   const onItemRegister = React.useCallback((item: ItemData) => {
-    itemsRef.current.set(item.id, item);
-  }, []);
+    itemsRef.current.set(item.id, item)
+  }, [])
 
   const onItemUnregister = React.useCallback((id: string) => {
-    itemsRef.current.delete(id);
-  }, []);
+    itemsRef.current.delete(id)
+  }, [])
 
   const getItems = React.useCallback(() => {
     return Array.from(itemsRef.current.values())
       .filter((item) => item.ref.current)
       .sort((a, b) => {
-        const elementA = a.ref.current;
-        const elementB = b.ref.current;
-        if (!elementA || !elementB) return 0;
-        const position = elementA.compareDocumentPosition(elementB);
+        const elementA = a.ref.current
+        const elementB = b.ref.current
+        if (!elementA || !elementB) return 0
+        const position = elementA.compareDocumentPosition(elementB)
         if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
-          return -1;
+          return -1
         }
         if (position & Node.DOCUMENT_POSITION_PRECEDING) {
-          return 1;
+          return 1
         }
-        return 0;
-      });
-  }, []);
+        return 0
+      })
+  }, [])
 
   const onBlur = React.useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
-      onBlurProp?.(event);
-      if (event.defaultPrevented) return;
+      onBlurProp?.(event)
+      if (event.defaultPrevented) return
 
-      setIsTabbingBackOut(false);
+      setIsTabbingBackOut(false)
     },
-    [onBlurProp],
-  );
+    [onBlurProp]
+  )
 
   const onFocus = React.useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
-      onFocusProp?.(event);
-      if (event.defaultPrevented) return;
+      onFocusProp?.(event)
+      if (event.defaultPrevented) return
 
-      const isKeyboardFocus = !isClickFocusRef.current;
+      const isKeyboardFocus = !isClickFocusRef.current
       if (
         event.target === event.currentTarget &&
         isKeyboardFocus &&
         !isTabbingBackOut
       ) {
-        const entryFocusEvent = new CustomEvent(ENTRY_FOCUS, EVENT_OPTIONS);
-        event.currentTarget.dispatchEvent(entryFocusEvent);
+        const entryFocusEvent = new CustomEvent(ENTRY_FOCUS, EVENT_OPTIONS)
+        event.currentTarget.dispatchEvent(entryFocusEvent)
 
         if (!entryFocusEvent.defaultPrevented) {
           const items = Array.from(itemsRef.current.values()).filter(
-            (item) => !item.disabled,
-          );
-          const currentItem = items.find((item) => item.id === tabStopId);
+            (item) => !item.disabled
+          )
+          const currentItem = items.find((item) => item.id === tabStopId)
 
           const candidateItems = [currentItem, ...items].filter(
-            Boolean,
-          ) as ItemData[];
-          const candidateRefs = candidateItems.map((item) => item.ref);
-          focusFirst(candidateRefs, false);
+            Boolean
+          ) as ItemData[]
+          const candidateRefs = candidateItems.map((item) => item.ref)
+          focusFirst(candidateRefs, false)
         }
       }
-      isClickFocusRef.current = false;
+      isClickFocusRef.current = false
     },
-    [onFocusProp, isTabbingBackOut, tabStopId],
-  );
+    [onFocusProp, isTabbingBackOut, tabStopId]
+  )
 
   const onMouseDown = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      onMouseDownProp?.(event);
-      if (event.defaultPrevented) return;
+      onMouseDownProp?.(event)
+      if (event.defaultPrevented) return
 
-      isClickFocusRef.current = true;
+      isClickFocusRef.current = true
     },
-    [onMouseDownProp],
-  );
+    [onMouseDownProp]
+  )
 
   const focusContextValue = React.useMemo<FocusContextValue>(
     () => ({
@@ -395,8 +392,8 @@ function ActionBarGroup(props: DivProps) {
       onItemRegister,
       onItemUnregister,
       getItems,
-    ],
-  );
+    ]
+  )
 
   const element = useRender({
     defaultTagName: "div",
@@ -411,31 +408,33 @@ function ActionBarGroup(props: DivProps) {
           orientation === "horizontal"
             ? "items-center"
             : "w-full flex-col items-start",
-          className,
+          className
         ),
         onBlur,
         onFocus,
         onMouseDown,
       },
-      groupProps,
+      groupProps
     ),
     render,
     state: {
       slot: "action-bar-group",
       orientation,
     },
-  });
+  })
 
   return (
     <FocusContext.Provider value={focusContextValue}>
       {element}
     </FocusContext.Provider>
-  );
+  )
 }
 
-interface ActionBarItemProps
-  extends Omit<React.ComponentProps<typeof Button>, "onSelect"> {
-  onSelect?: (event: Event) => void;
+interface ActionBarItemProps extends Omit<
+  React.ComponentProps<typeof Button>,
+  "onSelect"
+> {
+  onSelect?: (event: Event) => void
 }
 
 function ActionBarItem(props: ActionBarItemProps) {
@@ -449,147 +448,147 @@ function ActionBarItem(props: ActionBarItemProps) {
     disabled,
     ref,
     ...itemProps
-  } = props;
+  } = props
 
-  const itemRef = React.useRef<ItemElement>(null);
-  const composedRef = useComposedRefs(ref, itemRef);
-  const isMouseClickRef = React.useRef(false);
+  const itemRef = React.useRef<ItemElement>(null)
+  const composedRef = useComposedRefs(ref, itemRef)
+  const isMouseClickRef = React.useRef(false)
 
   const { onOpenChange, dir, orientation, loop } =
-    useActionBarContext(ITEM_NAME);
-  const focusContext = useFocusContext(ITEM_NAME);
+    useActionBarContext(ITEM_NAME)
+  const focusContext = useFocusContext(ITEM_NAME)
 
-  const itemId = React.useId();
-  const isTabStop = focusContext.tabStopId === itemId;
+  const itemId = React.useId()
+  const isTabStop = focusContext.tabStopId === itemId
 
   useIsomorphicLayoutEffect(() => {
     focusContext.onItemRegister({
       id: itemId,
       ref: itemRef,
       disabled: !!disabled,
-    });
+    })
 
     if (!disabled) {
-      focusContext.onFocusableItemAdd();
+      focusContext.onFocusableItemAdd()
     }
 
     return () => {
-      focusContext.onItemUnregister(itemId);
+      focusContext.onItemUnregister(itemId)
       if (!disabled) {
-        focusContext.onFocusableItemRemove();
+        focusContext.onFocusableItemRemove()
       }
-    };
-  }, [focusContext, itemId, disabled]);
+    }
+  }, [focusContext, itemId, disabled])
 
   const onClick = React.useCallback<NonNullable<ActionBarItemProps["onClick"]>>(
     (event) => {
-      onClickProp?.(event);
-      if (event.defaultPrevented) return;
+      onClickProp?.(event)
+      if (event.defaultPrevented) return
 
-      const item = itemRef.current;
-      if (!item) return;
+      const item = itemRef.current
+      if (!item) return
 
       const itemSelectEvent = new CustomEvent(ITEM_SELECT, {
         bubbles: true,
         cancelable: true,
-      });
+      })
 
       item.addEventListener(ITEM_SELECT, (evt) => onSelect?.(evt), {
         once: true,
-      });
+      })
 
-      item.dispatchEvent(itemSelectEvent);
+      item.dispatchEvent(itemSelectEvent)
 
       if (!itemSelectEvent.defaultPrevented) {
-        onOpenChange?.(false);
+        onOpenChange?.(false)
       }
     },
-    [onClickProp, onOpenChange, onSelect],
-  );
+    [onClickProp, onOpenChange, onSelect]
+  )
 
   const onFocus = React.useCallback<NonNullable<ActionBarItemProps["onFocus"]>>(
     (event) => {
-      onFocusProp?.(event);
-      if (event.defaultPrevented) return;
+      onFocusProp?.(event)
+      if (event.defaultPrevented) return
 
-      focusContext.onItemFocus(itemId);
-      isMouseClickRef.current = false;
+      focusContext.onItemFocus(itemId)
+      isMouseClickRef.current = false
     },
-    [onFocusProp, focusContext, itemId],
-  );
+    [onFocusProp, focusContext, itemId]
+  )
 
   const onKeyDown = React.useCallback<
     NonNullable<ActionBarItemProps["onKeyDown"]>
   >(
     (event) => {
-      onKeyDownProp?.(event);
-      if (event.defaultPrevented) return;
+      onKeyDownProp?.(event)
+      if (event.defaultPrevented) return
 
       if (event.key === "Tab" && event.shiftKey) {
-        focusContext.onItemShiftTab();
-        return;
+        focusContext.onItemShiftTab()
+        return
       }
 
-      if (event.target !== event.currentTarget) return;
+      if (event.target !== event.currentTarget) return
 
-      const key = getDirectionAwareKey(event.key, dir);
-      let focusIntent: "first" | "last" | "prev" | "next" | undefined;
+      const key = getDirectionAwareKey(event.key, dir)
+      let focusIntent: "first" | "last" | "prev" | "next" | undefined
 
       if (orientation === "horizontal") {
-        if (key === "ArrowLeft") focusIntent = "prev";
-        else if (key === "ArrowRight") focusIntent = "next";
-        else if (key === "Home") focusIntent = "first";
-        else if (key === "End") focusIntent = "last";
+        if (key === "ArrowLeft") focusIntent = "prev"
+        else if (key === "ArrowRight") focusIntent = "next"
+        else if (key === "Home") focusIntent = "first"
+        else if (key === "End") focusIntent = "last"
       } else {
-        if (key === "ArrowUp") focusIntent = "prev";
-        else if (key === "ArrowDown") focusIntent = "next";
-        else if (key === "Home") focusIntent = "first";
-        else if (key === "End") focusIntent = "last";
+        if (key === "ArrowUp") focusIntent = "prev"
+        else if (key === "ArrowDown") focusIntent = "next"
+        else if (key === "Home") focusIntent = "first"
+        else if (key === "End") focusIntent = "last"
       }
 
       if (focusIntent !== undefined) {
         if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey)
-          return;
-        event.preventDefault();
+          return
+        event.preventDefault()
 
-        const items = focusContext.getItems().filter((item) => !item.disabled);
-        let candidateRefs = items.map((item) => item.ref);
+        const items = focusContext.getItems().filter((item) => !item.disabled)
+        let candidateRefs = items.map((item) => item.ref)
 
         if (focusIntent === "last") {
-          candidateRefs.reverse();
+          candidateRefs.reverse()
         } else if (focusIntent === "prev" || focusIntent === "next") {
-          if (focusIntent === "prev") candidateRefs.reverse();
+          if (focusIntent === "prev") candidateRefs.reverse()
           const currentIndex = candidateRefs.findIndex(
-            (ref) => ref.current === event.currentTarget,
-          );
+            (ref) => ref.current === event.currentTarget
+          )
           candidateRefs = loop
             ? wrapArray(candidateRefs, currentIndex + 1)
-            : candidateRefs.slice(currentIndex + 1);
+            : candidateRefs.slice(currentIndex + 1)
         }
 
-        queueMicrotask(() => focusFirst(candidateRefs));
+        queueMicrotask(() => focusFirst(candidateRefs))
       }
     },
-    [onKeyDownProp, focusContext, dir, orientation, loop],
-  );
+    [onKeyDownProp, focusContext, dir, orientation, loop]
+  )
 
   const onMouseDown = React.useCallback<
     NonNullable<ActionBarItemProps["onMouseDown"]>
   >(
     (event) => {
-      onMouseDownProp?.(event);
-      if (event.defaultPrevented) return;
+      onMouseDownProp?.(event)
+      if (event.defaultPrevented) return
 
-      isMouseClickRef.current = true;
+      isMouseClickRef.current = true
 
       if (disabled) {
-        event.preventDefault();
+        event.preventDefault()
       } else {
-        focusContext.onItemFocus(itemId);
+        focusContext.onItemFocus(itemId)
       }
     },
-    [onMouseDownProp, focusContext, itemId, disabled],
-  );
+    [onMouseDownProp, focusContext, itemId, disabled]
+  )
 
   return (
     <Button
@@ -607,12 +606,11 @@ function ActionBarItem(props: ActionBarItemProps) {
       onKeyDown={onKeyDown}
       onMouseDown={onMouseDown}
     />
-  );
+  )
 }
 
 interface ActionBarCloseProps
-  extends useRender.ComponentProps<"button">,
-    React.ComponentProps<"button"> {}
+  extends useRender.ComponentProps<"button">, React.ComponentProps<"button"> {}
 
 function ActionBarClose({
   render,
@@ -620,19 +618,19 @@ function ActionBarClose({
   onClick,
   ...props
 }: ActionBarCloseProps) {
-  const { onOpenChange } = useActionBarContext(CLOSE_NAME);
+  const { onOpenChange } = useActionBarContext(CLOSE_NAME)
 
   const onCloseClick = React.useCallback<
     NonNullable<ActionBarCloseProps["onClick"]>
   >(
     (event) => {
-      onClick?.(event);
-      if (event.defaultPrevented) return;
+      onClick?.(event)
+      if (event.defaultPrevented) return
 
-      onOpenChange?.(false);
+      onOpenChange?.(false)
     },
-    [onOpenChange, onClick],
-  );
+    [onOpenChange, onClick]
+  )
 
   return useRender({
     defaultTagName: "button",
@@ -641,21 +639,21 @@ function ActionBarClose({
         type: "button" as const,
         className: cn(
           "rounded-xs opacity-70 outline-none hover:opacity-100 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-3.5 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-          className,
+          className
         ),
         onClick: onCloseClick,
       },
-      props,
+      props
     ),
     render,
     state: {
       slot: "action-bar-close",
     },
-  });
+  })
 }
 
 interface ActionBarSeparatorProps extends DivProps {
-  orientation?: Orientation;
+  orientation?: Orientation
 }
 
 function ActionBarSeparator(props: ActionBarSeparatorProps) {
@@ -664,10 +662,10 @@ function ActionBarSeparator(props: ActionBarSeparatorProps) {
     render,
     className,
     ...separatorProps
-  } = props;
+  } = props
 
-  const context = useActionBarContext(SEPARATOR_NAME);
-  const orientation = orientationProp ?? context.orientation;
+  const context = useActionBarContext(SEPARATOR_NAME)
+  const orientation = orientationProp ?? context.orientation
 
   return useRender({
     defaultTagName: "div",
@@ -679,17 +677,17 @@ function ActionBarSeparator(props: ActionBarSeparatorProps) {
         className: cn(
           "in-data-[slot=action-bar-selection]:ml-0.5 in-data-[slot=action-bar-selection]:h-4 in-data-[slot=action-bar-selection]:w-px bg-border",
           orientation === "horizontal" ? "h-6 w-px" : "h-px w-full",
-          className,
+          className
         ),
       },
-      separatorProps,
+      separatorProps
     ),
     render,
     state: {
       slot: "action-bar-separator",
       orientation,
     },
-  });
+  })
 }
 
 export {
@@ -700,4 +698,4 @@ export {
   type ActionBarProps,
   ActionBarSelection,
   ActionBarSeparator,
-};
+}

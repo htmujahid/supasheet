@@ -90,7 +90,9 @@ export function ResourceList({
   const handleDuplicate = async (rows: Record<string, unknown>[]) => {
     try {
       const pkNames = new Set(primaryKeys.map((k) => k.name))
-      const columnNames = new Set(columnsSchema.map((c) => c.name).filter((n): n is string => n !== null))
+      const columnNames = new Set(
+        columnsSchema.map((c) => c.name).filter((n): n is string => n !== null)
+      )
       const fields = duplicatedFields ?? [...columnNames]
       const stripped = rows.map((row) =>
         Object.fromEntries(
@@ -104,7 +106,9 @@ export function ResourceList({
         queryKey: ["supasheet", "resource-data", schema, resource],
       })
       toast.success(
-        rows.length === 1 ? "Record duplicated" : `${rows.length} records duplicated`
+        rows.length === 1
+          ? "Record duplicated"
+          : `${rows.length} records duplicated`
       )
     } catch (err) {
       toast.error(

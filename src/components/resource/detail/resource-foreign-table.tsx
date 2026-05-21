@@ -127,7 +127,9 @@ export function ResourceForeignTable({
   const handleDuplicate = async (rows: Record<string, unknown>[]) => {
     try {
       const pkNames = new Set(primaryKeys.map((k) => k.name))
-      const columnNames = new Set(columnsSchema.map((c) => c.name).filter((n): n is string => n !== null))
+      const columnNames = new Set(
+        columnsSchema.map((c) => c.name).filter((n): n is string => n !== null)
+      )
       const fields = duplicatedFields ?? [...columnNames]
       const stripped = rows.map((row) =>
         Object.fromEntries(
@@ -141,7 +143,9 @@ export function ResourceForeignTable({
         queryKey: ["supasheet", "resource-data", schema, table],
       })
       toast.success(
-        rows.length === 1 ? "Record duplicated" : `${rows.length} records duplicated`
+        rows.length === 1
+          ? "Record duplicated"
+          : `${rows.length} records duplicated`
       )
     } catch (err) {
       toast.error(
@@ -237,7 +241,9 @@ export function ResourceForeignTable({
       </DataTableToolbar>
       <DataTableActionBar
         table={tableInstance}
-        onDuplicate={canInsert && primaryKeys.length ? handleDuplicate : undefined}
+        onDuplicate={
+          canInsert && primaryKeys.length ? handleDuplicate : undefined
+        }
         onDelete={canDelete && primaryKeys.length ? handleDelete : undefined}
       />
     </DataTable>

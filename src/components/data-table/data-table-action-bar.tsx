@@ -5,6 +5,13 @@ import type { Table } from "@tanstack/react-table"
 import { CopyIcon, Trash2Icon } from "lucide-react"
 
 import {
+  ActionBar,
+  ActionBarGroup,
+  ActionBarItem,
+  ActionBarSelection,
+  ActionBarSeparator,
+} from "#/components/ui/action-bar"
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -14,13 +21,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "#/components/ui/alert-dialog"
-import {
-  ActionBar,
-  ActionBarGroup,
-  ActionBarItem,
-  ActionBarSelection,
-  ActionBarSeparator,
-} from "#/components/ui/action-bar"
 
 interface DataTableActionBarProps<TData> {
   table: Table<TData>
@@ -42,7 +42,7 @@ export function DataTableActionBar<TData>({
         table.toggleAllRowsSelected(false)
       }
     },
-    [table],
+    [table]
   )
 
   async function handleDuplicate() {
