@@ -181,7 +181,7 @@ export function InsertImageDialog({
 
   return (
     <Tabs defaultValue="url">
-      <TabsList className="w-full">
+      <TabsList className="w-full" variant="line">
         <TabsTrigger value="url" className="w-full">
           URL
         </TabsTrigger>

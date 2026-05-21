@@ -295,7 +295,7 @@ function RouteComponent() {
               className="mb-4"
             >
               <div className="w-full overflow-x-auto">
-                <TabsList>
+                <TabsList variant="line">
                   {tabs.map((t) => (
                     <TabsTrigger key={t.id} value={t.id}>
                       {t.label}
