@@ -3,8 +3,8 @@
   Supasheet
   </h1>
   <h3 align="center"><strong>Run your internal operations on Supabase</strong></h3>
-  <p>Supasheet turns any Supabase project into a complete internal operations platform. Auto-generated CRUD, multiple data views (grid, kanban, calendar, gallery, list), built-in auth with MFA, fine-grained RBAC, configurable dashboards, charts, file storage, and audit logs — all in one open-source React app.</p>
-  <p>Try out Supasheet demo at <a href="https://0.supasheet.app">0.supasheet.app</a></p>
+  <p>Supasheet turns any Supabase project into a complete internal operations platform. Auto-generated CRUD, multiple data views (grid, data grid, kanban, calendar, gallery, list, tree), built-in auth with MFA, fine-grained RBAC, configurable dashboards, charts, AI chat, SQL editor, file storage, comments, templates, and audit logs — all in one open-source React app.</p>
+  <p>Try out Supasheet demo at <a href="https://supasheet.app">supasheet.app</a></p>
 </div>
 
 <h1 align="center">
@@ -19,13 +19,23 @@
 - **Authentication** — Sign in, sign up, MFA, password reset, OAuth providers
 - **User Management** — Create, invite, edit, and delete users via Supabase Admin API
 - **Authorization (RBAC)** — Role-based access control with user roles and role permissions
-- **Resource (CRUD)** — Auto-generated CRUD views for any Supabase table
-- **Data Views** — Grid, Table, Kanban, Calendar, Gallery, and List views per resource
+- **Resource (CRUD)** — Auto-generated CRUD for any table, driven by Postgres schema metadata
+- **Data Views** — Grid, Data Grid, Kanban, Calendar, Gallery, List, Tree, and Single-record views per resource
+- **Form Sections** — Organize create/update forms into collapsible titled sections with per-mode field visibility
+- **Conditional Fields** — Field visibility, required state, and read-only state driven by other field values
+- **FK Behavior** — Auto-fill related fields and cascading dropdowns on foreign key selection
+- **Filter Templates** — Saved, named filter presets per resource
+- **Record Duplication** — Duplicate records with configurable field selection
 - **Dashboard** — Configurable dashboard widgets
 - **Analytics & Charts** — Area, bar, line, pie, radar chart types
 - **Reports** — Tabular reports built from Supabase data
+- **AI Chat** — Conversational interface for querying your data
+- **SQL Editor** — Run and save SQL snippets directly from the app
+- **Comments** — Per-record threaded comments and collaboration
+- **Templates** — Reusable record templates per resource
+- **Notifications** — In-app notification system
 - **File Storage** — Browse, upload, rename, move, and preview files across Supabase Storage buckets
-- **Audit Logs** — View and filter audit log entries
+- **Audit Logs** — App-wide and per-record change history with filtering
 
 ## Tech Stack
 
