@@ -78,10 +78,12 @@ export const Route = createFileRoute(
     ) as PrimaryKey[]
     const pkName = primaryKeys[0]?.name ?? "id"
 
+    const metaJoins = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).query?.join
     const classification = classifyRelationships(
       schema,
       resource,
-      relatedTablesSchema
+      relatedTablesSchema,
+      metaJoins
     )
 
     return {

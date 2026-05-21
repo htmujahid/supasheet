@@ -6,9 +6,6 @@ import type {
   TableSchema,
 } from "#/lib/database-meta.types"
 
-const deriveAlias = (column: string) =>
-  column.endsWith("_id") ? column.slice(0, -3) : `${column}_ref`
-
 export type RelatedTable = Omit<
   TableSchema,
   "columns" | "relationships" | "primary_keys"
@@ -35,20 +32,21 @@ export type ClassifiedRelationships = {
   oneToOneRelationships: OneToOneRelation[]
   oneToManyRelationships: ManyRelation[]
   manyToManyRelationships: ManyRelation[]
-  joins: Required<TableMetadata>["query"]["join"]
 }
 
 export function classifyRelationships(
   schema: string,
   resource: string,
-  relatedTablesSchema: unknown
+  relatedTablesSchema: (TableSchema & { columns: ColumnSchema[] })[] | never[],
+  metaJoins?: Required<TableMetadata>["query"]["join"]
 ): ClassifiedRelationships {
+  const resolveAlias = (table: string, column: string) =>
+    metaJoins?.find((j) => j.table === table && j.on === column)?.alias ?? column
   const tables = (relatedTablesSchema ?? []) as RelatedTable[]
 
   const oneToOneRelationships: OneToOneRelation[] = []
   const oneToManyRelationships: ManyRelation[] = []
   const manyToManyRelationships: ManyRelation[] = []
-  const joins: Required<TableMetadata>["query"]["join"] = []
 
   for (const table of tables) {
     const oneToOneAsSourceList = (table.relationships ?? []).filter(
@@ -57,13 +55,7 @@ export function classifyRelationships(
     )
     if (oneToOneAsSourceList.length > 0) {
       for (const rel of oneToOneAsSourceList) {
-        const alias = deriveAlias(rel.source_column_name)
-        joins.push({
-          table: rel.target_table_name,
-          on: rel.source_column_name,
-          alias,
-          columns: ["*"],
-        })
+        const alias = resolveAlias(rel.target_table_name, rel.source_column_name)
         oneToOneRelationships.push({
           ...table,
           __embedKey: alias,
@@ -88,13 +80,7 @@ export function classifyRelationships(
             table.primary_keys.length === 1))
     )
     if (oneToOneAsTarget) {
-      const alias = deriveAlias(oneToOneAsTarget.source_column_name)
-      joins.push({
-        table: oneToOneAsTarget.source_table_name,
-        on: oneToOneAsTarget.source_column_name,
-        alias,
-        columns: ["*"],
-      })
+      const alias = resolveAlias(oneToOneAsTarget.source_table_name, oneToOneAsTarget.source_column_name)
       oneToOneRelationships.push({
         ...table,
         __embedKey: alias,
@@ -157,6 +143,5 @@ export function classifyRelationships(
     oneToOneRelationships,
     oneToManyRelationships,
     manyToManyRelationships,
-    joins,
   }
 }

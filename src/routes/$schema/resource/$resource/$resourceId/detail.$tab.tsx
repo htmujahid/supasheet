@@ -30,10 +30,12 @@ export const Route = createFileRoute(
         relatedTablesSchemaQueryOptions(schema, resource)
       ),
     ])
+    const metaJoins = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).query?.join
     const classification = classifyRelationships(
       schema,
       resource,
-      relatedTablesSchema
+      relatedTablesSchema,
+      metaJoins
     )
 
     const allowedTabs = (
