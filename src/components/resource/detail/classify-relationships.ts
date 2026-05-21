@@ -5,7 +5,9 @@ import type {
   TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
-import { joinAlias } from "#/lib/supabase/data/resource"
+
+const deriveAlias = (column: string) =>
+  column.endsWith("_id") ? column.slice(0, -3) : `${column}_ref`
 
 export type RelatedTable = Omit<
   TableSchema,
@@ -55,14 +57,16 @@ export function classifyRelationships(
     )
     if (oneToOneAsSourceList.length > 0) {
       for (const rel of oneToOneAsSourceList) {
+        const alias = deriveAlias(rel.source_column_name)
         joins.push({
           table: rel.target_table_name,
           on: rel.source_column_name,
+          alias,
           columns: ["*"],
         })
         oneToOneRelationships.push({
           ...table,
-          __embedKey: joinAlias(rel.source_column_name),
+          __embedKey: alias,
           __fkColumn: rel.source_column_name,
           __foreignMatchColumn: rel.target_column_name,
           __parentMatchColumn: rel.source_column_name,
@@ -84,14 +88,16 @@ export function classifyRelationships(
             table.primary_keys.length === 1))
     )
     if (oneToOneAsTarget) {
+      const alias = deriveAlias(oneToOneAsTarget.source_column_name)
       joins.push({
         table: oneToOneAsTarget.source_table_name,
         on: oneToOneAsTarget.source_column_name,
+        alias,
         columns: ["*"],
       })
       oneToOneRelationships.push({
         ...table,
-        __embedKey: joinAlias(oneToOneAsTarget.source_column_name),
+        __embedKey: alias,
         __fkColumn: oneToOneAsTarget.source_column_name,
         __foreignMatchColumn: oneToOneAsTarget.source_column_name,
         __parentMatchColumn: oneToOneAsTarget.target_column_name,

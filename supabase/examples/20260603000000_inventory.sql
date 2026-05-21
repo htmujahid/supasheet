@@ -1180,8 +1180,8 @@ comment on table inventory.stock_movements is '{
         "sort": [{"id":"occurred_at","desc":true}],
         "join": [
             {"table":"products","on":"product_id","columns":["sku","name"]},
-            {"table":"warehouses","on":"warehouse_id","columns":["name","code"]},
-            {"table":"warehouses","on":"destination_warehouse_id","columns":["name","code"]},
+            {"table":"warehouses","on":"warehouse_id","alias":"warehouse","columns":["name","code"]},
+            {"table":"warehouses","on":"destination_warehouse_id","alias":"destination_warehouse","columns":["name","code"]},
             {"table":"users","on":"user_id","columns":["name","email"]}
         ]
     },

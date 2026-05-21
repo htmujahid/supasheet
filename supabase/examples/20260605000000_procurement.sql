@@ -422,8 +422,8 @@ comment on table procurement.suppliers is '{
     "query": {
         "sort": [{"id":"name","desc":false}],
         "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"users","on":"qualified_by_user_id","columns":["name","email"]}
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
+            {"table":"users","on":"qualified_by_user_id","alias":"qualified_by_user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -553,8 +553,8 @@ comment on table procurement.contracts is '{
         "sort": [{"id":"end_date","desc":false}],
         "join": [
             {"table":"suppliers","on":"supplier_id","columns":["name","code"]},
-            {"table":"users","on":"signed_by_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"signed_by_user_id","alias":"signed_by_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -683,8 +683,8 @@ comment on table procurement.requisitions is '{
     "query": {
         "sort": [{"id":"requested_date","desc":true}],
         "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"users","on":"approver_user_id","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
+            {"table":"users","on":"approver_user_id","alias":"approver_user","columns":["name","email"]},
             {"table":"contracts","on":"contract_id","columns":["contract_number","title"]}
         ]
     },
@@ -1365,8 +1365,8 @@ comment on table procurement.asset_assignments is '{
         "sort": [{"id":"assigned_at","desc":true}],
         "join": [
             {"table":"assets","on":"asset_id","columns":["asset_tag","name"]},
-            {"table":"users","on":"assignee_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"assignee_user_id","alias":"assignee_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",

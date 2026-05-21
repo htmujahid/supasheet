@@ -527,8 +527,8 @@ comment on table quality.inspections is '{
         "sort": [{"id":"scheduled_at","desc":true}],
         "join": [
             {"table":"standards","on":"standard_id","columns":["code","name"]},
-            {"table":"users","on":"inspector_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"inspector_user_id","alias":"inspector_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -766,8 +766,8 @@ comment on table quality.non_conformances is '{
         "sort": [{"id":"discovered_at","desc":true}],
         "join": [
             {"table":"inspections","on":"inspection_id","columns":["inspection_number","title"]},
-            {"table":"users","on":"assigned_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"assigned_user_id","alias":"assigned_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -911,9 +911,9 @@ comment on table quality.capa is '{
         "sort": [{"id":"opened_at","desc":true}],
         "join": [
             {"table":"non_conformances","on":"ncr_id","columns":["ncr_number","title"]},
-            {"table":"users","on":"owner_user_id","columns":["name","email"]},
-            {"table":"users","on":"verifier_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"owner_user_id","alias":"owner_user","columns":["name","email"]},
+            {"table":"users","on":"verifier_user_id","alias":"verifier_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -1037,8 +1037,8 @@ comment on table quality.audits is '{
         "sort": [{"id":"scheduled_date","desc":true}],
         "join": [
             {"table":"standards","on":"standard_id","columns":["code","name"]},
-            {"table":"users","on":"auditor_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"auditor_user_id","alias":"auditor_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -1412,8 +1412,8 @@ comment on table quality.complaints is '{
         "join": [
             {"table":"non_conformances","on":"ncr_id","columns":["ncr_number","title"]},
             {"table":"capa","on":"capa_id","columns":["capa_number","title"]},
-            {"table":"users","on":"assigned_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"assigned_user_id","alias":"assigned_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",

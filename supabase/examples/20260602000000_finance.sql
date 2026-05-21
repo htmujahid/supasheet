@@ -821,8 +821,8 @@ comment on table finance.expenses is '{
     "query": {
         "sort": [{"id":"expense_date","desc":true}],
         "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"users","on":"reviewer_user_id","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
+            {"table":"users","on":"reviewer_user_id","alias":"reviewer_user","columns":["name","email"]},
             {"table":"accounts","on":"expense_account_id","columns":["code","name"]}
         ]
     },
@@ -1396,8 +1396,8 @@ comment on table finance.journal_entries is '{
     "query": {
         "sort": [{"id":"entry_date","desc":true}],
         "join": [
-            {"table":"accounts","on":"debit_account_id","columns":["code","name"]},
-            {"table":"accounts","on":"credit_account_id","columns":["code","name"]},
+            {"table":"accounts","on":"debit_account_id","alias":"debit_account","columns":["code","name"]},
+            {"table":"accounts","on":"credit_account_id","alias":"credit_account","columns":["code","name"]},
             {"table":"users","on":"user_id","columns":["name","email"]}
         ]
     },

@@ -16,9 +16,6 @@ import type {
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
 
-export const joinAlias = (on: string) =>
-  on.endsWith("_id") ? on.slice(0, -3) : on
-
 export const navItemsQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({
     queryKey: ["supasheet", "nav-items", schema],
@@ -188,7 +185,7 @@ export const resourceDataQueryOptions = <S extends DatabaseSchemas>(
       const joins =
         defaultQuery?.join?.map(
           (j) =>
-            `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
+            `,${j.alias ? `${j.alias}:` : ""}${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       let query = supabase
@@ -264,7 +261,7 @@ export const foreignTableDataQueryOptions = <S extends DatabaseSchemas>(
       const joins =
         defaultQuery?.join?.map(
           (j) =>
-            `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
+            `,${j.alias ? `${j.alias}:` : ""}${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       const baseSelect = selectClause ?? defaultQuery?.select?.join(",") ?? "*"
@@ -325,7 +322,7 @@ export const singleResourceDataQueryOptions = <S extends DatabaseSchemas>(
       const joins =
         defaultQuery?.join?.map(
           (j) =>
-            `,${joinAlias(j.on)}:${j.table}!${j.on}(${j.columns.join(",")})`
+            `,${j.alias ? `${j.alias}:` : ""}${j.table}!${j.on}(${j.columns.join(",")})`
         ) || []
 
       let query = supabase

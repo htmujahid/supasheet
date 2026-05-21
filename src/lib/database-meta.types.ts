@@ -211,7 +211,7 @@ export type TableMetadata = {
       variant: string
       operator: string
     }[]
-    join?: { table: string; on: string; columns: string[] }[]
+    join?: { table: string; on: string; alias?: string; columns: string[] }[]
     select?: string[]
   }
   primaryItem?: string

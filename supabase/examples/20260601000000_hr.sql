@@ -599,8 +599,8 @@ comment on table hr.leave_requests is '{
     "query": {
         "sort": [{"id":"start_date","desc":true}],
         "join": [
-            {"table":"employees","on":"employee_id","columns":["first_name","last_name","email"]},
-            {"table":"employees","on":"reviewer_id","columns":["first_name","last_name"]},
+            {"table":"employees","on":"employee_id","alias":"employee","columns":["first_name","last_name","email"]},
+            {"table":"employees","on":"reviewer_id","alias":"reviewer","columns":["first_name","last_name"]},
             {"table":"users","on":"user_id","columns":["name","email"]}
         ]
     },
@@ -709,8 +709,8 @@ comment on table hr.performance_reviews is '{
     "query": {
         "sort": [{"id":"period_end","desc":true}],
         "join": [
-            {"table":"employees","on":"employee_id","columns":["first_name","last_name","email"]},
-            {"table":"employees","on":"reviewer_id","columns":["first_name","last_name"]}
+            {"table":"employees","on":"employee_id","alias":"employee","columns":["first_name","last_name","email"]},
+            {"table":"employees","on":"reviewer_id","alias":"reviewer","columns":["first_name","last_name"]}
         ]
     },
     "primaryItem": "kanban",

@@ -397,8 +397,8 @@ comment on table desk.tasks is '{
     "query": {
         "sort": [{"id":"title","desc":false}],
         "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"users","on":"assignee_id","columns":["name"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
+            {"table":"users","on":"assignee_id","alias":"assignee","columns":["name"]},
             {"table":"projects","on":"project_id","columns":["title"]}
         ]
     },

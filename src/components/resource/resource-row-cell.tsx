@@ -56,10 +56,8 @@ export const ResourceRowCell = memo(function ({
   const value = row.original?.[columnSchema.name as keyof ResourceDataSchema]
 
   if (joinConfig) {
-    const alias = joinConfig.on.endsWith("_id")
-      ? joinConfig.on.slice(0, -3)
-      : joinConfig.on
-    const joinedObj = row.original?.[alias] as
+    const embedKey = joinConfig.alias ?? joinConfig.table
+    const joinedObj = row.original?.[embedKey] as
       | Record<string, unknown>
       | null
       | undefined

@@ -367,8 +367,8 @@ comment on table lms.courses is '{
     "query": {
         "sort": [{"id":"title","desc":false}],
         "join": [
-            {"table":"users","on":"instructor_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"instructor_user_id","alias":"instructor_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "gallery",
@@ -994,8 +994,8 @@ comment on table lms.submissions is '{
         "join": [
             {"table":"assignments","on":"assignment_id","columns":["title","type"]},
             {"table":"enrollments","on":"enrollment_id","columns":["learner_name","status"]},
-            {"table":"users","on":"learner_user_id","columns":["name","email"]},
-            {"table":"users","on":"grader_user_id","columns":["name","email"]}
+            {"table":"users","on":"learner_user_id","alias":"learner_user","columns":["name","email"]},
+            {"table":"users","on":"grader_user_id","alias":"grader_user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
@@ -1115,8 +1115,8 @@ comment on table lms.certificates is '{
         "sort": [{"id":"issued_at","desc":true}],
         "join": [
             {"table":"courses","on":"course_id","columns":["code","title"]},
-            {"table":"users","on":"learner_user_id","columns":["name","email"]},
-            {"table":"users","on":"issuer_user_id","columns":["name","email"]}
+            {"table":"users","on":"learner_user_id","alias":"learner_user","columns":["name","email"]},
+            {"table":"users","on":"issuer_user_id","alias":"issuer_user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",

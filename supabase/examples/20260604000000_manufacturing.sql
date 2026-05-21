@@ -842,8 +842,8 @@ comment on table manufacturing.work_orders is '{
         "join": [
             {"table":"boms","on":"bom_id","columns":["bom_number","product_name"]},
             {"table":"routings","on":"routing_id","columns":["routing_number","name"]},
-            {"table":"users","on":"assigned_user_id","columns":["name","email"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+            {"table":"users","on":"assigned_user_id","alias":"assigned_user","columns":["name","email"]},
+            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
         ]
     },
     "primaryItem": "kanban",
