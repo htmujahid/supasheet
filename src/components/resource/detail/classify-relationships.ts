@@ -41,7 +41,7 @@ export function classifyRelationships(
   metaJoins?: Required<TableMetadata>["query"]["join"]
 ): ClassifiedRelationships {
   const resolveAlias = (table: string, column: string) =>
-    metaJoins?.find((j) => j.table === table && j.on === column)?.alias ?? column
+    metaJoins?.find((j) => j.table === table && j.on === column)?.alias ?? table
   const tables = (relatedTablesSchema ?? []) as RelatedTable[]
 
   const oneToOneRelationships: OneToOneRelation[] = []

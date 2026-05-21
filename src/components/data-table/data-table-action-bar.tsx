@@ -56,13 +56,17 @@ export function DataTableActionBar<TData>({
     setConfirmOpen(false)
   }
 
+  if (!onDuplicate && !onDelete) {
+    return null
+  }
+
   return (
     <>
       <ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
-        <ActionBarSelection className="hidden sm:flex">
+        <ActionBarSelection className="hidden sm:flex whitespace-nowrap">
           {rows.length} selected
-          <ActionBarSeparator />
         </ActionBarSelection>
+        <ActionBarSeparator className="hidden sm:block" />
         {onDuplicate && (
           <ActionBarGroup>
             <ActionBarItem
