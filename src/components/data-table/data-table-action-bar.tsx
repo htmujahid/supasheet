@@ -59,7 +59,7 @@ export function DataTableActionBar<TData>({
   return (
     <>
       <ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
-        <ActionBarSelection>
+        <ActionBarSelection className="hidden sm:flex">
           {rows.length} selected
           <ActionBarSeparator />
         </ActionBarSelection>
