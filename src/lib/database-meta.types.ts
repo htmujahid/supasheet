@@ -216,11 +216,16 @@ export type HistoryMetadata = {
   table: DatabaseTables<DatabaseSchemas>
 }
 
+// Valid for both tables and views
 export type FieldsConfig = {
   sections?: FieldSection[]
+  metadata?: string[]
+}
+
+// Table-only: includes form-specific options
+export type TableFieldsConfig = FieldsConfig & {
   quick_create?: string[]
   duplicated?: string[]
-  metadata?: string[]
   behavior?: Record<string, FieldBehavior>
   lookups?: Record<string, LookupConfig>
 }
@@ -243,6 +248,7 @@ export type TableMetadata = BaseResourceMetadata & {
   query?: QueryConfig
   tabs?: string[]
   history?: HistoryMetadata
+  fields?: TableFieldsConfig
 }
 
 export type ViewMetadata = BaseResourceMetadata
