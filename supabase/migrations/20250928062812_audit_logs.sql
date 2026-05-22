@@ -49,7 +49,6 @@ where
 
 create index idx_audit_logs_metadata on supasheet.audit_logs using GIN (metadata);
 
--- add search path to this function
 create or replace function supasheet.create_audit_log (
   p_operation TEXT,
   p_schema_name TEXT,
@@ -60,39 +59,43 @@ create or replace function supasheet.create_audit_log (
   p_metadata JSONB default '{}'::JSONB
 ) RETURNS UUID as $$
 DECLARE
-    v_audit_id UUID;
-    v_user_id UUID;
-    v_user_role supasheet.app_role;
+    v_audit_id       UUID;
+    v_user_id        UUID;
+    v_user_role      supasheet.app_role;
     v_changed_fields TEXT[];
+    v_stored_old     JSONB;
+    v_stored_new     JSONB;
 BEGIN
     v_user_id := auth.uid();
-    
+
     SELECT ur.role INTO v_user_role
     FROM supasheet.user_roles ur
     WHERE ur.user_id = v_user_id
     LIMIT 1;
 
-    
     IF p_operation = 'UPDATE' AND p_old_data IS NOT NULL AND p_new_data IS NOT NULL THEN
-        SELECT ARRAY_AGG(key) INTO v_changed_fields
+        -- Identify changed fields; FULL OUTER JOIN handles keys added or removed between old and new
+        SELECT ARRAY_AGG(DISTINCT key) INTO v_changed_fields
         FROM (
-            SELECT key
-            FROM jsonb_each(p_old_data)
-            WHERE NOT EXISTS (
-                SELECT 1 FROM jsonb_each(p_new_data) n
-                WHERE n.key = jsonb_each.key AND n.value = jsonb_each.value
-            )
-            UNION
-            SELECT key
-            FROM jsonb_each(p_new_data)
-            WHERE NOT EXISTS (
-                SELECT 1 FROM jsonb_each(p_old_data) o
-                WHERE o.key = jsonb_each.key
-            )
-        ) changed;
+            SELECT COALESCE(o.key, n.key) AS key
+            FROM jsonb_each(p_old_data) o
+            FULL OUTER JOIN jsonb_each(p_new_data) n USING (key)
+            WHERE o.value IS DISTINCT FROM n.value
+        ) diff;
+
+        -- Store only the delta (changed keys), not full row snapshots
+        SELECT jsonb_object_agg(key, value) INTO v_stored_old
+        FROM jsonb_each(p_old_data)
+        WHERE key = ANY(v_changed_fields);
+
+        SELECT jsonb_object_agg(key, value) INTO v_stored_new
+        FROM jsonb_each(p_new_data)
+        WHERE key = ANY(v_changed_fields);
+    ELSE
+        v_stored_old := p_old_data;
+        v_stored_new := p_new_data;
     END IF;
 
-    
     INSERT INTO supasheet.audit_logs (
         operation,
         schema_name,
@@ -113,12 +116,12 @@ BEGIN
         v_user_id,
         v_user_role,
         CASE WHEN v_user_id IS NULL THEN 'system' ELSE 'real_user' END,
-        p_old_data,
-        p_new_data,
+        v_stored_old,
+        v_stored_new,
         v_changed_fields,
         p_metadata
     ) RETURNING id INTO v_audit_id;
-    
+
     RETURN v_audit_id;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER
