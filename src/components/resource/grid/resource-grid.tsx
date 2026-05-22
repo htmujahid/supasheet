@@ -15,15 +15,14 @@ import { DataTableToolbar } from "#/components/data-table/data-table-toolbar"
 import { useDataTable } from "#/hooks/use-data-table"
 import type {
   ColumnSchema,
-  FilterTemplate,
-  PrimaryKey,
+  FilterPreset,
   ResourceSchema,
   TableMetadata,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { updateResourceMutationOptions } from "#/lib/supabase/data/resource"
 
-import { ResourceFilterTemplates } from "../resource-filter-templates"
+import { ResourceFilterPresets } from "../resource-filter-presets"
 import { getResourceGridColumns } from "./resource-grid-columns"
 
 interface ResourceGridProps {
@@ -34,7 +33,7 @@ interface ResourceGridProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
-  filterTemplates?: FilterTemplate[]
+  filterPresets?: FilterPreset[]
 }
 
 export function ResourceGrid({
@@ -45,13 +44,13 @@ export function ResourceGrid({
   pagination,
   columnFilters,
   pageCount,
-  filterTemplates = [],
+  filterPresets = [],
 }: ResourceGridProps) {
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
   const resource = resourceSchema.name
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema?.primary_keys ?? [])
 
   const columns = useMemo(() => {
     const tableMeta = JSON.parse(
@@ -135,8 +134,8 @@ export function ResourceGrid({
       onRowsChange={handleRowsChange}
     >
       <DataTableToolbar table={table}>
-        <ResourceFilterTemplates
-          filterTemplates={filterTemplates}
+        <ResourceFilterPresets
+          filterPresets={filterPresets}
           currentFilters={columnFilters}
         />
       </DataTableToolbar>

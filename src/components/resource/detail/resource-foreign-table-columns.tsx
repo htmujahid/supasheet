@@ -2,7 +2,6 @@ import type { ColumnDef, Row } from "@tanstack/react-table"
 
 import type {
   ColumnSchema,
-  PrimaryKey,
   ResourceDataSchema,
   ResourceSchema,
 } from "@/lib/database-meta.types"
@@ -24,7 +23,7 @@ export function getResourceForeignTableColumns({
   resourceSchema: ResourceSchema
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema?.primary_keys ?? [])
   const primaryKeyNames = primaryKeys.map((k) => k.name)
   const hasPrimaryKeys = primaryKeys.length > 0
 

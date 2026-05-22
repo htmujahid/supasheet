@@ -18,13 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
 import { encodeFilterValue } from "#/lib/data-table"
-import type { FilterTemplate } from "#/lib/database-meta.types"
+import type { FilterPreset } from "#/lib/database-meta.types"
 import type { FilterOperator } from "#/types/data-table"
 
 const ALL_RECORDS_ID = "__all__"
 
-function encodeTemplateFilters(template: FilterTemplate): ColumnFiltersState {
-  return template.filters.map((f) => ({
+function encodePresetFilters(preset: FilterPreset): ColumnFiltersState {
+  return preset.filters.map((f) => ({
     id: f.id,
     value: encodeFilterValue(f.operator as FilterOperator, f.value),
   }))
@@ -36,30 +36,30 @@ function filtersEqual(a: ColumnFiltersState, b: ColumnFiltersState): boolean {
   return a.every((f) => bById.get(f.id) === f.value)
 }
 
-export function ResourceFilterTemplates({
-  filterTemplates,
+export function ResourceFilterPresets({
+  filterPresets,
   currentFilters,
 }: {
-  filterTemplates: FilterTemplate[]
+  filterPresets: FilterPreset[]
   currentFilters: ColumnFiltersState
 }) {
   const navigate = useNavigate()
 
-  const activeTemplateId = useMemo(() => {
+  const activePresetId = useMemo(() => {
     if (currentFilters.length === 0) return ALL_RECORDS_ID
-    const match = filterTemplates.find((t) =>
-      filtersEqual(encodeTemplateFilters(t), currentFilters)
+    const match = filterPresets.find((t) =>
+      filtersEqual(encodePresetFilters(t), currentFilters)
     )
     return match?.id
-  }, [filterTemplates, currentFilters])
+  }, [filterPresets, currentFilters])
 
-  if (filterTemplates.length === 0) return null
+  if (filterPresets.length === 0) return null
 
-  const activeTemplate = filterTemplates.find((t) => t.id === activeTemplateId)
+  const activePreset = filterPresets.find((t) => t.id === activePresetId)
   const triggerLabel =
-    activeTemplateId === ALL_RECORDS_ID
+    activePresetId === ALL_RECORDS_ID
       ? "All records"
-      : (activeTemplate?.name ?? "Custom filter")
+      : (activePreset?.name ?? "Custom filter")
 
   function handleSelect(value: string) {
     if (value === ALL_RECORDS_ID) {
@@ -69,13 +69,13 @@ export function ResourceFilterTemplates({
       })
       return
     }
-    const template = filterTemplates.find((t) => t.id === value)
-    if (!template) return
+    const preset = filterPresets.find((t) => t.id === value)
+    if (!preset) return
     navigate({
       to: ".",
       search: (prev) => ({
         ...prev,
-        filters: encodeTemplateFilters(template),
+        filters: encodePresetFilters(preset),
         page: 1,
       }),
     })
@@ -90,19 +90,19 @@ export function ResourceFilterTemplates({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-fit rounded-lg">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Filter templates</DropdownMenuLabel>
+          <DropdownMenuLabel>Filter presets</DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuRadioGroup
-          value={activeTemplateId}
+          value={activePresetId}
           onValueChange={handleSelect}
         >
           <DropdownMenuRadioItem value={ALL_RECORDS_ID}>
             All records
           </DropdownMenuRadioItem>
           <DropdownMenuSeparator />
-          {filterTemplates.map((template) => (
-            <DropdownMenuRadioItem key={template.id} value={template.id}>
-              {template.name}
+          {filterPresets.map((preset) => (
+            <DropdownMenuRadioItem key={preset.id} value={preset.id}>
+              {preset.name}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

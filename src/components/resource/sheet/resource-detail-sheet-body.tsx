@@ -10,7 +10,6 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
-  PrimaryKey,
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { getMetaFields } from "#/lib/database-meta.types"
@@ -58,7 +57,7 @@ export function ResourceDetailSheetBody({
     )
   }
 
-  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema.primary_keys ?? [])
   const canEdit = primaryKeys.length > 0 && canUpdate
 
   if (canEdit) {

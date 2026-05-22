@@ -28,9 +28,8 @@ import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
 import { useSheetHref } from "#/hooks/use-sheet-href"
 import type {
-  PrimaryKey,
   TableMetadata,
-  TreeViewItem,
+  TreeLayout,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
@@ -76,8 +75,8 @@ export const Route = createFileRoute(
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-    const treeView = meta.items?.find(
-      (item): item is TreeViewItem => item.id === treeId && item.type === "tree"
+    const treeView = meta.views?.find(
+      (item): item is TreeLayout => item.id === treeId && item.type === "tree"
     )
     if (!treeView) throw notFound()
 
@@ -198,13 +197,13 @@ function RouteComponent() {
   const { resourceSchema, treeView, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
 
   const { data: resourceData } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, meta.query)

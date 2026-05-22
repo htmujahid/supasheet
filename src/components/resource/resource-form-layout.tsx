@@ -23,7 +23,6 @@ import { Input } from "#/components/ui/input"
 import type {
   ColumnSchema,
   FormMode,
-  PrimaryKey,
   TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
@@ -61,7 +60,7 @@ export function ResourceFormLayout({
   const navigate = useNavigate()
   const schema = tableSchema?.schema
   const resource = tableSchema?.name
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema?.primary_keys ?? [])
   const showSecondary = primaryKeys.length > 0
 
   const tableMeta = useMemo(
@@ -71,10 +70,10 @@ export function ResourceFormLayout({
   const { plan, colByName } = useMemo(() => {
     const writableNames = new Set(writableCols.map((c) => c.name ?? c.id ?? ""))
     return {
-      plan: buildLayoutPlan(tableMeta.sections, writableNames, mode),
+      plan: buildLayoutPlan(tableMeta.fields?.sections, writableNames, mode),
       colByName: new Map(writableCols.map((c) => [c.name ?? c.id ?? "", c])),
     }
-  }, [tableMeta.sections, writableCols, mode])
+  }, [tableMeta.fields?.sections, writableCols, mode])
 
   const handleCancel = () => {
     if (!schema || !resource) return
@@ -229,12 +228,12 @@ function FieldWithBehavior({
   form: ResourceFormApi
 }) {
   const behavior = (JSON.parse(tableSchema.comment ?? "{}") as TableMetadata)
-    .fieldBehavior?.[col.name ?? col.id ?? ""]
+    .fields?.behavior?.[col.name ?? col.id ?? ""]
 
   const allCondIds = new Set([
     ...(behavior?.visible?.map((c) => c.id) ?? []),
     ...(behavior?.required?.map((c) => c.id) ?? []),
-    ...(behavior?.readOnly?.map((c) => c.id) ?? []),
+    ...(behavior?.read_only?.map((c) => c.id) ?? []),
   ])
 
   if (!allCondIds.size) {
@@ -269,8 +268,8 @@ function FieldWithBehavior({
         const isRequired = behavior?.required?.length
           ? evaluateConditionalField(behavior.required, watchedValues)
           : undefined
-        const isReadOnly = behavior?.readOnly?.length
-          ? evaluateConditionalField(behavior.readOnly, watchedValues)
+        const isReadOnly = behavior?.read_only?.length
+          ? evaluateConditionalField(behavior.read_only, watchedValues)
           : undefined
         return (
           <div className={spanClass}>

@@ -25,7 +25,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs"
-import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
+import type { TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
@@ -75,7 +75,7 @@ export const Route = createFileRoute(
 
     const primaryKeys = (
       isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-    ) as PrimaryKey[]
+    )
     const pkName = primaryKeys[0]?.name ?? "id"
 
     const metaJoins = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).query?.join

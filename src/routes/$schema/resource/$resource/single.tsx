@@ -23,7 +23,7 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
-import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
+import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
   columnsSchemaQueryOptions,
@@ -187,7 +187,7 @@ function RouteComponent() {
     (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).name ??
     formatTitle(resource)
 
-  const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema?.primary_keys ?? [])
 
   const { data } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, undefined, 1, 1)

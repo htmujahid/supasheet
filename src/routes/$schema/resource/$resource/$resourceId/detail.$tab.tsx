@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { classifyRelationships } from "#/components/resource/detail/classify-relationships"
 import { ResourceDetailTab } from "#/components/resource/detail/resource-detail-tab"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey, TableMetadata } from "#/lib/database-meta.types"
+import type { TableMetadata } from "#/lib/database-meta.types"
 import {
   relatedTablesSchemaQueryOptions,
   singleForeignTableDataQueryOptions,
@@ -47,7 +47,7 @@ export const Route = createFileRoute(
       (r) => r.__embedKey === tab
     )
     if (oneToOne) {
-      const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+      const primaryKeys = (tableSchema?.primary_keys ?? [])
       const pkName = primaryKeys[0]?.name ?? "id"
       const pk = { [pkName]: resourceId }
       const parent = await context.queryClient.ensureQueryData(
@@ -69,7 +69,7 @@ export const Route = createFileRoute(
       classification.manyToManyRelationships.find((r) => r.name === tab)
     if (!many) throw notFound()
 
-    const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+    const primaryKeys = (tableSchema?.primary_keys ?? [])
     const pkName = primaryKeys[0]?.name ?? "id"
     const pk = { [pkName]: resourceId }
     await context.queryClient.ensureQueryData(

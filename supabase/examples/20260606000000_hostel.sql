@@ -276,20 +276,80 @@ comment on column hostel.hostels.gender is '{
 comment on table hostel.hostels is '{
     "icon": "Building2",
     "display": "block",
-    "query": {
-        "sort": [{"id": "name", "desc": false}],
-        "join": [{"table": "users", "on": "warden_id", "columns": ["name", "email"]}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id": "gallery", "name": "Hostel Gallery", "type": "gallery", "cover": "image", "title": "name", "description": "description", "badge": "gender"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Hostel Gallery",
+            "type": "gallery",
+            "cover": "image",
+            "title": "name",
+            "description": "description",
+            "badge": "gender"
+        }
     ],
-    "sections": [
-        {"id": "identity", "title": "Identity", "fields": ["name", "code", "description", "image"]},
-        {"id": "config", "title": "Configuration", "fields": ["gender", "total_rooms", "total_capacity", "active"]},
-        {"id": "location", "title": "Location", "fields": ["address", "city", "state", "pincode"]},
-        {"id": "contact", "title": "Contact", "description": "Warden and contact information", "fields": ["warden_id", "contact_phone", "contact_email"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "name",
+                    "code",
+                    "description",
+                    "image"
+                ]
+            },
+            {
+                "id": "config",
+                "title": "Configuration",
+                "fields": [
+                    "gender",
+                    "total_rooms",
+                    "total_capacity",
+                    "active"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "address",
+                    "city",
+                    "state",
+                    "pincode"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "description": "Warden and contact information",
+                "fields": [
+                    "warden_id",
+                    "contact_phone",
+                    "contact_email"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "warden_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hostel.hostels.image is '{"accept": "image/*"}';
@@ -413,19 +473,75 @@ comment on column hostel.rooms.status is '{
 comment on table hostel.rooms is '{
     "icon": "BedDouble",
     "display": "block",
-    "query": {
-        "sort": [{"id": "room_number", "desc": false}],
-        "join": [{"table": "hostels", "on": "hostel_id", "columns": ["name", "code"]}]
-    },
-    "items": [
-        {"id": "status", "name": "Rooms By Status", "type": "kanban", "group": "status", "title": "room_number", "description": "notes", "badge": "type"}
+    "views": [
+        {
+            "id": "status",
+            "name": "Rooms By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "room_number",
+            "description": "notes",
+            "badge": "type"
+        }
     ],
-    "sections": [
-        {"id": "identity", "title": "Identity", "fields": ["hostel_id", "room_number", "floor"]},
-        {"id": "config", "title": "Configuration", "fields": ["type", "capacity", "occupied", "status"]},
-        {"id": "pricing", "title": "Pricing", "fields": ["monthly_rent", "security_deposit"]},
-        {"id": "extras", "title": "Extras", "collapsible": true, "fields": ["amenities", "notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "hostel_id",
+                    "room_number",
+                    "floor"
+                ]
+            },
+            {
+                "id": "config",
+                "title": "Configuration",
+                "fields": [
+                    "type",
+                    "capacity",
+                    "occupied",
+                    "status"
+                ]
+            },
+            {
+                "id": "pricing",
+                "title": "Pricing",
+                "fields": [
+                    "monthly_rent",
+                    "security_deposit"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Extras",
+                "collapsible": true,
+                "fields": [
+                    "amenities",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "room_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "hostels",
+                "on": "hostel_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table hostel.rooms
@@ -496,18 +612,86 @@ create table hostel.residents (
 comment on table hostel.residents is '{
     "icon": "GraduationCap",
     "display": "block",
-    "query": {
-        "sort": [{"id": "name", "desc": false}],
-        "join": [{"table": "users", "on": "user_id", "columns": ["name", "email"]}]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "name",
+                    "enrollment_no",
+                    "user_id",
+                    "photo"
+                ]
+            },
+            {
+                "id": "personal",
+                "title": "Personal",
+                "fields": [
+                    "gender",
+                    "date_of_birth",
+                    "email",
+                    "phone"
+                ]
+            },
+            {
+                "id": "academic",
+                "title": "Academic",
+                "fields": [
+                    "course",
+                    "year_of_study",
+                    "institution"
+                ]
+            },
+            {
+                "id": "guardian",
+                "title": "Guardian / Emergency Contact",
+                "fields": [
+                    "guardian_name",
+                    "guardian_relation",
+                    "guardian_phone"
+                ]
+            },
+            {
+                "id": "address",
+                "title": "Permanent Address",
+                "collapsible": true,
+                "fields": [
+                    "address",
+                    "city",
+                    "state",
+                    "pincode"
+                ]
+            },
+            {
+                "id": "documents",
+                "title": "Documents",
+                "collapsible": true,
+                "fields": [
+                    "id_document",
+                    "active"
+                ]
+            }
+        ]
     },
-    "sections": [
-        {"id": "identity", "title": "Identity", "fields": ["name", "enrollment_no", "user_id", "photo"]},
-        {"id": "personal", "title": "Personal", "fields": ["gender", "date_of_birth", "email", "phone"]},
-        {"id": "academic", "title": "Academic", "fields": ["course", "year_of_study", "institution"]},
-        {"id": "guardian", "title": "Guardian / Emergency Contact", "fields": ["guardian_name", "guardian_relation", "guardian_phone"]},
-        {"id": "address", "title": "Permanent Address", "collapsible": true, "fields": ["address", "city", "state", "pincode"]},
-        {"id": "documents", "title": "Documents", "collapsible": true, "fields": ["id_document", "active"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hostel.residents.photo is '{"accept": "image/*"}';
@@ -610,31 +794,110 @@ comment on column hostel.allocations.status is '{
 comment on table hostel.allocations is '{
     "icon": "ClipboardList",
     "display": "block",
-    "query": {
-        "sort": [{"id": "start_date", "desc": true}],
-        "join": [
-            {"table": "residents", "on": "resident_id", "columns": ["name", "enrollment_no"]},
-            {"table": "rooms", "on": "room_id", "columns": ["room_number", "type"]}
-        ]
-    },
-    "items": [
-        {"id": "status", "name": "Allocations By Status", "type": "kanban", "group": "status", "title": "allocation_no", "description": "notes", "date": "start_date", "badge": "status"},
-        {"id": "calendar", "name": "Allocation Calendar", "type": "calendar", "title": "allocation_no", "startDate": "start_date", "endDate": "end_date", "badge": "status"}
-    ],
-    "sections": [
-        {"id": "identity", "title": "Allocation", "fields": ["allocation_no", "resident_id", "room_id", "bed_number"]},
-        {"id": "term", "title": "Term", "fields": ["start_date", "end_date", "status"]},
-        {"id": "amounts", "title": "Amounts", "fields": ["monthly_rent", "security_deposit"]},
-        {"id": "extras", "title": "Notes", "collapsible": true, "fields": ["notes"]}
-    ],
-    "quickCreate": ["resident_id", "room_id", "start_date"],
-    "fkBehavior": {
-        "room_id": {
-            "fill": [
-                {"target": "monthly_rent", "source": "monthly_rent"},
-                {"target": "security_deposit", "source": "security_deposit"}
-            ]
+    "views": [
+        {
+            "id": "status",
+            "name": "Allocations By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "allocation_no",
+            "description": "notes",
+            "date": "start_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Allocation Calendar",
+            "type": "calendar",
+            "title": "allocation_no",
+            "badge": "status",
+            "start_date": "start_date",
+            "end_date": "end_date"
         }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Allocation",
+                "fields": [
+                    "allocation_no",
+                    "resident_id",
+                    "room_id",
+                    "bed_number"
+                ]
+            },
+            {
+                "id": "term",
+                "title": "Term",
+                "fields": [
+                    "start_date",
+                    "end_date",
+                    "status"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "monthly_rent",
+                    "security_deposit"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ],
+        "quick_create": [
+            "resident_id",
+            "room_id",
+            "start_date"
+        ],
+        "lookups": {
+            "room_id": {
+                "fill": [
+                    {
+                        "target": "monthly_rent",
+                        "source": "monthly_rent"
+                    },
+                    {
+                        "target": "security_deposit",
+                        "source": "security_deposit"
+                    }
+                ]
+            }
+        }
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "start_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "residents",
+                "on": "resident_id",
+                "columns": [
+                    "name",
+                    "enrollment_no"
+                ]
+            },
+            {
+                "table": "rooms",
+                "on": "room_id",
+                "columns": [
+                    "room_number",
+                    "type"
+                ]
+            }
+        ]
     }
 }';
 
@@ -770,27 +1033,116 @@ comment on column hostel.payments.method is '{
 comment on table hostel.payments is '{
     "icon": "CreditCard",
     "display": "block",
-    "query": {
-        "sort": [{"id": "due_date", "desc": true}],
-        "join": [
-            {"table": "allocations", "on": "allocation_id", "columns": ["allocation_no"]},
-            {"table": "residents", "on": "resident_id", "columns": ["name", "enrollment_no"]}
-        ]
+    "views": [
+        {
+            "id": "status",
+            "name": "Payments By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "receipt_no",
+            "description": "notes",
+            "date": "due_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Payment Calendar",
+            "type": "calendar",
+            "title": "receipt_no",
+            "badge": "status",
+            "start_date": "due_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Payment",
+                "fields": [
+                    "receipt_no",
+                    "resident_id",
+                    "allocation_id",
+                    "period_month"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "amount",
+                    "late_fee",
+                    "total"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "due_date",
+                    "paid_date",
+                    "status"
+                ]
+            },
+            {
+                "id": "method",
+                "title": "Method",
+                "fields": [
+                    "method",
+                    "reference"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ],
+        "behavior": {
+            "paid_date": {
+                "visible": [
+                    {
+                        "id": "status",
+                        "value": "eq.paid"
+                    }
+                ]
+            },
+            "reference": {
+                "visible": [
+                    {
+                        "id": "method",
+                        "value": "in.bank_transfer,credit_card,upi,cheque"
+                    }
+                ]
+            }
+        }
     },
-    "items": [
-        {"id": "status", "name": "Payments By Status", "type": "kanban", "group": "status", "title": "receipt_no", "description": "notes", "date": "due_date", "badge": "status"},
-        {"id": "calendar", "name": "Payment Calendar", "type": "calendar", "title": "receipt_no", "startDate": "due_date", "badge": "status"}
-    ],
-    "sections": [
-        {"id": "identity", "title": "Payment", "fields": ["receipt_no", "resident_id", "allocation_id", "period_month"]},
-        {"id": "amounts", "title": "Amounts", "fields": ["amount", "late_fee", "total"]},
-        {"id": "schedule", "title": "Schedule", "fields": ["due_date", "paid_date", "status"]},
-        {"id": "method", "title": "Method", "fields": ["method", "reference"]},
-        {"id": "extras", "title": "Notes", "collapsible": true, "fields": ["notes"]}
-    ],
-    "fieldBehavior": {
-        "paid_date": {"visible": [{"id": "status", "value": "eq.paid"}]},
-        "reference": {"visible": [{"id": "method", "value": "in.bank_transfer,credit_card,upi,cheque"}]}
+    "query": {
+        "sort": [
+            {
+                "id": "due_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "allocations",
+                "on": "allocation_id",
+                "columns": [
+                    "allocation_no"
+                ]
+            },
+            {
+                "table": "residents",
+                "on": "resident_id",
+                "columns": [
+                    "name",
+                    "enrollment_no"
+                ]
+            }
+        ]
     }
 }';
 
@@ -940,32 +1292,127 @@ comment on column hostel.complaints.category is '{
 comment on table hostel.complaints is '{
     "icon": "MessageSquareWarning",
     "display": "block",
-    "query": {
-        "sort": [{"id": "created_at", "desc": true}],
-        "join": [
-            {"table": "residents", "on": "resident_id", "columns": ["name", "enrollment_no"]},
-            {"table": "rooms", "on": "room_id", "columns": ["room_number"]},
-            {"table": "hostels", "on": "hostel_id", "columns": ["name", "code"]},
-            {"table": "users", "on": "assigned_to", "columns": ["name", "email"]}
-        ]
-    },
-    "items": [
-        {"id": "status", "name": "Complaints By Status", "type": "kanban", "group": "status", "title": "title", "description": "description", "date": "created_at", "badge": "priority"}
-    ],
-    "sections": [
-        {"id": "identity", "title": "Ticket", "fields": ["ticket_no", "title", "description"]},
-        {"id": "context", "title": "Context", "fields": ["resident_id", "room_id", "hostel_id"]},
-        {"id": "triage", "title": "Triage", "fields": ["category", "priority", "status", "assigned_to"]},
-        {"id": "resolution", "title": "Resolution", "collapsible": true, "fields": ["resolution", "resolved_at"]}
-    ],
-    "fieldBehavior": {
-        "resolution": {"visible": [{"id": "status", "value": "in.resolved,closed"}]},
-        "resolved_at": {"visible": [{"id": "status", "value": "in.resolved,closed"}]}
-    },
-    "fkBehavior": {
-        "room_id": {
-            "filter": [{"on": "hostel_id", "column": "hostel_id"}]
+    "views": [
+        {
+            "id": "status",
+            "name": "Complaints By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "description",
+            "date": "created_at",
+            "badge": "priority"
         }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Ticket",
+                "fields": [
+                    "ticket_no",
+                    "title",
+                    "description"
+                ]
+            },
+            {
+                "id": "context",
+                "title": "Context",
+                "fields": [
+                    "resident_id",
+                    "room_id",
+                    "hostel_id"
+                ]
+            },
+            {
+                "id": "triage",
+                "title": "Triage",
+                "fields": [
+                    "category",
+                    "priority",
+                    "status",
+                    "assigned_to"
+                ]
+            },
+            {
+                "id": "resolution",
+                "title": "Resolution",
+                "collapsible": true,
+                "fields": [
+                    "resolution",
+                    "resolved_at"
+                ]
+            }
+        ],
+        "behavior": {
+            "resolution": {
+                "visible": [
+                    {
+                        "id": "status",
+                        "value": "in.resolved,closed"
+                    }
+                ]
+            },
+            "resolved_at": {
+                "visible": [
+                    {
+                        "id": "status",
+                        "value": "in.resolved,closed"
+                    }
+                ]
+            }
+        },
+        "lookups": {
+            "room_id": {
+                "filter": [
+                    {
+                        "on": "hostel_id",
+                        "column": "hostel_id"
+                    }
+                ]
+            }
+        }
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "residents",
+                "on": "resident_id",
+                "columns": [
+                    "name",
+                    "enrollment_no"
+                ]
+            },
+            {
+                "table": "rooms",
+                "on": "room_id",
+                "columns": [
+                    "room_number"
+                ]
+            },
+            {
+                "table": "hostels",
+                "on": "hostel_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "assigned_to",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
     }
 }';
 
@@ -1074,20 +1521,75 @@ comment on column hostel.visitors.status is '{
 comment on table hostel.visitors is '{
     "icon": "UserCheck",
     "display": "block",
-    "query": {
-        "sort": [{"id": "check_in", "desc": true}],
-        "join": [{"table": "residents", "on": "resident_id", "columns": ["name", "enrollment_no"]}]
+    "views": [
+        {
+            "id": "calendar",
+            "name": "Visitor Calendar",
+            "type": "calendar",
+            "title": "name",
+            "badge": "status",
+            "start_date": "check_in",
+            "end_date": "check_out"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Visitor",
+                "fields": [
+                    "name",
+                    "phone",
+                    "relation",
+                    "id_proof"
+                ]
+            },
+            {
+                "id": "context",
+                "title": "Context",
+                "fields": [
+                    "resident_id",
+                    "purpose"
+                ]
+            },
+            {
+                "id": "log",
+                "title": "Check-in / Check-out",
+                "fields": [
+                    "check_in",
+                    "check_out",
+                    "status"
+                ]
+            }
+        ],
+        "behavior": {
+            "check_out": {
+                "visible": [
+                    {
+                        "id": "status",
+                        "value": "eq.checked_out"
+                    }
+                ]
+            }
+        }
     },
-    "items": [
-        {"id": "calendar", "name": "Visitor Calendar", "type": "calendar", "title": "name", "startDate": "check_in", "endDate": "check_out", "badge": "status"}
-    ],
-    "sections": [
-        {"id": "identity", "title": "Visitor", "fields": ["name", "phone", "relation", "id_proof"]},
-        {"id": "context", "title": "Context", "fields": ["resident_id", "purpose"]},
-        {"id": "log", "title": "Check-in / Check-out", "fields": ["check_in", "check_out", "status"]}
-    ],
-    "fieldBehavior": {
-        "check_out": {"visible": [{"id": "status", "value": "eq.checked_out"}]}
+    "query": {
+        "sort": [
+            {
+                "id": "check_in",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "residents",
+                "on": "resident_id",
+                "columns": [
+                    "name",
+                    "enrollment_no"
+                ]
+            }
+        ]
     }
 }';
 

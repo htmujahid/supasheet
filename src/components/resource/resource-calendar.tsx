@@ -20,8 +20,7 @@ import {
 import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
-  CalendarViewItem,
-  PrimaryKey,
+  CalendarLayout,
   ResourceSchema,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
@@ -63,7 +62,7 @@ export interface ResourceCalendarProps {
   view?: TCalendarView
   data: IEvent[]
   resourceSchema: ResourceSchema
-  currentView: CalendarViewItem
+  currentView: CalendarLayout
 }
 
 export function ResourceCalendar({
@@ -76,9 +75,9 @@ export function ResourceCalendar({
   const resource = resourceSchema.name ?? ""
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
-  const startDateField = currentView.startDate ?? ""
-  const endDateField = currentView.endDate ?? ""
+  )
+  const startDateField = currentView.start_date ?? ""
+  const endDateField = currentView.end_date ?? ""
 
   const queryClient = useQueryClient()
   const navigate = useNavigate({

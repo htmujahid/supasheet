@@ -6,7 +6,6 @@ import { Label } from "#/components/ui/label"
 import type {
   ColumnSchema,
   EnumColumnMetadata,
-  PrimaryKey,
   ResourceSchema,
   TableMetadata,
 } from "#/lib/database-meta.types"
@@ -35,7 +34,7 @@ export function ResourceFullDetail({
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
   const primaryKeys = (
     tableSchema ? (tableSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
 
   const { colByName, progressFields, filteredPlan } = useMemo(() => {
     const tableMeta = JSON.parse(
@@ -44,7 +43,7 @@ export function ResourceFullDetail({
     const availableNames = new Set(
       columnsSchema.map((c) => (c.name as string) ?? c.id ?? "")
     )
-    const plan = buildLayoutPlan(tableMeta.sections, availableNames, "read")
+    const plan = buildLayoutPlan(tableMeta.fields?.sections, availableNames, "read")
     const byName = new Map(
       columnsSchema.map((c) => [(c.name as string) ?? c.id ?? "", c])
     )

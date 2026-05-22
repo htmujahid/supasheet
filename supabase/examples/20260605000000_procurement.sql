@@ -419,27 +419,132 @@ comment on column procurement.suppliers.tier is '{
 comment on table procurement.suppliers is '{
     "icon": "Factory",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
-            {"table":"users","on":"qualified_by_user_id","alias":"qualified_by_user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Suppliers By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "contact_name",
+            "badge": "tier"
+        },
+        {
+            "id": "gallery",
+            "name": "Supplier Gallery",
+            "type": "gallery",
+            "cover": "logo",
+            "title": "name",
+            "description": "city",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "legal_name",
+                    "code",
+                    "status",
+                    "tier",
+                    "logo",
+                    "description"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "contact_name",
+                    "email",
+                    "phone",
+                    "website"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "address",
+                    "city",
+                    "country"
+                ]
+            },
+            {
+                "id": "commercial",
+                "title": "Commercial",
+                "fields": [
+                    "tax_id",
+                    "payment_terms",
+                    "currency",
+                    "categories"
+                ]
+            },
+            {
+                "id": "qualification",
+                "title": "Qualification",
+                "fields": [
+                    "qualified_at",
+                    "qualified_by_user_id",
+                    "certifications"
+                ]
+            },
+            {
+                "id": "scorecard",
+                "title": "Scorecard",
+                "fields": [
+                    "score_quality",
+                    "score_delivery",
+                    "score_cost",
+                    "score_communication",
+                    "score_overall"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Suppliers By Status","type":"kanban","group":"status","title":"name","description":"contact_name","badge":"tier"},
-        {"id":"gallery","name":"Supplier Gallery","type":"gallery","cover":"logo","title":"name","description":"city","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","legal_name","code","status","tier","logo","description"]},
-        {"id":"contact","title":"Contact","fields":["contact_name","email","phone","website"]},
-        {"id":"location","title":"Location","fields":["address","city","country"]},
-        {"id":"commercial","title":"Commercial","fields":["tax_id","payment_terms","currency","categories"]},
-        {"id":"qualification","title":"Qualification","fields":["qualified_at","qualified_by_user_id","certifications"]},
-        {"id":"scorecard","title":"Scorecard","fields":["score_quality","score_delivery","score_cost","score_communication","score_overall"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "qualified_by_user_id",
+                "alias": "qualified_by_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.suppliers.logo is '{"accept":"image/*"}';
@@ -549,26 +654,119 @@ comment on column procurement.contracts.status is '{
 comment on table procurement.contracts is '{
     "icon": "FileSignature",
     "display": "block",
-    "query": {
-        "sort": [{"id":"end_date","desc":false}],
-        "join": [
-            {"table":"suppliers","on":"supplier_id","columns":["name","code"]},
-            {"table":"users","on":"signed_by_user_id","alias":"signed_by_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Contracts By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "contract_number",
+            "description": "title",
+            "date": "end_date",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Contract Calendar",
+            "type": "calendar",
+            "title": "contract_number",
+            "badge": "status",
+            "start_date": "start_date",
+            "end_date": "end_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "contract_number",
+                    "title",
+                    "supplier_id",
+                    "type",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "start_date",
+                    "end_date",
+                    "auto_renew",
+                    "renewal_notice_days"
+                ]
+            },
+            {
+                "id": "financial",
+                "title": "Financial",
+                "fields": [
+                    "value",
+                    "currency"
+                ]
+            },
+            {
+                "id": "signing",
+                "title": "Signing",
+                "fields": [
+                    "signed_by_user_id",
+                    "signed_at",
+                    "document"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Terms, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "terms",
+                    "attachments",
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Contracts By Status","type":"kanban","group":"status","title":"contract_number","description":"title","date":"end_date","badge":"type"},
-        {"id":"calendar","name":"Contract Calendar","type":"calendar","title":"contract_number","startDate":"start_date","endDate":"end_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["contract_number","title","supplier_id","type","status","description"]},
-        {"id":"dates","title":"Dates","fields":["start_date","end_date","auto_renew","renewal_notice_days"]},
-        {"id":"financial","title":"Financial","fields":["value","currency"]},
-        {"id":"signing","title":"Signing","fields":["signed_by_user_id","signed_at","document"]},
-        {"id":"extras","title":"Terms, Attachments & Notes","collapsible":true,"fields":["terms","attachments","tags","color","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "end_date",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "suppliers",
+                "on": "supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "signed_by_user_id",
+                "alias": "signed_by_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.contracts.document is '{"accept":"application/pdf,.doc,.docx", "maxFiles": 1}';
@@ -680,27 +878,125 @@ comment on column procurement.requisitions.priority is '{
 comment on table procurement.requisitions is '{
     "icon": "ClipboardList",
     "display": "block",
-    "query": {
-        "sort": [{"id":"requested_date","desc":true}],
-        "join": [
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
-            {"table":"users","on":"approver_user_id","alias":"approver_user","columns":["name","email"]},
-            {"table":"contracts","on":"contract_id","columns":["contract_number","title"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Requisitions By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "requisition_number",
+            "description": "title",
+            "date": "needed_by_date",
+            "badge": "priority"
+        },
+        {
+            "id": "calendar",
+            "name": "Requisition Calendar",
+            "type": "calendar",
+            "title": "requisition_number",
+            "badge": "status",
+            "start_date": "requested_date",
+            "end_date": "needed_by_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "requisition_number",
+                    "title",
+                    "status",
+                    "priority",
+                    "justification"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "department",
+                    "cost_center",
+                    "contract_id",
+                    "rfq_id"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "requested_date",
+                    "needed_by_date"
+                ]
+            },
+            {
+                "id": "financial",
+                "title": "Financial",
+                "fields": [
+                    "estimated_total",
+                    "currency"
+                ]
+            },
+            {
+                "id": "approval",
+                "title": "Approval",
+                "fields": [
+                    "approver_user_id",
+                    "approved_at",
+                    "response"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Requisitions By Status","type":"kanban","group":"status","title":"requisition_number","description":"title","date":"needed_by_date","badge":"priority"},
-        {"id":"calendar","name":"Requisition Calendar","type":"calendar","title":"requisition_number","startDate":"requested_date","endDate":"needed_by_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["requisition_number","title","status","priority","justification"]},
-        {"id":"organization","title":"Organization","fields":["department","cost_center","contract_id","rfq_id"]},
-        {"id":"dates","title":"Dates","fields":["requested_date","needed_by_date"]},
-        {"id":"financial","title":"Financial","fields":["estimated_total","currency"]},
-        {"id":"approval","title":"Approval","fields":["approver_user_id","approved_at","response"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "requested_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "approver_user_id",
+                "alias": "approver_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "contracts",
+                "on": "contract_id",
+                "columns": [
+                    "contract_number",
+                    "title"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.requisitions.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -780,20 +1076,79 @@ create table procurement.requisition_items (
 comment on table procurement.requisition_items is '{
     "icon": "ListChecks",
     "display": "none",
-    "query": {
-        "sort": [{"id":"line_number","desc":false}],
-        "join": [
-            {"table":"requisitions","on":"requisition_id","columns":["requisition_number","title"]},
-            {"table":"suppliers","on":"suggested_supplier_id","columns":["name","code"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "requisition_id",
+                    "line_number"
+                ]
+            },
+            {
+                "id": "item",
+                "title": "Item",
+                "fields": [
+                    "item_name",
+                    "item_sku",
+                    "category",
+                    "description"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity & Cost",
+                "fields": [
+                    "quantity",
+                    "unit_of_measure",
+                    "estimated_unit_cost",
+                    "estimated_total"
+                ]
+            },
+            {
+                "id": "supplier",
+                "title": "Supplier",
+                "fields": [
+                    "suggested_supplier_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["requisition_id","line_number"]},
-        {"id":"item","title":"Item","fields":["item_name","item_sku","category","description"]},
-        {"id":"quantity","title":"Quantity & Cost","fields":["quantity","unit_of_measure","estimated_unit_cost","estimated_total"]},
-        {"id":"supplier","title":"Supplier","fields":["suggested_supplier_id"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "line_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "requisitions",
+                "on": "requisition_id",
+                "columns": [
+                    "requisition_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "suppliers",
+                "on": "suggested_supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table procurement.requisition_items
@@ -885,27 +1240,122 @@ comment on column procurement.rfqs.status is '{
 comment on table procurement.rfqs is '{
     "icon": "Gavel",
     "display": "block",
-    "query": {
-        "sort": [{"id":"response_due_date","desc":true}],
-        "join": [
-            {"table":"requisitions","on":"requisition_id","columns":["requisition_number","title"]},
-            {"table":"suppliers","on":"awarded_supplier_id","columns":["name","code"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "RFQs By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "rfq_number",
+            "description": "title",
+            "date": "response_due_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "RFQ Calendar",
+            "type": "calendar",
+            "title": "rfq_number",
+            "badge": "status",
+            "start_date": "issued_date",
+            "end_date": "response_due_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "rfq_number",
+                    "title",
+                    "status",
+                    "description",
+                    "requirements"
+                ]
+            },
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "requisition_id"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "issued_date",
+                    "response_due_date",
+                    "expected_award_date",
+                    "awarded_at"
+                ]
+            },
+            {
+                "id": "financial",
+                "title": "Financial",
+                "fields": [
+                    "estimated_value",
+                    "awarded_value",
+                    "currency"
+                ]
+            },
+            {
+                "id": "award",
+                "title": "Award",
+                "fields": [
+                    "awarded_supplier_id",
+                    "invited_supplier_count"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"RFQs By Status","type":"kanban","group":"status","title":"rfq_number","description":"title","date":"response_due_date","badge":"status"},
-        {"id":"calendar","name":"RFQ Calendar","type":"calendar","title":"rfq_number","startDate":"issued_date","endDate":"response_due_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["rfq_number","title","status","description","requirements"]},
-        {"id":"link","title":"Link","fields":["requisition_id"]},
-        {"id":"dates","title":"Dates","fields":["issued_date","response_due_date","expected_award_date","awarded_at"]},
-        {"id":"financial","title":"Financial","fields":["estimated_value","awarded_value","currency"]},
-        {"id":"award","title":"Award","fields":["awarded_supplier_id","invited_supplier_count"]},
-        {"id":"extras","title":"Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "response_due_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "requisitions",
+                "on": "requisition_id",
+                "columns": [
+                    "requisition_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "suppliers",
+                "on": "awarded_supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.rfqs.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -1000,25 +1450,102 @@ comment on column procurement.quotes.status is '{
 comment on table procurement.quotes is '{
     "icon": "DollarSign",
     "display": "block",
-    "query": {
-        "sort": [{"id":"submitted_at","desc":true}],
-        "join": [
-            {"table":"rfqs","on":"rfq_id","columns":["rfq_number","title"]},
-            {"table":"suppliers","on":"supplier_id","columns":["name","tier"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Quotes By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "quote_number",
+            "description": "description",
+            "date": "submitted_at",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "quote_number",
+                    "rfq_id",
+                    "supplier_id",
+                    "status"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "submitted_at",
+                    "valid_until"
+                ]
+            },
+            {
+                "id": "pricing",
+                "title": "Pricing",
+                "fields": [
+                    "total_price",
+                    "currency",
+                    "lead_time_days",
+                    "payment_terms"
+                ]
+            },
+            {
+                "id": "line_items",
+                "title": "Line Items",
+                "fields": [
+                    "line_items",
+                    "description"
+                ]
+            },
+            {
+                "id": "evaluation",
+                "title": "Evaluation",
+                "fields": [
+                    "score",
+                    "notes"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Attachments",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Quotes By Status","type":"kanban","group":"status","title":"quote_number","description":"description","date":"submitted_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["quote_number","rfq_id","supplier_id","status"]},
-        {"id":"dates","title":"Dates","fields":["submitted_at","valid_until"]},
-        {"id":"pricing","title":"Pricing","fields":["total_price","currency","lead_time_days","payment_terms"]},
-        {"id":"line_items","title":"Line Items","fields":["line_items","description"]},
-        {"id":"evaluation","title":"Evaluation","fields":["score","notes"]},
-        {"id":"extras","title":"Tags & Attachments","collapsible":true,"fields":["tags","attachments"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "submitted_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "rfqs",
+                "on": "rfq_id",
+                "columns": [
+                    "rfq_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "suppliers",
+                "on": "supplier_id",
+                "columns": [
+                    "name",
+                    "tier"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.quotes.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -1103,18 +1630,58 @@ comment on column procurement.asset_categories.default_depreciation_method is '{
 comment on table procurement.asset_categories is '{
     "icon": "FolderTree",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Category Gallery","type":"gallery","cover":"cover","title":"name","description":"code","badge":"default_depreciation_method"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Category Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "name",
+            "description": "code",
+            "badge": "default_depreciation_method"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["code","name","parent_id","description","cover"]},
-        {"id":"depreciation","title":"Default Depreciation","fields":["default_depreciation_method","default_useful_life_months","default_salvage_pct"]},
-        {"id":"organization","title":"Organization","fields":["color","tags"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "code",
+                    "name",
+                    "parent_id",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "depreciation",
+                "title": "Default Depreciation",
+                "fields": [
+                    "default_depreciation_method",
+                    "default_useful_life_months",
+                    "default_salvage_pct"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "color",
+                    "tags"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ]
+    }
 }';
 
 comment on column procurement.asset_categories.cover is '{"accept":"image/*"}';
@@ -1240,30 +1807,156 @@ comment on column procurement.assets.depreciation_method is '{
 comment on table procurement.assets is '{
     "icon": "Building",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [
-            {"table":"asset_categories","on":"category_id","columns":["code","name"]},
-            {"table":"suppliers","on":"supplier_id","columns":["name","code"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Asset Gallery",
+            "type": "gallery",
+            "cover": "image",
+            "title": "name",
+            "description": "asset_tag",
+            "badge": "status"
+        },
+        {
+            "id": "kanban",
+            "name": "Assets By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "location",
+            "badge": "condition"
+        },
+        {
+            "id": "calendar",
+            "name": "Inspection Calendar",
+            "type": "calendar",
+            "title": "name",
+            "badge": "status",
+            "start_date": "last_inspection_date",
+            "end_date": "next_inspection_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "asset_tag",
+                    "name",
+                    "serial_number",
+                    "barcode",
+                    "image"
+                ]
+            },
+            {
+                "id": "classification",
+                "title": "Classification",
+                "fields": [
+                    "category_id",
+                    "manufacturer",
+                    "model",
+                    "status",
+                    "condition"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "location",
+                    "department"
+                ]
+            },
+            {
+                "id": "acquisition",
+                "title": "Acquisition",
+                "fields": [
+                    "supplier_id",
+                    "purchase_date",
+                    "purchase_cost",
+                    "currency"
+                ]
+            },
+            {
+                "id": "depreciation",
+                "title": "Depreciation",
+                "fields": [
+                    "depreciation_method",
+                    "useful_life_months",
+                    "salvage_value",
+                    "accumulated_depreciation",
+                    "current_value"
+                ]
+            },
+            {
+                "id": "warranty",
+                "title": "Warranty & Insurance",
+                "fields": [
+                    "warranty_until",
+                    "insured",
+                    "insurance_policy"
+                ]
+            },
+            {
+                "id": "inspection",
+                "title": "Inspection & Disposal",
+                "fields": [
+                    "last_inspection_date",
+                    "next_inspection_date",
+                    "disposed_at",
+                    "disposal_reason"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes",
+                    "description"
+                ]
+            }
         ]
     },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Asset Gallery","type":"gallery","cover":"image","title":"name","description":"asset_tag","badge":"status"},
-        {"id":"kanban","name":"Assets By Status","type":"kanban","group":"status","title":"name","description":"location","badge":"condition"},
-        {"id":"calendar","name":"Inspection Calendar","type":"calendar","title":"name","startDate":"last_inspection_date","endDate":"next_inspection_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"identity","title":"Identity","fields":["asset_tag","name","serial_number","barcode","image"]},
-        {"id":"classification","title":"Classification","fields":["category_id","manufacturer","model","status","condition"]},
-        {"id":"location","title":"Location","fields":["location","department"]},
-        {"id":"acquisition","title":"Acquisition","fields":["supplier_id","purchase_date","purchase_cost","currency"]},
-        {"id":"depreciation","title":"Depreciation","fields":["depreciation_method","useful_life_months","salvage_value","accumulated_depreciation","current_value"]},
-        {"id":"warranty","title":"Warranty & Insurance","fields":["warranty_until","insured","insurance_policy"]},
-        {"id":"inspection","title":"Inspection & Disposal","fields":["last_inspection_date","next_inspection_date","disposed_at","disposal_reason"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes","description"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "asset_categories",
+                "on": "category_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "suppliers",
+                "on": "supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.assets.image is '{"accept":"image/*"}';
@@ -1361,26 +2054,111 @@ comment on column procurement.asset_assignments.status is '{
 comment on table procurement.asset_assignments is '{
     "icon": "UserPlus",
     "display": "block",
-    "query": {
-        "sort": [{"id":"assigned_at","desc":true}],
-        "join": [
-            {"table":"assets","on":"asset_id","columns":["asset_tag","name"]},
-            {"table":"users","on":"assignee_user_id","alias":"assignee_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Assignments By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "assignee_name",
+            "description": "purpose",
+            "date": "assigned_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Assignment Calendar",
+            "type": "calendar",
+            "title": "assignee_name",
+            "badge": "status",
+            "start_date": "assigned_at",
+            "end_date": "expected_return_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "asset_id",
+                    "status"
+                ]
+            },
+            {
+                "id": "assignee",
+                "title": "Assignee",
+                "fields": [
+                    "assignee_user_id",
+                    "assignee_name",
+                    "assignee_department"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "assigned_at",
+                    "expected_return_date",
+                    "returned_at"
+                ]
+            },
+            {
+                "id": "details",
+                "title": "Details",
+                "fields": [
+                    "location",
+                    "purpose",
+                    "return_condition"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Assignments By Status","type":"kanban","group":"status","title":"assignee_name","description":"purpose","date":"assigned_at","badge":"status"},
-        {"id":"calendar","name":"Assignment Calendar","type":"calendar","title":"assignee_name","startDate":"assigned_at","endDate":"expected_return_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["asset_id","status"]},
-        {"id":"assignee","title":"Assignee","fields":["assignee_user_id","assignee_name","assignee_department"]},
-        {"id":"dates","title":"Dates","fields":["assigned_at","expected_return_date","returned_at"]},
-        {"id":"details","title":"Details","fields":["location","purpose","return_condition"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "assigned_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "assets",
+                "on": "asset_id",
+                "columns": [
+                    "asset_tag",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "assignee_user_id",
+                "alias": "assignee_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table procurement.asset_assignments
@@ -1484,26 +2262,116 @@ comment on column procurement.asset_maintenance.status is '{
 comment on table procurement.asset_maintenance is '{
     "icon": "Wrench",
     "display": "block",
-    "query": {
-        "sort": [{"id":"scheduled_date","desc":true}],
-        "join": [
-            {"table":"assets","on":"asset_id","columns":["asset_tag","name"]},
-            {"table":"suppliers","on":"vendor_supplier_id","columns":["name","code"]},
-            {"table":"users","on":"technician_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Maintenance By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "description",
+            "date": "scheduled_date",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Maintenance Calendar",
+            "type": "calendar",
+            "title": "title",
+            "badge": "status",
+            "start_date": "scheduled_date",
+            "end_date": "completed_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "maintenance_number",
+                    "asset_id",
+                    "title",
+                    "type",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "scheduled_date",
+                    "started_at",
+                    "completed_at",
+                    "next_due_date"
+                ]
+            },
+            {
+                "id": "resources",
+                "title": "Resources",
+                "fields": [
+                    "technician_user_id",
+                    "vendor_supplier_id",
+                    "cost",
+                    "currency",
+                    "parts_used"
+                ]
+            },
+            {
+                "id": "findings",
+                "title": "Findings",
+                "fields": [
+                    "findings"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Maintenance By Status","type":"kanban","group":"status","title":"title","description":"description","date":"scheduled_date","badge":"type"},
-        {"id":"calendar","name":"Maintenance Calendar","type":"calendar","title":"title","startDate":"scheduled_date","endDate":"completed_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["maintenance_number","asset_id","title","type","status","description"]},
-        {"id":"schedule","title":"Schedule","fields":["scheduled_date","started_at","completed_at","next_due_date"]},
-        {"id":"resources","title":"Resources","fields":["technician_user_id","vendor_supplier_id","cost","currency","parts_used"]},
-        {"id":"findings","title":"Findings","fields":["findings"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "scheduled_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "assets",
+                "on": "asset_id",
+                "columns": [
+                    "asset_tag",
+                    "name"
+                ]
+            },
+            {
+                "table": "suppliers",
+                "on": "vendor_supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "technician_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column procurement.asset_maintenance.attachments is '{"accept":"*", "maxFiles": 10}';

@@ -17,8 +17,7 @@ import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
-  FilterTemplate,
-  PrimaryKey,
+  FilterPreset,
   ResourceSchema,
   TableMetadata,
 } from "#/lib/database-meta.types"
@@ -28,7 +27,7 @@ import {
   insertBulkResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 
-import { ResourceFilterTemplates } from "../resource-filter-templates"
+import { ResourceFilterPresets } from "../resource-filter-presets"
 import { getResourceTableColumns } from "../resource-table-columns"
 import { ResourceListEmpty } from "./resource-list-empty"
 import { ResourceListRow } from "./resource-list-row"
@@ -38,8 +37,8 @@ export type ListView = {
   name: string
   title?: string
   description?: string
-  field1?: string
-  field2?: string
+  field_1?: string
+  field_2?: string
   [key: string]: unknown
 }
 
@@ -52,7 +51,7 @@ interface ResourceListProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
-  filterTemplates?: FilterTemplate[]
+  filterPresets?: FilterPreset[]
 }
 
 export function ResourceList({
@@ -64,14 +63,14 @@ export function ResourceList({
   pagination,
   columnFilters,
   pageCount,
-  filterTemplates = [],
+  filterPresets = [],
 }: ResourceListProps) {
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
   const resource = resourceSchema.name
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
 
   const canDelete = useHasPermission(`${schema}.${resource}:delete`)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
@@ -83,8 +82,8 @@ export function ResourceList({
     insertBulkResourceMutationOptions(schema, resource)
   )
 
-  const duplicatedFields = resourceSchema.comment
-    ? (JSON.parse(resourceSchema.comment) as TableMetadata).duplicatedFields
+  const duplicated = resourceSchema.comment
+    ? (JSON.parse(resourceSchema.comment) as TableMetadata).fields?.duplicated
     : undefined
 
   const handleDuplicate = async (rows: Record<string, unknown>[]) => {
@@ -93,7 +92,7 @@ export function ResourceList({
       const columnNames = new Set(
         columnsSchema.map((c) => c.name).filter((n): n is string => n !== null)
       )
-      const fields = duplicatedFields ?? [...columnNames]
+      const fields = duplicated ?? [...columnNames]
       const stripped = rows.map((row) =>
         Object.fromEntries(
           fields
@@ -158,8 +157,8 @@ export function ResourceList({
   return (
     <div className="flex w-full flex-col gap-2">
       <DataTableToolbar table={table} hideColumnVisibility>
-        <ResourceFilterTemplates
-          filterTemplates={filterTemplates}
+        <ResourceFilterPresets
+          filterPresets={filterPresets}
           currentFilters={columnFilters}
         />
       </DataTableToolbar>

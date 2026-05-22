@@ -342,21 +342,88 @@ comment on column inventory.warehouses.type is '{
 comment on table inventory.warehouses is '{
     "icon": "Warehouse",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [{"table":"users","on":"manager_user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Warehouse Gallery","type":"gallery","cover":"cover","title":"name","description":"city","badge":"type"},
-        {"id":"kanban","name":"Warehouses By Type","type":"kanban","group":"type","title":"name","description":"city","badge":"type"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Warehouse Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "name",
+            "description": "city",
+            "badge": "type"
+        },
+        {
+            "id": "kanban",
+            "name": "Warehouses By Type",
+            "type": "kanban",
+            "group": "type",
+            "title": "name",
+            "description": "city",
+            "badge": "type"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","code","type","description","cover"]},
-        {"id":"location","title":"Location","fields":["address","city","country","capacity"]},
-        {"id":"organization","title":"Organization","fields":["manager_user_id","is_active","color","tags"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "code",
+                    "type",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "address",
+                    "city",
+                    "country",
+                    "capacity"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "manager_user_id",
+                    "is_active",
+                    "color",
+                    "tags"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "manager_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column inventory.warehouses.cover is '{"accept":"image/*"}';
@@ -449,22 +516,99 @@ comment on column inventory.suppliers.status is '{
 comment on table inventory.suppliers is '{
     "icon": "Factory",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Supplier Gallery","type":"gallery","cover":"logo","title":"name","description":"city","badge":"status"},
-        {"id":"kanban","name":"Suppliers By Status","type":"kanban","group":"status","title":"name","description":"contact_name","badge":"country"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Supplier Gallery",
+            "type": "gallery",
+            "cover": "logo",
+            "title": "name",
+            "description": "city",
+            "badge": "status"
+        },
+        {
+            "id": "kanban",
+            "name": "Suppliers By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "contact_name",
+            "badge": "country"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","code","status","logo","description"]},
-        {"id":"contact","title":"Contact","fields":["contact_name","email","phone","website"]},
-        {"id":"location","title":"Location","fields":["address","city","country"]},
-        {"id":"commercial","title":"Commercial","fields":["lead_time_days","payment_terms","tax_id","rating"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","color","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "code",
+                    "status",
+                    "logo",
+                    "description"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "contact_name",
+                    "email",
+                    "phone",
+                    "website"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "address",
+                    "city",
+                    "country"
+                ]
+            },
+            {
+                "id": "commercial",
+                "title": "Commercial",
+                "fields": [
+                    "lead_time_days",
+                    "payment_terms",
+                    "tax_id",
+                    "rating"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column inventory.suppliers.logo is '{"accept":"image/*"}';
@@ -561,26 +705,116 @@ comment on column inventory.products.status is '{
 comment on table inventory.products is '{
     "icon": "Package",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [
-            {"table":"suppliers","on":"default_supplier_id","columns":["name","code"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Product Catalog",
+            "type": "gallery",
+            "cover": "image",
+            "title": "name",
+            "description": "sku",
+            "badge": "status"
+        },
+        {
+            "id": "kanban",
+            "name": "Products By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "category",
+            "badge": "category"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "sku",
+                    "name",
+                    "barcode",
+                    "status",
+                    "image"
+                ]
+            },
+            {
+                "id": "classification",
+                "title": "Classification",
+                "fields": [
+                    "category",
+                    "brand",
+                    "unit_of_measure",
+                    "description"
+                ]
+            },
+            {
+                "id": "physical",
+                "title": "Physical",
+                "fields": [
+                    "weight",
+                    "dimensions"
+                ]
+            },
+            {
+                "id": "pricing",
+                "title": "Pricing",
+                "fields": [
+                    "cost_price",
+                    "list_price",
+                    "currency"
+                ]
+            },
+            {
+                "id": "replenishment",
+                "title": "Replenishment",
+                "fields": [
+                    "reorder_point",
+                    "reorder_quantity",
+                    "safety_stock",
+                    "default_supplier_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Product Catalog","type":"gallery","cover":"image","title":"name","description":"sku","badge":"status"},
-        {"id":"kanban","name":"Products By Status","type":"kanban","group":"status","title":"name","description":"category","badge":"category"}
-    ],
-    "sections": [
-        {"id":"identity","title":"Identity","fields":["sku","name","barcode","status","image"]},
-        {"id":"classification","title":"Classification","fields":["category","brand","unit_of_measure","description"]},
-        {"id":"physical","title":"Physical","fields":["weight","dimensions"]},
-        {"id":"pricing","title":"Pricing","fields":["cost_price","list_price","currency"]},
-        {"id":"replenishment","title":"Replenishment","fields":["reorder_point","reorder_quantity","safety_stock","default_supplier_id"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "suppliers",
+                "on": "default_supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column inventory.products.image is '{"accept":"image/*"}';
@@ -670,24 +904,78 @@ comment on column inventory.stock_levels.status is '{
 
 comment on table inventory.stock_levels is '{
     "icon": "Boxes",
-    "inlineForm": true,
+    "inline_form": true,
     "display": "block",
-    "query": {
-        "sort": [{"id":"updated_at","desc":true}],
-        "join": [
-            {"table":"warehouses","on":"warehouse_id","columns":["name","code"]},
-            {"table":"products","on":"product_id","columns":["sku","name"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Stock By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "bin_location",
+            "description": "notes",
+            "date": "last_counted_at",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "warehouse_id",
+                    "product_id",
+                    "bin_location"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity",
+                "fields": [
+                    "quantity_on_hand",
+                    "quantity_reserved",
+                    "quantity_available",
+                    "status"
+                ]
+            },
+            {
+                "id": "audit",
+                "title": "Audit",
+                "fields": [
+                    "last_counted_at",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Stock By Status","type":"kanban","group":"status","title":"bin_location","description":"notes","date":"last_counted_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["warehouse_id","product_id","bin_location"]},
-        {"id":"quantity","title":"Quantity","fields":["quantity_on_hand","quantity_reserved","quantity_available","status"]},
-        {"id":"audit","title":"Audit","fields":["last_counted_at","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "updated_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "warehouses",
+                "on": "warehouse_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "products",
+                "on": "product_id",
+                "columns": [
+                    "sku",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table inventory.stock_levels
@@ -777,25 +1065,107 @@ comment on column inventory.purchase_orders.status is '{
 comment on table inventory.purchase_orders is '{
     "icon": "ClipboardList",
     "display": "block",
-    "query": {
-        "sort": [{"id":"order_date","desc":true}],
-        "join": [
-            {"table":"suppliers","on":"supplier_id","columns":["name","code"]},
-            {"table":"warehouses","on":"warehouse_id","columns":["name","code"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "POs By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "po_number",
+            "description": "description",
+            "date": "expected_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "PO Calendar",
+            "type": "calendar",
+            "title": "po_number",
+            "badge": "status",
+            "start_date": "order_date",
+            "end_date": "expected_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "po_number",
+                    "supplier_id",
+                    "warehouse_id",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "order_date",
+                    "expected_date",
+                    "received_date"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "subtotal",
+                    "tax",
+                    "shipping",
+                    "total",
+                    "currency"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"POs By Status","type":"kanban","group":"status","title":"po_number","description":"description","date":"expected_date","badge":"status"},
-        {"id":"calendar","name":"PO Calendar","type":"calendar","title":"po_number","startDate":"order_date","endDate":"expected_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["po_number","supplier_id","warehouse_id","status","description"]},
-        {"id":"dates","title":"Dates","fields":["order_date","expected_date","received_date"]},
-        {"id":"amounts","title":"Amounts","fields":["subtotal","tax","shipping","total","currency"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "order_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "suppliers",
+                "on": "supplier_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "warehouses",
+                "on": "warehouse_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column inventory.purchase_orders.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -869,20 +1239,64 @@ create table inventory.purchase_order_items (
 
 comment on table inventory.purchase_order_items is '{
     "icon": "ListChecks",
-    "inlineForm": true,
+    "inline_form": true,
     "display": "none",
-    "query": {
-        "sort": [{"id":"created_at","desc":false}],
-        "join": [
-            {"table":"purchase_orders","on":"po_id","columns":["po_number","status"]},
-            {"table":"products","on":"product_id","columns":["sku","name"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "po_id",
+                    "product_id"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity & Cost",
+                "fields": [
+                    "quantity_ordered",
+                    "quantity_received",
+                    "unit_cost",
+                    "total_cost"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["po_id","product_id"]},
-        {"id":"quantity","title":"Quantity & Cost","fields":["quantity_ordered","quantity_received","unit_cost","total_cost"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "purchase_orders",
+                "on": "po_id",
+                "columns": [
+                    "po_number",
+                    "status"
+                ]
+            },
+            {
+                "table": "products",
+                "on": "product_id",
+                "columns": [
+                    "sku",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table inventory.purchase_order_items
@@ -987,26 +1401,115 @@ comment on column inventory.shipments.carrier is '{
 comment on table inventory.shipments is '{
     "icon": "Truck",
     "display": "block",
-    "query": {
-        "sort": [{"id":"shipped_date","desc":true}],
-        "join": [
-            {"table":"warehouses","on":"warehouse_id","columns":["name","code"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Shipments By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "shipment_number",
+            "description": "customer_name",
+            "date": "expected_delivery_date",
+            "badge": "carrier"
+        },
+        {
+            "id": "calendar",
+            "name": "Shipment Calendar",
+            "type": "calendar",
+            "title": "shipment_number",
+            "badge": "status",
+            "start_date": "shipped_date",
+            "end_date": "expected_delivery_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "shipment_number",
+                    "warehouse_id",
+                    "status",
+                    "carrier",
+                    "tracking_number"
+                ]
+            },
+            {
+                "id": "customer",
+                "title": "Customer",
+                "fields": [
+                    "customer_name",
+                    "customer_email"
+                ]
+            },
+            {
+                "id": "destination",
+                "title": "Destination",
+                "fields": [
+                    "destination_address",
+                    "destination_city",
+                    "destination_country"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "shipped_date",
+                    "expected_delivery_date",
+                    "delivered_date"
+                ]
+            },
+            {
+                "id": "shipping",
+                "title": "Shipping",
+                "fields": [
+                    "weight",
+                    "cost",
+                    "currency"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Description, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "description",
+                    "attachments",
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Shipments By Status","type":"kanban","group":"status","title":"shipment_number","description":"customer_name","date":"expected_delivery_date","badge":"carrier"},
-        {"id":"calendar","name":"Shipment Calendar","type":"calendar","title":"shipment_number","startDate":"shipped_date","endDate":"expected_delivery_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["shipment_number","warehouse_id","status","carrier","tracking_number"]},
-        {"id":"customer","title":"Customer","fields":["customer_name","customer_email"]},
-        {"id":"destination","title":"Destination","fields":["destination_address","destination_city","destination_country"]},
-        {"id":"dates","title":"Dates","fields":["shipped_date","expected_delivery_date","delivered_date"]},
-        {"id":"shipping","title":"Shipping","fields":["weight","cost","currency"]},
-        {"id":"extras","title":"Description, Attachments & Notes","collapsible":true,"fields":["description","attachments","tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "shipped_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "warehouses",
+                "on": "warehouse_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column inventory.shipments.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -1079,20 +1582,63 @@ create table inventory.shipment_items (
 
 comment on table inventory.shipment_items is '{
     "icon": "ListChecks",
-    "inlineForm": true,
+    "inline_form": true,
     "display": "none",
-    "query": {
-        "sort": [{"id":"created_at","desc":false}],
-        "join": [
-            {"table":"shipments","on":"shipment_id","columns":["shipment_number","status"]},
-            {"table":"products","on":"product_id","columns":["sku","name"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "shipment_id",
+                    "product_id"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity & Price",
+                "fields": [
+                    "quantity",
+                    "unit_price",
+                    "total_price"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["shipment_id","product_id"]},
-        {"id":"quantity","title":"Quantity & Price","fields":["quantity","unit_price","total_price"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "shipments",
+                "on": "shipment_id",
+                "columns": [
+                    "shipment_number",
+                    "status"
+                ]
+            },
+            {
+                "table": "products",
+                "on": "product_id",
+                "columns": [
+                    "sku",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table inventory.shipment_items
@@ -1176,27 +1722,119 @@ comment on column inventory.stock_movements.type is '{
 comment on table inventory.stock_movements is '{
     "icon": "ArrowLeftRight",
     "display": "block",
-    "query": {
-        "sort": [{"id":"occurred_at","desc":true}],
-        "join": [
-            {"table":"products","on":"product_id","columns":["sku","name"]},
-            {"table":"warehouses","on":"warehouse_id","alias":"warehouse","columns":["name","code"]},
-            {"table":"warehouses","on":"destination_warehouse_id","alias":"destination_warehouse","columns":["name","code"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Movements By Type",
+            "type": "kanban",
+            "group": "type",
+            "title": "movement_number",
+            "description": "reason",
+            "date": "occurred_at",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Movement Calendar",
+            "type": "calendar",
+            "title": "movement_number",
+            "badge": "type",
+            "start_date": "occurred_at",
+            "end_date": "occurred_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "movement_number",
+                    "type",
+                    "occurred_at"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product & Warehouse",
+                "fields": [
+                    "product_id",
+                    "warehouse_id",
+                    "destination_warehouse_id"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity",
+                "fields": [
+                    "quantity",
+                    "unit_cost"
+                ]
+            },
+            {
+                "id": "reference",
+                "title": "Reference",
+                "fields": [
+                    "reference_type",
+                    "reference_id",
+                    "reason"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Movements By Type","type":"kanban","group":"type","title":"movement_number","description":"reason","date":"occurred_at","badge":"type"},
-        {"id":"calendar","name":"Movement Calendar","type":"calendar","title":"movement_number","startDate":"occurred_at","endDate":"occurred_at","badge":"type"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["movement_number","type","occurred_at"]},
-        {"id":"product","title":"Product & Warehouse","fields":["product_id","warehouse_id","destination_warehouse_id"]},
-        {"id":"quantity","title":"Quantity","fields":["quantity","unit_cost"]},
-        {"id":"reference","title":"Reference","fields":["reference_type","reference_id","reason"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "occurred_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "products",
+                "on": "product_id",
+                "columns": [
+                    "sku",
+                    "name"
+                ]
+            },
+            {
+                "table": "warehouses",
+                "on": "warehouse_id",
+                "alias": "warehouse",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "warehouses",
+                "on": "destination_warehouse_id",
+                "alias": "destination_warehouse",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table inventory.stock_movements

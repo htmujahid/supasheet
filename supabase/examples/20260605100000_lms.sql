@@ -364,26 +364,123 @@ comment on column lms.courses.difficulty is '{
 comment on table lms.courses is '{
     "icon": "BookOpen",
     "display": "block",
-    "query": {
-        "sort": [{"id":"title","desc":false}],
-        "join": [
-            {"table":"users","on":"instructor_user_id","alias":"instructor_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Course Catalog",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "subtitle",
+            "badge": "difficulty"
+        },
+        {
+            "id": "kanban",
+            "name": "Courses By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "category",
+            "date": "published_at",
+            "badge": "difficulty"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "code",
+                    "title",
+                    "subtitle",
+                    "status",
+                    "difficulty",
+                    "category",
+                    "cover",
+                    "promo_video"
+                ]
+            },
+            {
+                "id": "content",
+                "title": "Content",
+                "fields": [
+                    "description",
+                    "learning_objectives",
+                    "prerequisites",
+                    "duration_minutes",
+                    "language"
+                ]
+            },
+            {
+                "id": "instructor",
+                "title": "Instructor",
+                "fields": [
+                    "instructor_user_id",
+                    "co_instructor_name"
+                ]
+            },
+            {
+                "id": "pricing",
+                "title": "Pricing",
+                "fields": [
+                    "price",
+                    "currency",
+                    "is_free"
+                ]
+            },
+            {
+                "id": "metrics",
+                "title": "Metrics",
+                "fields": [
+                    "rating",
+                    "enrollment_count",
+                    "completion_count",
+                    "published_at",
+                    "archived_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Course Catalog","type":"gallery","cover":"cover","title":"title","description":"subtitle","badge":"difficulty"},
-        {"id":"kanban","name":"Courses By Status","type":"kanban","group":"status","title":"title","description":"category","date":"published_at","badge":"difficulty"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["code","title","subtitle","status","difficulty","category","cover","promo_video"]},
-        {"id":"content","title":"Content","fields":["description","learning_objectives","prerequisites","duration_minutes","language"]},
-        {"id":"instructor","title":"Instructor","fields":["instructor_user_id","co_instructor_name"]},
-        {"id":"pricing","title":"Pricing","fields":["price","currency","is_free"]},
-        {"id":"metrics","title":"Metrics","fields":["rating","enrollment_count","completion_count","published_at","archived_at"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","color","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "title",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "instructor_user_id",
+                "alias": "instructor_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.courses.cover is '{"accept":"image/*"}';
@@ -460,19 +557,68 @@ comment on column lms.modules.status is '{
 comment on table lms.modules is '{
     "icon": "Layers",
     "display": "block",
-    "query": {
-        "sort": [{"id":"sequence_number","desc":false}],
-        "join": [{"table":"courses","on":"course_id","columns":["code","title"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Modules By Status","type":"kanban","group":"status","title":"title","description":"description","badge":"status"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Modules By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "description",
+            "badge": "status"
+        }
     ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["course_id","sequence_number"]},
-        {"id":"summary","title":"Summary","fields":["title","status","description","duration_minutes"]},
-        {"id":"extras","title":"Tags, Cover & Notes","collapsible":true,"fields":["cover","tags","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "course_id",
+                    "sequence_number"
+                ]
+            },
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "status",
+                    "description",
+                    "duration_minutes"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Cover & Notes",
+                "collapsible": true,
+                "fields": [
+                    "cover",
+                    "tags",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "sequence_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "courses",
+                "on": "course_id",
+                "columns": [
+                    "code",
+                    "title"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.modules.cover is '{"accept":"image/*"}';
@@ -561,21 +707,87 @@ comment on column lms.lessons.status is '{
 comment on table lms.lessons is '{
     "icon": "Play",
     "display": "block",
-    "query": {
-        "sort": [{"id":"sequence_number","desc":false}],
-        "join": [{"table":"modules","on":"module_id","columns":["title","sequence_number"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Lessons By Type","type":"kanban","group":"type","title":"title","description":"description","badge":"status"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Lessons By Type",
+            "type": "kanban",
+            "group": "type",
+            "title": "title",
+            "description": "description",
+            "badge": "status"
+        }
     ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["module_id","sequence_number"]},
-        {"id":"summary","title":"Summary","fields":["title","type","status","description"]},
-        {"id":"content","title":"Content","fields":["body","video_url","video_duration_seconds","attachments","download"]},
-        {"id":"settings","title":"Settings","fields":["is_preview","is_required","estimated_minutes"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "module_id",
+                    "sequence_number"
+                ]
+            },
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "type",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "content",
+                "title": "Content",
+                "fields": [
+                    "body",
+                    "video_url",
+                    "video_duration_seconds",
+                    "attachments",
+                    "download"
+                ]
+            },
+            {
+                "id": "settings",
+                "title": "Settings",
+                "fields": [
+                    "is_preview",
+                    "is_required",
+                    "estimated_minutes"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "sequence_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "modules",
+                "on": "module_id",
+                "columns": [
+                    "title",
+                    "sequence_number"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.lessons.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -660,24 +872,100 @@ comment on column lms.enrollments.status is '{
 comment on table lms.enrollments is '{
     "icon": "GraduationCap",
     "display": "block",
-    "query": {
-        "sort": [{"id":"enrolled_at","desc":true}],
-        "join": [
-            {"table":"courses","on":"course_id","columns":["code","title"]},
-            {"table":"users","on":"learner_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Enrollments By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "learner_name",
+            "description": "learner_email",
+            "date": "enrolled_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Enrollment Calendar",
+            "type": "calendar",
+            "title": "learner_name",
+            "badge": "status",
+            "start_date": "enrolled_at",
+            "end_date": "completed_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "course_id",
+                    "learner_user_id",
+                    "learner_name",
+                    "learner_email",
+                    "learning_path_id"
+                ]
+            },
+            {
+                "id": "status",
+                "title": "Status",
+                "fields": [
+                    "status",
+                    "enrolled_at",
+                    "started_at",
+                    "completed_at",
+                    "expires_at"
+                ]
+            },
+            {
+                "id": "progress",
+                "title": "Progress",
+                "fields": [
+                    "progress_pct",
+                    "last_accessed_at",
+                    "time_spent_minutes",
+                    "final_score",
+                    "issued_certificate_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Enrollments By Status","type":"kanban","group":"status","title":"learner_name","description":"learner_email","date":"enrolled_at","badge":"status"},
-        {"id":"calendar","name":"Enrollment Calendar","type":"calendar","title":"learner_name","startDate":"enrolled_at","endDate":"completed_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["course_id","learner_user_id","learner_name","learner_email","learning_path_id"]},
-        {"id":"status","title":"Status","fields":["status","enrolled_at","started_at","completed_at","expires_at"]},
-        {"id":"progress","title":"Progress","fields":["progress_pct","last_accessed_at","time_spent_minutes","final_score","issued_certificate_id"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "enrolled_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "courses",
+                "on": "course_id",
+                "columns": [
+                    "code",
+                    "title"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "learner_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table lms.enrollments
@@ -765,23 +1053,84 @@ comment on column lms.lesson_progress.status is '{
 comment on table lms.lesson_progress is '{
     "icon": "TrendingUp",
     "display": "block",
-    "query": {
-        "sort": [{"id":"updated_at","desc":true}],
-        "join": [
-            {"table":"enrollments","on":"enrollment_id","columns":["learner_name","status"]},
-            {"table":"lessons","on":"lesson_id","columns":["title","type"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Progress By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "notes",
+            "description": "notes",
+            "date": "started_at",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "enrollment_id",
+                    "lesson_id"
+                ]
+            },
+            {
+                "id": "status",
+                "title": "Status",
+                "fields": [
+                    "status",
+                    "started_at",
+                    "completed_at"
+                ]
+            },
+            {
+                "id": "playback",
+                "title": "Playback",
+                "fields": [
+                    "last_position_seconds",
+                    "time_spent_seconds",
+                    "score",
+                    "attempts"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Progress By Status","type":"kanban","group":"status","title":"notes","description":"notes","date":"started_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["enrollment_id","lesson_id"]},
-        {"id":"status","title":"Status","fields":["status","started_at","completed_at"]},
-        {"id":"playback","title":"Playback","fields":["last_position_seconds","time_spent_seconds","score","attempts"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "updated_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "enrollments",
+                "on": "enrollment_id",
+                "columns": [
+                    "learner_name",
+                    "status"
+                ]
+            },
+            {
+                "table": "lessons",
+                "on": "lesson_id",
+                "columns": [
+                    "title",
+                    "type"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table lms.lesson_progress
@@ -872,26 +1221,113 @@ comment on column lms.assignments.type is '{
 comment on table lms.assignments is '{
     "icon": "ClipboardList",
     "display": "block",
-    "query": {
-        "sort": [{"id":"due_at","desc":true}],
-        "join": [
-            {"table":"courses","on":"course_id","columns":["code","title"]},
-            {"table":"lessons","on":"lesson_id","columns":["title","type"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Assignments By Type",
+            "type": "kanban",
+            "group": "type",
+            "title": "title",
+            "description": "description",
+            "date": "due_at",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Assignment Calendar",
+            "type": "calendar",
+            "title": "title",
+            "badge": "type",
+            "start_date": "open_at",
+            "end_date": "due_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "course_id",
+                    "lesson_id"
+                ]
+            },
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "type",
+                    "description",
+                    "instructions"
+                ]
+            },
+            {
+                "id": "grading",
+                "title": "Grading",
+                "fields": [
+                    "max_score",
+                    "passing_score",
+                    "attempts_allowed",
+                    "rubric"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "time_limit_minutes",
+                    "open_at",
+                    "due_at"
+                ]
+            },
+            {
+                "id": "publishing",
+                "title": "Publishing",
+                "fields": [
+                    "is_published",
+                    "tags",
+                    "color"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Assignments By Type","type":"kanban","group":"type","title":"title","description":"description","date":"due_at","badge":"type"},
-        {"id":"calendar","name":"Assignment Calendar","type":"calendar","title":"title","startDate":"open_at","endDate":"due_at","badge":"type"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["course_id","lesson_id"]},
-        {"id":"summary","title":"Summary","fields":["title","type","description","instructions"]},
-        {"id":"grading","title":"Grading","fields":["max_score","passing_score","attempts_allowed","rubric"]},
-        {"id":"timing","title":"Timing","fields":["time_limit_minutes","open_at","due_at"]},
-        {"id":"publishing","title":"Publishing","fields":["is_published","tags","color"]},
-        {"id":"extras","title":"Attachments & Notes","collapsible":true,"fields":["attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "due_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "courses",
+                "on": "course_id",
+                "columns": [
+                    "code",
+                    "title"
+                ]
+            },
+            {
+                "table": "lessons",
+                "on": "lesson_id",
+                "columns": [
+                    "title",
+                    "type"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.assignments.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -989,27 +1425,123 @@ comment on column lms.submissions.status is '{
 comment on table lms.submissions is '{
     "icon": "FileCheck",
     "display": "block",
-    "query": {
-        "sort": [{"id":"submitted_at","desc":true}],
-        "join": [
-            {"table":"assignments","on":"assignment_id","columns":["title","type"]},
-            {"table":"enrollments","on":"enrollment_id","columns":["learner_name","status"]},
-            {"table":"users","on":"learner_user_id","alias":"learner_user","columns":["name","email"]},
-            {"table":"users","on":"grader_user_id","alias":"grader_user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Submissions By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "submission_number",
+            "description": "learner_name",
+            "date": "submitted_at",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "submission_number",
+                    "assignment_id",
+                    "enrollment_id",
+                    "status"
+                ]
+            },
+            {
+                "id": "learner",
+                "title": "Learner",
+                "fields": [
+                    "learner_user_id",
+                    "learner_name"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "submitted_at",
+                    "graded_at",
+                    "returned_at",
+                    "attempt_number"
+                ]
+            },
+            {
+                "id": "grading",
+                "title": "Grading",
+                "fields": [
+                    "score",
+                    "max_score",
+                    "is_passing",
+                    "grader_user_id",
+                    "rubric_scores",
+                    "feedback"
+                ]
+            },
+            {
+                "id": "response",
+                "title": "Response",
+                "fields": [
+                    "response_text",
+                    "attachments"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Submissions By Status","type":"kanban","group":"status","title":"submission_number","description":"learner_name","date":"submitted_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["submission_number","assignment_id","enrollment_id","status"]},
-        {"id":"learner","title":"Learner","fields":["learner_user_id","learner_name"]},
-        {"id":"timing","title":"Timing","fields":["submitted_at","graded_at","returned_at","attempt_number"]},
-        {"id":"grading","title":"Grading","fields":["score","max_score","is_passing","grader_user_id","rubric_scores","feedback"]},
-        {"id":"response","title":"Response","fields":["response_text","attachments"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "submitted_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "assignments",
+                "on": "assignment_id",
+                "columns": [
+                    "title",
+                    "type"
+                ]
+            },
+            {
+                "table": "enrollments",
+                "on": "enrollment_id",
+                "columns": [
+                    "learner_name",
+                    "status"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "learner_user_id",
+                "alias": "learner_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "grader_user_id",
+                "alias": "grader_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.submissions.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -1111,28 +1643,135 @@ comment on column lms.certificates.status is '{
 comment on table lms.certificates is '{
     "icon": "Award",
     "display": "block",
-    "query": {
-        "sort": [{"id":"issued_at","desc":true}],
-        "join": [
-            {"table":"courses","on":"course_id","columns":["code","title"]},
-            {"table":"users","on":"learner_user_id","alias":"learner_user","columns":["name","email"]},
-            {"table":"users","on":"issuer_user_id","alias":"issuer_user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Certificates By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "learner_name",
+            "description": "title",
+            "date": "issued_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Certificate Calendar",
+            "type": "calendar",
+            "title": "learner_name",
+            "badge": "status",
+            "start_date": "issued_at",
+            "end_date": "expires_at"
+        },
+        {
+            "id": "gallery",
+            "name": "Certificate Wall",
+            "type": "gallery",
+            "cover": "document",
+            "title": "learner_name",
+            "description": "title",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "certificate_number",
+                    "title",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "course_id",
+                    "enrollment_id",
+                    "learning_path_id",
+                    "learner_user_id",
+                    "learner_name"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "issued_at",
+                    "expires_at",
+                    "revoked_at",
+                    "revocation_reason"
+                ]
+            },
+            {
+                "id": "grade",
+                "title": "Grade",
+                "fields": [
+                    "final_score",
+                    "grade"
+                ]
+            },
+            {
+                "id": "issuer",
+                "title": "Issuer",
+                "fields": [
+                    "issuer_user_id",
+                    "issuer_organization",
+                    "verification_url"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Document, Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "document",
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Certificates By Status","type":"kanban","group":"status","title":"learner_name","description":"title","date":"issued_at","badge":"status"},
-        {"id":"calendar","name":"Certificate Calendar","type":"calendar","title":"learner_name","startDate":"issued_at","endDate":"expires_at","badge":"status"},
-        {"id":"gallery","name":"Certificate Wall","type":"gallery","cover":"document","title":"learner_name","description":"title","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["certificate_number","title","status","description"]},
-        {"id":"link","title":"Link","fields":["course_id","enrollment_id","learning_path_id","learner_user_id","learner_name"]},
-        {"id":"timing","title":"Timing","fields":["issued_at","expires_at","revoked_at","revocation_reason"]},
-        {"id":"grade","title":"Grade","fields":["final_score","grade"]},
-        {"id":"issuer","title":"Issuer","fields":["issuer_user_id","issuer_organization","verification_url"]},
-        {"id":"extras","title":"Document, Tags & Notes","collapsible":true,"fields":["document","tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "issued_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "courses",
+                "on": "course_id",
+                "columns": [
+                    "code",
+                    "title"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "learner_user_id",
+                "alias": "learner_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "issuer_user_id",
+                "alias": "issuer_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.certificates.document is '{"accept":"application/pdf,image/*", "maxFiles": 1}';
@@ -1232,21 +1871,92 @@ comment on column lms.learning_paths.status is '{
 comment on table lms.learning_paths is '{
     "icon": "Route",
     "display": "block",
-    "query": {
-        "sort": [{"id":"title","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Learning Paths","type":"gallery","cover":"cover","title":"title","description":"subtitle","badge":"difficulty"},
-        {"id":"kanban","name":"Paths By Status","type":"kanban","group":"status","title":"title","description":"category","badge":"difficulty"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Learning Paths",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "subtitle",
+            "badge": "difficulty"
+        },
+        {
+            "id": "kanban",
+            "name": "Paths By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "category",
+            "badge": "difficulty"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["code","title","subtitle","status","difficulty","category","cover"]},
-        {"id":"content","title":"Content","fields":["description","learning_objectives","course_sequence","estimated_minutes"]},
-        {"id":"metrics","title":"Metrics","fields":["enrollment_count","completion_count","published_at","archived_at"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","color","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "code",
+                    "title",
+                    "subtitle",
+                    "status",
+                    "difficulty",
+                    "category",
+                    "cover"
+                ]
+            },
+            {
+                "id": "content",
+                "title": "Content",
+                "fields": [
+                    "description",
+                    "learning_objectives",
+                    "course_sequence",
+                    "estimated_minutes"
+                ]
+            },
+            {
+                "id": "metrics",
+                "title": "Metrics",
+                "fields": [
+                    "enrollment_count",
+                    "completion_count",
+                    "published_at",
+                    "archived_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "title",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column lms.learning_paths.cover is '{"accept":"image/*"}';

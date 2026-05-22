@@ -61,7 +61,7 @@ export function ResourceGallery({
   const resource = resourceSchema.name ?? ""
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
   const isTable = isTableSchema(resourceSchema)
 
   return (

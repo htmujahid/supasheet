@@ -5,7 +5,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { ResourceFullDetail } from "#/components/resource/detail/resource-full-detail"
 import { ResourceUpdateForm } from "#/components/resource/resource-update-form"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { PrimaryKey } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import {
   singleResourceDataQueryOptions,
@@ -24,7 +23,7 @@ export const Route = createFileRoute(
     const tableSchema = await context.queryClient.ensureQueryData(
       tableSchemaQueryOptions(schema, resource)
     )
-    const primaryKeys = (tableSchema?.primary_keys ?? []) as PrimaryKey[]
+    const primaryKeys = (tableSchema?.primary_keys ?? [])
     const pkName = primaryKeys[0]?.name ?? "id"
     const pk = { [pkName]: resourceId }
     const record = await context.queryClient.ensureQueryData(

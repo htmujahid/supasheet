@@ -8,7 +8,6 @@ import { Input } from "#/components/ui/input"
 import { SheetFooter } from "#/components/ui/sheet"
 import type {
   ColumnSchema,
-  PrimaryKey,
   TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
@@ -50,15 +49,15 @@ export function ResourceFormSheetContent({
   const queryClient = useQueryClient()
   const schema = tableSchema.schema
   const resource = tableSchema.name
-  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema.primary_keys ?? [])
 
   const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
 
   const writableCols = (() => {
     if (mode === "create") {
       const all = columnsSchema.filter((col) => !isSkippedForCreate(col))
-      if (quick && tableMeta.quickCreate?.length) {
-        const nameSet = new Set(tableMeta.quickCreate)
+      if (quick && tableMeta.fields?.quick_create?.length) {
+        const nameSet = new Set(tableMeta.fields.quick_create)
         return all.filter((col) => nameSet.has(col.name ?? ""))
       }
       return all
@@ -97,18 +96,18 @@ export function ResourceFormSheetContent({
     updateResourceMutationOptions(schema, resource)
   )
 
-  const fieldBehavior = tableMeta.fieldBehavior
+  const behavior = tableMeta.fields?.behavior
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
         if (mode === "create") {
-          const payload = buildCreatePayload(value, writableCols, fieldBehavior)
+          const payload = buildCreatePayload(value, writableCols, behavior)
           await insertMutation.mutateAsync(payload)
           toast.success("Record created")
         } else {
-          const data = buildUpdatePayload(value, writableCols, fieldBehavior)
+          const data = buildUpdatePayload(value, writableCols, behavior)
           const pk = Object.fromEntries(
             primaryKeys.map((k) => [
               k.name,

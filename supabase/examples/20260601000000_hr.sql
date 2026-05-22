@@ -272,18 +272,57 @@ create table hr.departments (
 comment on table hr.departments is '{
     "icon": "Building2",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}]
-    },
-    "primaryItem": "tree",
-    "items": [
-        {"id":"tree","name":"Org Tree","type":"tree","parent":"parent_id","title":"name","secondary":"code"},
-        {"id":"gallery","name":"Department Gallery","type":"gallery","cover":"cover","title":"name","description":"description","badge":"code"}
+    "primary_view": "tree",
+    "views": [
+        {
+            "id": "tree",
+            "name": "Org Tree",
+            "type": "tree",
+            "parent": "parent_id",
+            "title": "name",
+            "secondary": "code"
+        },
+        {
+            "id": "gallery",
+            "name": "Department Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "name",
+            "description": "description",
+            "badge": "code"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","code","description","cover"]},
-        {"id":"organization","title":"Organization","fields":["parent_id","manager_id","color"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "code",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "parent_id",
+                    "manager_id",
+                    "color"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ]
+    }
 }';
 
 comment on column hr.departments.cover is '{"accept":"image/*"}';
@@ -365,15 +404,56 @@ comment on column hr.positions.employment_type is '{
 comment on table hr.positions is '{
     "icon": "Briefcase",
     "display": "block",
-    "query": {
-        "sort": [{"id":"title","desc":false}],
-        "join": [{"table":"departments","on":"department_id","columns":["name","code"]}]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "code",
+                    "description",
+                    "level"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "department_id",
+                    "employment_type",
+                    "tags"
+                ]
+            },
+            {
+                "id": "compensation",
+                "title": "Compensation",
+                "fields": [
+                    "min_salary",
+                    "max_salary",
+                    "currency"
+                ]
+            }
+        ]
     },
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["title","code","description","level"]},
-        {"id":"organization","title":"Organization","fields":["department_id","employment_type","tags"]},
-        {"id":"compensation","title":"Compensation","fields":["min_salary","max_salary","currency"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "title",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "departments",
+                "on": "department_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table hr.positions
@@ -473,30 +553,149 @@ comment on column hr.employees.employment_type is '{
 comment on table hr.employees is '{
     "icon": "Users",
     "display": "block",
-    "query": {
-        "sort": [{"id":"first_name","desc":false}],
-        "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"departments","on":"department_id","columns":["name","code"]},
-            {"table":"positions","on":"position_id","columns":["title","level"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Employees By Status",
+            "type": "kanban",
+            "group": "employment_status",
+            "title": "first_name",
+            "description": "email",
+            "date": "hire_date",
+            "badge": "employment_type"
+        },
+        {
+            "id": "gallery",
+            "name": "Employee Directory",
+            "type": "gallery",
+            "cover": "avatar",
+            "title": "first_name",
+            "description": "email",
+            "badge": "employment_status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "first_name",
+                    "last_name",
+                    "employee_number",
+                    "avatar",
+                    "bio"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "email",
+                    "phone",
+                    "mobile"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "department_id",
+                    "position_id",
+                    "manager_id",
+                    "employment_type",
+                    "employment_status"
+                ]
+            },
+            {
+                "id": "employment",
+                "title": "Employment",
+                "fields": [
+                    "hire_date",
+                    "termination_date"
+                ]
+            },
+            {
+                "id": "compensation",
+                "title": "Compensation",
+                "fields": [
+                    "salary",
+                    "currency"
+                ]
+            },
+            {
+                "id": "personal",
+                "title": "Personal",
+                "fields": [
+                    "birth_date",
+                    "address",
+                    "city",
+                    "country"
+                ]
+            },
+            {
+                "id": "emergency",
+                "title": "Emergency Contact",
+                "fields": [
+                    "emergency_contact",
+                    "emergency_phone"
+                ]
+            },
+            {
+                "id": "skills",
+                "title": "Skills & Certifications",
+                "fields": [
+                    "skills",
+                    "certifications",
+                    "tags",
+                    "color"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Employees By Status","type":"kanban","group":"employment_status","title":"first_name","description":"email","date":"hire_date","badge":"employment_type"},
-        {"id":"gallery","name":"Employee Directory","type":"gallery","cover":"avatar","title":"first_name","description":"email","badge":"employment_status"}
-    ],
-    "sections": [
-        {"id":"identity","title":"Identity","fields":["first_name","last_name","employee_number","avatar","bio"]},
-        {"id":"contact","title":"Contact","fields":["email","phone","mobile"]},
-        {"id":"organization","title":"Organization","fields":["department_id","position_id","manager_id","employment_type","employment_status"]},
-        {"id":"employment","title":"Employment","fields":["hire_date","termination_date"]},
-        {"id":"compensation","title":"Compensation","fields":["salary","currency"]},
-        {"id":"personal","title":"Personal","fields":["birth_date","address","city","country"]},
-        {"id":"emergency","title":"Emergency Contact","fields":["emergency_contact","emergency_phone"]},
-        {"id":"skills","title":"Skills & Certifications","fields":["skills","certifications","tags","color"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "first_name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "departments",
+                "on": "department_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "positions",
+                "on": "position_id",
+                "columns": [
+                    "title",
+                    "level"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hr.employees.avatar is '{"accept":"image/*"}';
@@ -596,26 +795,111 @@ comment on column hr.leave_requests.status is '{
 comment on table hr.leave_requests is '{
     "icon": "CalendarDays",
     "display": "block",
-    "query": {
-        "sort": [{"id":"start_date","desc":true}],
-        "join": [
-            {"table":"employees","on":"employee_id","alias":"employee","columns":["first_name","last_name","email"]},
-            {"table":"employees","on":"reviewer_id","alias":"reviewer","columns":["first_name","last_name"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Leave Requests By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "type",
+            "description": "reason",
+            "date": "start_date",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Leave Calendar",
+            "type": "calendar",
+            "title": "type",
+            "badge": "status",
+            "start_date": "start_date",
+            "end_date": "end_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "employee_id",
+                    "type",
+                    "status"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "start_date",
+                    "end_date",
+                    "days"
+                ]
+            },
+            {
+                "id": "reason",
+                "title": "Reason",
+                "fields": [
+                    "reason"
+                ]
+            },
+            {
+                "id": "review",
+                "title": "Review",
+                "fields": [
+                    "reviewer_id",
+                    "reviewed_at",
+                    "response"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments",
+                "collapsible": true,
+                "fields": [
+                    "attachments"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Leave Requests By Status","type":"kanban","group":"status","title":"type","description":"reason","date":"start_date","badge":"type"},
-        {"id":"calendar","name":"Leave Calendar","type":"calendar","title":"type","startDate":"start_date","endDate":"end_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["employee_id","type","status"]},
-        {"id":"dates","title":"Dates","fields":["start_date","end_date","days"]},
-        {"id":"reason","title":"Reason","fields":["reason"]},
-        {"id":"review","title":"Review","fields":["reviewer_id","reviewed_at","response"]},
-        {"id":"extras","title":"Attachments","collapsible":true,"fields":["attachments"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "start_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "employees",
+                "on": "employee_id",
+                "alias": "employee",
+                "columns": [
+                    "first_name",
+                    "last_name",
+                    "email"
+                ]
+            },
+            {
+                "table": "employees",
+                "on": "reviewer_id",
+                "alias": "reviewer",
+                "columns": [
+                    "first_name",
+                    "last_name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hr.leave_requests.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -706,23 +990,90 @@ comment on column hr.performance_reviews.status is '{
 comment on table hr.performance_reviews is '{
     "icon": "ClipboardCheck",
     "display": "block",
-    "query": {
-        "sort": [{"id":"period_end","desc":true}],
-        "join": [
-            {"table":"employees","on":"employee_id","alias":"employee","columns":["first_name","last_name","email"]},
-            {"table":"employees","on":"reviewer_id","alias":"reviewer","columns":["first_name","last_name"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Reviews By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "summary",
+            "description": "comments",
+            "date": "period_end",
+            "badge": "rating"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "employee_id",
+                    "reviewer_id",
+                    "status",
+                    "rating"
+                ]
+            },
+            {
+                "id": "period",
+                "title": "Review Period",
+                "fields": [
+                    "period_start",
+                    "period_end",
+                    "acknowledged_at"
+                ]
+            },
+            {
+                "id": "feedback",
+                "title": "Feedback",
+                "fields": [
+                    "summary",
+                    "strengths",
+                    "areas_for_improvement",
+                    "goals"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Comments & Attachments",
+                "collapsible": true,
+                "fields": [
+                    "comments",
+                    "attachments"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Reviews By Status","type":"kanban","group":"status","title":"summary","description":"comments","date":"period_end","badge":"rating"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["employee_id","reviewer_id","status","rating"]},
-        {"id":"period","title":"Review Period","fields":["period_start","period_end","acknowledged_at"]},
-        {"id":"feedback","title":"Feedback","fields":["summary","strengths","areas_for_improvement","goals"]},
-        {"id":"extras","title":"Comments & Attachments","collapsible":true,"fields":["comments","attachments"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "period_end",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "employees",
+                "on": "employee_id",
+                "alias": "employee",
+                "columns": [
+                    "first_name",
+                    "last_name",
+                    "email"
+                ]
+            },
+            {
+                "table": "employees",
+                "on": "reviewer_id",
+                "alias": "reviewer",
+                "columns": [
+                    "first_name",
+                    "last_name"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hr.performance_reviews.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -815,25 +1166,103 @@ comment on column hr.job_postings.status is '{
 comment on table hr.job_postings is '{
     "icon": "Megaphone",
     "display": "block",
-    "query": {
-        "sort": [{"id":"posted_at","desc":true}],
-        "join": [
-            {"table":"departments","on":"department_id","columns":["name","code"]},
-            {"table":"positions","on":"position_id","columns":["title"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Postings By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "location",
+            "date": "closes_at",
+            "badge": "employment_type"
+        },
+        {
+            "id": "gallery",
+            "name": "Job Board",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "location",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "description",
+                    "cover",
+                    "status"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "department_id",
+                    "position_id",
+                    "employment_type"
+                ]
+            },
+            {
+                "id": "logistics",
+                "title": "Logistics",
+                "fields": [
+                    "location",
+                    "remote",
+                    "openings"
+                ]
+            },
+            {
+                "id": "compensation",
+                "title": "Compensation",
+                "fields": [
+                    "salary_min",
+                    "salary_max",
+                    "currency"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "posted_at",
+                    "closes_at",
+                    "tags"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Postings By Status","type":"kanban","group":"status","title":"title","description":"location","date":"closes_at","badge":"employment_type"},
-        {"id":"gallery","name":"Job Board","type":"gallery","cover":"cover","title":"title","description":"location","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["title","description","cover","status"]},
-        {"id":"organization","title":"Organization","fields":["department_id","position_id","employment_type"]},
-        {"id":"logistics","title":"Logistics","fields":["location","remote","openings"]},
-        {"id":"compensation","title":"Compensation","fields":["salary_min","salary_max","currency"]},
-        {"id":"schedule","title":"Schedule","fields":["posted_at","closes_at","tags"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "posted_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "departments",
+                "on": "department_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "positions",
+                "on": "position_id",
+                "columns": [
+                    "title"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hr.job_postings.cover is '{"accept":"image/*"}';
@@ -931,25 +1360,108 @@ comment on column hr.candidates.status is '{
 comment on table hr.candidates is '{
     "icon": "UserPlus",
     "display": "block",
-    "query": {
-        "sort": [{"id":"created_at","desc":true}],
-        "join": [
-            {"table":"job_postings","on":"posting_id","columns":["title","status"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Candidates By Stage",
+            "type": "kanban",
+            "group": "status",
+            "title": "first_name",
+            "description": "current_title",
+            "date": "created_at",
+            "badge": "source"
+        },
+        {
+            "id": "gallery",
+            "name": "Candidate Gallery",
+            "type": "gallery",
+            "cover": "avatar",
+            "title": "first_name",
+            "description": "current_title",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "first_name",
+                    "last_name",
+                    "avatar",
+                    "cover_letter"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "email",
+                    "phone",
+                    "linkedin_url",
+                    "portfolio_url"
+                ]
+            },
+            {
+                "id": "application",
+                "title": "Application",
+                "fields": [
+                    "posting_id",
+                    "status",
+                    "source",
+                    "resume",
+                    "rating"
+                ]
+            },
+            {
+                "id": "current",
+                "title": "Current Role",
+                "fields": [
+                    "current_company",
+                    "current_title",
+                    "expected_salary",
+                    "currency"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Candidates By Stage","type":"kanban","group":"status","title":"first_name","description":"current_title","date":"created_at","badge":"source"},
-        {"id":"gallery","name":"Candidate Gallery","type":"gallery","cover":"avatar","title":"first_name","description":"current_title","badge":"status"}
-    ],
-    "sections": [
-        {"id":"identity","title":"Identity","fields":["first_name","last_name","avatar","cover_letter"]},
-        {"id":"contact","title":"Contact","fields":["email","phone","linkedin_url","portfolio_url"]},
-        {"id":"application","title":"Application","fields":["posting_id","status","source","resume","rating"]},
-        {"id":"current","title":"Current Role","fields":["current_company","current_title","expected_salary","currency"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "job_postings",
+                "on": "posting_id",
+                "columns": [
+                    "title",
+                    "status"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column hr.candidates.avatar is '{"accept":"image/*"}';

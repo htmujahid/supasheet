@@ -15,9 +15,8 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import type {
-  PrimaryKey,
   ResourceSchema,
-  TreeViewItem,
+  TreeLayout,
 } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { cn } from "#/lib/utils"
@@ -27,7 +26,7 @@ type Row = Record<string, unknown>
 interface ResourceTreeProps {
   rows: Row[]
   resourceSchema: ResourceSchema
-  treeView: TreeViewItem
+  treeView: TreeLayout
   onSelect?: (row: Row) => void
 }
 
@@ -41,7 +40,7 @@ export function ResourceTree({
 }: ResourceTreeProps) {
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
   const pkColumn = primaryKeys[0]?.name
   const parentColumn = treeView.parent
 
@@ -136,7 +135,7 @@ interface TreeRowProps {
   childrenByParent: Map<string, Row[]>
   expandedIds: Set<string>
   onToggle: (id: string) => void
-  treeView: TreeViewItem
+  treeView: TreeLayout
   onSelect?: (row: Row) => void
 }
 

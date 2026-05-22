@@ -263,22 +263,99 @@ comment on column crm.companies.type is '{
 comment on table crm.companies is '{
     "icon": "Building2",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Companies By Type","type":"kanban","group":"type","title":"name","description":"industry","date":"created_at","badge":"type"},
-        {"id":"gallery","name":"Company Gallery","type":"gallery","cover":"logo","title":"name","description":"industry","badge":"type"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Companies By Type",
+            "type": "kanban",
+            "group": "type",
+            "title": "name",
+            "description": "industry",
+            "date": "created_at",
+            "badge": "type"
+        },
+        {
+            "id": "gallery",
+            "name": "Company Gallery",
+            "type": "gallery",
+            "cover": "logo",
+            "title": "name",
+            "description": "industry",
+            "badge": "type"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","legal_name","type","industry","logo","cover","description"]},
-        {"id":"contact","title":"Contact","fields":["website","phone","email"]},
-        {"id":"location","title":"Location","fields":["address","city","country"]},
-        {"id":"organization","title":"Organization","fields":["employee_count","annual_revenue","tags","color"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "legal_name",
+                    "type",
+                    "industry",
+                    "logo",
+                    "cover",
+                    "description"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "website",
+                    "phone",
+                    "email"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "address",
+                    "city",
+                    "country"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "employee_count",
+                    "annual_revenue",
+                    "tags",
+                    "color"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column crm.companies.logo is '{"accept":"image/*"}';
@@ -405,23 +482,102 @@ comment on column crm.contacts.lead_source is '{
 comment on table crm.contacts is '{
     "icon": "Contact",
     "display": "block",
-    "query": {
-        "sort": [{"id":"first_name","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Contacts By Status","type":"kanban","group":"status","title":"first_name","description":"job_title","date":"created_at","badge":"lead_source"},
-        {"id":"gallery","name":"Contact Gallery","type":"gallery","cover":"avatar","title":"first_name","description":"job_title","badge":"status"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Contacts By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "first_name",
+            "description": "job_title",
+            "date": "created_at",
+            "badge": "lead_source"
+        },
+        {
+            "id": "gallery",
+            "name": "Contact Gallery",
+            "type": "gallery",
+            "cover": "avatar",
+            "title": "first_name",
+            "description": "job_title",
+            "badge": "status"
+        }
     ],
-    "sections": [
-        {"id":"identity","title":"Identity","fields":["first_name","last_name","avatar","bio"]},
-        {"id":"contact","title":"Contact","fields":["email","phone","mobile"]},
-        {"id":"work","title":"Work","fields":["job_title","department","status","lead_source"]},
-        {"id":"social","title":"Social","fields":["linkedin_url","twitter_url"]},
-        {"id":"organization","title":"Organization","fields":["tags"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "first_name",
+                    "last_name",
+                    "avatar",
+                    "bio"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "email",
+                    "phone",
+                    "mobile"
+                ]
+            },
+            {
+                "id": "work",
+                "title": "Work",
+                "fields": [
+                    "job_title",
+                    "department",
+                    "status",
+                    "lead_source"
+                ]
+            },
+            {
+                "id": "social",
+                "title": "Social",
+                "fields": [
+                    "linkedin_url",
+                    "twitter_url"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "tags"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "first_name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column crm.contacts.avatar is '{"accept":"image/*"}';
@@ -492,19 +648,57 @@ create index idx_crm_contact_companies_company_id on crm.contact_companies (comp
 
 comment on table crm.contact_companies is '{
     "icon": "Briefcase",
-    "inlineForm": true,
+    "inline_form": true,
     "display": "none",
-    "query": {
-        "sort": [{"id":"created_at","desc":true}],
-        "join": [
-            {"table":"contacts","on":"contact_id","columns":["first_name","last_name","email"]},
-            {"table":"companies","on":"company_id","columns":["name","industry"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "contact_id",
+                    "company_id",
+                    "is_primary"
+                ]
+            },
+            {
+                "id": "details",
+                "title": "Details",
+                "fields": [
+                    "role",
+                    "start_date",
+                    "end_date"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["contact_id","company_id","is_primary"]},
-        {"id":"details","title":"Details","fields":["role","start_date","end_date"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "contacts",
+                "on": "contact_id",
+                "columns": [
+                    "first_name",
+                    "last_name",
+                    "email"
+                ]
+            },
+            {
+                "table": "companies",
+                "on": "company_id",
+                "columns": [
+                    "name",
+                    "industry"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table crm.contact_companies
@@ -617,28 +811,129 @@ comment on column crm.deals.priority is '{
 comment on table crm.deals is '{
     "icon": "Handshake",
     "display": "block",
-    "query": {
-        "sort": [{"id":"expected_close_date","desc":false}],
-        "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"companies","on":"company_id","columns":["name","industry"]},
-            {"table":"contacts","on":"primary_contact_id","columns":["first_name","last_name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Deals By Stage",
+            "type": "kanban",
+            "group": "stage",
+            "title": "title",
+            "description": "description",
+            "date": "expected_close_date",
+            "badge": "priority"
+        },
+        {
+            "id": "calendar",
+            "name": "Deal Pipeline",
+            "type": "calendar",
+            "title": "title",
+            "badge": "stage",
+            "start_date": "created_at",
+            "end_date": "expected_close_date"
+        },
+        {
+            "id": "gallery",
+            "name": "Deal Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "description",
+            "badge": "stage"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "pipeline",
+                "title": "Pipeline",
+                "fields": [
+                    "stage",
+                    "priority",
+                    "probability",
+                    "expected_close_date",
+                    "closed_at"
+                ]
+            },
+            {
+                "id": "financial",
+                "title": "Financial",
+                "fields": [
+                    "value",
+                    "currency"
+                ]
+            },
+            {
+                "id": "relations",
+                "title": "Relations",
+                "fields": [
+                    "company_id",
+                    "primary_contact_id"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "tags",
+                    "color"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Deals By Stage","type":"kanban","group":"stage","title":"title","description":"description","date":"expected_close_date","badge":"priority"},
-        {"id":"calendar","name":"Deal Pipeline","type":"calendar","title":"title","startDate":"created_at","endDate":"expected_close_date","badge":"stage"},
-        {"id":"gallery","name":"Deal Gallery","type":"gallery","cover":"cover","title":"title","description":"description","badge":"stage"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["title","description","cover"]},
-        {"id":"pipeline","title":"Pipeline","fields":["stage","priority","probability","expected_close_date","closed_at"]},
-        {"id":"financial","title":"Financial","fields":["value","currency"]},
-        {"id":"relations","title":"Relations","fields":["company_id","primary_contact_id"]},
-        {"id":"organization","title":"Organization","fields":["tags","color"]},
-        {"id":"extras","title":"Attachments & notes","collapsible":true,"fields":["attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "expected_close_date",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "companies",
+                "on": "company_id",
+                "columns": [
+                    "name",
+                    "industry"
+                ]
+            },
+            {
+                "table": "contacts",
+                "on": "primary_contact_id",
+                "columns": [
+                    "first_name",
+                    "last_name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column crm.deals.cover is '{"accept":"image/*"}';
@@ -763,26 +1058,113 @@ comment on column crm.activities.status is '{
 comment on table crm.activities is '{
     "icon": "Activity",
     "display": "block",
-    "query": {
-        "sort": [{"id":"scheduled_at","desc":true}],
-        "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"deals","on":"deal_id","columns":["title","stage"]},
-            {"table":"contacts","on":"contact_id","columns":["first_name","last_name","email"]},
-            {"table":"companies","on":"company_id","columns":["name","industry"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Activities By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "subject",
+            "description": "body",
+            "date": "scheduled_at",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Activity Calendar",
+            "type": "calendar",
+            "title": "subject",
+            "badge": "status",
+            "start_date": "scheduled_at",
+            "end_date": "completed_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "subject",
+                    "body",
+                    "type"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "status",
+                    "scheduled_at",
+                    "completed_at",
+                    "duration"
+                ]
+            },
+            {
+                "id": "relations",
+                "title": "Relations",
+                "fields": [
+                    "deal_id",
+                    "contact_id",
+                    "company_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Activities By Status","type":"kanban","group":"status","title":"subject","description":"body","date":"scheduled_at","badge":"type"},
-        {"id":"calendar","name":"Activity Calendar","type":"calendar","title":"subject","startDate":"scheduled_at","endDate":"completed_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["subject","body","type"]},
-        {"id":"schedule","title":"Schedule","fields":["status","scheduled_at","completed_at","duration"]},
-        {"id":"relations","title":"Relations","fields":["deal_id","contact_id","company_id"]},
-        {"id":"extras","title":"Attachments & notes","collapsible":true,"fields":["attachments","tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "scheduled_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "deals",
+                "on": "deal_id",
+                "columns": [
+                    "title",
+                    "stage"
+                ]
+            },
+            {
+                "table": "contacts",
+                "on": "contact_id",
+                "columns": [
+                    "first_name",
+                    "last_name",
+                    "email"
+                ]
+            },
+            {
+                "table": "companies",
+                "on": "company_id",
+                "columns": [
+                    "name",
+                    "industry"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column crm.activities.attachments is '{"accept":"*", "maxFiles": 999}';

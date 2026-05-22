@@ -6,7 +6,6 @@ import { toast } from "sonner"
 
 import type {
   ColumnSchema,
-  PrimaryKey,
   TableMetadata,
   TableSchema,
 } from "#/lib/database-meta.types"
@@ -54,16 +53,16 @@ export function ResourceNewForm({
     insertResourceMutationOptions(schema, table)
   )
 
-  const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+  const primaryKeys = (tableSchema.primary_keys ?? [])
 
-  const fieldBehavior = (
+  const behavior = (
     JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).fieldBehavior
+  ).fields?.behavior
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, meta }) => {
-      const payload = buildCreatePayload(value, writableCols, fieldBehavior)
+      const payload = buildCreatePayload(value, writableCols, behavior)
       let inserted: Record<string, unknown> | null = null
       try {
         inserted = await insertRow(payload)

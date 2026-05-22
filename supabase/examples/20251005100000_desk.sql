@@ -217,28 +217,147 @@ comment on column desk.projects.priority is '{
 comment on table desk.projects is '{
     "icon": "FolderKanban",
     "display": "block",
-    "query": {
-        "sort": [{"id":"title","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
+    "primary_view": "kanban",
+    "filter_presets": [
+        {
+            "id": "active",
+            "name": "Active",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "active",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "on_hold",
+            "name": "On Hold",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "on_hold",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "high_priority",
+            "name": "High Priority",
+            "filters": [
+                {
+                    "id": "priority",
+                    "value": [
+                        "critical",
+                        "high"
+                    ],
+                    "variant": "multiSelect",
+                    "operator": "in"
+                }
+            ]
+        },
+        {
+            "id": "completed",
+            "name": "Completed",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "completed",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        }
+    ],
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Projects By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "description",
+            "date": "start_date",
+            "badge": "priority"
+        },
+        {
+            "id": "calendar",
+            "name": "Project Timeline",
+            "type": "calendar",
+            "title": "title",
+            "badge": "status",
+            "start_date": "start_date",
+            "end_date": "end_date"
+        },
+        {
+            "id": "gallery",
+            "name": "Project Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "description",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "status",
+                    "priority",
+                    "start_date",
+                    "end_date"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "tags",
+                    "color"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Projects By Status","type":"kanban","group":"status","title":"title","description":"description","date":"start_date","badge":"priority"},
-        {"id":"calendar","name":"Project Timeline","type":"calendar","title":"title","startDate":"start_date","endDate":"end_date","badge":"status"},
-        {"id":"gallery","name":"Project Gallery","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
-    ],
-    "filterTemplates": [
-        {"id":"active","name":"Active","filters":[{"id":"status","value":"active","variant":"select","operator":"eq"}]},
-        {"id":"on_hold","name":"On Hold","filters":[{"id":"status","value":"on_hold","variant":"select","operator":"eq"}]},
-        {"id":"high_priority","name":"High Priority","filters":[{"id":"priority","value":["critical","high"],"variant":"multiSelect","operator":"in"}]},
-        {"id":"completed","name":"Completed","filters":[{"id":"status","value":"completed","variant":"select","operator":"eq"}]}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["title","description","cover"]},
-        {"id":"schedule","title":"Schedule","fields":["status","priority","start_date","end_date"]},
-        {"id":"organization","title":"Organization","fields":["tags","color"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "title",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column desk.projects.cover is '{"accept":"image/*"}';
@@ -394,37 +513,231 @@ comment on column desk.tasks.priority is '{
 comment on table desk.tasks is '{
     "icon": "ListTodo",
     "display": "block",
-    "query": {
-        "sort": [{"id":"title","desc":false}],
-        "join": [
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
-            {"table":"users","on":"assignee_id","alias":"assignee","columns":["name"]},
-            {"table":"projects","on":"project_id","columns":["title"]}
+    "filter_presets": [
+        {
+            "id": "in_progress",
+            "name": "In Progress",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "in_progress",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "pending",
+            "name": "Pending",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "pending",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "completed",
+            "name": "Completed",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "completed",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "open",
+            "name": "Open (not completed)",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": [
+                        "pending",
+                        "in_progress"
+                    ],
+                    "variant": "multiSelect",
+                    "operator": "in"
+                }
+            ]
+        },
+        {
+            "id": "critical",
+            "name": "Critical & High",
+            "filters": [
+                {
+                    "id": "priority",
+                    "value": [
+                        "critical",
+                        "high"
+                    ],
+                    "variant": "multiSelect",
+                    "operator": "in"
+                }
+            ]
+        },
+        {
+            "id": "important",
+            "name": "Important",
+            "filters": [
+                {
+                    "id": "is_important",
+                    "value": "true",
+                    "variant": "boolean",
+                    "operator": "is"
+                }
+            ]
+        }
+    ],
+    "views": [
+        {
+            "id": "status",
+            "name": "Tasks By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "description",
+            "date": "created_at",
+            "badge": "priority"
+        },
+        {
+            "id": "priority",
+            "name": "Tasks By Priority",
+            "type": "kanban",
+            "group": "priority",
+            "title": "title",
+            "description": "description",
+            "date": "created_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Calendar View",
+            "type": "calendar",
+            "title": "title",
+            "badge": "status",
+            "start_date": "created_at",
+            "end_date": "due_date"
+        },
+        {
+            "id": "gallery",
+            "name": "Gallery View",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "description",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "status",
+                    "priority",
+                    "assignee_id",
+                    "due_date",
+                    "completed_at"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "project_id",
+                    "tags",
+                    "is_important"
+                ]
+            },
+            {
+                "id": "progress",
+                "title": "Progress",
+                "fields": [
+                    "completion",
+                    "estimated_duration",
+                    "duration"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & notes",
+                "description": "Files, color tag, and free-form notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "color",
+                    "notes"
+                ]
+            }
+        ],
+        "duplicated": [
+            "title",
+            "description",
+            "status",
+            "priority",
+            "project_id",
+            "assignee_id",
+            "tags",
+            "is_important",
+            "completion",
+            "estimated_duration",
+            "duration",
+            "color",
+            "notes"
         ]
     },
-    "items": [
-        {"id":"status","name":"Tasks By Status","type":"kanban","group":"status","title":"title","description":"description","date":"created_at","badge":"priority"},
-        {"id":"priority","name":"Tasks By Priority","type":"kanban","group":"priority","title":"title","description":"description","date":"created_at","badge":"status"},
-        {"id":"calendar","name":"Calendar View","type":"calendar", "title": "title", "startDate": "created_at", "endDate": "due_date", "badge": "status"},
-        {"id":"gallery","name":"Gallery View","type":"gallery","cover":"cover","title":"title","description":"description","badge":"status"}
-    ],
-    "filterTemplates": [
-        {"id":"in_progress","name":"In Progress","filters":[{"id":"status","value":"in_progress","variant":"select","operator":"eq"}]},
-        {"id":"pending","name":"Pending","filters":[{"id":"status","value":"pending","variant":"select","operator":"eq"}]},
-        {"id":"completed","name":"Completed","filters":[{"id":"status","value":"completed","variant":"select","operator":"eq"}]},
-        {"id":"open","name":"Open (not completed)","filters":[{"id":"status","value":["pending","in_progress"],"variant":"multiSelect","operator":"in"}]},
-        {"id":"critical","name":"Critical & High","filters":[{"id":"priority","value":["critical","high"],"variant":"multiSelect","operator":"in"}]},
-        {"id":"important","name":"Important","filters":[{"id":"is_important","value":"true","variant":"boolean","operator":"is"}]}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["title","description","cover"]},
-        {"id":"schedule","title":"Schedule","fields":["status","priority","assignee_id","due_date","completed_at"]},
-        {"id":"organization","title":"Organization","fields":["project_id","tags","is_important"]},
-        {"id":"progress","title":"Progress","fields":["completion","estimated_duration","duration"]},
-        {"id":"extras","title":"Attachments & notes","description":"Files, color tag, and free-form notes","collapsible":true,"fields":["attachments","color","notes"]}
-    ],
-    "history": {"table":"tasks_history"},
-    "duplicatedFields": ["title","description","status","priority","project_id","assignee_id","tags","is_important","completion","estimated_duration","duration","color","notes"]
+    "query": {
+        "sort": [
+            {
+                "id": "title",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "assignee_id",
+                "alias": "assignee",
+                "columns": [
+                    "name"
+                ]
+            },
+            {
+                "table": "projects",
+                "on": "project_id",
+                "columns": [
+                    "title"
+                ]
+            }
+        ]
+    },
+    "history": {
+        "table": "tasks_history"
+    }
 }';
 
 comment on column desk.tasks.cover is '{"accept":"image/*"}';
@@ -522,10 +835,27 @@ comment on table desk.tasks_history is '{
     "icon": "History",
     "display": "none",
     "query": {
-        "sort": [{"id":"updated_at","desc":true}],
+        "sort": [
+            {
+                "id": "updated_at",
+                "desc": true
+            }
+        ],
         "join": [
-            {"table":"users","on":"updated_by","columns":["name"]},
-            {"table":"tasks","on":"task_id","columns":["title"]}
+            {
+                "table": "users",
+                "on": "updated_by",
+                "columns": [
+                    "name"
+                ]
+            },
+            {
+                "table": "tasks",
+                "on": "task_id",
+                "columns": [
+                    "title"
+                ]
+            }
         ]
     }
 }';
@@ -603,19 +933,52 @@ create table desk.task_comments (
 
 comment on table desk.task_comments is '{
     "icon": "MessageSquare",
-    "inlineForm": true,
+    "inline_form": true,
     "display": "block",
-    "query": {
-        "sort": [{"id":"created_at","desc":true}],
-        "join": [
-            {"table":"tasks","on":"task_id","columns":["title","status"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "context",
+                "title": "Context",
+                "fields": [
+                    "task_id"
+                ]
+            },
+            {
+                "id": "body",
+                "title": "Comment",
+                "fields": [
+                    "content"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id":"context","title":"Context","fields":["task_id"]},
-        {"id":"body","title":"Comment","fields":["content"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "tasks",
+                "on": "task_id",
+                "columns": [
+                    "title",
+                    "status"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table desk.task_comments
@@ -1795,30 +2158,152 @@ comment on column desk.timesheets.status is '{
 comment on table desk.timesheets is '{
     "icon": "Clock",
     "display": "block",
-    "query": {
-        "sort": [{"id":"started_at","desc":true}],
-        "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"tasks","on":"task_id","columns":["title","status"]},
-            {"table":"projects","on":"project_id","columns":["title"]}
+    "filter_presets": [
+        {
+            "id": "drafts",
+            "name": "Drafts",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "draft",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "pending_approval",
+            "name": "Pending Approval",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "submitted",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "approved",
+            "name": "Approved",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "approved",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "rejected",
+            "name": "Rejected",
+            "filters": [
+                {
+                    "id": "status",
+                    "value": "rejected",
+                    "variant": "select",
+                    "operator": "eq"
+                }
+            ]
+        },
+        {
+            "id": "billable",
+            "name": "Billable",
+            "filters": [
+                {
+                    "id": "billable",
+                    "value": "true",
+                    "variant": "boolean",
+                    "operator": "is"
+                }
+            ]
+        }
+    ],
+    "views": [
+        {
+            "id": "calendar",
+            "name": "Time Calendar",
+            "type": "calendar",
+            "title": "title",
+            "badge": "status",
+            "start_date": "started_at",
+            "end_date": "ended_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "title",
+                    "description",
+                    "task_id",
+                    "project_id"
+                ]
+            },
+            {
+                "id": "time",
+                "title": "Time",
+                "fields": [
+                    "status",
+                    "started_at",
+                    "ended_at",
+                    "duration"
+                ]
+            },
+            {
+                "id": "billing",
+                "title": "Billing",
+                "fields": [
+                    "billable"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "items": [
-        {"id":"calendar","name":"Time Calendar","type":"calendar","title":"title","startDate":"started_at","endDate":"ended_at","badge":"status"}
-    ],
-    "filterTemplates": [
-        {"id":"drafts","name":"Drafts","filters":[{"id":"status","value":"draft","variant":"select","operator":"eq"}]},
-        {"id":"pending_approval","name":"Pending Approval","filters":[{"id":"status","value":"submitted","variant":"select","operator":"eq"}]},
-        {"id":"approved","name":"Approved","filters":[{"id":"status","value":"approved","variant":"select","operator":"eq"}]},
-        {"id":"rejected","name":"Rejected","filters":[{"id":"status","value":"rejected","variant":"select","operator":"eq"}]},
-        {"id":"billable","name":"Billable","filters":[{"id":"billable","value":"true","variant":"boolean","operator":"is"}]}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["title","description","task_id","project_id"]},
-        {"id":"time","title":"Time","fields":["status","started_at","ended_at","duration"]},
-        {"id":"billing","title":"Billing","fields":["billable"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "started_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "tasks",
+                "on": "task_id",
+                "columns": [
+                    "title",
+                    "status"
+                ]
+            },
+            {
+                "table": "projects",
+                "on": "project_id",
+                "columns": [
+                    "title"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table desk.timesheets
@@ -2092,17 +2577,17 @@ grant
 select
   on desk.timesheet_top_tasks to authenticated;
 
-comment on view desk.timesheet_hours_this_week is '{"type": "dashboard_widget", "name": "Hours This Week",       "description": "Total hours logged in the current week",          "widget_type": "card_1"}';
+comment on view desk.timesheet_hours_this_week is '{"type": "dashboard_widget", "name": "Hours This Week", "description": "Total hours logged in the current week", "widget_type": "card_1"}';
 
-comment on view desk.timesheet_approval_status is '{"type": "dashboard_widget", "name": "Approval Status",       "description": "Approved vs pending timesheet entries",           "widget_type": "card_2"}';
+comment on view desk.timesheet_approval_status is '{"type": "dashboard_widget", "name": "Approval Status", "description": "Approved vs pending timesheet entries", "widget_type": "card_2"}';
 
-comment on view desk.timesheet_billable_rate is '{"type": "dashboard_widget", "name": "Billable Hours",        "description": "Billable hours and percentage of total",           "widget_type": "card_3"}';
+comment on view desk.timesheet_billable_rate is '{"type": "dashboard_widget", "name": "Billable Hours", "description": "Billable hours and percentage of total", "widget_type": "card_3"}';
 
-comment on view desk.timesheet_status_breakdown is '{"type": "dashboard_widget", "name": "Status Breakdown",      "description": "Submitted and approved vs total entries",          "widget_type": "card_4"}';
+comment on view desk.timesheet_status_breakdown is '{"type": "dashboard_widget", "name": "Status Breakdown", "description": "Submitted and approved vs total entries", "widget_type": "card_4"}';
 
-comment on view desk.timesheet_recent_entries is '{"type": "dashboard_widget", "name": "Recent Time Entries",   "description": "Latest timesheet entries",                         "widget_type": "table_1"}';
+comment on view desk.timesheet_recent_entries is '{"type": "dashboard_widget", "name": "Recent Time Entries", "description": "Latest timesheet entries", "widget_type": "table_1"}';
 
-comment on view desk.timesheet_top_tasks is '{"type": "dashboard_widget", "name": "Top Tasks by Time",     "description": "Tasks with the most logged time",                  "widget_type": "table_2"}';
+comment on view desk.timesheet_top_tasks is '{"type": "dashboard_widget", "name": "Top Tasks by Time", "description": "Tasks with the most logged time", "widget_type": "table_2"}';
 
 insert into
   supasheet.role_permissions (role, permission)
@@ -2258,13 +2743,13 @@ grant
 select
   on desk.timesheet_weekday_radar to authenticated;
 
-comment on view desk.timesheet_hours_by_project is '{"type": "chart", "name": "Hours by Project",        "description": "Total and billable hours grouped by project",          "chart_type": "bar"}';
+comment on view desk.timesheet_hours_by_project is '{"type": "chart", "name": "Hours by Project", "description": "Total and billable hours grouped by project", "chart_type": "bar"}';
 
-comment on view desk.timesheet_daily_hours_line is '{"type": "chart", "name": "Daily Hours",              "description": "Hours logged per day over the last 14 days",           "chart_type": "line"}';
+comment on view desk.timesheet_daily_hours_line is '{"type": "chart", "name": "Daily Hours", "description": "Hours logged per day over the last 14 days", "chart_type": "line"}';
 
-comment on view desk.timesheet_status_pie is '{"type": "chart", "name": "Timesheet Status",         "description": "Entry count grouped by status",                        "chart_type": "pie"}';
+comment on view desk.timesheet_status_pie is '{"type": "chart", "name": "Timesheet Status", "description": "Entry count grouped by status", "chart_type": "pie"}';
 
-comment on view desk.timesheet_weekday_radar is '{"type": "chart", "name": "Hours by Weekday",         "description": "Total and billable hours per day of the week",         "chart_type": "radar"}';
+comment on view desk.timesheet_weekday_radar is '{"type": "chart", "name": "Hours by Weekday", "description": "Total and billable hours per day of the week", "chart_type": "radar"}';
 
 insert into
   supasheet.role_permissions (role, permission)

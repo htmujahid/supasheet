@@ -337,22 +337,95 @@ comment on column manufacturing.work_centers.status is '{
 comment on table manufacturing.work_centers is '{
     "icon": "Factory",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [{"table":"users","on":"operator_user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Work Centers By Status","type":"kanban","group":"status","title":"name","description":"location","badge":"type"},
-        {"id":"gallery","name":"Work Center Gallery","type":"gallery","cover":"cover","title":"name","description":"location","badge":"status"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Work Centers By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "location",
+            "badge": "type"
+        },
+        {
+            "id": "gallery",
+            "name": "Work Center Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "name",
+            "description": "location",
+            "badge": "status"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["code","name","type","status","description","cover"]},
-        {"id":"location","title":"Location","fields":["location","capacity_per_hour"]},
-        {"id":"cost","title":"Cost","fields":["cost_per_hour","currency"]},
-        {"id":"organization","title":"Organization","fields":["operator_user_id","is_active","color","tags"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "code",
+                    "name",
+                    "type",
+                    "status",
+                    "description",
+                    "cover"
+                ]
+            },
+            {
+                "id": "location",
+                "title": "Location",
+                "fields": [
+                    "location",
+                    "capacity_per_hour"
+                ]
+            },
+            {
+                "id": "cost",
+                "title": "Cost",
+                "fields": [
+                    "cost_per_hour",
+                    "currency"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "operator_user_id",
+                    "is_active",
+                    "color",
+                    "tags"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "operator_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column manufacturing.work_centers.cover is '{"accept":"image/*"}';
@@ -445,22 +518,100 @@ comment on column manufacturing.boms.status is '{
 comment on table manufacturing.boms is '{
     "icon": "ListTree",
     "display": "block",
-    "query": {
-        "sort": [{"id":"product_name","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"BOMs By Status","type":"kanban","group":"status","title":"product_name","description":"bom_number","date":"effective_from","badge":"version"},
-        {"id":"gallery","name":"BOM Gallery","type":"gallery","cover":"image","title":"product_name","description":"bom_number","badge":"status"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "BOMs By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "product_name",
+            "description": "bom_number",
+            "date": "effective_from",
+            "badge": "version"
+        },
+        {
+            "id": "gallery",
+            "name": "BOM Gallery",
+            "type": "gallery",
+            "cover": "image",
+            "title": "product_name",
+            "description": "bom_number",
+            "badge": "status"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["bom_number","name","version","status","description","image"]},
-        {"id":"product","title":"Product","fields":["product_sku","product_name","product_id","output_quantity","unit_of_measure"]},
-        {"id":"effective","title":"Effective Dates","fields":["effective_from","effective_to"]},
-        {"id":"cost","title":"Cost","fields":["estimated_cost","currency"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "bom_number",
+                    "name",
+                    "version",
+                    "status",
+                    "description",
+                    "image"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product",
+                "fields": [
+                    "product_sku",
+                    "product_name",
+                    "product_id",
+                    "output_quantity",
+                    "unit_of_measure"
+                ]
+            },
+            {
+                "id": "effective",
+                "title": "Effective Dates",
+                "fields": [
+                    "effective_from",
+                    "effective_to"
+                ]
+            },
+            {
+                "id": "cost",
+                "title": "Cost",
+                "fields": [
+                    "estimated_cost",
+                    "currency"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "product_name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column manufacturing.boms.image is '{"accept":"image/*"}';
@@ -538,17 +689,71 @@ create table manufacturing.bom_items (
 comment on table manufacturing.bom_items is '{
     "icon": "ListChecks",
     "display": "none",
-    "query": {
-        "sort": [{"id":"line_number","desc":false}],
-        "join": [{"table":"boms","on":"bom_id","columns":["bom_number","product_name"]}]
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "bom_id",
+                    "line_number"
+                ]
+            },
+            {
+                "id": "component",
+                "title": "Component",
+                "fields": [
+                    "component_sku",
+                    "component_name",
+                    "component_id"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity",
+                "fields": [
+                    "quantity",
+                    "unit_of_measure",
+                    "scrap_pct",
+                    "is_optional"
+                ]
+            },
+            {
+                "id": "cost",
+                "title": "Cost",
+                "fields": [
+                    "unit_cost",
+                    "total_cost"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["bom_id","line_number"]},
-        {"id":"component","title":"Component","fields":["component_sku","component_name","component_id"]},
-        {"id":"quantity","title":"Quantity","fields":["quantity","unit_of_measure","scrap_pct","is_optional"]},
-        {"id":"cost","title":"Cost","fields":["unit_cost","total_cost"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "line_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "boms",
+                "on": "bom_id",
+                "columns": [
+                    "bom_number",
+                    "product_name"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table manufacturing.bom_items
@@ -629,23 +834,85 @@ comment on column manufacturing.routings.status is '{
 comment on table manufacturing.routings is '{
     "icon": "Workflow",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [
-            {"table":"boms","on":"bom_id","columns":["bom_number","product_name"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Routings By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "product_name",
+            "badge": "version"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "routing_number",
+                    "name",
+                    "version",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product & BOM",
+                "fields": [
+                    "product_sku",
+                    "product_name",
+                    "bom_id"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "estimated_minutes"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Routings By Status","type":"kanban","group":"status","title":"name","description":"product_name","badge":"version"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["routing_number","name","version","status","description"]},
-        {"id":"product","title":"Product & BOM","fields":["product_sku","product_name","bom_id"]},
-        {"id":"timing","title":"Timing","fields":["estimated_minutes"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "boms",
+                "on": "bom_id",
+                "columns": [
+                    "bom_number",
+                    "product_name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column manufacturing.routings.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -716,19 +983,70 @@ create table manufacturing.routing_operations (
 comment on table manufacturing.routing_operations is '{
     "icon": "ListOrdered",
     "display": "none",
-    "query": {
-        "sort": [{"id":"sequence_number","desc":false}],
-        "join": [
-            {"table":"routings","on":"routing_id","columns":["routing_number","name"]},
-            {"table":"work_centers","on":"work_center_id","columns":["code","name"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "routing_id",
+                    "sequence_number"
+                ]
+            },
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "description",
+                    "work_center_id"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "setup_minutes",
+                    "run_minutes_per_unit"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Instructions & Notes",
+                "collapsible": true,
+                "fields": [
+                    "instructions",
+                    "notes"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["routing_id","sequence_number"]},
-        {"id":"summary","title":"Summary","fields":["name","description","work_center_id"]},
-        {"id":"timing","title":"Timing","fields":["setup_minutes","run_minutes_per_unit"]},
-        {"id":"extras","title":"Instructions & Notes","collapsible":true,"fields":["instructions","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "sequence_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "routings",
+                "on": "routing_id",
+                "columns": [
+                    "routing_number",
+                    "name"
+                ]
+            },
+            {
+                "table": "work_centers",
+                "on": "work_center_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table manufacturing.routing_operations
@@ -837,29 +1155,145 @@ comment on column manufacturing.work_orders.priority is '{
 comment on table manufacturing.work_orders is '{
     "icon": "ClipboardList",
     "display": "block",
-    "query": {
-        "sort": [{"id":"planned_start_date","desc":true}],
-        "join": [
-            {"table":"boms","on":"bom_id","columns":["bom_number","product_name"]},
-            {"table":"routings","on":"routing_id","columns":["routing_number","name"]},
-            {"table":"users","on":"assigned_user_id","alias":"assigned_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Work Orders By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "work_order_number",
+            "description": "product_name",
+            "date": "planned_end_date",
+            "badge": "priority"
+        },
+        {
+            "id": "calendar",
+            "name": "Production Schedule",
+            "type": "calendar",
+            "title": "work_order_number",
+            "badge": "status",
+            "start_date": "planned_start_date",
+            "end_date": "planned_end_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "work_order_number",
+                    "status",
+                    "priority",
+                    "description"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product",
+                "fields": [
+                    "product_sku",
+                    "product_name",
+                    "product_id",
+                    "bom_id",
+                    "routing_id"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity",
+                "fields": [
+                    "quantity_planned",
+                    "quantity_completed",
+                    "quantity_scrapped",
+                    "unit_of_measure"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "planned_start_date",
+                    "planned_end_date",
+                    "actual_start_date",
+                    "actual_end_date"
+                ]
+            },
+            {
+                "id": "cost",
+                "title": "Cost",
+                "fields": [
+                    "estimated_cost",
+                    "actual_cost",
+                    "currency"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "assigned_user_id",
+                    "sales_order_reference",
+                    "tags",
+                    "color"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Work Orders By Status","type":"kanban","group":"status","title":"work_order_number","description":"product_name","date":"planned_end_date","badge":"priority"},
-        {"id":"calendar","name":"Production Schedule","type":"calendar","title":"work_order_number","startDate":"planned_start_date","endDate":"planned_end_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["work_order_number","status","priority","description"]},
-        {"id":"product","title":"Product","fields":["product_sku","product_name","product_id","bom_id","routing_id"]},
-        {"id":"quantity","title":"Quantity","fields":["quantity_planned","quantity_completed","quantity_scrapped","unit_of_measure"]},
-        {"id":"schedule","title":"Schedule","fields":["planned_start_date","planned_end_date","actual_start_date","actual_end_date"]},
-        {"id":"cost","title":"Cost","fields":["estimated_cost","actual_cost","currency"]},
-        {"id":"organization","title":"Organization","fields":["assigned_user_id","sales_order_reference","tags","color"]},
-        {"id":"extras","title":"Attachments & Notes","collapsible":true,"fields":["attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "planned_start_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "boms",
+                "on": "bom_id",
+                "columns": [
+                    "bom_number",
+                    "product_name"
+                ]
+            },
+            {
+                "table": "routings",
+                "on": "routing_id",
+                "columns": [
+                    "routing_number",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "assigned_user_id",
+                "alias": "assigned_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column manufacturing.work_orders.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -960,27 +1394,120 @@ comment on column manufacturing.work_order_operations.status is '{
 comment on table manufacturing.work_order_operations is '{
     "icon": "ListOrdered",
     "display": "block",
-    "query": {
-        "sort": [{"id":"sequence_number","desc":false}],
-        "join": [
-            {"table":"work_orders","on":"work_order_id","columns":["work_order_number","product_name"]},
-            {"table":"work_centers","on":"work_center_id","columns":["code","name"]},
-            {"table":"users","on":"operator_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Operations By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "notes",
+            "date": "planned_start_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Operation Schedule",
+            "type": "calendar",
+            "title": "name",
+            "badge": "status",
+            "start_date": "planned_start_at",
+            "end_date": "planned_end_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "work_order_id",
+                    "routing_operation_id",
+                    "sequence_number",
+                    "name",
+                    "status"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "work_center_id",
+                    "operator_user_id"
+                ]
+            },
+            {
+                "id": "schedule",
+                "title": "Schedule",
+                "fields": [
+                    "planned_start_at",
+                    "planned_end_at",
+                    "actual_start_at",
+                    "actual_end_at"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "planned_minutes",
+                    "actual_minutes"
+                ]
+            },
+            {
+                "id": "output",
+                "title": "Output",
+                "fields": [
+                    "quantity_good",
+                    "quantity_scrap"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Instructions & Notes",
+                "collapsible": true,
+                "fields": [
+                    "instructions",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Operations By Status","type":"kanban","group":"status","title":"name","description":"notes","date":"planned_start_at","badge":"status"},
-        {"id":"calendar","name":"Operation Schedule","type":"calendar","title":"name","startDate":"planned_start_at","endDate":"planned_end_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["work_order_id","routing_operation_id","sequence_number","name","status"]},
-        {"id":"organization","title":"Organization","fields":["work_center_id","operator_user_id"]},
-        {"id":"schedule","title":"Schedule","fields":["planned_start_at","planned_end_at","actual_start_at","actual_end_at"]},
-        {"id":"timing","title":"Timing","fields":["planned_minutes","actual_minutes"]},
-        {"id":"output","title":"Output","fields":["quantity_good","quantity_scrap"]},
-        {"id":"extras","title":"Instructions & Notes","collapsible":true,"fields":["instructions","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "sequence_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "work_orders",
+                "on": "work_order_id",
+                "columns": [
+                    "work_order_number",
+                    "product_name"
+                ]
+            },
+            {
+                "table": "work_centers",
+                "on": "work_center_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "operator_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table manufacturing.work_order_operations
@@ -1072,25 +1599,103 @@ comment on column manufacturing.material_issues.status is '{
 comment on table manufacturing.material_issues is '{
     "icon": "PackageMinus",
     "display": "block",
-    "query": {
-        "sort": [{"id":"issued_at","desc":true}],
-        "join": [
-            {"table":"work_orders","on":"work_order_id","columns":["work_order_number","product_name"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Issues By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "issue_number",
+            "description": "component_name",
+            "date": "issued_at",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "issue_number",
+                    "work_order_id",
+                    "bom_item_id"
+                ]
+            },
+            {
+                "id": "component",
+                "title": "Component",
+                "fields": [
+                    "component_sku",
+                    "component_name",
+                    "component_id",
+                    "warehouse_code"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity",
+                "fields": [
+                    "quantity_required",
+                    "quantity_issued",
+                    "quantity_returned",
+                    "unit_of_measure"
+                ]
+            },
+            {
+                "id": "cost",
+                "title": "Cost",
+                "fields": [
+                    "unit_cost",
+                    "total_cost"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "status",
+                    "issued_at",
+                    "returned_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Issues By Status","type":"kanban","group":"status","title":"issue_number","description":"component_name","date":"issued_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["issue_number","work_order_id","bom_item_id"]},
-        {"id":"component","title":"Component","fields":["component_sku","component_name","component_id","warehouse_code"]},
-        {"id":"quantity","title":"Quantity","fields":["quantity_required","quantity_issued","quantity_returned","unit_of_measure"]},
-        {"id":"cost","title":"Cost","fields":["unit_cost","total_cost"]},
-        {"id":"timing","title":"Timing","fields":["status","issued_at","returned_at"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "issued_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "work_orders",
+                "on": "work_order_id",
+                "columns": [
+                    "work_order_number",
+                    "product_name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table manufacturing.material_issues
@@ -1183,26 +1788,114 @@ comment on column manufacturing.production_outputs.status is '{
 comment on table manufacturing.production_outputs is '{
     "icon": "PackagePlus",
     "display": "block",
-    "query": {
-        "sort": [{"id":"produced_at","desc":true}],
-        "join": [
-            {"table":"work_orders","on":"work_order_id","columns":["work_order_number","product_name"]},
-            {"table":"work_centers","on":"work_center_id","columns":["code","name"]},
-            {"table":"users","on":"inspector_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Outputs By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "output_number",
+            "description": "lot_number",
+            "date": "produced_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Output Calendar",
+            "type": "calendar",
+            "title": "output_number",
+            "badge": "status",
+            "start_date": "produced_at",
+            "end_date": "produced_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "output_number",
+                    "work_order_id",
+                    "work_center_id"
+                ]
+            },
+            {
+                "id": "quantity",
+                "title": "Quantity",
+                "fields": [
+                    "quantity",
+                    "unit_of_measure",
+                    "status",
+                    "quality_score"
+                ]
+            },
+            {
+                "id": "identification",
+                "title": "Identification",
+                "fields": [
+                    "lot_number",
+                    "serial_numbers",
+                    "destination_warehouse_code"
+                ]
+            },
+            {
+                "id": "inspection",
+                "title": "Inspection",
+                "fields": [
+                    "produced_at",
+                    "inspected_at",
+                    "inspector_user_id",
+                    "defect_reason"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Outputs By Status","type":"kanban","group":"status","title":"output_number","description":"lot_number","date":"produced_at","badge":"status"},
-        {"id":"calendar","name":"Output Calendar","type":"calendar","title":"output_number","startDate":"produced_at","endDate":"produced_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"link","title":"Link","fields":["output_number","work_order_id","work_center_id"]},
-        {"id":"quantity","title":"Quantity","fields":["quantity","unit_of_measure","status","quality_score"]},
-        {"id":"identification","title":"Identification","fields":["lot_number","serial_numbers","destination_warehouse_code"]},
-        {"id":"inspection","title":"Inspection","fields":["produced_at","inspected_at","inspector_user_id","defect_reason"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "produced_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "work_orders",
+                "on": "work_order_id",
+                "columns": [
+                    "work_order_number",
+                    "product_name"
+                ]
+            },
+            {
+                "table": "work_centers",
+                "on": "work_center_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "inspector_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column manufacturing.production_outputs.attachments is '{"accept":"*", "maxFiles": 10}';

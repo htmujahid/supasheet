@@ -13,7 +13,7 @@ export function useInlineFormFlag(schema: string, resource: string) {
   return useMemo(() => {
     try {
       const meta = JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-      return meta.inlineForm === true
+      return meta.inline_form === true
     } catch {
       return false
     }

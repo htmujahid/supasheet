@@ -18,7 +18,7 @@ import {
   ItemDescription,
   ItemTitle,
 } from "#/components/ui/item"
-import type { FKBehavior, Relationship } from "#/lib/database-meta.types"
+import type { LookupConfig, Relationship } from "#/lib/database-meta.types"
 import { resourceDataQueryOptions } from "#/lib/supabase/data/resource"
 import type { FieldProps } from "#/types/fields"
 
@@ -37,7 +37,7 @@ export function ForeignDataCombobox({
 }: FieldProps & {
   relationship: Relationship
   joinConfig: JoinConfig
-  behavior?: FKBehavior
+  behavior?: LookupConfig
   form?: ResourceFormApi
   onRecordSelect?: (record: Record<string, unknown>) => void
 }) {

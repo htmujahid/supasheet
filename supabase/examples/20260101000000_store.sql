@@ -185,13 +185,47 @@ comment on table store.store_settings is '{
     "icon": "Store",
     "name": "Store Settings",
     "display": "block",
-    "single": true,
-    "sections": [
-        {"id": "identity",  "title": "Identity",  "fields": ["store_name", "store_description", "logo"]},
-        {"id": "contact",   "title": "Contact",   "fields": ["contact_email", "contact_phone"]},
-        {"id": "commerce",  "title": "Commerce",  "description": "Currency, tax, and shipping defaults", "fields": ["currency", "tax_rate", "shipping_rate", "free_shipping_threshold"]},
-        {"id": "policy",    "title": "Policy",    "collapsible": true, "fields": ["return_policy"]}
-    ]
+    "singleton": true,
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "store_name",
+                    "store_description",
+                    "logo"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "contact_email",
+                    "contact_phone"
+                ]
+            },
+            {
+                "id": "commerce",
+                "title": "Commerce",
+                "description": "Currency, tax, and shipping defaults",
+                "fields": [
+                    "currency",
+                    "tax_rate",
+                    "shipping_rate",
+                    "free_shipping_threshold"
+                ]
+            },
+            {
+                "id": "policy",
+                "title": "Policy",
+                "collapsible": true,
+                "fields": [
+                    "return_policy"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column store.store_settings.logo is '{"name": "Logo", "accept": "image/*", "maxSize": 2097152}';
@@ -275,19 +309,68 @@ comment on column store.products.status is '{
 comment on table store.products is '{
     "icon": "Package",
     "display": "block",
-    "query": {
-        "sort": [{"id": "name", "desc": false}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id": "gallery", "name": "Product Gallery", "type": "gallery", "cover": "image", "title": "name", "description": "description", "badge": "status"},
-        {"id": "status", "name": "Products By Status", "type": "kanban", "group": "status", "title": "name", "description": "description", "badge": "category"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Product Gallery",
+            "type": "gallery",
+            "cover": "image",
+            "title": "name",
+            "description": "description",
+            "badge": "status"
+        },
+        {
+            "id": "status",
+            "name": "Products By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "description",
+            "badge": "category"
+        }
     ],
-    "sections": [
-        {"id": "identity", "title": "Identity", "fields": ["name", "sku", "description", "image"]},
-        {"id": "pricing", "title": "Pricing & Inventory", "fields": ["price", "stock", "status"]},
-        {"id": "merchandising", "title": "Merchandising", "description": "Categorization and storefront placement", "fields": ["category", "tags", "featured"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "name",
+                    "sku",
+                    "description",
+                    "image"
+                ]
+            },
+            {
+                "id": "pricing",
+                "title": "Pricing & Inventory",
+                "fields": [
+                    "price",
+                    "stock",
+                    "status"
+                ]
+            },
+            {
+                "id": "merchandising",
+                "title": "Merchandising",
+                "description": "Categorization and storefront placement",
+                "fields": [
+                    "category",
+                    "tags",
+                    "featured"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ]
+    }
 }';
 
 comment on column store.products.image is '{"accept": "image/*"}';
@@ -416,20 +499,85 @@ comment on column store.orders.payment_method is '{
 comment on table store.orders is '{
     "icon": "ShoppingCart",
     "display": "block",
-    "query": {
-        "sort": [{"id": "created_at", "desc": true}],
-        "join": [{"table": "users", "on": "user_id", "columns": ["name", "email"]}]
-    },
-    "items": [
-        {"id": "status", "name": "Orders By Status", "type": "kanban", "group": "status", "title": "order_number", "description": "notes", "date": "created_at", "badge": "status"},
-        {"id": "calendar", "name": "Order Calendar", "type": "calendar", "title": "order_number", "startDate": "created_at", "badge": "status"}
+    "views": [
+        {
+            "id": "status",
+            "name": "Orders By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "order_number",
+            "description": "notes",
+            "date": "created_at",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Order Calendar",
+            "type": "calendar",
+            "title": "order_number",
+            "badge": "status",
+            "start_date": "created_at"
+        }
     ],
-    "sections": [
-        {"id": "identity", "title": "Order", "fields": ["order_number", "user_id", "status"]},
-        {"id": "amounts", "title": "Amounts", "fields": ["subtotal", "tax", "shipping", "total"]},
-        {"id": "fulfillment", "title": "Fulfillment", "description": "Payment, shipping address, tracking", "fields": ["payment_method", "shipping_address", "tracking_number"]},
-        {"id": "extras", "title": "Notes", "collapsible": true, "fields": ["notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Order",
+                "fields": [
+                    "order_number",
+                    "user_id",
+                    "status"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "subtotal",
+                    "tax",
+                    "shipping",
+                    "total"
+                ]
+            },
+            {
+                "id": "fulfillment",
+                "title": "Fulfillment",
+                "description": "Payment, shipping address, tracking",
+                "fields": [
+                    "payment_method",
+                    "shipping_address",
+                    "tracking_number"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table store.orders
@@ -484,19 +632,54 @@ create table store.order_items (
 
 comment on table store.order_items is '{
     "icon": "ShoppingBag",
-    "inlineForm": true,
+    "inline_form": true,
     "display": "block",
-    "query": {
-        "sort": [{"id": "created_at", "desc": true}],
-        "join": [
-            {"table": "orders", "on": "order_id", "columns": ["status", "total"]},
-            {"table": "products", "on": "product_id", "columns": ["name", "price"]}
+    "fields": {
+        "sections": [
+            {
+                "id": "context",
+                "title": "Context",
+                "fields": [
+                    "order_id",
+                    "product_id"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "quantity",
+                    "unit_price"
+                ]
+            }
         ]
     },
-    "sections": [
-        {"id": "context", "title": "Context", "fields": ["order_id", "product_id"]},
-        {"id": "amounts", "title": "Amounts", "fields": ["quantity", "unit_price"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "orders",
+                "on": "order_id",
+                "columns": [
+                    "status",
+                    "total"
+                ]
+            },
+            {
+                "table": "products",
+                "on": "product_id",
+                "columns": [
+                    "name",
+                    "price"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table store.order_items
@@ -581,21 +764,74 @@ comment on column store.reviews.status is '{
 comment on table store.reviews is '{
     "icon": "Star",
     "display": "block",
-    "query": {
-        "sort": [{"id": "created_at", "desc": true}],
-        "join": [
-            {"table": "products", "on": "product_id", "columns": ["name", "sku"]},
-            {"table": "users", "on": "user_id", "columns": ["name", "email"]}
+    "views": [
+        {
+            "id": "moderation",
+            "name": "Moderation Queue",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "content",
+            "date": "created_at",
+            "badge": "rating"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "context",
+                "title": "Context",
+                "fields": [
+                    "product_id",
+                    "user_id"
+                ]
+            },
+            {
+                "id": "review",
+                "title": "Review",
+                "fields": [
+                    "rating",
+                    "title",
+                    "content"
+                ]
+            },
+            {
+                "id": "moderation",
+                "title": "Moderation",
+                "fields": [
+                    "status",
+                    "verified_purchase",
+                    "helpful_count"
+                ]
+            }
         ]
     },
-    "items": [
-        {"id": "moderation", "name": "Moderation Queue", "type": "kanban", "group": "status", "title": "title", "description": "content", "date": "created_at", "badge": "rating"}
-    ],
-    "sections": [
-        {"id": "context", "title": "Context", "fields": ["product_id", "user_id"]},
-        {"id": "review", "title": "Review", "fields": ["rating", "title", "content"]},
-        {"id": "moderation", "title": "Moderation", "fields": ["status", "verified_purchase", "helpful_count"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "products",
+                "on": "product_id",
+                "columns": [
+                    "name",
+                    "sku"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table store.reviews

@@ -27,7 +27,6 @@ import { NewRecordTrigger } from "#/components/resource/sheet/new-record-trigger
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
-  PrimaryKey,
   ResourceSchema,
   TableMetadata,
 } from "#/lib/database-meta.types"
@@ -72,7 +71,7 @@ export function ResourceForeignTable({
 
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
 
   const schema = resourceSchema.schema
   const table = resourceSchema.name
@@ -120,8 +119,8 @@ export function ResourceForeignTable({
     insertBulkResourceMutationOptions(schema, table)
   )
 
-  const duplicatedFields = resourceSchema.comment
-    ? (JSON.parse(resourceSchema.comment) as TableMetadata).duplicatedFields
+  const duplicated = resourceSchema.comment
+    ? (JSON.parse(resourceSchema.comment) as TableMetadata).fields?.duplicated
     : undefined
 
   const handleDuplicate = async (rows: Record<string, unknown>[]) => {
@@ -130,7 +129,7 @@ export function ResourceForeignTable({
       const columnNames = new Set(
         columnsSchema.map((c) => c.name).filter((n): n is string => n !== null)
       )
-      const fields = duplicatedFields ?? [...columnNames]
+      const fields = duplicated ?? [...columnNames]
       const stripped = rows.map((row) =>
         Object.fromEntries(
           fields

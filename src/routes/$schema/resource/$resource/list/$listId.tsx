@@ -108,7 +108,7 @@ export const Route = createFileRoute(
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-    const listView = meta.items?.find(
+    const listView = meta.views?.find(
       (item) => item.id === listId && item.type === "list"
     ) as ListView | undefined
     if (!listView) throw notFound()
@@ -234,7 +234,7 @@ function RouteComponent() {
   const { resourceSchema, columnsSchema = [], listView } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
@@ -292,7 +292,7 @@ function RouteComponent() {
           pagination={pagination}
           columnFilters={filters}
           pageCount={pageCount}
-          filterTemplates={meta.filterTemplates ?? []}
+          filterPresets={meta.filter_presets ?? []}
         />
       </div>
       <Outlet />

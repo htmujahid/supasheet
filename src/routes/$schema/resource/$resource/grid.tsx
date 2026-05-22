@@ -211,7 +211,7 @@ function RouteComponent() {
   const { resourceSchema, columnsSchema = [] } = Route.useLoaderData()
 
   const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
   const { data: resourceData } = useSuspenseQuery(
@@ -268,7 +268,7 @@ function RouteComponent() {
           pagination={pagination}
           columnFilters={filters}
           pageCount={pageCount}
-          filterTemplates={meta.filterTemplates ?? []}
+          filterPresets={meta.filter_presets ?? []}
         />
       </div>
       <Outlet />

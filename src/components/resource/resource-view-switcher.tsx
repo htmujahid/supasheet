@@ -28,7 +28,7 @@ import type {
   TableMetadata,
 } from "#/lib/database-meta.types"
 
-type MetaItem = NonNullable<TableMetadata["items"]>[number]
+type MetaItem = NonNullable<TableMetadata["views"]>[number]
 
 const builtInViews = [
   { id: "table", label: "Table View", icon: <TableIcon className="size-3" /> },

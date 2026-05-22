@@ -45,13 +45,13 @@ export function ResourceSectionDetail({
   tableSchema,
   record,
 }: Props) {
-  const fieldBehavior = (
+  const behavior = (
     JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  ).fieldBehavior
+  ).fields?.behavior
 
   const cols = section.fields
     .filter((name) => {
-      const visible = fieldBehavior?.[name]?.visible
+      const visible = behavior?.[name]?.visible
       if (!visible?.length) return true
       return evaluateConditionalField(visible, record)
     })

@@ -15,7 +15,7 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceActions } from "#/components/resource/resource-actions"
 import { ResourceKanban } from "#/components/resource/resource-kanban"
 import type {
-  KanbanLayout,
+  KanbanLayout as KanbanLayoutMode,
   KanbanViewData,
   KanbanViewReducedData,
 } from "#/components/resource/resource-kanban"
@@ -30,7 +30,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { KanbanViewItem, TableMetadata } from "#/lib/database-meta.types"
+import type { KanbanLayout, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
@@ -54,7 +54,7 @@ export const Route = createFileRoute(
   validateSearch: (search: { layout?: string }) => ({
     layout: (["board", "list"].includes(search.layout as string)
       ? search.layout
-      : "board") as KanbanLayout,
+      : "board") as KanbanLayoutMode,
   }),
   loaderDeps: ({ search: { layout } }) => ({ layout }),
   loader: async ({ context, params }) => {
@@ -80,8 +80,8 @@ export const Route = createFileRoute(
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-    const kanbanView = meta.items?.find(
-      (item): item is KanbanViewItem =>
+    const kanbanView = meta.views?.find(
+      (item): item is KanbanLayout =>
         item.id === kanbanId && item.type === "kanban"
     )
     if (!kanbanView) throw notFound()
@@ -268,7 +268,7 @@ function RouteComponent() {
     data[groupValue].push(item)
   }
 
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 

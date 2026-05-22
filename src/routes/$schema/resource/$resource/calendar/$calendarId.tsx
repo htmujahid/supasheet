@@ -29,7 +29,7 @@ import {
 import type { IEvent, TCalendarView } from "#/components/ui/event-calendar"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { CalendarViewItem, TableMetadata } from "#/lib/database-meta.types"
+import type { CalendarLayout, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
@@ -81,8 +81,8 @@ export const Route = createFileRoute(
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-    const calendarView = meta.items?.find(
-      (item): item is CalendarViewItem =>
+    const calendarView = meta.views?.find(
+      (item): item is CalendarLayout =>
         item.id === calendarId && item.type === "calendar"
     )
     if (!calendarView) throw notFound()
@@ -232,8 +232,8 @@ function RouteComponent() {
   )
 
   const titleField = calendarView.title
-  const startDateField = calendarView.startDate
-  const endDateField = calendarView.endDate
+  const startDateField = calendarView.start_date
+  const endDateField = calendarView.end_date
   const badgeField = calendarView.badge
 
   const data: IEvent[] = startDateField
@@ -254,7 +254,7 @@ function RouteComponent() {
         }))
     : []
 
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 

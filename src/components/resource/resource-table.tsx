@@ -17,8 +17,7 @@ import { useDataTable } from "#/hooks/use-data-table"
 import { useHasPermission } from "#/hooks/use-permissions"
 import type {
   ColumnSchema,
-  FilterTemplate,
-  PrimaryKey,
+  FilterPreset,
   ResourceSchema,
   TableMetadata,
 } from "#/lib/database-meta.types"
@@ -28,7 +27,7 @@ import {
   insertBulkResourceMutationOptions,
 } from "#/lib/supabase/data/resource"
 
-import { ResourceFilterTemplates } from "./resource-filter-templates"
+import { ResourceFilterPresets } from "./resource-filter-presets"
 import { getResourceTableColumns } from "./resource-table-columns"
 
 interface ResourceTableProps {
@@ -39,7 +38,7 @@ interface ResourceTableProps {
   pagination: PaginationState
   columnFilters: ColumnFiltersState
   pageCount: number
-  filterTemplates?: FilterTemplate[]
+  filterPresets?: FilterPreset[]
 }
 
 export function ResourceTable({
@@ -50,14 +49,14 @@ export function ResourceTable({
   pagination,
   columnFilters,
   pageCount,
-  filterTemplates = [],
+  filterPresets = [],
 }: ResourceTableProps) {
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
   const resource = resourceSchema.name
   const primaryKeys = (
     isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  ) as PrimaryKey[]
+  )
 
   const canDelete = useHasPermission(`${schema}.${resource}:delete`)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
@@ -69,8 +68,8 @@ export function ResourceTable({
     insertBulkResourceMutationOptions(schema, resource)
   )
 
-  const duplicatedFields = resourceSchema.comment
-    ? (JSON.parse(resourceSchema.comment) as TableMetadata).duplicatedFields
+  const duplicated = resourceSchema.comment
+    ? (JSON.parse(resourceSchema.comment) as TableMetadata).fields?.duplicated
     : undefined
 
   const handleDuplicate = async (rows: Record<string, unknown>[]) => {
@@ -79,7 +78,7 @@ export function ResourceTable({
       const columnNames = new Set(
         columnsSchema.map((c) => c.name).filter((n): n is string => n !== null)
       )
-      const fields = duplicatedFields ?? [...columnNames]
+      const fields = duplicated ?? [...columnNames]
       const stripped = rows.map((row) =>
         Object.fromEntries(
           fields
@@ -143,8 +142,8 @@ export function ResourceTable({
   return (
     <DataTable table={table}>
       <DataTableToolbar table={table}>
-        <ResourceFilterTemplates
-          filterTemplates={filterTemplates}
+        <ResourceFilterPresets
+          filterPresets={filterPresets}
           currentFilters={columnFilters}
         />
       </DataTableToolbar>

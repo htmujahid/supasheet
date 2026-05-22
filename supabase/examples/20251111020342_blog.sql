@@ -190,12 +190,37 @@ comment on table blog.blog_settings is '{
     "icon": "BookOpen",
     "name": "Blog Settings",
     "display": "block",
-    "single": true,
-    "sections": [
-        {"id": "identity",  "title": "Identity",  "fields": ["blog_name", "tagline", "description", "logo"]},
-        {"id": "content",   "title": "Content",   "fields": ["posts_per_page", "footer_text"]},
-        {"id": "comments",  "title": "Comments",  "fields": ["allow_comments", "require_comment_approval"]}
-    ]
+    "singleton": true,
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "blog_name",
+                    "tagline",
+                    "description",
+                    "logo"
+                ]
+            },
+            {
+                "id": "content",
+                "title": "Content",
+                "fields": [
+                    "posts_per_page",
+                    "footer_text"
+                ]
+            },
+            {
+                "id": "comments",
+                "title": "Comments",
+                "fields": [
+                    "allow_comments",
+                    "require_comment_approval"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column blog.blog_settings.logo is '{"name": "Logo", "accept": "image/*", "maxSize": 2097152}';
@@ -274,18 +299,57 @@ create table if not exists blog.authors (
 comment on table blog.authors is '{
     "icon": "UserPen",
     "display": "block",
-    "query": {
-        "sort": [{"id": "display_name", "desc": false}],
-        "join": [{"table": "users", "on": "user_id", "columns": ["name", "email"]}]
-    },
-    "primaryItem": "list",
-    "items": [
-        {"id": "list", "name": "Authors List", "type": "list", "title": "display_name", "description": "user.email", "field1": "language", "field2": "country"}
+    "primary_view": "list",
+    "views": [
+        {
+            "id": "list",
+            "name": "Authors List",
+            "type": "list",
+            "title": "display_name",
+            "description": "user.email",
+            "field_1": "language",
+            "field_2": "country"
+        }
     ],
-    "sections": [
-        {"id": "identity", "title": "Identity", "fields": ["display_name", "avatar", "bio"]},
-        {"id": "locale", "title": "Locale", "fields": ["language", "country"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "identity",
+                "title": "Identity",
+                "fields": [
+                    "display_name",
+                    "avatar",
+                    "bio"
+                ]
+            },
+            {
+                "id": "locale",
+                "title": "Locale",
+                "fields": [
+                    "language",
+                    "country"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "display_name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column blog.authors.avatar is '{"accept": "image/*"}';
@@ -366,7 +430,7 @@ create table if not exists blog.social_links (
 comment on table blog.social_links is '{
     "display": "none",
     "icon": "Link",
-    "inlineForm": true
+    "inline_form": true
 }';
 
 revoke all on table blog.social_links
@@ -485,14 +549,43 @@ create table if not exists blog.categories (
 comment on table blog.categories is '{
     "icon": "ListCollapse",
     "display": "block",
-    "query": {
-        "sort": [{"id": "name", "desc": false}]
+    "fields": {
+        "sections": [
+            {
+                "id": "details",
+                "title": "Details",
+                "fields": [
+                    "name",
+                    "slug",
+                    "description"
+                ]
+            },
+            {
+                "id": "presentation",
+                "title": "Presentation",
+                "fields": [
+                    "color",
+                    "icon"
+                ]
+            },
+            {
+                "id": "ownership",
+                "title": "Ownership",
+                "description": "Leave user empty for global categories",
+                "fields": [
+                    "user_id"
+                ]
+            }
+        ]
     },
-    "sections": [
-        {"id": "details", "title": "Details", "fields": ["name", "slug", "description"]},
-        {"id": "presentation", "title": "Presentation", "fields": ["color", "icon"]},
-        {"id": "ownership", "title": "Ownership", "description": "Leave user empty for global categories", "fields": ["user_id"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ]
+    }
 }';
 
 revoke all on table blog.categories
@@ -603,22 +696,100 @@ comment on column blog.posts.status is '{
 comment on table blog.posts is '{
     "icon": "NotebookText",
     "display": "block",
-    "query": {
-        "sort": [{"id": "published_at", "desc": true}],
-        "join": [{"table": "authors", "on": "author_id", "columns": ["display_name", "user_id"]}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id": "status", "name": "Posts By Status", "type": "kanban", "group": "status", "title": "title", "description": "excerpt", "date": "published_at", "badge": "featured"},
-        {"id": "calendar", "name": "Publishing Calendar", "type": "calendar", "title": "title", "startDate": "published_at", "badge": "status"},
-        {"id": "gallery", "name": "Post Gallery", "type": "gallery", "cover": "cover", "title": "title", "description": "excerpt", "badge": "status"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "status",
+            "name": "Posts By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "title",
+            "description": "excerpt",
+            "date": "published_at",
+            "badge": "featured"
+        },
+        {
+            "id": "calendar",
+            "name": "Publishing Calendar",
+            "type": "calendar",
+            "title": "title",
+            "badge": "status",
+            "start_date": "published_at"
+        },
+        {
+            "id": "gallery",
+            "name": "Post Gallery",
+            "type": "gallery",
+            "cover": "cover",
+            "title": "title",
+            "description": "excerpt",
+            "badge": "status"
+        }
     ],
-    "sections": [
-        {"id": "content", "title": "Content", "fields": ["title", "slug", "excerpt", "content", "cover"]},
-        {"id": "publishing", "title": "Publishing", "description": "Status, schedule and visibility", "fields": ["status", "published_at", "featured", "tags"]},
-        {"id": "relations", "title": "Author", "fields": ["author_id"]},
-        {"id": "metrics", "title": "Metrics", "collapsible": true, "fields": {"read": ["view_count"], "update": ["view_count"]}}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "content",
+                "title": "Content",
+                "fields": [
+                    "title",
+                    "slug",
+                    "excerpt",
+                    "content",
+                    "cover"
+                ]
+            },
+            {
+                "id": "publishing",
+                "title": "Publishing",
+                "description": "Status, schedule and visibility",
+                "fields": [
+                    "status",
+                    "published_at",
+                    "featured",
+                    "tags"
+                ]
+            },
+            {
+                "id": "relations",
+                "title": "Author",
+                "fields": [
+                    "author_id"
+                ]
+            },
+            {
+                "id": "metrics",
+                "title": "Metrics",
+                "collapsible": true,
+                "fields": {
+                    "read": [
+                        "view_count"
+                    ],
+                    "update": [
+                        "view_count"
+                    ]
+                }
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "published_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "authors",
+                "on": "author_id",
+                "columns": [
+                    "display_name",
+                    "user_id"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column blog.posts.cover is '{"accept": "image/*"}';
@@ -844,21 +1015,72 @@ comment on column blog.comments.status is '{
 comment on table blog.comments is '{
     "icon": "MessageSquare",
     "display": "block",
-    "query": {
-        "sort": [{"id": "created_at", "desc": true}],
-        "join": [
-            {"table": "posts", "on": "post_id", "columns": ["title", "slug"]},
-            {"table": "users", "on": "user_id", "columns": ["name", "email"]}
+    "views": [
+        {
+            "id": "moderation",
+            "name": "Moderation Queue",
+            "type": "kanban",
+            "group": "status",
+            "title": "author_name",
+            "description": "content",
+            "date": "created_at",
+            "badge": "status"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "context",
+                "title": "Context",
+                "fields": [
+                    "post_id",
+                    "parent_id"
+                ]
+            },
+            {
+                "id": "author",
+                "title": "Author",
+                "fields": [
+                    "author_name",
+                    "author_email"
+                ]
+            },
+            {
+                "id": "body",
+                "title": "Comment",
+                "fields": [
+                    "content",
+                    "status"
+                ]
+            }
         ]
     },
-    "items": [
-        {"id": "moderation", "name": "Moderation Queue", "type": "kanban", "group": "status", "title": "author_name", "description": "content", "date": "created_at", "badge": "status"}
-    ],
-    "sections": [
-        {"id": "context", "title": "Context", "fields": ["post_id", "parent_id"]},
-        {"id": "author", "title": "Author", "fields": ["author_name", "author_email"]},
-        {"id": "body", "title": "Comment", "fields": ["content", "status"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "posts",
+                "on": "post_id",
+                "columns": [
+                    "title",
+                    "slug"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table blog.comments

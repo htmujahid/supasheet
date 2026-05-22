@@ -40,8 +40,8 @@ export function ResourceListRow<S extends DatabaseSchemas>({
 
   const titleValue = readField(data, listView.title)
   const descriptionValue = readField(data, listView.description)
-  const field1Value = readField(data, listView.field1)
-  const field2Value = readField(data, listView.field2)
+  const field1Value = readField(data, listView.field_1)
+  const field2Value = readField(data, listView.field_2)
 
   function handleClick() {
     if (inlineForm && sheetLink) {

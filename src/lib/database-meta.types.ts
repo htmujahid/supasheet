@@ -54,8 +54,7 @@ export function getMetaFields(resourceSchema: ResourceSchema | null): string[] {
   const meta = resourceSchema.comment
     ? (JSON.parse(resourceSchema.comment) as TableMetadata)
     : {}
-  if (meta.metadataColumns === undefined) return METADATA_COLUMNS
-  return meta.metadataColumns
+  return meta.fields?.metadata ?? METADATA_COLUMNS
 }
 
 export type PrimaryKey = {
@@ -85,30 +84,30 @@ export type PaginatedData<T> = {
 
 export type FormMode = "create" | "update" | "read"
 
-export type ConditionalField = {
+export type FieldCondition = {
   id: string
   value: string
 }
 
 export type FieldBehavior = {
-  visible?: ConditionalField[] // shown when ALL conditions match
-  required?: ConditionalField[] // required when ALL conditions match
-  readOnly?: ConditionalField[] // read-only when ALL conditions match
+  visible?: FieldCondition[] // shown when ALL conditions match
+  required?: FieldCondition[] // required when ALL conditions match
+  read_only?: FieldCondition[] // read-only when ALL conditions match
 }
 
-export type FKFillRule = {
+export type LookupFillRule = {
   target: string // local form field to populate
-  source: string // column from the FK target table
+  source: string // column from the lookup target table
 }
 
-export type FKFilterRule = {
+export type LookupFilterRule = {
   on: string // local field to watch
-  column: string // FK table column to match against
+  column: string // lookup target column to match against
 }
 
-export type FKBehavior = {
-  fill?: FKFillRule[]
-  filter?: FKFilterRule[]
+export type LookupConfig = {
+  fill?: LookupFillRule[]
+  filter?: LookupFilterRule[]
 }
 
 export type FieldSectionFields = string[] | Partial<Record<FormMode, string[]>>
@@ -122,10 +121,39 @@ export type FieldSection = {
   collapsible?: boolean
 }
 
-export type KanbanViewItem = {
+export type FilterRule = {
+  id: string
+  value: string | string[]
+  variant: string
+  operator: string
+}
+
+export type SortRule = {
+  id: string
+  desc: boolean
+}
+
+export type JoinClause = {
+  table: string
+  on: string
+  alias?: string
+  columns: string[]
+}
+
+export type QueryConfig = {
+  sort?: SortRule[]
+  filter?: FilterRule[]
+  join?: JoinClause[]
+  select?: string[]
+}
+
+type BaseViewLayout = {
   id: string
   name: string
-  query?: { [key: string]: unknown }
+  query?: Record<string, unknown>
+}
+
+export type KanbanLayout = BaseViewLayout & {
   type: "kanban"
   group?: string
   title?: string
@@ -134,21 +162,15 @@ export type KanbanViewItem = {
   date?: string
 }
 
-export type CalendarViewItem = {
-  id: string
-  name: string
-  query?: { [key: string]: unknown }
+export type CalendarLayout = BaseViewLayout & {
   type: "calendar"
   title?: string
-  startDate?: string
-  endDate?: string
+  start_date?: string
+  end_date?: string
   badge?: string
 }
 
-export type GalleryViewItem = {
-  id: string
-  name: string
-  query?: { [key: string]: unknown }
+export type GalleryLayout = BaseViewLayout & {
   type: "gallery"
   cover?: string
   title?: string
@@ -156,91 +178,72 @@ export type GalleryViewItem = {
   badge?: string
 }
 
-export type ListViewItem = {
-  id: string
-  name: string
-  query?: { [key: string]: unknown }
+export type ListLayout = BaseViewLayout & {
   type: "list"
+  title?: string
+  description?: string
+  field_1?: string
+  field_2?: string
 }
 
-export type TreeViewItem = {
-  id: string
-  name: string
-  query?: { [key: string]: unknown }
+export type TreeLayout = BaseViewLayout & {
   type: "tree"
   parent: string
   title: string
   secondary?: string
 }
 
-export type MetaViewItem =
-  | KanbanViewItem
-  | CalendarViewItem
-  | GalleryViewItem
-  | ListViewItem
-  | TreeViewItem
+export type ViewLayout =
+  | KanbanLayout
+  | CalendarLayout
+  | GalleryLayout
+  | ListLayout
+  | TreeLayout
 
-export type FilterTemplate = {
+export type ViewLayoutType = ViewLayout["type"]
+
+export type FilterPreset = {
   id: string
   name: string
   description?: string
   icon?: string
-  filters: {
-    id: string
-    value: string | string[]
-    variant: string
-    operator: string
-  }[]
+  filters: FilterRule[]
 }
 
 export type HistoryMetadata = {
   table: DatabaseTables<DatabaseSchemas>
 }
 
-export type TableMetadata = {
-  display?: "block" | "none"
-  name?: string
-  description?: string
-  icon?: string
-  group?: string
-  single?: boolean
-  inlineForm?: boolean
-  query?: {
-    sort?: { id: string; desc: boolean }[]
-    filter?: {
-      id: string
-      value: string | string[]
-      variant: string
-      operator: string
-    }[]
-    join?: { table: string; on: string; alias?: string; columns: string[] }[]
-    select?: string[]
-  }
-  primaryItem?: string
-  items?: MetaViewItem[]
-  filterTemplates?: FilterTemplate[]
+export type FieldsConfig = {
   sections?: FieldSection[]
-  metadataColumns?: string[]
-  tabs?: string[]
-  history?: HistoryMetadata
-  quickCreate?: string[]
-  duplicatedFields?: string[]
-  fieldBehavior?: Record<string, FieldBehavior>
-  fkBehavior?: Record<string, FKBehavior>
+  quick_create?: string[]
+  duplicated?: string[]
+  metadata?: string[]
+  behavior?: Record<string, FieldBehavior>
+  lookups?: Record<string, LookupConfig>
 }
 
-export type ViewMetadata = {
+type BaseResourceMetadata = {
   display?: "block" | "none"
   name?: string
   description?: string
   icon?: string
   group?: string
-  single?: boolean
-  primaryItem?: string
-  items?: MetaViewItem[]
-  filterTemplates?: FilterTemplate[]
-  sections?: FieldSection[]
+  singleton?: boolean
+  primary_view?: string
+  views?: ViewLayout[]
+  filter_presets?: FilterPreset[]
+  fields?: FieldsConfig
 }
+
+export type TableMetadata = BaseResourceMetadata & {
+  inline_form?: boolean
+  query?: QueryConfig
+  tabs?: string[]
+  history?: HistoryMetadata
+}
+
+export type ViewMetadata = BaseResourceMetadata
 
 export type ColumnMetadata = {
   name?: string

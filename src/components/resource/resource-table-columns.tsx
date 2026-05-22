@@ -7,7 +7,6 @@ import { Checkbox } from "#/components/ui/checkbox"
 import { getColumnMetadata } from "#/lib/columns"
 import type {
   ColumnSchema,
-  PrimaryKey,
   ResourceDataSchema,
   ResourceSchema,
   TableMetadata,
@@ -31,7 +30,7 @@ export function getResourceTableColumns({
   const cols: ColumnDef<Record<string, unknown>, unknown>[] = []
 
   if (tableSchema?.primary_keys) {
-    const primaryKeys = (tableSchema.primary_keys ?? []) as PrimaryKey[]
+    const primaryKeys = (tableSchema.primary_keys ?? [])
     const primaryKeyNames = primaryKeys.map((k) => k.name)
     cols.push({
       id: "select",

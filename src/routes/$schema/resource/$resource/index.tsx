@@ -15,47 +15,47 @@ export const Route = createFileRoute("/$schema/resource/$resource/")({
       resourcesQueryOptions(schema)
     )
     const item = resources.find((r) => r.id === resource)
-    const primary = item?.meta?.primaryItem
-    const primaryItem = primary
-      ? item?.meta?.items?.find((i) => i.id === primary)
+    const primary = item?.meta?.primary_view
+    const primaryView = primary
+      ? item?.meta?.views?.find((i) => i.id === primary)
       : null
 
-    if (item?.meta?.single) {
+    if (item?.meta?.singleton) {
       throw redirect({
         to: "/$schema/resource/$resource/single",
         params: { schema, resource },
       })
     }
-    if (primaryItem?.type === "kanban") {
+    if (primaryView?.type === "kanban") {
       throw redirect({
         to: "/$schema/resource/$resource/kanban/$kanbanId",
-        params: { schema, resource, kanbanId: primaryItem.id },
+        params: { schema, resource, kanbanId: primaryView.id },
         search: { layout: "board" },
       })
     }
-    if (primaryItem?.type === "calendar") {
+    if (primaryView?.type === "calendar") {
       throw redirect({
         to: "/$schema/resource/$resource/calendar/$calendarId",
-        params: { schema, resource, calendarId: primaryItem.id },
+        params: { schema, resource, calendarId: primaryView.id },
         search: { view: "month" },
       })
     }
-    if (primaryItem?.type === "gallery") {
+    if (primaryView?.type === "gallery") {
       throw redirect({
         to: "/$schema/resource/$resource/gallery/$galleryId",
-        params: { schema, resource, galleryId: primaryItem.id },
+        params: { schema, resource, galleryId: primaryView.id },
       })
     }
-    if (primaryItem?.type === "list") {
+    if (primaryView?.type === "list") {
       throw redirect({
         to: "/$schema/resource/$resource/list/$listId",
-        params: { schema, resource, listId: primaryItem.id },
+        params: { schema, resource, listId: primaryView.id },
       })
     }
-    if (primaryItem?.type === "tree") {
+    if (primaryView?.type === "tree") {
       throw redirect({
         to: "/$schema/resource/$resource/tree/$treeId",
-        params: { schema, resource, treeId: primaryItem.id },
+        params: { schema, resource, treeId: primaryView.id },
       })
     }
     if (primary === "grid") {

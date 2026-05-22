@@ -368,18 +368,58 @@ comment on table finance.accounts is '{
     "icon": "BookOpen",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"code","desc":false}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Accounts By Type","type":"kanban","group":"type","title":"name","description":"code","badge":"type"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Accounts By Type",
+            "type": "kanban",
+            "group": "type",
+            "title": "name",
+            "description": "code",
+            "badge": "type"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["code","name","type","description"]},
-        {"id":"organization","title":"Organization","fields":["parent_id","is_active","color"]},
-        {"id":"balances","title":"Balances","fields":["currency","opening_balance","current_balance"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "code",
+                    "name",
+                    "type",
+                    "description"
+                ]
+            },
+            {
+                "id": "organization",
+                "title": "Organization",
+                "fields": [
+                    "parent_id",
+                    "is_active",
+                    "color"
+                ]
+            },
+            {
+                "id": "balances",
+                "title": "Balances",
+                "fields": [
+                    "currency",
+                    "opening_balance",
+                    "current_balance"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "code",
+                "desc": false
+            }
+        ]
+    }
 }';
 
 revoke all on table finance.accounts
@@ -458,21 +498,87 @@ comment on table finance.vendors is '{
     "icon": "Truck",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "gallery",
-    "items": [
-        {"id":"gallery","name":"Vendor Gallery","type":"gallery","cover":"logo","title":"name","description":"city","badge":"country"}
+    "primary_view": "gallery",
+    "views": [
+        {
+            "id": "gallery",
+            "name": "Vendor Gallery",
+            "type": "gallery",
+            "cover": "logo",
+            "title": "name",
+            "description": "city",
+            "badge": "country"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","legal_name","code","logo","description"]},
-        {"id":"contact","title":"Contact","fields":["website","email","phone"]},
-        {"id":"address","title":"Address","fields":["address","city","country"]},
-        {"id":"financial","title":"Financial","fields":["tax_id","payment_terms"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","color","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "legal_name",
+                    "code",
+                    "logo",
+                    "description"
+                ]
+            },
+            {
+                "id": "contact",
+                "title": "Contact",
+                "fields": [
+                    "website",
+                    "email",
+                    "phone"
+                ]
+            },
+            {
+                "id": "address",
+                "title": "Address",
+                "fields": [
+                    "address",
+                    "city",
+                    "country"
+                ]
+            },
+            {
+                "id": "financial",
+                "title": "Financial",
+                "fields": [
+                    "tax_id",
+                    "payment_terms"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.vendors.logo is '{"accept":"image/*"}';
@@ -566,26 +672,114 @@ comment on table finance.invoices is '{
     "icon": "Receipt",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"issue_date","desc":true}],
-        "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"accounts","on":"revenue_account_id","columns":["code","name"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Invoices By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "invoice_number",
+            "description": "customer_name",
+            "date": "due_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Invoice Calendar",
+            "type": "calendar",
+            "title": "invoice_number",
+            "badge": "status",
+            "start_date": "issue_date",
+            "end_date": "due_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "invoice_number",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "customer",
+                "title": "Customer",
+                "fields": [
+                    "customer_name",
+                    "customer_email",
+                    "customer_address"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "issue_date",
+                    "due_date",
+                    "paid_date"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "subtotal",
+                    "tax",
+                    "total",
+                    "amount_paid",
+                    "currency"
+                ]
+            },
+            {
+                "id": "accounting",
+                "title": "Accounting",
+                "fields": [
+                    "revenue_account_id",
+                    "line_items"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Invoices By Status","type":"kanban","group":"status","title":"invoice_number","description":"customer_name","date":"due_date","badge":"status"},
-        {"id":"calendar","name":"Invoice Calendar","type":"calendar","title":"invoice_number","startDate":"issue_date","endDate":"due_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["invoice_number","status","description"]},
-        {"id":"customer","title":"Customer","fields":["customer_name","customer_email","customer_address"]},
-        {"id":"dates","title":"Dates","fields":["issue_date","due_date","paid_date"]},
-        {"id":"amounts","title":"Amounts","fields":["subtotal","tax","total","amount_paid","currency"]},
-        {"id":"accounting","title":"Accounting","fields":["revenue_account_id","line_items"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "issue_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "accounts",
+                "on": "revenue_account_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.invoices.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -683,26 +877,114 @@ comment on table finance.bills is '{
     "icon": "FileText",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"issue_date","desc":true}],
-        "join": [
-            {"table":"vendors","on":"vendor_id","columns":["name","code"]},
-            {"table":"accounts","on":"expense_account_id","columns":["code","name"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Bills By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "bill_number",
+            "description": "description",
+            "date": "due_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Bill Calendar",
+            "type": "calendar",
+            "title": "bill_number",
+            "badge": "status",
+            "start_date": "issue_date",
+            "end_date": "due_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "bill_number",
+                    "vendor_id",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "issue_date",
+                    "due_date",
+                    "paid_date"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "subtotal",
+                    "tax",
+                    "total",
+                    "amount_paid",
+                    "currency"
+                ]
+            },
+            {
+                "id": "accounting",
+                "title": "Accounting",
+                "fields": [
+                    "expense_account_id",
+                    "line_items"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Bills By Status","type":"kanban","group":"status","title":"bill_number","description":"description","date":"due_date","badge":"status"},
-        {"id":"calendar","name":"Bill Calendar","type":"calendar","title":"bill_number","startDate":"issue_date","endDate":"due_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["bill_number","vendor_id","status","description"]},
-        {"id":"dates","title":"Dates","fields":["issue_date","due_date","paid_date"]},
-        {"id":"amounts","title":"Amounts","fields":["subtotal","tax","total","amount_paid","currency"]},
-        {"id":"accounting","title":"Accounting","fields":["expense_account_id","line_items"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "issue_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "vendors",
+                "on": "vendor_id",
+                "columns": [
+                    "name",
+                    "code"
+                ]
+            },
+            {
+                "table": "accounts",
+                "on": "expense_account_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.bills.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -818,26 +1100,119 @@ comment on table finance.expenses is '{
     "icon": "Wallet",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"expense_date","desc":true}],
-        "join": [
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]},
-            {"table":"users","on":"reviewer_user_id","alias":"reviewer_user","columns":["name","email"]},
-            {"table":"accounts","on":"expense_account_id","columns":["code","name"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Expenses By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "expense_number",
+            "description": "merchant",
+            "date": "expense_date",
+            "badge": "category"
+        },
+        {
+            "id": "calendar",
+            "name": "Expense Calendar",
+            "type": "calendar",
+            "title": "expense_number",
+            "badge": "status",
+            "start_date": "expense_date",
+            "end_date": "expense_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "expense_number",
+                    "employee_name",
+                    "employee_email",
+                    "status",
+                    "category"
+                ]
+            },
+            {
+                "id": "amount",
+                "title": "Amount",
+                "fields": [
+                    "amount",
+                    "currency",
+                    "payment_method"
+                ]
+            },
+            {
+                "id": "details",
+                "title": "Details",
+                "fields": [
+                    "expense_date",
+                    "merchant",
+                    "description",
+                    "expense_account_id"
+                ]
+            },
+            {
+                "id": "review",
+                "title": "Review",
+                "fields": [
+                    "reviewer_user_id",
+                    "reviewed_at",
+                    "response",
+                    "reimbursed_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Receipt & Notes",
+                "collapsible": true,
+                "fields": [
+                    "receipt",
+                    "attachments",
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Expenses By Status","type":"kanban","group":"status","title":"expense_number","description":"merchant","date":"expense_date","badge":"category"},
-        {"id":"calendar","name":"Expense Calendar","type":"calendar","title":"expense_number","startDate":"expense_date","endDate":"expense_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["expense_number","employee_name","employee_email","status","category"]},
-        {"id":"amount","title":"Amount","fields":["amount","currency","payment_method"]},
-        {"id":"details","title":"Details","fields":["expense_date","merchant","description","expense_account_id"]},
-        {"id":"review","title":"Review","fields":["reviewer_user_id","reviewed_at","response","reimbursed_at"]},
-        {"id":"extras","title":"Receipt & Notes","collapsible":true,"fields":["receipt","attachments","tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "expense_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "reviewer_user_id",
+                "alias": "reviewer_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "accounts",
+                "on": "expense_account_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.expenses.receipt is '{"accept":"image/*,application/pdf", "maxFiles": 5}';
@@ -955,26 +1330,113 @@ comment on table finance.payments is '{
     "icon": "ArrowLeftRight",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"payment_date","desc":true}],
-        "join": [
-            {"table":"invoices","on":"invoice_id","columns":["invoice_number","customer_name"]},
-            {"table":"bills","on":"bill_id","columns":["bill_number"]},
-            {"table":"accounts","on":"account_id","columns":["code","name"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Payments By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "payment_number",
+            "description": "party_name",
+            "date": "payment_date",
+            "badge": "direction"
+        },
+        {
+            "id": "calendar",
+            "name": "Payment Calendar",
+            "type": "calendar",
+            "title": "payment_number",
+            "badge": "status",
+            "start_date": "payment_date",
+            "end_date": "payment_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "payment_number",
+                    "direction",
+                    "status",
+                    "method"
+                ]
+            },
+            {
+                "id": "party",
+                "title": "Party",
+                "fields": [
+                    "party_name",
+                    "party_email"
+                ]
+            },
+            {
+                "id": "amount",
+                "title": "Amount",
+                "fields": [
+                    "amount",
+                    "currency",
+                    "payment_date",
+                    "reference_number"
+                ]
+            },
+            {
+                "id": "links",
+                "title": "Links",
+                "fields": [
+                    "invoice_id",
+                    "bill_id",
+                    "account_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Description, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "description",
+                    "attachments",
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Payments By Status","type":"kanban","group":"status","title":"payment_number","description":"party_name","date":"payment_date","badge":"direction"},
-        {"id":"calendar","name":"Payment Calendar","type":"calendar","title":"payment_number","startDate":"payment_date","endDate":"payment_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["payment_number","direction","status","method"]},
-        {"id":"party","title":"Party","fields":["party_name","party_email"]},
-        {"id":"amount","title":"Amount","fields":["amount","currency","payment_date","reference_number"]},
-        {"id":"links","title":"Links","fields":["invoice_id","bill_id","account_id"]},
-        {"id":"extras","title":"Description, Attachments & Notes","collapsible":true,"fields":["description","attachments","tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "payment_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "invoices",
+                "on": "invoice_id",
+                "columns": [
+                    "invoice_number",
+                    "customer_name"
+                ]
+            },
+            {
+                "table": "bills",
+                "on": "bill_id",
+                "columns": [
+                    "bill_number"
+                ]
+            },
+            {
+                "table": "accounts",
+                "on": "account_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.payments.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -1069,24 +1531,96 @@ comment on table finance.budgets is '{
     "icon": "PiggyBank",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"period_start","desc":true}],
-        "join": [
-            {"table":"accounts","on":"account_id","columns":["code","name"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Budgets By Period",
+            "type": "kanban",
+            "group": "period",
+            "title": "name",
+            "description": "department",
+            "date": "period_start",
+            "badge": "period"
+        },
+        {
+            "id": "calendar",
+            "name": "Budget Calendar",
+            "type": "calendar",
+            "title": "name",
+            "badge": "period",
+            "start_date": "period_start",
+            "end_date": "period_end"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "name",
+                    "department",
+                    "period",
+                    "description"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "period_start",
+                    "period_end"
+                ]
+            },
+            {
+                "id": "amounts",
+                "title": "Amounts",
+                "fields": [
+                    "amount",
+                    "spent",
+                    "currency",
+                    "account_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Budgets By Period","type":"kanban","group":"period","title":"name","description":"department","date":"period_start","badge":"period"},
-        {"id":"calendar","name":"Budget Calendar","type":"calendar","title":"name","startDate":"period_start","endDate":"period_end","badge":"period"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["name","department","period","description"]},
-        {"id":"dates","title":"Dates","fields":["period_start","period_end"]},
-        {"id":"amounts","title":"Amounts","fields":["amount","spent","currency","account_id"]},
-        {"id":"extras","title":"Tags & Notes","collapsible":true,"fields":["tags","color","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "period_start",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "accounts",
+                "on": "account_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table finance.budgets
@@ -1176,21 +1710,90 @@ comment on table finance.payroll_runs is '{
     "icon": "Banknote",
     "display": "block",
     "group": "Payroll",
-    "query": {
-        "sort": [{"id":"pay_date","desc":true}],
-        "join": [{"table":"users","on":"user_id","columns":["name","email"]}]
-    },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Payroll Runs By Status","type":"kanban","group":"status","title":"run_number","description":"description","date":"pay_date","badge":"status"},
-        {"id":"calendar","name":"Payroll Calendar","type":"calendar","title":"run_number","startDate":"period_start","endDate":"pay_date","badge":"status"}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Payroll Runs By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "run_number",
+            "description": "description",
+            "date": "pay_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Payroll Calendar",
+            "type": "calendar",
+            "title": "run_number",
+            "badge": "status",
+            "start_date": "period_start",
+            "end_date": "pay_date"
+        }
     ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["run_number","status","description"]},
-        {"id":"period","title":"Period","fields":["period_start","period_end","pay_date"]},
-        {"id":"totals","title":"Totals","fields":["total_gross","total_deductions","total_tax","total_net","currency","employee_count"]},
-        {"id":"extras","title":"Attachments & Notes","collapsible":true,"fields":["attachments","tags","notes"]}
-    ]
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "run_number",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "period",
+                "title": "Period",
+                "fields": [
+                    "period_start",
+                    "period_end",
+                    "pay_date"
+                ]
+            },
+            {
+                "id": "totals",
+                "title": "Totals",
+                "fields": [
+                    "total_gross",
+                    "total_deductions",
+                    "total_tax",
+                    "total_net",
+                    "currency",
+                    "employee_count"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "tags",
+                    "notes"
+                ]
+            }
+        ]
+    },
+    "query": {
+        "sort": [
+            {
+                "id": "pay_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.payroll_runs.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -1286,25 +1889,108 @@ comment on table finance.payslips is '{
     "icon": "FileSpreadsheet",
     "display": "block",
     "group": "Payroll",
-    "query": {
-        "sort": [{"id":"created_at","desc":true}],
-        "join": [
-            {"table":"payroll_runs","on":"run_id","columns":["run_number","pay_date"]},
-            {"table":"users","on":"employee_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Payslips By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "payslip_number",
+            "description": "employee_name",
+            "date": "paid_at",
+            "badge": "payment_method"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "payslip_number",
+                    "run_id",
+                    "status"
+                ]
+            },
+            {
+                "id": "employee",
+                "title": "Employee",
+                "fields": [
+                    "employee_name",
+                    "employee_email",
+                    "employee_user_id"
+                ]
+            },
+            {
+                "id": "earnings",
+                "title": "Earnings",
+                "fields": [
+                    "base_salary",
+                    "bonuses",
+                    "overtime",
+                    "gross_salary",
+                    "hours_worked",
+                    "currency"
+                ]
+            },
+            {
+                "id": "deductions",
+                "title": "Deductions",
+                "fields": [
+                    "tax_withheld",
+                    "social_security",
+                    "health_insurance",
+                    "retirement",
+                    "other_deductions"
+                ]
+            },
+            {
+                "id": "net",
+                "title": "Net & Payment",
+                "fields": [
+                    "net_salary",
+                    "payment_method",
+                    "paid_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Payslips By Status","type":"kanban","group":"status","title":"payslip_number","description":"employee_name","date":"paid_at","badge":"payment_method"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["payslip_number","run_id","status"]},
-        {"id":"employee","title":"Employee","fields":["employee_name","employee_email","employee_user_id"]},
-        {"id":"earnings","title":"Earnings","fields":["base_salary","bonuses","overtime","gross_salary","hours_worked","currency"]},
-        {"id":"deductions","title":"Deductions","fields":["tax_withheld","social_security","health_insurance","retirement","other_deductions"]},
-        {"id":"net","title":"Net & Payment","fields":["net_salary","payment_method","paid_at"]},
-        {"id":"extras","title":"Attachments & Notes","collapsible":true,"fields":["attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "payroll_runs",
+                "on": "run_id",
+                "columns": [
+                    "run_number",
+                    "pay_date"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "employee_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.payslips.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -1393,25 +2079,106 @@ comment on table finance.journal_entries is '{
     "icon": "BookText",
     "display": "block",
     "group": "Operations",
-    "query": {
-        "sort": [{"id":"entry_date","desc":true}],
-        "join": [
-            {"table":"accounts","on":"debit_account_id","alias":"debit_account","columns":["code","name"]},
-            {"table":"accounts","on":"credit_account_id","alias":"credit_account","columns":["code","name"]},
-            {"table":"users","on":"user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Entries By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "entry_number",
+            "description": "description",
+            "date": "entry_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Entry Calendar",
+            "type": "calendar",
+            "title": "entry_number",
+            "badge": "status",
+            "start_date": "entry_date",
+            "end_date": "entry_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "entry_number",
+                    "entry_date",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "accounts",
+                "title": "Accounts",
+                "fields": [
+                    "debit_account_id",
+                    "credit_account_id",
+                    "amount",
+                    "currency"
+                ]
+            },
+            {
+                "id": "reference",
+                "title": "Reference",
+                "fields": [
+                    "reference_type",
+                    "reference_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "attachments",
+                    "tags",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Entries By Status","type":"kanban","group":"status","title":"entry_number","description":"description","date":"entry_date","badge":"status"},
-        {"id":"calendar","name":"Entry Calendar","type":"calendar","title":"entry_number","startDate":"entry_date","endDate":"entry_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["entry_number","entry_date","status","description"]},
-        {"id":"accounts","title":"Accounts","fields":["debit_account_id","credit_account_id","amount","currency"]},
-        {"id":"reference","title":"Reference","fields":["reference_type","reference_id"]},
-        {"id":"extras","title":"Attachments & Notes","collapsible":true,"fields":["attachments","tags","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "entry_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "accounts",
+                "on": "debit_account_id",
+                "alias": "debit_account",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "accounts",
+                "on": "credit_account_id",
+                "alias": "credit_account",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column finance.journal_entries.attachments is '{"accept":"*", "maxFiles": 10}';

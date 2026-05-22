@@ -26,7 +26,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
-import type { GalleryViewItem, TableMetadata } from "#/lib/database-meta.types"
+import type { GalleryLayout, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
@@ -70,8 +70,8 @@ export const Route = createFileRoute(
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
-    const galleryView = meta.items?.find(
-      (item): item is GalleryViewItem =>
+    const galleryView = meta.views?.find(
+      (item): item is GalleryLayout =>
         item.id === galleryId && item.type === "gallery"
     )
     if (!galleryView) throw notFound()
@@ -229,7 +229,7 @@ function RouteComponent() {
     data: row,
   }))
 
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 

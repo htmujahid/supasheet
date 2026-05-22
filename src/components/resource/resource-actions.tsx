@@ -67,9 +67,9 @@ export function ResourceActions({
   const importLink = useSheetHref({ mode: "import" })
   const quickCreateLink = useSheetHref({ mode: "create", quick: true })
 
-  const quickCreateFields = (
+  const quickCreate = (
     JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  ).quickCreate
+  ).fields?.quick_create
 
   function handleRefresh() {
     queryClient.invalidateQueries({
@@ -101,7 +101,7 @@ export function ResourceActions({
           }
         />
         <DropdownMenuContent align="end" className="w-48">
-          {quickCreateFields?.length && quickCreateLink ? (
+          {quickCreate?.length && quickCreateLink ? (
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() =>
@@ -116,7 +116,7 @@ export function ResourceActions({
               </DropdownMenuItem>
             </DropdownMenuGroup>
           ) : null}
-          {quickCreateFields?.length ? <DropdownMenuSeparator /> : null}
+          {quickCreate?.length ? <DropdownMenuSeparator /> : null}
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={handleImport} disabled={!importLink}>
               <UploadIcon />

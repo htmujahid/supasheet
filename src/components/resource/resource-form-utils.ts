@@ -2,7 +2,7 @@ import { getColumnMetadata } from "#/lib/columns"
 import { decodeFilterValue } from "#/lib/data-table"
 import type {
   ColumnSchema,
-  ConditionalField,
+  FieldCondition,
   FieldBehavior,
   FieldSection,
   FieldSectionFields,
@@ -45,11 +45,11 @@ export function getCreateInitialValue(col: ColumnSchema): unknown {
 export function buildUpdatePayload(
   value: Record<string, unknown>,
   cols: ColumnSchema[],
-  fieldBehavior?: Record<string, FieldBehavior>
+  behavior?: Record<string, FieldBehavior>
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value)) {
-    const visible = fieldBehavior?.[k]?.visible
+    const visible = behavior?.[k]?.visible
     if (visible?.length && !evaluateConditionalField(visible, value)) {
       payload[k] = null
       continue
@@ -77,11 +77,11 @@ export function buildUpdatePayload(
 export function buildCreatePayload(
   value: Record<string, unknown>,
   cols: ColumnSchema[],
-  fieldBehavior?: Record<string, FieldBehavior>
+  behavior?: Record<string, FieldBehavior>
 ): Record<string, unknown> {
   const payload: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value)) {
-    const visible = fieldBehavior?.[k]?.visible
+    const visible = behavior?.[k]?.visible
     if (visible?.length && !evaluateConditionalField(visible, value)) continue
     if (v === "" || v === null || v === undefined) continue
     const col = cols.find((c) => (c.name ?? c.id) === k)
@@ -103,7 +103,7 @@ export function buildCreatePayload(
 }
 
 export function evaluateConditionalField(
-  conditions: ConditionalField[],
+  conditions: FieldCondition[],
   values: Record<string, unknown>
 ): boolean {
   return conditions.every((c) => {

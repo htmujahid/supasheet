@@ -29,7 +29,7 @@ export function ForeignKeyField({
     (j) => j.on === relationship.source_column_name
   )
 
-  const behavior = tableMetadata?.fkBehavior?.[field.name]
+  const behavior = tableMetadata?.fields?.lookups?.[field.name]
 
   const placeholder =
     field.state.value === "" && columnMetadata.defaultValue

@@ -63,14 +63,14 @@ export function ResourceUpdateForm({
     updateResourceMutationOptions(schema, resource)
   )
 
-  const fieldBehavior = (
+  const behavior = (
     JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  ).fieldBehavior
+  ).fields?.behavior
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, meta }) => {
-      const data = buildUpdatePayload(value, editableCols, fieldBehavior)
+      const data = buildUpdatePayload(value, editableCols, behavior)
       await updateRow({ pk, data })
       queryClient.invalidateQueries({
         queryKey: ["supasheet", "resource-data", schema, resource],

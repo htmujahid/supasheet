@@ -391,23 +391,90 @@ comment on column quality.standards.status is '{
 comment on table quality.standards is '{
     "icon": "BookCheck",
     "display": "block",
-    "query": {
-        "sort": [{"id":"name","desc":false}],
-        "join": [
-            {"table":"users","on":"user_id","columns":["name","email"]},
-            {"table":"standards","on":"superseded_by_id","columns":["code","name"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Standards By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "code",
+            "date": "effective_from",
+            "badge": "type"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "code",
+                    "name",
+                    "version",
+                    "type",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "scope",
+                "title": "Scope",
+                "fields": [
+                    "scope",
+                    "issued_by"
+                ]
+            },
+            {
+                "id": "dates",
+                "title": "Dates",
+                "fields": [
+                    "effective_from",
+                    "review_due_date",
+                    "superseded_by_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Document, Tags & Notes",
+                "collapsible": true,
+                "fields": [
+                    "document",
+                    "attachments",
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Standards By Status","type":"kanban","group":"status","title":"name","description":"code","date":"effective_from","badge":"type"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["code","name","version","type","status","description"]},
-        {"id":"scope","title":"Scope","fields":["scope","issued_by"]},
-        {"id":"dates","title":"Dates","fields":["effective_from","review_due_date","superseded_by_id"]},
-        {"id":"extras","title":"Document, Tags & Notes","collapsible":true,"fields":["document","attachments","tags","color","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "name",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "users",
+                "on": "user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "standards",
+                "on": "superseded_by_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.standards.document is '{"accept":"application/pdf,.doc,.docx", "maxFiles": 1}';
@@ -523,28 +590,136 @@ comment on column quality.inspections.result is '{
 comment on table quality.inspections is '{
     "icon": "ShieldCheck",
     "display": "block",
-    "query": {
-        "sort": [{"id":"scheduled_at","desc":true}],
-        "join": [
-            {"table":"standards","on":"standard_id","columns":["code","name"]},
-            {"table":"users","on":"inspector_user_id","alias":"inspector_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Inspections By Result",
+            "type": "kanban",
+            "group": "result",
+            "title": "inspection_number",
+            "description": "title",
+            "date": "scheduled_at",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Inspection Calendar",
+            "type": "calendar",
+            "title": "inspection_number",
+            "badge": "result",
+            "start_date": "scheduled_at",
+            "end_date": "completed_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "inspection_number",
+                    "title",
+                    "type",
+                    "result",
+                    "description"
+                ]
+            },
+            {
+                "id": "source",
+                "title": "Source",
+                "fields": [
+                    "source_type",
+                    "source_reference",
+                    "source_id",
+                    "supplier_name"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product",
+                "fields": [
+                    "product_sku",
+                    "product_name",
+                    "lot_number",
+                    "standard_id"
+                ]
+            },
+            {
+                "id": "sampling",
+                "title": "Sampling",
+                "fields": [
+                    "sample_size",
+                    "pass_count",
+                    "fail_count"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "inspector_user_id",
+                    "scheduled_at",
+                    "started_at",
+                    "completed_at"
+                ]
+            },
+            {
+                "id": "findings",
+                "title": "Findings",
+                "fields": [
+                    "findings"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Inspections By Result","type":"kanban","group":"result","title":"inspection_number","description":"title","date":"scheduled_at","badge":"type"},
-        {"id":"calendar","name":"Inspection Calendar","type":"calendar","title":"inspection_number","startDate":"scheduled_at","endDate":"completed_at","badge":"result"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["inspection_number","title","type","result","description"]},
-        {"id":"source","title":"Source","fields":["source_type","source_reference","source_id","supplier_name"]},
-        {"id":"product","title":"Product","fields":["product_sku","product_name","lot_number","standard_id"]},
-        {"id":"sampling","title":"Sampling","fields":["sample_size","pass_count","fail_count"]},
-        {"id":"timing","title":"Timing","fields":["inspector_user_id","scheduled_at","started_at","completed_at"]},
-        {"id":"findings","title":"Findings","fields":["findings"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "scheduled_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "standards",
+                "on": "standard_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "inspector_user_id",
+                "alias": "inspector_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.inspections.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -635,16 +810,62 @@ comment on column quality.inspection_items.result is '{
 comment on table quality.inspection_items is '{
     "icon": "ListChecks",
     "display": "none",
-    "query": {
-        "sort": [{"id":"line_number","desc":false}],
-        "join": [{"table":"inspections","on":"inspection_id","columns":["inspection_number","title"]}]
+    "fields": {
+        "sections": [
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "inspection_id",
+                    "line_number"
+                ]
+            },
+            {
+                "id": "check",
+                "title": "Check",
+                "fields": [
+                    "characteristic",
+                    "method",
+                    "specification"
+                ]
+            },
+            {
+                "id": "result",
+                "title": "Result",
+                "fields": [
+                    "measured_value",
+                    "tolerance",
+                    "result"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Notes",
+                "collapsible": true,
+                "fields": [
+                    "notes"
+                ]
+            }
+        ]
     },
-    "sections": [
-        {"id":"link","title":"Link","fields":["inspection_id","line_number"]},
-        {"id":"check","title":"Check","fields":["characteristic","method","specification"]},
-        {"id":"result","title":"Result","fields":["measured_value","tolerance","result"]},
-        {"id":"extras","title":"Notes","collapsible":true,"fields":["notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "line_number",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "inspections",
+                "on": "inspection_id",
+                "columns": [
+                    "inspection_number",
+                    "title"
+                ]
+            }
+        ]
+    }
 }';
 
 revoke all on table quality.inspection_items
@@ -762,27 +983,131 @@ comment on column quality.non_conformances.disposition is '{
 comment on table quality.non_conformances is '{
     "icon": "AlertOctagon",
     "display": "block",
-    "query": {
-        "sort": [{"id":"discovered_at","desc":true}],
-        "join": [
-            {"table":"inspections","on":"inspection_id","columns":["inspection_number","title"]},
-            {"table":"users","on":"assigned_user_id","alias":"assigned_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "NCRs By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "ncr_number",
+            "description": "title",
+            "date": "discovered_at",
+            "badge": "severity"
+        },
+        {
+            "id": "calendar",
+            "name": "NCR Calendar",
+            "type": "calendar",
+            "title": "ncr_number",
+            "badge": "status",
+            "start_date": "discovered_at",
+            "end_date": "closed_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "ncr_number",
+                    "title",
+                    "severity",
+                    "status",
+                    "disposition",
+                    "description"
+                ]
+            },
+            {
+                "id": "source",
+                "title": "Source",
+                "fields": [
+                    "inspection_id",
+                    "source_type",
+                    "source_reference",
+                    "source_id",
+                    "supplier_name"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product & Impact",
+                "fields": [
+                    "product_sku",
+                    "product_name",
+                    "lot_number",
+                    "quantity_affected",
+                    "estimated_cost",
+                    "currency"
+                ]
+            },
+            {
+                "id": "investigation",
+                "title": "Investigation",
+                "fields": [
+                    "root_cause",
+                    "assigned_user_id"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "discovered_at",
+                    "resolved_at",
+                    "closed_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"NCRs By Status","type":"kanban","group":"status","title":"ncr_number","description":"title","date":"discovered_at","badge":"severity"},
-        {"id":"calendar","name":"NCR Calendar","type":"calendar","title":"ncr_number","startDate":"discovered_at","endDate":"closed_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["ncr_number","title","severity","status","disposition","description"]},
-        {"id":"source","title":"Source","fields":["inspection_id","source_type","source_reference","source_id","supplier_name"]},
-        {"id":"product","title":"Product & Impact","fields":["product_sku","product_name","lot_number","quantity_affected","estimated_cost","currency"]},
-        {"id":"investigation","title":"Investigation","fields":["root_cause","assigned_user_id"]},
-        {"id":"timing","title":"Timing","fields":["discovered_at","resolved_at","closed_at"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "discovered_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "inspections",
+                "on": "inspection_id",
+                "columns": [
+                    "inspection_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "assigned_user_id",
+                "alias": "assigned_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.non_conformances.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -907,29 +1232,144 @@ comment on column quality.capa.priority is '{
 comment on table quality.capa is '{
     "icon": "Wrench",
     "display": "block",
-    "query": {
-        "sort": [{"id":"opened_at","desc":true}],
-        "join": [
-            {"table":"non_conformances","on":"ncr_id","columns":["ncr_number","title"]},
-            {"table":"users","on":"owner_user_id","alias":"owner_user","columns":["name","email"]},
-            {"table":"users","on":"verifier_user_id","alias":"verifier_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "CAPA By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "capa_number",
+            "description": "title",
+            "date": "target_close_date",
+            "badge": "priority"
+        },
+        {
+            "id": "calendar",
+            "name": "CAPA Calendar",
+            "type": "calendar",
+            "title": "capa_number",
+            "badge": "status",
+            "start_date": "opened_at",
+            "end_date": "target_close_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "capa_number",
+                    "title",
+                    "type",
+                    "status",
+                    "priority",
+                    "description"
+                ]
+            },
+            {
+                "id": "link",
+                "title": "Link",
+                "fields": [
+                    "ncr_id",
+                    "audit_finding_id"
+                ]
+            },
+            {
+                "id": "investigation",
+                "title": "Investigation",
+                "fields": [
+                    "root_cause",
+                    "corrective_action",
+                    "preventive_action",
+                    "verification_plan"
+                ]
+            },
+            {
+                "id": "ownership",
+                "title": "Ownership",
+                "fields": [
+                    "owner_user_id",
+                    "verifier_user_id"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "opened_at",
+                    "target_close_date",
+                    "closed_at"
+                ]
+            },
+            {
+                "id": "effectiveness",
+                "title": "Effectiveness",
+                "fields": [
+                    "effectiveness_score",
+                    "cost",
+                    "currency"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"CAPA By Status","type":"kanban","group":"status","title":"capa_number","description":"title","date":"target_close_date","badge":"priority"},
-        {"id":"calendar","name":"CAPA Calendar","type":"calendar","title":"capa_number","startDate":"opened_at","endDate":"target_close_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["capa_number","title","type","status","priority","description"]},
-        {"id":"link","title":"Link","fields":["ncr_id","audit_finding_id"]},
-        {"id":"investigation","title":"Investigation","fields":["root_cause","corrective_action","preventive_action","verification_plan"]},
-        {"id":"ownership","title":"Ownership","fields":["owner_user_id","verifier_user_id"]},
-        {"id":"timing","title":"Timing","fields":["opened_at","target_close_date","closed_at"]},
-        {"id":"effectiveness","title":"Effectiveness","fields":["effectiveness_score","cost","currency"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "opened_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "non_conformances",
+                "on": "ncr_id",
+                "columns": [
+                    "ncr_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "owner_user_id",
+                "alias": "owner_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "verifier_user_id",
+                "alias": "verifier_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.capa.attachments is '{"accept":"*", "maxFiles": 20}';
@@ -1033,27 +1473,126 @@ comment on column quality.audits.status is '{
 comment on table quality.audits is '{
     "icon": "ClipboardCheck",
     "display": "block",
-    "query": {
-        "sort": [{"id":"scheduled_date","desc":true}],
-        "join": [
-            {"table":"standards","on":"standard_id","columns":["code","name"]},
-            {"table":"users","on":"auditor_user_id","alias":"auditor_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Audits By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "audit_number",
+            "description": "title",
+            "date": "scheduled_date",
+            "badge": "type"
+        },
+        {
+            "id": "calendar",
+            "name": "Audit Calendar",
+            "type": "calendar",
+            "title": "audit_number",
+            "badge": "status",
+            "start_date": "scheduled_date",
+            "end_date": "completed_at"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "audit_number",
+                    "title",
+                    "type",
+                    "status",
+                    "standard_id",
+                    "summary"
+                ]
+            },
+            {
+                "id": "parties",
+                "title": "Parties",
+                "fields": [
+                    "auditee",
+                    "auditor_user_id",
+                    "external_auditor"
+                ]
+            },
+            {
+                "id": "plan",
+                "title": "Plan",
+                "fields": [
+                    "scope",
+                    "objectives"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "scheduled_date",
+                    "started_at",
+                    "completed_at",
+                    "closed_at"
+                ]
+            },
+            {
+                "id": "outcome",
+                "title": "Outcome",
+                "fields": [
+                    "overall_score",
+                    "report"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Audits By Status","type":"kanban","group":"status","title":"audit_number","description":"title","date":"scheduled_date","badge":"type"},
-        {"id":"calendar","name":"Audit Calendar","type":"calendar","title":"audit_number","startDate":"scheduled_date","endDate":"completed_at","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["audit_number","title","type","status","standard_id","summary"]},
-        {"id":"parties","title":"Parties","fields":["auditee","auditor_user_id","external_auditor"]},
-        {"id":"plan","title":"Plan","fields":["scope","objectives"]},
-        {"id":"timing","title":"Timing","fields":["scheduled_date","started_at","completed_at","closed_at"]},
-        {"id":"outcome","title":"Outcome","fields":["overall_score","report"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "scheduled_date",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "standards",
+                "on": "standard_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "auditor_user_id",
+                "alias": "auditor_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.audits.report is '{"accept":"application/pdf,.doc,.docx", "maxFiles": 1}';
@@ -1161,24 +1700,98 @@ comment on column quality.audit_findings.status is '{
 comment on table quality.audit_findings is '{
     "icon": "FileWarning",
     "display": "block",
-    "query": {
-        "sort": [{"id":"created_at","desc":true}],
-        "join": [
-            {"table":"audits","on":"audit_id","columns":["audit_number","title"]},
-            {"table":"capa","on":"capa_id","columns":["capa_number","title"]},
-            {"table":"users","on":"owner_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Findings By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "finding_number",
+            "description": "title",
+            "date": "target_close_date",
+            "badge": "severity"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "finding_number",
+                    "audit_id",
+                    "clause",
+                    "title",
+                    "severity",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "evidence",
+                "title": "Evidence & Recommendation",
+                "fields": [
+                    "evidence",
+                    "recommendation"
+                ]
+            },
+            {
+                "id": "action",
+                "title": "Action",
+                "fields": [
+                    "capa_id",
+                    "owner_user_id",
+                    "target_close_date",
+                    "closed_at"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Findings By Status","type":"kanban","group":"status","title":"finding_number","description":"title","date":"target_close_date","badge":"severity"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["finding_number","audit_id","clause","title","severity","status","description"]},
-        {"id":"evidence","title":"Evidence & Recommendation","fields":["evidence","recommendation"]},
-        {"id":"action","title":"Action","fields":["capa_id","owner_user_id","target_close_date","closed_at"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "created_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "audits",
+                "on": "audit_id",
+                "columns": [
+                    "audit_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "capa",
+                "on": "capa_id",
+                "columns": [
+                    "capa_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "owner_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.audit_findings.attachments is '{"accept":"*", "maxFiles": 10}';
@@ -1275,25 +1888,105 @@ comment on column quality.certifications.status is '{
 comment on table quality.certifications is '{
     "icon": "Award",
     "display": "block",
-    "query": {
-        "sort": [{"id":"expiry_date","desc":false}],
-        "join": [
-            {"table":"standards","on":"standard_id","columns":["code","name"]},
-            {"table":"users","on":"contact_user_id","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Certifications By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "name",
+            "description": "certificate_number",
+            "date": "expiry_date",
+            "badge": "status"
+        },
+        {
+            "id": "calendar",
+            "name": "Certification Calendar",
+            "type": "calendar",
+            "title": "name",
+            "badge": "status",
+            "start_date": "issued_date",
+            "end_date": "expiry_date"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "certificate_number",
+                    "name",
+                    "standard_id",
+                    "status",
+                    "scope"
+                ]
+            },
+            {
+                "id": "issuance",
+                "title": "Issuance",
+                "fields": [
+                    "issuing_body",
+                    "issued_date",
+                    "expiry_date"
+                ]
+            },
+            {
+                "id": "audits",
+                "title": "Audits",
+                "fields": [
+                    "last_audit_date",
+                    "next_audit_date"
+                ]
+            },
+            {
+                "id": "ownership",
+                "title": "Ownership",
+                "fields": [
+                    "contact_user_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Document & Notes",
+                "collapsible": true,
+                "fields": [
+                    "document",
+                    "attachments",
+                    "tags",
+                    "color",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Certifications By Status","type":"kanban","group":"status","title":"name","description":"certificate_number","date":"expiry_date","badge":"status"},
-        {"id":"calendar","name":"Certification Calendar","type":"calendar","title":"name","startDate":"issued_date","endDate":"expiry_date","badge":"status"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["certificate_number","name","standard_id","status","scope"]},
-        {"id":"issuance","title":"Issuance","fields":["issuing_body","issued_date","expiry_date"]},
-        {"id":"audits","title":"Audits","fields":["last_audit_date","next_audit_date"]},
-        {"id":"ownership","title":"Ownership","fields":["contact_user_id"]},
-        {"id":"extras","title":"Document & Notes","collapsible":true,"fields":["document","attachments","tags","color","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "expiry_date",
+                "desc": false
+            }
+        ],
+        "join": [
+            {
+                "table": "standards",
+                "on": "standard_id",
+                "columns": [
+                    "code",
+                    "name"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "contact_user_id",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.certifications.document is '{"accept":"application/pdf", "maxFiles": 1}';
@@ -1407,27 +2100,127 @@ comment on column quality.complaints.status is '{
 comment on table quality.complaints is '{
     "icon": "MessageSquareWarning",
     "display": "block",
-    "query": {
-        "sort": [{"id":"received_at","desc":true}],
-        "join": [
-            {"table":"non_conformances","on":"ncr_id","columns":["ncr_number","title"]},
-            {"table":"capa","on":"capa_id","columns":["capa_number","title"]},
-            {"table":"users","on":"assigned_user_id","alias":"assigned_user","columns":["name","email"]},
-            {"table":"users","on":"user_id","alias":"user","columns":["name","email"]}
+    "primary_view": "kanban",
+    "views": [
+        {
+            "id": "kanban",
+            "name": "Complaints By Status",
+            "type": "kanban",
+            "group": "status",
+            "title": "complaint_number",
+            "description": "title",
+            "date": "received_at",
+            "badge": "severity"
+        }
+    ],
+    "fields": {
+        "sections": [
+            {
+                "id": "summary",
+                "title": "Summary",
+                "fields": [
+                    "complaint_number",
+                    "title",
+                    "severity",
+                    "status",
+                    "description"
+                ]
+            },
+            {
+                "id": "customer",
+                "title": "Customer",
+                "fields": [
+                    "customer_name",
+                    "customer_email",
+                    "order_reference"
+                ]
+            },
+            {
+                "id": "product",
+                "title": "Product",
+                "fields": [
+                    "product_sku",
+                    "product_name",
+                    "lot_number"
+                ]
+            },
+            {
+                "id": "timing",
+                "title": "Timing",
+                "fields": [
+                    "received_at",
+                    "resolved_at",
+                    "closed_at"
+                ]
+            },
+            {
+                "id": "action",
+                "title": "Action",
+                "fields": [
+                    "assigned_user_id",
+                    "response",
+                    "resolution",
+                    "ncr_id",
+                    "capa_id"
+                ]
+            },
+            {
+                "id": "extras",
+                "title": "Tags, Attachments & Notes",
+                "collapsible": true,
+                "fields": [
+                    "tags",
+                    "color",
+                    "attachments",
+                    "notes"
+                ]
+            }
         ]
     },
-    "primaryItem": "kanban",
-    "items": [
-        {"id":"kanban","name":"Complaints By Status","type":"kanban","group":"status","title":"complaint_number","description":"title","date":"received_at","badge":"severity"}
-    ],
-    "sections": [
-        {"id":"summary","title":"Summary","fields":["complaint_number","title","severity","status","description"]},
-        {"id":"customer","title":"Customer","fields":["customer_name","customer_email","order_reference"]},
-        {"id":"product","title":"Product","fields":["product_sku","product_name","lot_number"]},
-        {"id":"timing","title":"Timing","fields":["received_at","resolved_at","closed_at"]},
-        {"id":"action","title":"Action","fields":["assigned_user_id","response","resolution","ncr_id","capa_id"]},
-        {"id":"extras","title":"Tags, Attachments & Notes","collapsible":true,"fields":["tags","color","attachments","notes"]}
-    ]
+    "query": {
+        "sort": [
+            {
+                "id": "received_at",
+                "desc": true
+            }
+        ],
+        "join": [
+            {
+                "table": "non_conformances",
+                "on": "ncr_id",
+                "columns": [
+                    "ncr_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "capa",
+                "on": "capa_id",
+                "columns": [
+                    "capa_number",
+                    "title"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "assigned_user_id",
+                "alias": "assigned_user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            },
+            {
+                "table": "users",
+                "on": "user_id",
+                "alias": "user",
+                "columns": [
+                    "name",
+                    "email"
+                ]
+            }
+        ]
+    }
 }';
 
 comment on column quality.complaints.attachments is '{"accept":"*", "maxFiles": 10}';

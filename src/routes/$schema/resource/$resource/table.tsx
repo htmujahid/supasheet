@@ -213,7 +213,7 @@ function RouteComponent() {
         : {}) as TableMetadata,
     [resourceSchema?.comment]
   )
-  const metaItems = meta.items ?? []
+  const metaItems = meta.views ?? []
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
@@ -271,7 +271,7 @@ function RouteComponent() {
           pagination={pagination}
           columnFilters={filters}
           pageCount={pageCount}
-          filterTemplates={meta.filterTemplates ?? []}
+          filterPresets={meta.filter_presets ?? []}
         />
       </div>
       <Outlet />
