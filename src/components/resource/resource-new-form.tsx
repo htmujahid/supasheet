@@ -53,11 +53,10 @@ export function ResourceNewForm({
     insertResourceMutationOptions(schema, table)
   )
 
-  const primaryKeys = (tableSchema.primary_keys ?? [])
+  const primaryKeys = tableSchema.primary_keys ?? []
 
-  const behavior = (
-    JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
-  ).fields?.behavior
+  const behavior = (JSON.parse(tableSchema.comment ?? "{}") as TableMetadata)
+    .fields?.behavior
 
   const form = useAppForm({
     defaultValues,

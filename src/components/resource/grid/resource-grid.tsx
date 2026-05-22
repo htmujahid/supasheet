@@ -50,7 +50,7 @@ export function ResourceGrid({
   const schema = resourceSchema.schema
   const resource = resourceSchema.name
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const primaryKeys = (tableSchema?.primary_keys ?? [])
+  const primaryKeys = tableSchema?.primary_keys ?? []
 
   const columns = useMemo(() => {
     const tableMeta = JSON.parse(

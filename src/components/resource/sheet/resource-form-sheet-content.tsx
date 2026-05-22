@@ -49,7 +49,7 @@ export function ResourceFormSheetContent({
   const queryClient = useQueryClient()
   const schema = tableSchema.schema
   const resource = tableSchema.name
-  const primaryKeys = (tableSchema.primary_keys ?? [])
+  const primaryKeys = tableSchema.primary_keys ?? []
 
   const tableMeta = JSON.parse(tableSchema.comment ?? "{}") as TableMetadata
 

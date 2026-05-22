@@ -187,7 +187,7 @@ function RouteComponent() {
     (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).name ??
     formatTitle(resource)
 
-  const primaryKeys = (tableSchema?.primary_keys ?? [])
+  const primaryKeys = tableSchema?.primary_keys ?? []
 
   const { data } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, undefined, 1, 1)

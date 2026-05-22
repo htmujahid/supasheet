@@ -25,13 +25,15 @@ export type ColumnSchema<S extends DatabaseSchemas = DatabaseSchemas> =
     table: DatabaseTables<S> | DatabaseViews<S>
   }
 
-export type TableSchema<S extends DatabaseSchemas = DatabaseSchemas> =
-  Omit<Database["supasheet"]["Tables"]["tables"]["Row"], "name" | "schema" | "relationships" | "primary_keys"> & {
-    schema: S
-    name: DatabaseTables<S>
-    relationships: Relationship[] | null
-    primary_keys: PrimaryKey[] | null
-  }
+export type TableSchema<S extends DatabaseSchemas = DatabaseSchemas> = Omit<
+  Database["supasheet"]["Tables"]["tables"]["Row"],
+  "name" | "schema" | "relationships" | "primary_keys"
+> & {
+  schema: S
+  name: DatabaseTables<S>
+  relationships: Relationship[] | null
+  primary_keys: PrimaryKey[] | null
+}
 
 export type ViewSchema<S extends DatabaseSchemas = DatabaseSchemas> =
   Database["supasheet"]["Tables"]["views"]["Row"] & {

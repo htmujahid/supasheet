@@ -32,9 +32,7 @@ export function ResourceFullDetail({
   showMetadata = true,
 }: Props) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const primaryKeys = (
-    tableSchema ? (tableSchema.primary_keys ?? []) : []
-  )
+  const primaryKeys = tableSchema ? (tableSchema.primary_keys ?? []) : []
 
   const { colByName, progressFields, filteredPlan } = useMemo(() => {
     const tableMeta = JSON.parse(
@@ -43,7 +41,11 @@ export function ResourceFullDetail({
     const availableNames = new Set(
       columnsSchema.map((c) => (c.name as string) ?? c.id ?? "")
     )
-    const plan = buildLayoutPlan(tableMeta.fields?.sections, availableNames, "read")
+    const plan = buildLayoutPlan(
+      tableMeta.fields?.sections,
+      availableNames,
+      "read"
+    )
     const byName = new Map(
       columnsSchema.map((c) => [(c.name as string) ?? c.id ?? "", c])
     )

@@ -30,7 +30,9 @@ export const Route = createFileRoute(
         relatedTablesSchemaQueryOptions(schema, resource)
       ),
     ])
-    const metaJoins = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).query?.join
+    const metaJoins = (
+      JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+    ).query?.join
     const classification = classifyRelationships(
       schema,
       resource,
@@ -47,7 +49,7 @@ export const Route = createFileRoute(
       (r) => r.__embedKey === tab
     )
     if (oneToOne) {
-      const primaryKeys = (tableSchema?.primary_keys ?? [])
+      const primaryKeys = tableSchema?.primary_keys ?? []
       const pkName = primaryKeys[0]?.name ?? "id"
       const pk = { [pkName]: resourceId }
       const parent = await context.queryClient.ensureQueryData(
@@ -69,7 +71,7 @@ export const Route = createFileRoute(
       classification.manyToManyRelationships.find((r) => r.name === tab)
     if (!many) throw notFound()
 
-    const primaryKeys = (tableSchema?.primary_keys ?? [])
+    const primaryKeys = tableSchema?.primary_keys ?? []
     const pkName = primaryKeys[0]?.name ?? "id"
     const pk = { [pkName]: resourceId }
     await context.queryClient.ensureQueryData(

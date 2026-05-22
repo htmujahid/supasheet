@@ -23,7 +23,7 @@ export function getResourceForeignTableColumns({
   resourceSchema: ResourceSchema
 }) {
   const tableSchema = isTableSchema(resourceSchema) ? resourceSchema : null
-  const primaryKeys = (tableSchema?.primary_keys ?? [])
+  const primaryKeys = tableSchema?.primary_keys ?? []
   const primaryKeyNames = primaryKeys.map((k) => k.name)
   const hasPrimaryKeys = primaryKeys.length > 0
 

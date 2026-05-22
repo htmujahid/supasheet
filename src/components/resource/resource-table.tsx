@@ -54,9 +54,9 @@ export function ResourceTable({
   const queryClient = useQueryClient()
   const schema = resourceSchema.schema
   const resource = resourceSchema.name
-  const primaryKeys = (
-    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  )
+  const primaryKeys = isTableSchema(resourceSchema)
+    ? (resourceSchema.primary_keys ?? [])
+    : []
 
   const canDelete = useHasPermission(`${schema}.${resource}:delete`)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)

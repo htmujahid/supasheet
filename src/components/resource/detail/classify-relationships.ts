@@ -55,7 +55,10 @@ export function classifyRelationships(
     )
     if (oneToOneAsSourceList.length > 0) {
       for (const rel of oneToOneAsSourceList) {
-        const alias = resolveAlias(rel.target_table_name, rel.source_column_name)
+        const alias = resolveAlias(
+          rel.target_table_name,
+          rel.source_column_name
+        )
         oneToOneRelationships.push({
           ...table,
           __embedKey: alias,
@@ -80,7 +83,10 @@ export function classifyRelationships(
             table.primary_keys.length === 1))
     )
     if (oneToOneAsTarget) {
-      const alias = resolveAlias(oneToOneAsTarget.source_table_name, oneToOneAsTarget.source_column_name)
+      const alias = resolveAlias(
+        oneToOneAsTarget.source_table_name,
+        oneToOneAsTarget.source_column_name
+      )
       oneToOneRelationships.push({
         ...table,
         __embedKey: alias,

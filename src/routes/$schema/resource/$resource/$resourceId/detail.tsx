@@ -73,12 +73,14 @@ export const Route = createFileRoute(
     const resourceSchema = tableSchema ?? viewSchema
     if (!resourceSchema) throw notFound()
 
-    const primaryKeys = (
-      isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-    )
+    const primaryKeys = isTableSchema(resourceSchema)
+      ? (resourceSchema.primary_keys ?? [])
+      : []
     const pkName = primaryKeys[0]?.name ?? "id"
 
-    const metaJoins = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata).query?.join
+    const metaJoins = (
+      JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+    ).query?.join
     const classification = classifyRelationships(
       schema,
       resource,

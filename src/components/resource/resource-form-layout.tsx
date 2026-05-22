@@ -60,7 +60,7 @@ export function ResourceFormLayout({
   const navigate = useNavigate()
   const schema = tableSchema?.schema
   const resource = tableSchema?.name
-  const primaryKeys = (tableSchema?.primary_keys ?? [])
+  const primaryKeys = tableSchema?.primary_keys ?? []
   const showSecondary = primaryKeys.length > 0
 
   const tableMeta = useMemo(

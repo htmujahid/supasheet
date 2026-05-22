@@ -69,9 +69,9 @@ export function ResourceForeignTable({
   const sortId = sorting[0]?.id
   const sortDesc = sorting[0]?.desc ?? false
 
-  const primaryKeys = (
-    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  )
+  const primaryKeys = isTableSchema(resourceSchema)
+    ? (resourceSchema.primary_keys ?? [])
+    : []
 
   const schema = resourceSchema.schema
   const table = resourceSchema.name

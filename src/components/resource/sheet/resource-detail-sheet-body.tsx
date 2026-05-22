@@ -8,10 +8,7 @@ import { Label } from "#/components/ui/label"
 import { Separator } from "#/components/ui/separator"
 import { useHasPermission } from "#/hooks/use-permissions"
 import { getColumnMetadata } from "#/lib/columns"
-import type {
-  ColumnSchema,
-  ResourceSchema,
-} from "#/lib/database-meta.types"
+import type { ColumnSchema, ResourceSchema } from "#/lib/database-meta.types"
 import { getMetaFields } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import type { AppPermission } from "#/lib/supabase/data/core"
@@ -57,7 +54,7 @@ export function ResourceDetailSheetBody({
     )
   }
 
-  const primaryKeys = (tableSchema.primary_keys ?? [])
+  const primaryKeys = tableSchema.primary_keys ?? []
   const canEdit = primaryKeys.length > 0 && canUpdate
 
   if (canEdit) {

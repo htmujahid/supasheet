@@ -23,7 +23,7 @@ export const Route = createFileRoute(
     const tableSchema = await context.queryClient.ensureQueryData(
       tableSchemaQueryOptions(schema, resource)
     )
-    const primaryKeys = (tableSchema?.primary_keys ?? [])
+    const primaryKeys = tableSchema?.primary_keys ?? []
     const pkName = primaryKeys[0]?.name ?? "id"
     const pk = { [pkName]: resourceId }
     const record = await context.queryClient.ensureQueryData(

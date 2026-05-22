@@ -76,9 +76,9 @@ export function ResourceKanban({
 }) {
   const schema = resourceSchema.schema ?? ""
   const resource = resourceSchema.name ?? ""
-  const primaryKeys = (
-    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  )
+  const primaryKeys = isTableSchema(resourceSchema)
+    ? (resourceSchema.primary_keys ?? [])
+    : []
   const isTable = isTableSchema(resourceSchema)
 
   const navigate = useNavigate({

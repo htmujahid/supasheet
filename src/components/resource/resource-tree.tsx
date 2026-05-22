@@ -14,10 +14,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
-import type {
-  ResourceSchema,
-  TreeLayout,
-} from "#/lib/database-meta.types"
+import type { ResourceSchema, TreeLayout } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { cn } from "#/lib/utils"
 
@@ -38,9 +35,9 @@ export function ResourceTree({
   treeView,
   onSelect,
 }: ResourceTreeProps) {
-  const primaryKeys = (
-    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  )
+  const primaryKeys = isTableSchema(resourceSchema)
+    ? (resourceSchema.primary_keys ?? [])
+    : []
   const pkColumn = primaryKeys[0]?.name
   const parentColumn = treeView.parent
 

@@ -2,8 +2,8 @@ import { getColumnMetadata } from "#/lib/columns"
 import { decodeFilterValue } from "#/lib/data-table"
 import type {
   ColumnSchema,
-  FieldCondition,
   FieldBehavior,
+  FieldCondition,
   FieldSection,
   FieldSectionFields,
   FormMode,

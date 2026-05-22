@@ -27,10 +27,7 @@ import {
 import { Skeleton } from "#/components/ui/skeleton"
 import { useHasPermission } from "#/hooks/use-permissions"
 import { useSheetHref } from "#/hooks/use-sheet-href"
-import type {
-  TableMetadata,
-  TreeLayout,
-} from "#/lib/database-meta.types"
+import type { TableMetadata, TreeLayout } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
@@ -201,9 +198,9 @@ function RouteComponent() {
   const isTable = isTableSchema(resourceSchema)
   const canInsert = useHasPermission(`${schema}.${resource}:insert`)
 
-  const primaryKeys = (
-    isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
-  )
+  const primaryKeys = isTableSchema(resourceSchema)
+    ? (resourceSchema.primary_keys ?? [])
+    : []
 
   const { data: resourceData } = useSuspenseQuery(
     resourceDataQueryOptions(schema, resource, meta.query)

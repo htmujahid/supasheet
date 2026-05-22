@@ -45,9 +45,8 @@ export function ResourceSectionDetail({
   tableSchema,
   record,
 }: Props) {
-  const behavior = (
-    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  ).fields?.behavior
+  const behavior = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata)
+    .fields?.behavior
 
   const cols = section.fields
     .filter((name) => {

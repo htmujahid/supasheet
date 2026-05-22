@@ -63,9 +63,8 @@ export function ResourceUpdateForm({
     updateResourceMutationOptions(schema, resource)
   )
 
-  const behavior = (
-    JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
-  ).fields?.behavior
+  const behavior = (JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata)
+    .fields?.behavior
 
   const form = useAppForm({
     defaultValues,
