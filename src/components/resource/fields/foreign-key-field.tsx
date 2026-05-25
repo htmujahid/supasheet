@@ -63,7 +63,7 @@ export function ForeignKeyField({
         <ButtonGroup className="w-full">
           <Input
             name={field.name}
-            value={field.state.value as string}
+            value={(field.state.value as string | null | undefined) ?? ""}
             onChange={(e) => field.handleChange(e.target.value)}
             onBlur={field.handleBlur}
             disabled={columnMetadata.disabled}

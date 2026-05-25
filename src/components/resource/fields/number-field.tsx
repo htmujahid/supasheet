@@ -20,7 +20,7 @@ export function NumberField({ columnMetadata }: FieldProps) {
         <Input
           type="number"
           name={field.name}
-          value={field.state.value as string}
+          value={(field.state.value as string | null | undefined) ?? ""}
           onChange={(e) => field.handleChange(e.target.value)}
           onBlur={field.handleBlur}
           placeholder={placeholder}

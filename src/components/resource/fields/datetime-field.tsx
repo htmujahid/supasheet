@@ -15,7 +15,9 @@ export function DatetimeField({ columnMetadata }: FieldProps) {
         <Input
           type="datetime-local"
           name={field.name}
-          value={(field.state.value as string | null)?.toString().slice(0, 16)}
+          value={
+            (field.state.value as string | null)?.toString().slice(0, 16) ?? ""
+          }
           onChange={(e) => field.handleChange(e.target.value)}
           onBlur={field.handleBlur}
           disabled={columnMetadata.disabled}
