@@ -236,8 +236,8 @@ export function ResourceKanban({
                                   </span>
                                 )}
                                 {task.date && (
-                                  <time className="text-[10px] tabular-nums">
-                                    {task.date}
+                                  <time className="text-[10px] tabular-nums whitespace-nowrap">
+                                    {new Date(task.date).toDateString()}
                                   </time>
                                 )}
                               </div>
