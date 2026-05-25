@@ -92,7 +92,7 @@ export function ResourceGallery({
                 primaryKeys={primaryKeys}
                 isTable={isTable}
               >
-                <Card className="cursor-pointer">
+                <Card className="cursor-pointer h-full">
                   <CardHeader>
                     <div className="relative aspect-4/3 w-full overflow-hidden rounded-md bg-muted">
                       {item.cover ? (
@@ -111,7 +111,7 @@ export function ResourceGallery({
                       ) : null}
                       <div
                         className={cn(
-                          "absolute inset-0 flex items-center justify-center",
+                          "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
                           item.cover && "hidden"
                         )}
                       >
@@ -125,9 +125,9 @@ export function ResourceGallery({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle>{item.title ?? "Untitled"}</CardTitle>
+                    <CardTitle className="line-clamp-1">{item.title ?? "Untitled"}</CardTitle>
                     {item.description && (
-                      <CardDescription className="line-clamp-1">
+                      <CardDescription className="line-clamp-2">
                         {item.description}
                       </CardDescription>
                     )}
