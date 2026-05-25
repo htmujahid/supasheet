@@ -60,6 +60,7 @@ import { Route as SchemaResourceResourceTableRouteImport } from './routes/$schem
 import { Route as SchemaResourceResourceSingleRouteImport } from './routes/$schema/resource/$resource/single'
 import { Route as SchemaResourceResourceNewRouteImport } from './routes/$schema/resource/$resource/new'
 import { Route as SchemaResourceResourceGridRouteImport } from './routes/$schema/resource/$resource/grid'
+import { Route as SchemaResourceResourceDefinitionRouteImport } from './routes/$schema/resource/$resource/definition'
 import { Route as SchemaResourceResourceTreeTreeIdRouteImport } from './routes/$schema/resource/$resource/tree/$treeId'
 import { Route as SchemaResourceResourceTableSheetRouteImport } from './routes/$schema/resource/$resource/table.sheet'
 import { Route as SchemaResourceResourceListListIdRouteImport } from './routes/$schema/resource/$resource/list/$listId'
@@ -345,6 +346,12 @@ const SchemaResourceResourceGridRoute =
     path: '/grid',
     getParentRoute: () => SchemaResourceResourceRouteRoute,
   } as any)
+const SchemaResourceResourceDefinitionRoute =
+  SchemaResourceResourceDefinitionRouteImport.update({
+    id: '/definition',
+    path: '/definition',
+    getParentRoute: () => SchemaResourceResourceRouteRoute,
+  } as any)
 const SchemaResourceResourceTreeTreeIdRoute =
   SchemaResourceResourceTreeTreeIdRouteImport.update({
     id: '/tree/$treeId',
@@ -500,6 +507,7 @@ export interface FileRoutesByFullPath {
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
+  '/$schema/resource/$resource/definition': typeof SchemaResourceResourceDefinitionRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRouteWithChildren
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
   '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
@@ -565,6 +573,7 @@ export interface FileRoutesByTo {
   '/core/user_roles': typeof CoreUser_rolesIndexRoute
   '/core/users': typeof CoreUsersIndexRoute
   '/storage/$bucketId': typeof StorageBucketIdIndexRoute
+  '/$schema/resource/$resource/definition': typeof SchemaResourceResourceDefinitionRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRouteWithChildren
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
   '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
@@ -637,6 +646,7 @@ export interface FileRoutesById {
   '/core/user_roles/': typeof CoreUser_rolesIndexRoute
   '/core/users/': typeof CoreUsersIndexRoute
   '/storage/$bucketId/': typeof StorageBucketIdIndexRoute
+  '/$schema/resource/$resource/definition': typeof SchemaResourceResourceDefinitionRoute
   '/$schema/resource/$resource/grid': typeof SchemaResourceResourceGridRouteWithChildren
   '/$schema/resource/$resource/new': typeof SchemaResourceResourceNewRoute
   '/$schema/resource/$resource/single': typeof SchemaResourceResourceSingleRoute
@@ -711,6 +721,7 @@ export interface FileRouteTypes {
     | '/core/user_roles/'
     | '/core/users/'
     | '/storage/$bucketId/'
+    | '/$schema/resource/$resource/definition'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
     | '/$schema/resource/$resource/single'
@@ -776,6 +787,7 @@ export interface FileRouteTypes {
     | '/core/user_roles'
     | '/core/users'
     | '/storage/$bucketId'
+    | '/$schema/resource/$resource/definition'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
     | '/$schema/resource/$resource/single'
@@ -847,6 +859,7 @@ export interface FileRouteTypes {
     | '/core/user_roles/'
     | '/core/users/'
     | '/storage/$bucketId/'
+    | '/$schema/resource/$resource/definition'
     | '/$schema/resource/$resource/grid'
     | '/$schema/resource/$resource/new'
     | '/$schema/resource/$resource/single'
@@ -1250,6 +1263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SchemaResourceResourceGridRouteImport
       parentRoute: typeof SchemaResourceResourceRouteRoute
     }
+    '/$schema/resource/$resource/definition': {
+      id: '/$schema/resource/$resource/definition'
+      path: '/definition'
+      fullPath: '/$schema/resource/$resource/definition'
+      preLoaderRoute: typeof SchemaResourceResourceDefinitionRouteImport
+      parentRoute: typeof SchemaResourceResourceRouteRoute
+    }
     '/$schema/resource/$resource/tree/$treeId': {
       id: '/$schema/resource/$resource/tree/$treeId'
       path: '/tree/$treeId'
@@ -1527,6 +1547,7 @@ const SchemaResourceResourceTreeTreeIdRouteWithChildren =
   )
 
 interface SchemaResourceResourceRouteRouteChildren {
+  SchemaResourceResourceDefinitionRoute: typeof SchemaResourceResourceDefinitionRoute
   SchemaResourceResourceGridRoute: typeof SchemaResourceResourceGridRouteWithChildren
   SchemaResourceResourceNewRoute: typeof SchemaResourceResourceNewRoute
   SchemaResourceResourceSingleRoute: typeof SchemaResourceResourceSingleRoute
@@ -1544,6 +1565,8 @@ interface SchemaResourceResourceRouteRouteChildren {
 
 const SchemaResourceResourceRouteRouteChildren: SchemaResourceResourceRouteRouteChildren =
   {
+    SchemaResourceResourceDefinitionRoute:
+      SchemaResourceResourceDefinitionRoute,
     SchemaResourceResourceGridRoute:
       SchemaResourceResourceGridRouteWithChildren,
     SchemaResourceResourceNewRoute: SchemaResourceResourceNewRoute,
