@@ -150,8 +150,7 @@ function RouteComponent() {
   const meta = (
     resourceSchema?.comment ? JSON.parse(resourceSchema.comment) : {}
   ) as TableMetadata
-  const friendlyName =
-    meta.name ?? formatTitle(resourceSchema.name ?? resource)
+  const friendlyName = meta.name ?? formatTitle(resourceSchema.name ?? resource)
 
   return (
     <>

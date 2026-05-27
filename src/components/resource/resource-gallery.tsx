@@ -125,7 +125,9 @@ export function ResourceGallery({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle className="line-clamp-1">{item.title ?? "Untitled"}</CardTitle>
+                    <CardTitle className="line-clamp-1">
+                      {item.title ?? "Untitled"}
+                    </CardTitle>
                     {item.description && (
                       <CardDescription className="line-clamp-2">
                         {item.description}

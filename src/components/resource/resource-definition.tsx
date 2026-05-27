@@ -10,10 +10,7 @@ import { formatTitle } from "#/lib/format"
 import { ResourceDefinitionField } from "./resource-definition-field"
 import { ResourceDefinitionHeader } from "./resource-definition-header"
 import { ResourceDefinitionUsedBy } from "./resource-definition-used-by"
-import type {
-  FieldRow,
-  LinkedResource,
-} from "./resource-definition-utils"
+import type { FieldRow, LinkedResource } from "./resource-definition-utils"
 import { buildFieldRow } from "./resource-definition-utils"
 
 interface ResourceDefinitionProps {
@@ -31,8 +28,7 @@ export function ResourceDefinition({
   const meta = (
     resourceSchema?.comment ? JSON.parse(resourceSchema.comment) : {}
   ) as TableMetadata
-  const friendlyName =
-    meta.name ?? formatTitle(resourceSchema.name ?? resource)
+  const friendlyName = meta.name ?? formatTitle(resourceSchema.name ?? resource)
   const relationships: Relationship[] =
     (isTable ? resourceSchema.relationships : null) ?? []
   const primaryKeys = (isTable ? resourceSchema.primary_keys : null) ?? []

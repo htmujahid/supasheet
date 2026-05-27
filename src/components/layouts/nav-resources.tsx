@@ -112,11 +112,13 @@ function ResourceMenuItem({
         >
           {showInsert && (
             <>
-            <DropdownMenuItem onClick={() => navigate({ to: newUrl as never })}>
-              <PlusIcon className="text-muted-foreground" />
-              <span>New record</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => navigate({ to: newUrl as never })}
+              >
+                <PlusIcon className="text-muted-foreground" />
+                <span>New record</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </>
           )}
           <DropdownMenuItem
