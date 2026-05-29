@@ -20,7 +20,10 @@ import {
 } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
-import { resourcesQueryOptions } from "#/lib/supabase/data/resource"
+import {
+  navItemsQueryOptions,
+  resourcesQueryOptions,
+} from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/")({
   head: ({ params }) => ({
@@ -35,24 +38,28 @@ const quickLinks = [
     description: "Overview widgets and key metrics",
     icon: <HomeIcon className="size-5" />,
     url: "dashboard" as const,
+    type: "dashboard_widget",
   },
   {
     title: "Charts",
     description: "Visualize your data with charts",
     icon: <ChartBarIcon className="size-5" />,
     url: "chart" as const,
+    type: "chart",
   },
   {
     title: "Reports",
     description: "Tabular reports from database views",
     icon: <FileChartColumnIcon className="size-5" />,
     url: "report" as const,
+    type: "report",
   },
   {
     title: "Templates",
     description: "Bulk-insert rows from template views",
     icon: <LayoutTemplateIcon className="size-5" />,
     url: "template" as const,
+    type: "template",
   },
 ]
 
@@ -61,9 +68,16 @@ function RouteComponent() {
   const { data: resources = [], isPending } = useQuery(
     resourcesQueryOptions(params.schema)
   )
+  const { data: navItemGroups = [], isPending: navPending } = useQuery(
+    navItemsQueryOptions(params.schema)
+  )
 
   const tables = resources.filter((r) => r.type === "table")
   const views = resources.filter((r) => r.type === "view")
+  const activeTypes = new Set(
+    navItemGroups.filter((g) => g.count > 0).map((g) => g.type)
+  )
+  const visibleLinks = quickLinks.filter((l) => activeTypes.has(l.type))
 
   return (
     <div className="w-full flex-1">
@@ -85,34 +99,62 @@ function RouteComponent() {
         </div>
 
         {/* Quick links */}
-        <section>
-          <h2 className="mb-3 text-sm font-medium tracking-wide text-muted-foreground uppercase">
-            Sections
-          </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {quickLinks.map((link) => (
-              <Link
-                key={link.title}
-                to={`/$schema/${link.url}`}
-                params={{ schema: params.schema }}
-              >
-                <Card className="transition-colors hover:bg-accent/50">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <span className="text-muted-foreground">{link.icon}</span>
-                      <div>
-                        <CardTitle className="text-sm">{link.title}</CardTitle>
-                        <CardDescription className="mt-0.5 text-xs">
-                          {link.description}
-                        </CardDescription>
-                      </div>
+        {navPending ? (
+          <section>
+            <h2 className="mb-3 text-sm font-medium tracking-wide text-muted-foreground uppercase">
+              Sections
+            </h2>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl border bg-card p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="size-5 rounded" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-40" />
                     </div>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : visibleLinks.length > 0 ? (
+          <section>
+            <h2 className="mb-3 text-sm font-medium tracking-wide text-muted-foreground uppercase">
+              Sections
+            </h2>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {visibleLinks.map((link) => (
+                <Link
+                  key={link.title}
+                  to={`/$schema/${link.url}`}
+                  params={{ schema: params.schema }}
+                >
+                  <Card className="transition-colors hover:bg-accent/50">
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <span className="text-muted-foreground">
+                          {link.icon}
+                        </span>
+                        <div>
+                          <CardTitle className="text-sm">
+                            {link.title}
+                          </CardTitle>
+                          <CardDescription className="mt-0.5 text-xs">
+                            {link.description}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* Resources */}
         <section>
