@@ -18,7 +18,7 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { Spinner } from "#/components/ui/spinner"
-import { askAI } from "#/lib/ai/chat"
+import { askAI } from "#/lib/ai/retrieval"
 import type { AIResponse, ChatMessage } from "#/lib/ai/types"
 
 export const Route = createFileRoute("/ai/")({
