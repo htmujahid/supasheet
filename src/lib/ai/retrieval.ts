@@ -31,7 +31,7 @@ export async function askAI(
     { role: "user", content: question },
   ]
 
-  const res = await fetch(`${PLATFORM_URL}/api/ai`, {
+  const res = await fetch(`${PLATFORM_URL}/api/ai/retrieval`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
