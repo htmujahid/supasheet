@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query"
 import { SparklesIcon, TableIcon } from "lucide-react"
 import { toast } from "sonner"
 
-import { MutationPreviewDialog } from "#/components/ai/mutation-preview-dialog"
+import { MutationConfirmBar } from "#/components/ai/mutation-confirm-bar"
 import { NonTabularDialog } from "#/components/ai/non-tabular-dialog"
 import { QueryBar } from "#/components/ai/query-bar"
 import { ResultDataTable } from "#/components/ai/result-data-table"
@@ -20,7 +20,8 @@ import {
 } from "#/components/ui/empty"
 import { Spinner } from "#/components/ui/spinner"
 import { askAI, confirmMutation } from "#/lib/ai/retrieval"
-import type { AIResponse, ChatMessage, MutationKind } from "#/lib/ai/types"
+import type { AIResponse, ChatMessage } from "#/lib/ai/types"
+import type { PendingMutation } from "#/components/ai/mutation-confirm-bar"
 
 export const Route = createFileRoute("/ai/")({
   component: AIPage,
@@ -29,14 +30,6 @@ export const Route = createFileRoute("/ai/")({
 type DisplayResult =
   | { kind: "table"; rows: Record<string, unknown>[]; summary: string }
   | { kind: "note"; summary: string; value?: string }
-
-type PendingMutation = {
-  question: string
-  kind: MutationKind
-  value: Record<string, unknown>[]
-  mutationSql: string
-  summary: string
-}
 
 function toDisplay(response: AIResponse): DisplayResult | null {
   if (response.type === "json") {
@@ -103,6 +96,12 @@ function AIPage() {
           mutationSql: response.mutationSql,
           summary: response.summary,
         })
+        setResult({
+          kind: "table",
+          rows: response.value,
+          summary: response.summary,
+        })
+        setResetSignal((s) => s + 1)
         return
       }
       setPendingNonTabular({ question, response })
@@ -150,6 +149,7 @@ function AIPage() {
   function cancelMutation() {
     if (isConfirming) return
     setPendingMutation(null)
+    setResult(null)
   }
 
   const showPendingState = isAsking && result === null
@@ -173,7 +173,17 @@ function AIPage() {
             </EmptyHeader>
           </Empty>
         ) : result.kind === "table" ? (
-          <ResultDataTable rows={result.rows} summary={result.summary} />
+          <div className="flex flex-col gap-3">
+            {pendingMutation && (
+              <MutationConfirmBar
+                pendingMutation={pendingMutation}
+                isConfirming={isConfirming}
+                onConfirm={() => confirmRun(pendingMutation)}
+                onCancel={cancelMutation}
+              />
+            )}
+            <ResultDataTable rows={result.rows} summary={result.summary} />
+          </div>
         ) : (
           <NoteResult summary={result.summary} value={result.value} />
         )}
@@ -192,12 +202,6 @@ function AIPage() {
         response={pendingNonTabular?.response ?? null}
         onShowAnyway={acceptNonTabular}
         onRefine={dismissNonTabular}
-      />
-      <MutationPreviewDialog
-        preview={pendingMutation}
-        pending={isConfirming}
-        onConfirm={() => pendingMutation && confirmRun(pendingMutation)}
-        onCancel={cancelMutation}
       />
     </div>
   )
