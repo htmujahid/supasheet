@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import { MutationConfirmBar } from "#/components/ai/mutation-confirm-bar"
 import { NonTabularDialog } from "#/components/ai/non-tabular-dialog"
 import { QueryBar } from "#/components/ai/query-bar"
+import { ResultBar } from "#/components/ai/result-bar"
 import { ResultDataTable } from "#/components/ai/result-data-table"
 import {
   Empty,
@@ -152,6 +153,10 @@ function AIPage() {
     setResult(null)
   }
 
+  function handleNewQuery() {
+    setResult(null)
+  }
+
   const showPendingState = isAsking && result === null
 
   return (
@@ -173,29 +178,30 @@ function AIPage() {
             </EmptyHeader>
           </Empty>
         ) : result.kind === "table" ? (
-          <div className="flex flex-col gap-3">
-            {pendingMutation && (
-              <MutationConfirmBar
-                pendingMutation={pendingMutation}
-                isConfirming={isConfirming}
-                onConfirm={() => confirmRun(pendingMutation)}
-                onCancel={cancelMutation}
-              />
-            )}
-            <ResultDataTable rows={result.rows} summary={result.summary} />
-          </div>
+          <ResultDataTable rows={result.rows} />
         ) : (
           <NoteResult summary={result.summary} value={result.value} />
         )}
       </div>
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center bg-gradient-to-t from-background via-background/95 to-transparent px-4 pt-8 pb-6">
         <div className="pointer-events-auto w-full max-w-3xl">
-          <QueryBar
-            onSubmit={ask}
-            disabled={isAsking || isConfirming}
-            pending={isAsking}
-            resetSignal={resetSignal}
-          />
+          {pendingMutation ? (
+            <MutationConfirmBar
+              pendingMutation={pendingMutation}
+              isConfirming={isConfirming}
+              onConfirm={() => confirmRun(pendingMutation)}
+              onCancel={cancelMutation}
+            />
+          ) : result?.kind === "table" ? (
+            <ResultBar summary={result.summary} onNewQuery={handleNewQuery} />
+          ) : (
+            <QueryBar
+              onSubmit={ask}
+              disabled={isAsking || isConfirming}
+              pending={isAsking}
+              resetSignal={resetSignal}
+            />
+          )}
         </div>
       </div>
       <NonTabularDialog

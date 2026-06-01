@@ -24,13 +24,7 @@ function formatCell(v: unknown): string {
   return String(v)
 }
 
-export function ResultDataTable({
-  rows,
-  summary,
-}: {
-  rows: Record<string, unknown>[]
-  summary: string
-}) {
+export function ResultDataTable({ rows }: { rows: Record<string, unknown>[] }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -79,12 +73,9 @@ export function ResultDataTable({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-muted-foreground">{summary}</p>
-        <div className="flex items-center gap-2">
-          <DataTableExportButton table={table} filename="ai-result" />
-          <DataTableColumnVisibility table={table} />
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <DataTableExportButton table={table} filename="ai-result" />
+        <DataTableColumnVisibility table={table} />
       </div>
       <DataTable table={table} />
     </div>
