@@ -27,9 +27,11 @@ function formatCell(v: unknown): string {
 export function ResultDataTable({
   rows,
   summary,
+  question,
 }: {
   rows: Record<string, unknown>[]
   summary: string
+  question: string
 }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
@@ -77,14 +79,20 @@ export function ResultDataTable({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-muted-foreground">{summary}</p>
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <p className="truncate text-xs text-muted-foreground">
+            <span className="font-medium text-foreground">You asked:</span>{" "}
+            {question}
+          </p>
+          <p className="text-sm text-muted-foreground">{summary}</p>
+        </div>
         <div className="flex items-center gap-2">
           <DataTableExportButton table={table} filename="ai-result" />
           <DataTableColumnVisibility table={table} />
         </div>
       </div>
-      <DataTable table={table} pagination={false} />
+      <DataTable table={table} />
     </div>
   )
 }

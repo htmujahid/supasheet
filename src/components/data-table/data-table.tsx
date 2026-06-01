@@ -18,14 +18,12 @@ import { DataTablePagination } from "./data-table-pagination"
 interface DataTableProps<TData> {
   table: Table<TData>
   className?: string
-  pagination?: boolean
   children?: ReactNode
 }
 
 export function DataTable<TData>({
   table,
   className,
-  pagination = true,
   children,
 }: DataTableProps<TData>) {
   const colCount = table.getAllColumns().length
@@ -79,7 +77,7 @@ export function DataTable<TData>({
           </TableBody>
         </TableRoot>
       </div>
-      {pagination && <DataTablePagination table={table} />}
+      <DataTablePagination table={table} />
     </div>
   )
 }

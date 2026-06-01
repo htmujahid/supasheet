@@ -4,13 +4,12 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { useMutation } from "@tanstack/react-query"
 
-import { PlusIcon, SparklesIcon, TableIcon } from "lucide-react"
+import { SparklesIcon, TableIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { NonTabularDialog } from "#/components/ai/non-tabular-dialog"
 import { QueryBar } from "#/components/ai/query-bar"
 import { ResultDataTable } from "#/components/ai/result-data-table"
-import { Button } from "#/components/ui/button"
 import {
   Empty,
   EmptyDescription,
@@ -18,6 +17,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import { Spinner } from "#/components/ui/spinner"
 import { askAI } from "#/lib/ai/chat"
 import type { AIResponse, ChatMessage } from "#/lib/ai/types"
 
@@ -26,27 +26,42 @@ export const Route = createFileRoute("/ai/")({
 })
 
 type DisplayResult =
-  | { kind: "table"; rows: Record<string, unknown>[]; summary: string }
-  | { kind: "note"; summary: string; value?: string }
+  | {
+      kind: "table"
+      rows: Record<string, unknown>[]
+      summary: string
+      question: string
+    }
+  | {
+      kind: "note"
+      summary: string
+      value?: string
+      question: string
+    }
 
-function toDisplay(response: AIResponse): DisplayResult {
+function toDisplay(response: AIResponse, question: string): DisplayResult {
   if (response.type === "json") {
-    return { kind: "table", rows: response.value, summary: response.summary }
+    return {
+      kind: "table",
+      rows: response.value,
+      summary: response.summary,
+      question,
+    }
   }
   if (response.type === "scalar") {
     return {
       kind: "note",
       summary: response.summary,
       value: response.value,
+      question,
     }
   }
-  return { kind: "note", summary: response.summary }
+  return { kind: "note", summary: response.summary, question }
 }
 
 function AIPage() {
   const [history, setHistory] = useState<ChatMessage[]>([])
   const [result, setResult] = useState<DisplayResult | null>(null)
-  const [lastQuestion, setLastQuestion] = useState<string | null>(null)
   const [pendingNonTabular, setPendingNonTabular] = useState<{
     question: string
     response: AIResponse
@@ -61,8 +76,7 @@ function AIPage() {
           { role: "user", content: question },
           { role: "assistant", content: response.summary, result: response },
         ])
-        setResult(toDisplay(response))
-        setLastQuestion(question)
+        setResult(toDisplay(response, question))
         return
       }
       setPendingNonTabular({ question, response })
@@ -81,8 +95,7 @@ function AIPage() {
       { role: "user", content: question },
       { role: "assistant", content: response.summary, result: response },
     ])
-    setResult(toDisplay(response))
-    setLastQuestion(question)
+    setResult(toDisplay(response, question))
     setPendingNonTabular(null)
   }
 
@@ -90,16 +103,14 @@ function AIPage() {
     setPendingNonTabular(null)
   }
 
-  function newQuery() {
-    setResult(null)
-    setLastQuestion(null)
-  }
-
   return (
-    <div className="flex flex-1 flex-col">
-      {result === null ? (
-        <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-6 py-10">
-          <Empty>
+    <div className="flex flex-1 flex-col gap-6">
+      <QueryBar onSubmit={mutate} disabled={isPending} pending={isPending} />
+      <div className="flex flex-1 flex-col">
+        {isPending && result === null ? (
+          <PendingState />
+        ) : result === null ? (
+          <Empty className="flex-1">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <SparklesIcon />
@@ -111,24 +122,20 @@ function AIPage() {
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
-          <div className="w-full">
-            <QueryBar
-              onSubmit={mutate}
-              disabled={isPending}
-              pending={isPending}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-1 flex-col gap-4">
-          <ResultHeader question={lastQuestion} onNewQuery={newQuery} />
-          {result.kind === "table" ? (
-            <ResultDataTable rows={result.rows} summary={result.summary} />
-          ) : (
-            <NoteResult summary={result.summary} value={result.value} />
-          )}
-        </div>
-      )}
+        ) : result.kind === "table" ? (
+          <ResultDataTable
+            rows={result.rows}
+            summary={result.summary}
+            question={result.question}
+          />
+        ) : (
+          <NoteResult
+            summary={result.summary}
+            value={result.value}
+            question={result.question}
+          />
+        )}
+      </div>
       <NonTabularDialog
         response={pendingNonTabular?.response ?? null}
         onShowAnyway={acceptNonTabular}
@@ -138,39 +145,49 @@ function AIPage() {
   )
 }
 
-function ResultHeader({
-  question,
-  onNewQuery,
-}: {
-  question: string | null
-  onNewQuery: () => void
-}) {
-  return (
-    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/40 px-3 py-2">
-      <div className="flex min-w-0 items-start gap-2">
-        <SparklesIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-        <p className="truncate text-sm">
-          {question ?? "Result"}
-        </p>
-      </div>
-      <Button size="sm" variant="outline" onClick={onNewQuery}>
-        <PlusIcon />
-        New question
-      </Button>
-    </div>
-  )
-}
-
-function NoteResult({ summary, value }: { summary: string; value?: string }) {
+function PendingState() {
   return (
     <Empty className="flex-1">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <TableIcon />
+          <Spinner />
         </EmptyMedia>
-        <EmptyTitle>{value ?? "Non-tabular result"}</EmptyTitle>
-        <EmptyDescription>{summary}</EmptyDescription>
+        <EmptyTitle>Thinking…</EmptyTitle>
+        <EmptyDescription>Running your query against the data.</EmptyDescription>
       </EmptyHeader>
     </Empty>
+  )
+}
+
+function NoteResult({
+  summary,
+  value,
+  question,
+}: {
+  summary: string
+  value?: string
+  question: string
+}) {
+  return (
+    <div className="flex flex-1 flex-col gap-3">
+      <QuestionLabel question={question} />
+      <Empty className="flex-1">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <TableIcon />
+          </EmptyMedia>
+          <EmptyTitle>{value ?? "Non-tabular result"}</EmptyTitle>
+          <EmptyDescription>{summary}</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    </div>
+  )
+}
+
+function QuestionLabel({ question }: { question: string }) {
+  return (
+    <p className="truncate text-xs text-muted-foreground">
+      <span className="font-medium text-foreground">You asked:</span> {question}
+    </p>
   )
 }
