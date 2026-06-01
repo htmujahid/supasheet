@@ -13,13 +13,13 @@ import { Route as InitRouteImport } from './routes/init'
 import { Route as StorageRouteRouteImport } from './routes/storage/route'
 import { Route as CoreRouteRouteImport } from './routes/core/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
-import { Route as AiChatRouteRouteImport } from './routes/ai-chat/route'
+import { Route as AiRouteRouteImport } from './routes/ai/route'
 import { Route as AccountRouteRouteImport } from './routes/account/route'
 import { Route as SchemaRouteRouteImport } from './routes/$schema/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StorageIndexRouteImport } from './routes/storage/index'
 import { Route as CoreIndexRouteImport } from './routes/core/index'
-import { Route as AiChatIndexRouteImport } from './routes/ai-chat/index'
+import { Route as AiIndexRouteImport } from './routes/ai/index'
 import { Route as SchemaIndexRouteImport } from './routes/$schema/index'
 import { Route as AuthUpdatePasswordRouteImport } from './routes/auth/update-password'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
@@ -100,9 +100,9 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AiChatRouteRoute = AiChatRouteRouteImport.update({
-  id: '/ai-chat',
-  path: '/ai-chat',
+const AiRouteRoute = AiRouteRouteImport.update({
+  id: '/ai',
+  path: '/ai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRouteRoute = AccountRouteRouteImport.update({
@@ -130,10 +130,10 @@ const CoreIndexRoute = CoreIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CoreRouteRoute,
 } as any)
-const AiChatIndexRoute = AiChatIndexRouteImport.update({
+const AiIndexRoute = AiIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AiChatRouteRoute,
+  getParentRoute: () => AiRouteRoute,
 } as any)
 const SchemaIndexRoute = SchemaIndexRouteImport.update({
   id: '/',
@@ -464,7 +464,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$schema': typeof SchemaRouteRouteWithChildren
   '/account': typeof AccountRouteRouteWithChildren
-  '/ai-chat': typeof AiChatRouteRouteWithChildren
+  '/ai': typeof AiRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/core': typeof CoreRouteRouteWithChildren
   '/storage': typeof StorageRouteRouteWithChildren
@@ -480,7 +480,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/$schema/': typeof SchemaIndexRoute
-  '/ai-chat/': typeof AiChatIndexRoute
+  '/ai/': typeof AiIndexRoute
   '/core/': typeof CoreIndexRoute
   '/storage/': typeof StorageIndexRoute
   '/$schema/resource/$resource': typeof SchemaResourceResourceRouteRouteWithChildren
@@ -547,7 +547,7 @@ export interface FileRoutesByTo {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/$schema': typeof SchemaIndexRoute
-  '/ai-chat': typeof AiChatIndexRoute
+  '/ai': typeof AiIndexRoute
   '/core': typeof CoreIndexRoute
   '/storage': typeof StorageIndexRoute
   '/core/audit_logs/$auditLogId': typeof CoreAudit_logsAuditLogIdRoute
@@ -601,7 +601,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$schema': typeof SchemaRouteRouteWithChildren
   '/account': typeof AccountRouteRouteWithChildren
-  '/ai-chat': typeof AiChatRouteRouteWithChildren
+  '/ai': typeof AiRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/core': typeof CoreRouteRouteWithChildren
   '/storage': typeof StorageRouteRouteWithChildren
@@ -617,7 +617,7 @@ export interface FileRoutesById {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/$schema/': typeof SchemaIndexRoute
-  '/ai-chat/': typeof AiChatIndexRoute
+  '/ai/': typeof AiIndexRoute
   '/core/': typeof CoreIndexRoute
   '/storage/': typeof StorageIndexRoute
   '/$schema/resource/$resource': typeof SchemaResourceResourceRouteRouteWithChildren
@@ -675,7 +675,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$schema'
     | '/account'
-    | '/ai-chat'
+    | '/ai'
     | '/auth'
     | '/core'
     | '/storage'
@@ -691,7 +691,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/update-password'
     | '/$schema/'
-    | '/ai-chat/'
+    | '/ai/'
     | '/core/'
     | '/storage/'
     | '/$schema/resource/$resource'
@@ -758,7 +758,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/update-password'
     | '/$schema'
-    | '/ai-chat'
+    | '/ai'
     | '/core'
     | '/storage'
     | '/core/audit_logs/$auditLogId'
@@ -811,7 +811,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$schema'
     | '/account'
-    | '/ai-chat'
+    | '/ai'
     | '/auth'
     | '/core'
     | '/storage'
@@ -827,7 +827,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/update-password'
     | '/$schema/'
-    | '/ai-chat/'
+    | '/ai/'
     | '/core/'
     | '/storage/'
     | '/$schema/resource/$resource'
@@ -884,7 +884,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SchemaRouteRoute: typeof SchemaRouteRouteWithChildren
   AccountRouteRoute: typeof AccountRouteRouteWithChildren
-  AiChatRouteRoute: typeof AiChatRouteRouteWithChildren
+  AiRouteRoute: typeof AiRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   CoreRouteRoute: typeof CoreRouteRouteWithChildren
   StorageRouteRoute: typeof StorageRouteRouteWithChildren
@@ -921,11 +921,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ai-chat': {
-      id: '/ai-chat'
-      path: '/ai-chat'
-      fullPath: '/ai-chat'
-      preLoaderRoute: typeof AiChatRouteRouteImport
+    '/ai': {
+      id: '/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AiRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account': {
@@ -963,12 +963,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoreIndexRouteImport
       parentRoute: typeof CoreRouteRoute
     }
-    '/ai-chat/': {
-      id: '/ai-chat/'
+    '/ai/': {
+      id: '/ai/'
       path: '/'
-      fullPath: '/ai-chat/'
-      preLoaderRoute: typeof AiChatIndexRouteImport
-      parentRoute: typeof AiChatRouteRoute
+      fullPath: '/ai/'
+      preLoaderRoute: typeof AiIndexRouteImport
+      parentRoute: typeof AiRouteRoute
     }
     '/$schema/': {
       id: '/$schema/'
@@ -1622,17 +1622,16 @@ const AccountRouteRouteWithChildren = AccountRouteRoute._addFileChildren(
   AccountRouteRouteChildren,
 )
 
-interface AiChatRouteRouteChildren {
-  AiChatIndexRoute: typeof AiChatIndexRoute
+interface AiRouteRouteChildren {
+  AiIndexRoute: typeof AiIndexRoute
 }
 
-const AiChatRouteRouteChildren: AiChatRouteRouteChildren = {
-  AiChatIndexRoute: AiChatIndexRoute,
+const AiRouteRouteChildren: AiRouteRouteChildren = {
+  AiIndexRoute: AiIndexRoute,
 }
 
-const AiChatRouteRouteWithChildren = AiChatRouteRoute._addFileChildren(
-  AiChatRouteRouteChildren,
-)
+const AiRouteRouteWithChildren =
+  AiRouteRoute._addFileChildren(AiRouteRouteChildren)
 
 interface AuthRouteRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
@@ -1734,7 +1733,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SchemaRouteRoute: SchemaRouteRouteWithChildren,
   AccountRouteRoute: AccountRouteRouteWithChildren,
-  AiChatRouteRoute: AiChatRouteRouteWithChildren,
+  AiRouteRoute: AiRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   CoreRouteRoute: CoreRouteRouteWithChildren,
   StorageRouteRoute: StorageRouteRouteWithChildren,
