@@ -153,7 +153,9 @@ function PendingState() {
           <Spinner />
         </EmptyMedia>
         <EmptyTitle>Thinking…</EmptyTitle>
-        <EmptyDescription>Running your query against the data.</EmptyDescription>
+        <EmptyDescription>
+          Running your query against the data.
+        </EmptyDescription>
       </EmptyHeader>
     </Empty>
   )

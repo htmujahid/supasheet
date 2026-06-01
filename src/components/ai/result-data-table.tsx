@@ -59,7 +59,9 @@ export function ResultDataTable({
         if (av === null || av === undefined) return 1
         if (bv === null || bv === undefined) return -1
         if (typeof av === "number" && typeof bv === "number") return av - bv
-        return String(av).localeCompare(String(bv), undefined, { numeric: true })
+        return String(av).localeCompare(String(bv), undefined, {
+          numeric: true,
+        })
       },
     }))
   }, [rows])

@@ -24,7 +24,7 @@ function groupPermissions(permissions: { permission: AppPermission }[]) {
       acc[schema][table].push(operation)
       return acc
     },
-    {},
+    {}
   )
 }
 
@@ -78,29 +78,27 @@ export function RolesPermissionsCard() {
                             {schema}
                           </span>
                         </div>,
-                        ...Object.entries(tables).map(
-                          ([table, operations]) => (
-                            <div
-                              key={`${schema}.${table}`}
-                              className="flex items-center gap-3 px-3 py-2"
-                            >
-                              <span className="w-36 shrink-0 text-xs font-medium">
-                                {table}
-                              </span>
-                              <div className="flex flex-wrap gap-1">
-                                {operations.map((op) => (
-                                  <Badge
-                                    key={op}
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
-                                    {op}
-                                  </Badge>
-                                ))}
-                              </div>
+                        ...Object.entries(tables).map(([table, operations]) => (
+                          <div
+                            key={`${schema}.${table}`}
+                            className="flex items-center gap-3 px-3 py-2"
+                          >
+                            <span className="w-36 shrink-0 text-xs font-medium">
+                              {table}
+                            </span>
+                            <div className="flex flex-wrap gap-1">
+                              {operations.map((op) => (
+                                <Badge
+                                  key={op}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
+                                  {op}
+                                </Badge>
+                              ))}
                             </div>
-                          ),
-                        ),
+                          </div>
+                        )),
                       ])}
                     </div>
                   ) : (
