@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { CornerDownLeftIcon } from "lucide-react"
 
@@ -19,12 +19,19 @@ export function QueryBar({
   onSubmit,
   disabled,
   pending,
+  resetSignal = 0,
 }: {
   onSubmit: (question: string) => void
   disabled: boolean
   pending: boolean
+  resetSignal?: number
 }) {
   const [value, setValue] = useState("")
+
+  useEffect(() => {
+    if (resetSignal === 0) return
+    setValue("")
+  }, [resetSignal])
   const trimmedLength = value.trim().length
   const tooShort = trimmedLength > 0 && trimmedLength < MIN_LENGTH
   const tooLong = value.length > MAX_LENGTH

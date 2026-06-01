@@ -26,42 +26,27 @@ export const Route = createFileRoute("/ai/")({
 })
 
 type DisplayResult =
-  | {
-      kind: "table"
-      rows: Record<string, unknown>[]
-      summary: string
-      question: string
-    }
-  | {
-      kind: "note"
-      summary: string
-      value?: string
-      question: string
-    }
+  | { kind: "table"; rows: Record<string, unknown>[]; summary: string }
+  | { kind: "note"; summary: string; value?: string }
 
-function toDisplay(response: AIResponse, question: string): DisplayResult {
+function toDisplay(response: AIResponse): DisplayResult {
   if (response.type === "json") {
-    return {
-      kind: "table",
-      rows: response.value,
-      summary: response.summary,
-      question,
-    }
+    return { kind: "table", rows: response.value, summary: response.summary }
   }
   if (response.type === "scalar") {
     return {
       kind: "note",
       summary: response.summary,
       value: response.value,
-      question,
     }
   }
-  return { kind: "note", summary: response.summary, question }
+  return { kind: "note", summary: response.summary }
 }
 
 function AIPage() {
   const [history, setHistory] = useState<ChatMessage[]>([])
   const [result, setResult] = useState<DisplayResult | null>(null)
+  const [resetSignal, setResetSignal] = useState(0)
   const [pendingNonTabular, setPendingNonTabular] = useState<{
     question: string
     response: AIResponse
@@ -76,7 +61,8 @@ function AIPage() {
           { role: "user", content: question },
           { role: "assistant", content: response.summary, result: response },
         ])
-        setResult(toDisplay(response, question))
+        setResult(toDisplay(response))
+        setResetSignal((s) => s + 1)
         return
       }
       setPendingNonTabular({ question, response })
@@ -95,7 +81,8 @@ function AIPage() {
       { role: "user", content: question },
       { role: "assistant", content: response.summary, result: response },
     ])
-    setResult(toDisplay(response, question))
+    setResult(toDisplay(response))
+    setResetSignal((s) => s + 1)
     setPendingNonTabular(null)
   }
 
@@ -104,8 +91,7 @@ function AIPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-6">
-      <QueryBar onSubmit={mutate} disabled={isPending} pending={isPending} />
+    <div className="flex flex-1 flex-col pb-32">
       <div className="flex flex-1 flex-col">
         {isPending && result === null ? (
           <PendingState />
@@ -123,18 +109,20 @@ function AIPage() {
             </EmptyHeader>
           </Empty>
         ) : result.kind === "table" ? (
-          <ResultDataTable
-            rows={result.rows}
-            summary={result.summary}
-            question={result.question}
-          />
+          <ResultDataTable rows={result.rows} summary={result.summary} />
         ) : (
-          <NoteResult
-            summary={result.summary}
-            value={result.value}
-            question={result.question}
-          />
+          <NoteResult summary={result.summary} value={result.value} />
         )}
+      </div>
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center bg-gradient-to-t from-background via-background/95 to-transparent px-4 pt-8 pb-6">
+        <div className="pointer-events-auto w-full max-w-3xl">
+          <QueryBar
+            onSubmit={mutate}
+            disabled={isPending}
+            pending={isPending}
+            resetSignal={resetSignal}
+          />
+        </div>
       </div>
       <NonTabularDialog
         response={pendingNonTabular?.response ?? null}
@@ -161,35 +149,16 @@ function PendingState() {
   )
 }
 
-function NoteResult({
-  summary,
-  value,
-  question,
-}: {
-  summary: string
-  value?: string
-  question: string
-}) {
+function NoteResult({ summary, value }: { summary: string; value?: string }) {
   return (
-    <div className="flex flex-1 flex-col gap-3">
-      <QuestionLabel question={question} />
-      <Empty className="flex-1">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <TableIcon />
-          </EmptyMedia>
-          <EmptyTitle>{value ?? "Non-tabular result"}</EmptyTitle>
-          <EmptyDescription>{summary}</EmptyDescription>
-        </EmptyHeader>
-      </Empty>
-    </div>
-  )
-}
-
-function QuestionLabel({ question }: { question: string }) {
-  return (
-    <p className="truncate text-xs text-muted-foreground">
-      <span className="font-medium text-foreground">You asked:</span> {question}
-    </p>
+    <Empty className="flex-1">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <TableIcon />
+        </EmptyMedia>
+        <EmptyTitle>{value ?? "Non-tabular result"}</EmptyTitle>
+        <EmptyDescription>{summary}</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
   )
 }
