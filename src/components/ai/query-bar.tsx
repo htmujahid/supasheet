@@ -37,7 +37,7 @@ export function QueryBar({
   }
 
   return (
-    <InputGroup>
+    <InputGroup className="bg-background">
       <InputGroupTextarea
         value={value}
         onChange={(e) => setValue(e.target.value)}

@@ -84,7 +84,7 @@ export function ResultDataTable({
           <DataTableColumnVisibility table={table} />
         </div>
       </div>
-      <DataTable table={table} />
+      <DataTable table={table} pagination={false} />
     </div>
   )
 }

@@ -4,12 +4,13 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { useMutation } from "@tanstack/react-query"
 
-import { SparklesIcon, TableIcon } from "lucide-react"
+import { PlusIcon, SparklesIcon, TableIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { NonTabularDialog } from "#/components/ai/non-tabular-dialog"
 import { QueryBar } from "#/components/ai/query-bar"
 import { ResultDataTable } from "#/components/ai/result-data-table"
+import { Button } from "#/components/ui/button"
 import {
   Empty,
   EmptyDescription,
@@ -45,6 +46,7 @@ function toDisplay(response: AIResponse): DisplayResult {
 function AIPage() {
   const [history, setHistory] = useState<ChatMessage[]>([])
   const [result, setResult] = useState<DisplayResult | null>(null)
+  const [lastQuestion, setLastQuestion] = useState<string | null>(null)
   const [pendingNonTabular, setPendingNonTabular] = useState<{
     question: string
     response: AIResponse
@@ -60,6 +62,7 @@ function AIPage() {
           { role: "assistant", content: response.summary, result: response },
         ])
         setResult(toDisplay(response))
+        setLastQuestion(question)
         return
       }
       setPendingNonTabular({ question, response })
@@ -79,6 +82,7 @@ function AIPage() {
       { role: "assistant", content: response.summary, result: response },
     ])
     setResult(toDisplay(response))
+    setLastQuestion(question)
     setPendingNonTabular(null)
   }
 
@@ -86,11 +90,16 @@ function AIPage() {
     setPendingNonTabular(null)
   }
 
+  function newQuery() {
+    setResult(null)
+    setLastQuestion(null)
+  }
+
   return (
-    <div className="flex flex-1 flex-col pb-32">
-      <div className="flex flex-1 flex-col">
-        {result === null ? (
-          <Empty className="flex-1">
+    <div className="flex flex-1 flex-col">
+      {result === null ? (
+        <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-6 py-10">
+          <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <SparklesIcon />
@@ -102,26 +111,52 @@ function AIPage() {
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
-        ) : result.kind === "table" ? (
-          <ResultDataTable rows={result.rows} summary={result.summary} />
-        ) : (
-          <NoteResult summary={result.summary} value={result.value} />
-        )}
-      </div>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center bg-gradient-to-t from-background via-background/95 to-transparent px-4 pt-8 pb-6">
-        <div className="pointer-events-auto w-full max-w-3xl">
-          <QueryBar
-            onSubmit={mutate}
-            disabled={isPending}
-            pending={isPending}
-          />
+          <div className="w-full">
+            <QueryBar
+              onSubmit={mutate}
+              disabled={isPending}
+              pending={isPending}
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-1 flex-col gap-4">
+          <ResultHeader question={lastQuestion} onNewQuery={newQuery} />
+          {result.kind === "table" ? (
+            <ResultDataTable rows={result.rows} summary={result.summary} />
+          ) : (
+            <NoteResult summary={result.summary} value={result.value} />
+          )}
+        </div>
+      )}
       <NonTabularDialog
         response={pendingNonTabular?.response ?? null}
         onShowAnyway={acceptNonTabular}
         onRefine={dismissNonTabular}
       />
+    </div>
+  )
+}
+
+function ResultHeader({
+  question,
+  onNewQuery,
+}: {
+  question: string | null
+  onNewQuery: () => void
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3 rounded-lg border bg-muted/40 px-3 py-2">
+      <div className="flex min-w-0 items-start gap-2">
+        <SparklesIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+        <p className="truncate text-sm">
+          {question ?? "Result"}
+        </p>
+      </div>
+      <Button size="sm" variant="outline" onClick={onNewQuery}>
+        <PlusIcon />
+        New question
+      </Button>
     </div>
   )
 }

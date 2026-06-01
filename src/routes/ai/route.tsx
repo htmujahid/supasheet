@@ -29,7 +29,7 @@ function RouteComponent() {
           Back to app
         </Button>
       </header>
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-6">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col p-4">
         <Outlet />
       </main>
     </div>
