@@ -22,6 +22,7 @@ export default [
       "supabase/**",
       "src/lib/database.types.ts",
       "src/components/ui/**",
+      "src/routeTree.gen.ts",
     ],
   },
 ]

@@ -1,9 +1,9 @@
 export type MutationKind = "insert" | "update" | "delete"
 
 export type AIResponse =
-  | { type: "json";    value: Record<string, unknown>[]; summary: string }
-  | { type: "scalar";  value: string;                    summary: string }
-  | { type: "text";    value: null;                      summary: string }
+  | { type: "json"; value: Record<string, unknown>[]; summary: string }
+  | { type: "scalar"; value: string; summary: string }
+  | { type: "text"; value: null; summary: string }
   | {
       type: "mutation_preview"
       kind: MutationKind

@@ -8,6 +8,7 @@ import { SparklesIcon, TableIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import { MutationConfirmBar } from "#/components/ai/mutation-confirm-bar"
+import type { PendingMutation } from "#/components/ai/mutation-confirm-bar"
 import { NonTabularDialog } from "#/components/ai/non-tabular-dialog"
 import { QueryBar } from "#/components/ai/query-bar"
 import { ResultBar } from "#/components/ai/result-bar"
@@ -22,7 +23,6 @@ import {
 import { Spinner } from "#/components/ui/spinner"
 import { askAI, confirmMutation } from "#/lib/ai/retrieval"
 import type { AIResponse, ChatMessage } from "#/lib/ai/types"
-import type { PendingMutation } from "#/components/ai/mutation-confirm-bar"
 
 export const Route = createFileRoute("/ai/")({
   component: AIPage,
@@ -64,9 +64,8 @@ function AIPage() {
     question: string
     response: AIResponse
   } | null>(null)
-  const [pendingMutation, setPendingMutation] = useState<PendingMutation | null>(
-    null
-  )
+  const [pendingMutation, setPendingMutation] =
+    useState<PendingMutation | null>(null)
 
   function commitToHistory(
     question: string,
