@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --check .",
     "check": "prettier --write . && eslint --fix",
-    "supabase": "supabase"
+    "supabase": "supabase",
+    "examples": "bash ./supabase/examples/apply.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
