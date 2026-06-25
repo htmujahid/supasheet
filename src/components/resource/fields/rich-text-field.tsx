@@ -1,4 +1,4 @@
-import { Editor } from "#/components/blocks/editor-md/editor"
+import { Editor } from "#/components/editor/editor-md"
 import { ButtonGroup } from "#/components/ui/button-group"
 import type { FieldProps } from "#/types/fields"
 

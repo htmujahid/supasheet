@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "lucide-react"
 
-import { Editor } from "#/components/blocks/editor-md/editor"
+import { Editor } from "#/components/editor/editor-md"
 import {
   Card,
   CardContent,

@@ -26,6 +26,7 @@
     "@headless-tree/core": "^1.7.0",
     "@headless-tree/react": "^1.7.0",
     "@lexical/code": "^0.45.0",
+    "@lexical/code-shiki": "^0.45.0",
     "@lexical/link": "^0.45.0",
     "@lexical/list": "^0.45.0",
     "@lexical/markdown": "^0.45.0",

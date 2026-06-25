@@ -1,24 +1,19 @@
-import { Suspense, useCallback, useEffect, useRef, useState } from "react"
 import type { JSX } from "react"
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin"
-import { useCollaborationContext } from "@lexical/react/LexicalCollaborationContext"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
-import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer"
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
 import { useLexicalEditable } from "@lexical/react/useLexicalEditable"
 import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection"
 import { mergeRegister } from "@lexical/utils"
-import type {
-  BaseSelection,
-  LexicalCommand,
-  LexicalEditor,
-  NodeKey,
-} from "lexical"
+import type { LexicalCommand, LexicalEditor, NodeKey } from "lexical"
 import {
-  $getNodeByKey,
   $getSelection,
   $isNodeSelection,
   $isRangeSelection,
@@ -26,40 +21,52 @@ import {
   CLICK_COMMAND,
   COMMAND_PRIORITY_LOW,
   DRAGSTART_COMMAND,
-  KEY_BACKSPACE_COMMAND,
-  KEY_DELETE_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
-  ParagraphNode,
-  RootNode,
   SELECTION_CHANGE_COMMAND,
-  TextNode,
   createCommand,
 } from "lexical"
 
-import { ContentEditable } from "#/components/editor/editor-ui/content-editable"
-import { ImageResizer } from "#/components/editor/editor-ui/image-resizer"
-import { $isImageNode } from "#/components/editor/nodes/image-node"
+type ImageStatus =
+  | { error: true }
+  | { error: false; width: number; height: number }
 
-const imageCache = new Set()
+const imageCache = new Map<string, Promise<ImageStatus> | ImageStatus>()
 
 export const RIGHT_CLICK_IMAGE_COMMAND: LexicalCommand<MouseEvent> =
   createCommand("RIGHT_CLICK_IMAGE_COMMAND")
 
-function useSuspenseImage(src: string) {
-  if (!imageCache.has(src)) {
-    throw new Promise((resolve) => {
+function useSuspenseImage(src: string): ImageStatus {
+  let cached = imageCache.get(src)
+  if (cached && "error" in cached && typeof cached.error === "boolean") {
+    return cached
+  } else if (!cached) {
+    cached = new Promise<ImageStatus>((resolve) => {
       const img = new Image()
       img.src = src
-      img.onload = () => {
-        imageCache.add(src)
-        resolve(null)
-      }
-      img.onerror = () => {
-        imageCache.add(src)
-      }
+      img.onload = () =>
+        resolve({
+          error: false,
+          height: img.naturalHeight,
+          width: img.naturalWidth,
+        })
+      img.onerror = () => resolve({ error: true })
+    }).then((rval) => {
+      imageCache.set(src, rval)
+      return rval
     })
+    imageCache.set(src, cached)
+    throw cached
   }
+  throw cached
+}
+
+function isSVG(src: string): boolean {
+  const lowerCaseSrc = src.toLowerCase()
+  return (
+    lowerCaseSrc.endsWith(".svg") ||
+    lowerCaseSrc.startsWith("data:image/svg+xml")
+  )
 }
 
 function LazyImage({
@@ -81,18 +88,78 @@ function LazyImage({
   width: "inherit" | number
   onError: () => void
 }): JSX.Element {
-  useSuspenseImage(src)
+  const status = useSuspenseImage(src)
+
+  useEffect(() => {
+    if (status.error) {
+      onError()
+    }
+  }, [status.error, onError])
+
+  if (status.error) {
+    return <BrokenImage />
+  }
+
+  // Calculate final dimensions with proper scaling
+  const calculateDimensions = () => {
+    if (width !== "inherit" && height !== "inherit") {
+      return {
+        height,
+        maxWidth,
+        width,
+      }
+    }
+
+    const isActuallySVG = isSVG(src)
+
+    // For standard images, Lexical expects 'inherit'
+    if (!isActuallySVG) {
+      return {
+        height,
+        maxWidth,
+        width,
+      }
+    }
+
+    // Use natural dimensions if available, otherwise fallback to defaults
+    const naturalWidth = status.width
+    const naturalHeight = status.height
+
+    //  If SVG has no intrinsic dimensions (0), fallback to a sensible default (maxWidth)
+    let finalWidth = naturalWidth || maxWidth
+    let finalHeight = naturalHeight || finalWidth
+
+    // Scale down if width exceeds maxWidth while maintaining aspect ratio
+    if (finalWidth > maxWidth) {
+      const scale = maxWidth / finalWidth
+      finalWidth = maxWidth
+      finalHeight = Math.round(finalHeight * scale)
+    }
+
+    // Scale down if height exceeds maxHeight while maintaining aspect ratio
+    const maxHeight = 500
+    if (finalHeight > maxHeight) {
+      const scale = maxHeight / finalHeight
+      finalHeight = maxHeight
+      finalWidth = Math.round(finalWidth * scale)
+    }
+
+    return {
+      height: finalHeight,
+      maxWidth,
+      width: finalWidth,
+    }
+  }
+
+  const imageStyle = calculateDimensions()
+
   return (
     <img
       className={className || undefined}
       src={src}
       alt={altText}
       ref={imageRef}
-      style={{
-        height,
-        maxWidth,
-        width,
-      }}
+      style={imageStyle}
       onError={onError}
       draggable="false"
     />
@@ -109,6 +176,7 @@ function BrokenImage(): JSX.Element {
         width: 200,
       }}
       draggable="false"
+      alt="Broken image"
     />
   )
 }
@@ -120,51 +188,30 @@ export default function ImageComponent({
   width,
   height,
   maxWidth,
-  resizable,
-  showCaption,
-  caption,
-  captionsEnabled,
 }: {
   altText: string
-  caption: LexicalEditor
   height: "inherit" | number
   maxWidth: number
   nodeKey: NodeKey
-  resizable: boolean
-  showCaption: boolean
   src: string
   width: "inherit" | number
-  captionsEnabled: boolean
 }): JSX.Element {
   const imageRef = useRef<null | HTMLImageElement>(null)
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const [isSelected, setSelected, clearSelection] =
     useLexicalNodeSelection(nodeKey)
-  const [isResizing, setIsResizing] = useState<boolean>(false)
-  useCollaborationContext()
   const [editor] = useLexicalComposerContext()
-  const [selection, setSelection] = useState<BaseSelection | null>(null)
   const activeEditorRef = useRef<LexicalEditor | null>(null)
   const [isLoadError, setIsLoadError] = useState<boolean>(false)
   const isEditable = useLexicalEditable()
-
-  const $onDelete = useCallback(
-    (payload: KeyboardEvent) => {
-      const deleteSelection = $getSelection()
-      if (isSelected && $isNodeSelection(deleteSelection)) {
-        const event: KeyboardEvent = payload
-        event.preventDefault()
-        editor.update(() => {
-          deleteSelection.getNodes().forEach((node) => {
-            if ($isImageNode(node)) {
-              node.remove()
-            }
-          })
-        })
-      }
-      return false
-    },
-    [editor, isSelected]
+  const isInNodeSelection = useMemo(
+    () =>
+      isSelected &&
+      editor.getEditorState().read(() => {
+        const selection = $getSelection()
+        return $isNodeSelection(selection) && selection.has(nodeKey)
+      }),
+    [editor, isSelected, nodeKey]
   )
 
   const $onEnter = useCallback(
@@ -172,20 +219,11 @@ export default function ImageComponent({
       const latestSelection = $getSelection()
       const buttonElem = buttonRef.current
       if (
-        isSelected &&
         $isNodeSelection(latestSelection) &&
+        latestSelection.has(nodeKey) &&
         latestSelection.getNodes().length === 1
       ) {
-        if (showCaption) {
-          // Move focus into nested editor
-          $setSelection(null)
-          event.preventDefault()
-          caption.focus()
-          return true
-        } else if (
-          buttonElem !== null &&
-          buttonElem !== document.activeElement
-        ) {
+        if (buttonElem !== null && buttonElem !== document.activeElement) {
           event.preventDefault()
           buttonElem.focus()
           return true
@@ -193,15 +231,12 @@ export default function ImageComponent({
       }
       return false
     },
-    [caption, isSelected, showCaption]
+    [nodeKey]
   )
 
   const $onEscape = useCallback(
     (event: KeyboardEvent) => {
-      if (
-        activeEditorRef.current === caption ||
-        buttonRef.current === event.target
-      ) {
+      if (buttonRef.current === event.target) {
         $setSelection(null)
         editor.update(() => {
           setSelected(true)
@@ -214,16 +249,13 @@ export default function ImageComponent({
       }
       return false
     },
-    [caption, editor, setSelected]
+    [editor, setSelected]
   )
 
   const onClick = useCallback(
     (payload: MouseEvent) => {
       const event = payload
 
-      if (isResizing) {
-        return true
-      }
       if (event.target === imageRef.current) {
         if (event.shiftKey) {
           setSelected(!isSelected)
@@ -236,7 +268,7 @@ export default function ImageComponent({
 
       return false
     },
-    [isResizing, isSelected, setSelected, clearSelection]
+    [isSelected, setSelected, clearSelection]
   )
 
   const onRightClick = useCallback(
@@ -257,30 +289,13 @@ export default function ImageComponent({
   )
 
   useEffect(() => {
-    let isMounted = true
-    const rootElement = editor.getRootElement()
-    const unregister = mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
-        if (isMounted) {
-          setSelection(editorState.read(() => $getSelection()))
-        }
-      }),
+    return mergeRegister(
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
         (_, activeEditor) => {
           activeEditorRef.current = activeEditor
           return false
         },
-        COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand<MouseEvent>(
-        CLICK_COMMAND,
-        onClick,
-        COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand<MouseEvent>(
-        RIGHT_CLICK_IMAGE_COMMAND,
-        onClick,
         COMMAND_PRIORITY_LOW
       ),
       editor.registerCommand(
@@ -295,15 +310,19 @@ export default function ImageComponent({
           return false
         },
         COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand(
-        KEY_DELETE_COMMAND,
-        $onDelete,
+      )
+    )
+  }, [editor])
+  useEffect(() => {
+    return mergeRegister(
+      editor.registerCommand<MouseEvent>(
+        CLICK_COMMAND,
+        onClick,
         COMMAND_PRIORITY_LOW
       ),
-      editor.registerCommand(
-        KEY_BACKSPACE_COMMAND,
-        $onDelete,
+      editor.registerCommand<MouseEvent>(
+        RIGHT_CLICK_IMAGE_COMMAND,
+        onClick,
         COMMAND_PRIORITY_LOW
       ),
       editor.registerCommand(KEY_ENTER_COMMAND, $onEnter, COMMAND_PRIORITY_LOW),
@@ -311,62 +330,19 @@ export default function ImageComponent({
         KEY_ESCAPE_COMMAND,
         $onEscape,
         COMMAND_PRIORITY_LOW
-      )
+      ),
+      editor.registerRootListener((rootElement) => {
+        if (rootElement) {
+          rootElement.addEventListener("contextmenu", onRightClick)
+          return () =>
+            rootElement.removeEventListener("contextmenu", onRightClick)
+        }
+      })
     )
+  }, [editor, $onEnter, $onEscape, onClick, onRightClick])
 
-    rootElement?.addEventListener("contextmenu", onRightClick)
-
-    return () => {
-      isMounted = false
-      unregister()
-      rootElement?.removeEventListener("contextmenu", onRightClick)
-    }
-  }, [
-    clearSelection,
-    editor,
-    isResizing,
-    isSelected,
-    nodeKey,
-    $onDelete,
-    $onEnter,
-    $onEscape,
-    onClick,
-    onRightClick,
-    setSelected,
-  ])
-
-  const setShowCaption = () => {
-    editor.update(() => {
-      const node = $getNodeByKey(nodeKey)
-      if ($isImageNode(node)) {
-        node.setShowCaption(true)
-      }
-    })
-  }
-
-  const onResizeEnd = (
-    nextWidth: "inherit" | number,
-    nextHeight: "inherit" | number
-  ) => {
-    // Delay hiding the resize bars for click case
-    setTimeout(() => {
-      setIsResizing(false)
-    }, 200)
-
-    editor.update(() => {
-      const node = $getNodeByKey(nodeKey)
-      if ($isImageNode(node)) {
-        node.setWidthAndHeight(nextWidth, nextHeight)
-      }
-    })
-  }
-
-  const onResizeStart = () => {
-    setIsResizing(true)
-  }
-
-  const draggable = isSelected && $isNodeSelection(selection) && !isResizing
-  const isFocused = (isSelected || isResizing) && isEditable
+  const draggable = isInNodeSelection
+  const isFocused = isSelected && isEditable
   return (
     <Suspense fallback={null}>
       <>
@@ -375,11 +351,11 @@ export default function ImageComponent({
             <BrokenImage />
           ) : (
             <LazyImage
-              className={`max-w-full cursor-default ${
+              className={
                 isFocused
-                  ? `${$isNodeSelection(selection) ? "draggable cursor-grab active:cursor-grabbing" : ""} focused ring-2 ring-primary ring-offset-2`
+                  ? `focused ${isInNodeSelection ? "draggable" : ""}`
                   : null
-              }`}
+              }
               src={src}
               altText={altText}
               imageRef={imageRef}
@@ -390,41 +366,6 @@ export default function ImageComponent({
             />
           )}
         </div>
-
-        {showCaption && (
-          <div className="image-caption-container absolute right-0 bottom-1 left-0 m-0 block min-w-[100px] overflow-hidden border-t bg-white/90 p-0">
-            <LexicalNestedComposer
-              initialEditor={caption}
-              initialNodes={[RootNode, TextNode, ParagraphNode]}
-            >
-              <AutoFocusPlugin />
-              <HistoryPlugin />
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable
-                    className="ImageNode__contentEditable user-select-text word-break-break-word relative block min-h-5 w-[calc(100%-20px)] cursor-text resize-none border-0 p-2.5 text-sm whitespace-pre-wrap caret-primary outline-none"
-                    placeholderClassName="ImageNode__placeholder text-sm text-muted-foreground overflow-hidden absolute top-2.5 left-2.5 pointer-events-none text-ellipsis user-select-none whitespace-nowrap inline-block"
-                    placeholder="Enter a caption..."
-                  />
-                }
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-            </LexicalNestedComposer>
-          </div>
-        )}
-        {resizable && $isNodeSelection(selection) && isFocused && (
-          <ImageResizer
-            showCaption={showCaption}
-            setShowCaption={setShowCaption}
-            editor={editor}
-            buttonRef={buttonRef}
-            imageRef={imageRef}
-            maxWidth={maxWidth}
-            onResizeStart={onResizeStart}
-            onResizeEnd={onResizeEnd}
-            captionsEnabled={!isLoadError && captionsEnabled}
-          />
-        )}
       </>
     </Suspense>
   )

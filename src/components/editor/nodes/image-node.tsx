@@ -1,33 +1,28 @@
-import * as React from "react"
-import { Suspense } from "react"
 import type { JSX } from "react"
+import * as React from "react"
 
 import type {
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
   EditorConfig,
-  LexicalEditor,
   LexicalNode,
+  LexicalUpdateJSON,
   NodeKey,
-  SerializedEditor,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
-import { $applyNodeReplacement, DecoratorNode, createEditor } from "lexical"
+import { $applyNodeReplacement, DecoratorNode } from "lexical"
 
 const ImageComponent = React.lazy(() => import("../editor-ui/image-component"))
 
 export interface ImagePayload {
   altText: string
-  caption?: LexicalEditor
   height?: number
   key?: NodeKey
   maxWidth?: number
-  showCaption?: boolean
   src: string
   width?: number
-  captionsEnabled?: boolean
 }
 
 function isGoogleDocCheckboxImg(img: HTMLImageElement): boolean {
@@ -41,10 +36,11 @@ function isGoogleDocCheckboxImg(img: HTMLImageElement): boolean {
 
 function $convertImageElement(domNode: Node): null | DOMConversionOutput {
   const img = domNode as HTMLImageElement
-  if (img.src.startsWith("file:///") || isGoogleDocCheckboxImg(img)) {
+  const src = img.getAttribute("src")
+  if (!src || src.startsWith("file:///") || isGoogleDocCheckboxImg(img)) {
     return null
   }
-  const { alt: altText, src, width, height } = img
+  const { alt: altText, width, height } = img
   const node = $createImageNode({ altText, height, src, width })
   return { node }
 }
@@ -52,10 +48,8 @@ function $convertImageElement(domNode: Node): null | DOMConversionOutput {
 export type SerializedImageNode = Spread<
   {
     altText: string
-    caption: SerializedEditor
     height?: number
     maxWidth: number
-    showCaption: boolean
     src: string
     width?: number
   },
@@ -68,10 +62,6 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   __width: "inherit" | number
   __height: "inherit" | number
   __maxWidth: number
-  __showCaption: boolean
-  __caption: LexicalEditor
-  // Captions cannot yet be used within editor cells
-  __captionsEnabled: boolean
 
   static getType(): string {
     return "image"
@@ -84,44 +74,40 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
       node.__maxWidth,
       node.__width,
       node.__height,
-      node.__showCaption,
-      node.__caption,
-      node.__captionsEnabled,
       node.__key
     )
   }
 
   static importJSON(serializedNode: SerializedImageNode): ImageNode {
-    const { altText, height, width, maxWidth, caption, src, showCaption } =
-      serializedNode
-    const node = $createImageNode({
+    const { altText, height, width, maxWidth, src } = serializedNode
+    return $createImageNode({
       altText,
       height,
       maxWidth,
-      showCaption,
       src,
       width,
-    })
-    const nestedEditor = node.__caption
-    const editorState = nestedEditor.parseEditorState(caption.editorState)
-    if (!editorState.isEmpty()) {
-      nestedEditor.setEditorState(editorState)
-    }
+    }).updateFromJSON(serializedNode)
+  }
+
+  updateFromJSON(serializedNode: LexicalUpdateJSON<SerializedImageNode>): this {
+    const node = super.updateFromJSON(serializedNode)
+
     return node
   }
 
   exportDOM(): DOMExportOutput {
-    const element = document.createElement("img")
-    element.setAttribute("src", this.__src)
-    element.setAttribute("alt", this.__altText)
-    element.setAttribute("width", this.__width.toString())
-    element.setAttribute("height", this.__height.toString())
-    return { element }
+    const imgElement = document.createElement("img")
+    imgElement.setAttribute("src", this.__src)
+    imgElement.setAttribute("alt", this.__altText)
+    imgElement.setAttribute("width", this.__width.toString())
+    imgElement.setAttribute("height", this.__height.toString())
+
+    return { element: imgElement }
   }
 
   static importDOM(): DOMConversionMap | null {
     return {
-      img: (_node: Node) => ({
+      img: () => ({
         conversion: $convertImageElement,
         priority: 0,
       }),
@@ -134,9 +120,6 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     maxWidth: number,
     width?: "inherit" | number,
     height?: "inherit" | number,
-    showCaption?: boolean,
-    caption?: LexicalEditor,
-    captionsEnabled?: boolean,
     key?: NodeKey
   ) {
     super(key)
@@ -145,25 +128,15 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     this.__maxWidth = maxWidth
     this.__width = width || "inherit"
     this.__height = height || "inherit"
-    this.__showCaption = showCaption || false
-    this.__caption =
-      caption ||
-      createEditor({
-        nodes: [],
-      })
-    this.__captionsEnabled = captionsEnabled || captionsEnabled === undefined
   }
 
   exportJSON(): SerializedImageNode {
     return {
+      ...super.exportJSON(),
       altText: this.getAltText(),
-      caption: this.__caption.toJSON(),
       height: this.__height === "inherit" ? 0 : this.__height,
       maxWidth: this.__maxWidth,
-      showCaption: this.__showCaption,
       src: this.getSrc(),
-      type: "image",
-      version: 1,
       width: this.__width === "inherit" ? 0 : this.__width,
     }
   }
@@ -171,15 +144,11 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   setWidthAndHeight(
     width: "inherit" | number,
     height: "inherit" | number
-  ): void {
+  ): this {
     const writable = this.getWritable()
     writable.__width = width
     writable.__height = height
-  }
-
-  setShowCaption(showCaption: boolean): void {
-    const writable = this.getWritable()
-    writable.__showCaption = showCaption
+    return writable
   }
 
   // View
@@ -199,29 +168,23 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   }
 
   getSrc(): string {
-    return this.__src
+    return this.getLatest().__src
   }
 
   getAltText(): string {
-    return this.__altText
+    return this.getLatest().__altText
   }
 
   decorate(): JSX.Element {
     return (
-      <Suspense fallback={null}>
-        <ImageComponent
-          src={this.__src}
-          altText={this.__altText}
-          width={this.__width}
-          height={this.__height}
-          maxWidth={this.__maxWidth}
-          nodeKey={this.getKey()}
-          showCaption={this.__showCaption}
-          caption={this.__caption}
-          captionsEnabled={this.__captionsEnabled}
-          resizable={true}
-        />
-      </Suspense>
+      <ImageComponent
+        src={this.__src}
+        altText={this.__altText}
+        width={this.__width}
+        height={this.__height}
+        maxWidth={this.__maxWidth}
+        nodeKey={this.getKey()}
+      />
     )
   }
 }
@@ -230,25 +193,12 @@ export function $createImageNode({
   altText,
   height,
   maxWidth = 500,
-  captionsEnabled,
   src,
   width,
-  showCaption,
-  caption,
   key,
 }: ImagePayload): ImageNode {
   return $applyNodeReplacement(
-    new ImageNode(
-      src,
-      altText,
-      maxWidth,
-      width,
-      height,
-      showCaption,
-      caption,
-      captionsEnabled,
-      key
-    )
+    new ImageNode(src, altText, maxWidth, width, height, key)
   )
 }
 

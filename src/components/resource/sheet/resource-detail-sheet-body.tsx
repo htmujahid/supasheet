@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
-import { Editor } from "#/components/blocks/editor-md/editor"
+import { Editor } from "#/components/editor/editor-md"
 import { AllCells } from "#/components/resource/cells/all-cells"
 import { ResourceAvatarDisplay } from "#/components/resource/detail/resource-avatar-display"
 import { ResourceFileDisplay } from "#/components/resource/detail/resource-file-display"

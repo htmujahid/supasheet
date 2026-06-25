@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "#/components/ui/dialog"
+} from "@/components/ui/dialog"
 
 export function useEditorModal(): [
   JSX.Element | null,

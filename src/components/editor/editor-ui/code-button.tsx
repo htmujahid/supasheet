@@ -1,15 +1,14 @@
 import { useState } from "react"
 
+import { useDebounce } from "@/components/editor/editor-hooks/use-debounce"
 import { $isCodeNode } from "@lexical/code"
-import type { LexicalEditor } from "lexical"
 import {
   $getNearestNodeFromDOMNode,
   $getSelection,
   $setSelection,
 } from "lexical"
+import type { LexicalEditor } from "lexical"
 import { CircleCheckIcon, CopyIcon } from "lucide-react"
-
-import { useDebounce } from "#/components/editor/editor-hooks/use-debounce"
 
 interface Props {
   editor: LexicalEditor
@@ -54,7 +53,7 @@ export function CopyButton({ editor, getCodeDOMNode }: Props) {
 
   return (
     <button
-      className="flex shrink-0 cursor-pointer items-center rounded border border-transparent bg-none p-1 text-foreground/50 uppercase"
+      className="text-foreground/50 flex shrink-0 cursor-pointer items-center rounded border border-transparent bg-none p-1 uppercase"
       onClick={handleClick}
       aria-label="copy"
     >

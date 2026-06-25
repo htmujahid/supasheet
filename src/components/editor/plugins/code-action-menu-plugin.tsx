@@ -1,28 +1,14 @@
-"use client"
-
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
 import { useEffect, useRef, useState } from "react"
 import type { JSX } from "react"
 
 import { createPortal } from "react-dom"
 
-import {
-  $isCodeNode,
-  CodeNode,
-  getLanguageFriendlyName,
-  normalizeCodeLang,
-} from "@lexical/code"
+import { useDebounce } from "@/components/editor/editor-hooks/use-debounce"
+import { CopyButton } from "@/components/editor/editor-ui/code-button"
+import { $isCodeNode, CodeNode } from "@lexical/code"
+import { getCodeLanguageOptions } from "@lexical/code-shiki"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $getNearestNodeFromDOMNode, isHTMLElement } from "lexical"
-
-import { useDebounce } from "#/components/editor/editor-hooks/use-debounce"
-import { CopyButton } from "#/components/editor/editor-ui/code-button"
 
 const CODE_PADDING = 8
 
@@ -135,8 +121,9 @@ function CodeActionMenuContainer({
     )
   }, [editor])
 
-  normalizeCodeLang(lang)
-  const codeFriendlyName = getLanguageFriendlyName(lang)
+  const codeFriendlyName = getCodeLanguageOptions().find(
+    ([key]) => key === lang
+  )?.[1]
 
   return (
     <>

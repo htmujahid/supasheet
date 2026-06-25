@@ -1,4 +1,4 @@
-import { Editor } from "#/components/blocks/editor-md/editor"
+import { Editor } from "#/components/editor/editor-md"
 import {
   Card,
   CardContent,
