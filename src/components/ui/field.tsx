@@ -1,12 +1,10 @@
-"use client"
-
 import { useMemo } from "react"
 
 import { type VariantProps, cva } from "class-variance-authority"
 
-import { Label } from "#/components/ui/label"
-import { Separator } from "#/components/ui/separator"
-import { cn } from "#/lib/utils"
+import { Label } from "#/components/ui/label.tsx"
+import { Separator } from "#/components/ui/separator.tsx"
+import { cn } from "#/lib/utils.ts"
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -121,7 +119,7 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-label"
       className={cn(
-        "flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50",
+        "flex w-fit items-center gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50",
         className
       )}
       {...props}

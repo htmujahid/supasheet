@@ -1375,8 +1375,7 @@ after insert on store.store_settings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_store_settings_update
-after
-update on store.store_settings for each row
+after update on store.store_settings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_products_insert
@@ -1384,11 +1383,11 @@ after insert on store.products for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_products_update
-after
-update on store.products for each row
+after update on store.products for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_store_products_delete before delete on store.products for each row
+create trigger audit_store_products_delete
+before delete on store.products for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_orders_insert
@@ -1396,11 +1395,11 @@ after insert on store.orders for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_orders_update
-after
-update on store.orders for each row
+after update on store.orders for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_store_orders_delete before delete on store.orders for each row
+create trigger audit_store_orders_delete
+before delete on store.orders for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_order_items_insert
@@ -1408,11 +1407,11 @@ after insert on store.order_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_order_items_update
-after
-update on store.order_items for each row
+after update on store.order_items for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_store_order_items_delete before delete on store.order_items for each row
+create trigger audit_store_order_items_delete
+before delete on store.order_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_reviews_insert
@@ -1420,11 +1419,11 @@ after insert on store.reviews for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_store_reviews_update
-after
-update on store.reviews for each row
+after update on store.reviews for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_store_reviews_delete before delete on store.reviews for each row
+create trigger audit_store_reviews_delete
+before delete on store.reviews for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -1485,9 +1484,7 @@ set
 drop trigger if exists orders_notify on store.orders;
 
 create trigger orders_notify
-after insert
-or
-update of status,
+after insert or update of status,
 tracking_number on store.orders for each row
 execute function store.trg_orders_notify ();
 
@@ -1523,9 +1520,7 @@ set
 drop trigger if exists products_notify on store.products;
 
 create trigger products_notify
-after insert
-or
-update of stock on store.products for each row
+after insert or update of stock on store.products for each row
 execute function store.trg_products_notify ();
 
 -- Review trigger:
@@ -1574,7 +1569,5 @@ set
 drop trigger if exists reviews_notify on store.reviews;
 
 create trigger reviews_notify
-after insert
-or
-update of status on store.reviews for each row
+after insert or update of status on store.reviews for each row
 execute function store.trg_reviews_notify ();

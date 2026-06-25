@@ -2066,11 +2066,11 @@ after insert on hr.departments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_departments_update
-after
-update on hr.departments for each row
+after update on hr.departments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_departments_delete before delete on hr.departments for each row
+create trigger audit_hr_departments_delete
+before delete on hr.departments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_positions_insert
@@ -2078,11 +2078,11 @@ after insert on hr.positions for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_positions_update
-after
-update on hr.positions for each row
+after update on hr.positions for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_positions_delete before delete on hr.positions for each row
+create trigger audit_hr_positions_delete
+before delete on hr.positions for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_employees_insert
@@ -2090,11 +2090,11 @@ after insert on hr.employees for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_employees_update
-after
-update on hr.employees for each row
+after update on hr.employees for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_employees_delete before delete on hr.employees for each row
+create trigger audit_hr_employees_delete
+before delete on hr.employees for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_leave_requests_insert
@@ -2102,11 +2102,11 @@ after insert on hr.leave_requests for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_leave_requests_update
-after
-update on hr.leave_requests for each row
+after update on hr.leave_requests for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_leave_requests_delete before delete on hr.leave_requests for each row
+create trigger audit_hr_leave_requests_delete
+before delete on hr.leave_requests for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_performance_reviews_insert
@@ -2114,11 +2114,11 @@ after insert on hr.performance_reviews for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_performance_reviews_update
-after
-update on hr.performance_reviews for each row
+after update on hr.performance_reviews for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_performance_reviews_delete before delete on hr.performance_reviews for each row
+create trigger audit_hr_performance_reviews_delete
+before delete on hr.performance_reviews for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_job_postings_insert
@@ -2126,11 +2126,11 @@ after insert on hr.job_postings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_job_postings_update
-after
-update on hr.job_postings for each row
+after update on hr.job_postings for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_job_postings_delete before delete on hr.job_postings for each row
+create trigger audit_hr_job_postings_delete
+before delete on hr.job_postings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_candidates_insert
@@ -2138,11 +2138,11 @@ after insert on hr.candidates for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hr_candidates_update
-after
-update on hr.candidates for each row
+after update on hr.candidates for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hr_candidates_delete before delete on hr.candidates for each row
+create trigger audit_hr_candidates_delete
+before delete on hr.candidates for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -2204,9 +2204,7 @@ set
 drop trigger if exists leave_requests_notify on hr.leave_requests;
 
 create trigger leave_requests_notify
-after insert
-or
-update of status on hr.leave_requests for each row
+after insert or update of status on hr.leave_requests for each row
 execute function hr.trg_leave_requests_notify ();
 
 -- Performance reviews: notify employee on completion
@@ -2259,8 +2257,7 @@ set
 drop trigger if exists performance_reviews_notify on hr.performance_reviews;
 
 create trigger performance_reviews_notify
-after
-update of status on hr.performance_reviews for each row
+after update of status on hr.performance_reviews for each row
 execute function hr.trg_performance_reviews_notify ();
 
 -- Candidates: notify recruiters on creation and status change
@@ -2307,7 +2304,5 @@ set
 drop trigger if exists candidates_notify on hr.candidates;
 
 create trigger candidates_notify
-after insert
-or
-update of status on hr.candidates for each row
+after insert or update of status on hr.candidates for each row
 execute function hr.trg_candidates_notify ();

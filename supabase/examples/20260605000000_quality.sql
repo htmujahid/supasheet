@@ -2999,11 +2999,11 @@ after insert on quality.standards for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_standards_update
-after
-update on quality.standards for each row
+after update on quality.standards for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_standards_delete before delete on quality.standards for each row
+create trigger audit_qms_standards_delete
+before delete on quality.standards for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_inspections_insert
@@ -3011,11 +3011,11 @@ after insert on quality.inspections for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_inspections_update
-after
-update on quality.inspections for each row
+after update on quality.inspections for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_inspections_delete before delete on quality.inspections for each row
+create trigger audit_qms_inspections_delete
+before delete on quality.inspections for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_inspection_items_insert
@@ -3023,11 +3023,11 @@ after insert on quality.inspection_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_inspection_items_update
-after
-update on quality.inspection_items for each row
+after update on quality.inspection_items for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_inspection_items_delete before delete on quality.inspection_items for each row
+create trigger audit_qms_inspection_items_delete
+before delete on quality.inspection_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_ncr_insert
@@ -3035,11 +3035,11 @@ after insert on quality.non_conformances for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_ncr_update
-after
-update on quality.non_conformances for each row
+after update on quality.non_conformances for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_ncr_delete before delete on quality.non_conformances for each row
+create trigger audit_qms_ncr_delete
+before delete on quality.non_conformances for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_capa_insert
@@ -3047,11 +3047,11 @@ after insert on quality.capa for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_capa_update
-after
-update on quality.capa for each row
+after update on quality.capa for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_capa_delete before delete on quality.capa for each row
+create trigger audit_qms_capa_delete
+before delete on quality.capa for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_audits_insert
@@ -3059,11 +3059,11 @@ after insert on quality.audits for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_audits_update
-after
-update on quality.audits for each row
+after update on quality.audits for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_audits_delete before delete on quality.audits for each row
+create trigger audit_qms_audits_delete
+before delete on quality.audits for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_audit_findings_insert
@@ -3071,11 +3071,11 @@ after insert on quality.audit_findings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_audit_findings_update
-after
-update on quality.audit_findings for each row
+after update on quality.audit_findings for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_audit_findings_delete before delete on quality.audit_findings for each row
+create trigger audit_qms_audit_findings_delete
+before delete on quality.audit_findings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_certifications_insert
@@ -3083,11 +3083,11 @@ after insert on quality.certifications for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_certifications_update
-after
-update on quality.certifications for each row
+after update on quality.certifications for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_certifications_delete before delete on quality.certifications for each row
+create trigger audit_qms_certifications_delete
+before delete on quality.certifications for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_complaints_insert
@@ -3095,11 +3095,11 @@ after insert on quality.complaints for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_qms_complaints_update
-after
-update on quality.complaints for each row
+after update on quality.complaints for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_qms_complaints_delete before delete on quality.complaints for each row
+create trigger audit_qms_complaints_delete
+before delete on quality.complaints for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -3152,9 +3152,7 @@ set
 drop trigger if exists ncr_notify on quality.non_conformances;
 
 create trigger ncr_notify
-after insert
-or
-update of status on quality.non_conformances for each row
+after insert or update of status on quality.non_conformances for each row
 execute function quality.trg_ncr_notify ();
 
 -- CAPA: notify owner on creation and on status changes
@@ -3204,9 +3202,7 @@ set
 drop trigger if exists capa_notify on quality.capa;
 
 create trigger capa_notify
-after insert
-or
-update of status on quality.capa for each row
+after insert or update of status on quality.capa for each row
 execute function quality.trg_capa_notify ();
 
 -- Certifications: notify QA team on expiring/expired transitions
@@ -3258,6 +3254,5 @@ set
 drop trigger if exists certifications_notify on quality.certifications;
 
 create trigger certifications_notify
-after
-update of status on quality.certifications for each row
+after update of status on quality.certifications for each row
 execute function quality.trg_certifications_notify ();

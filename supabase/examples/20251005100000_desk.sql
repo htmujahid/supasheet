@@ -912,8 +912,8 @@ $$ language plpgsql security definer
 set
   search_path = '';
 
-create trigger tasks_record_history before
-update of status,
+create trigger tasks_record_history
+before update of status,
 priority,
 assignee_id on desk.tasks for each row
 execute function desk.tasks_record_history ();
@@ -1866,11 +1866,11 @@ after insert on desk.tasks for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_tasks_update
-after
-update on desk.tasks for each row
+after update on desk.tasks for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_tasks_delete before delete on desk.tasks for each row
+create trigger audit_tasks_delete
+before delete on desk.tasks for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -1881,11 +1881,11 @@ after insert on desk.projects for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_projects_update
-after
-update on desk.projects for each row
+after update on desk.projects for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_projects_delete before delete on desk.projects for each row
+create trigger audit_projects_delete
+before delete on desk.projects for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -1896,11 +1896,11 @@ after insert on desk.task_comments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_task_comments_update
-after
-update on desk.task_comments for each row
+after update on desk.task_comments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_task_comments_delete before delete on desk.task_comments for each row
+create trigger audit_task_comments_delete
+before delete on desk.task_comments for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -1945,9 +1945,7 @@ set
 drop trigger if exists projects_notify on desk.projects;
 
 create trigger projects_notify
-after insert
-or
-update of status on desk.projects for each row
+after insert or update of status on desk.projects for each row
 execute function desk.trg_projects_notify ();
 
 -- Task trigger: notify owner and assignee on creation, status change, or reassignment
@@ -1999,9 +1997,7 @@ set
 drop trigger if exists tasks_notify on desk.tasks;
 
 create trigger tasks_notify
-after insert
-or
-update of status,
+after insert or update of status,
 assignee_id on desk.tasks for each row
 execute function desk.trg_tasks_notify ();
 
@@ -2853,11 +2849,11 @@ after insert on desk.timesheets for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_timesheets_update
-after
-update on desk.timesheets for each row
+after update on desk.timesheets for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_timesheets_delete before delete on desk.timesheets for each row
+create trigger audit_timesheets_delete
+before delete on desk.timesheets for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -2926,9 +2922,7 @@ set
 drop trigger if exists timesheets_notify on desk.timesheets;
 
 create trigger timesheets_notify
-after insert
-or
-update of status on desk.timesheets for each row
+after insert or update of status on desk.timesheets for each row
 execute function desk.trg_timesheets_notify ();
 
 ----------------------------------------------------------------
@@ -2950,30 +2944,34 @@ $$ language plpgsql security definer
 set
   search_path = '';
 
-create trigger aa_soft_delete_projects before delete on desk.projects for each row
+create trigger aa_soft_delete_projects
+before delete on desk.projects for each row
 execute function desk.soft_delete ();
 
-create trigger aa_soft_delete_tasks before delete on desk.tasks for each row
+create trigger aa_soft_delete_tasks
+before delete on desk.tasks for each row
 execute function desk.soft_delete ();
 
-create trigger aa_soft_delete_task_comments before delete on desk.task_comments for each row
+create trigger aa_soft_delete_task_comments
+before delete on desk.task_comments for each row
 execute function desk.soft_delete ();
 
-create trigger aa_soft_delete_timesheets before delete on desk.timesheets for each row
+create trigger aa_soft_delete_timesheets
+before delete on desk.timesheets for each row
 execute function desk.soft_delete ();
 
-create trigger set_updated_at_projects before
-update on desk.projects for each row
+create trigger set_updated_at_projects
+before update on desk.projects for each row
 execute function supasheet.set_updated_at ();
 
-create trigger set_updated_at_tasks before
-update on desk.tasks for each row
+create trigger set_updated_at_tasks
+before update on desk.tasks for each row
 execute function supasheet.set_updated_at ();
 
-create trigger set_updated_at_task_comments before
-update on desk.task_comments for each row
+create trigger set_updated_at_task_comments
+before update on desk.task_comments for each row
 execute function supasheet.set_updated_at ();
 
-create trigger set_updated_at_timesheets before
-update on desk.timesheets for each row
+create trigger set_updated_at_timesheets
+before update on desk.timesheets for each row
 execute function supasheet.set_updated_at ();

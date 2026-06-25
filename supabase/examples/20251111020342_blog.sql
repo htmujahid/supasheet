@@ -1536,8 +1536,7 @@ after insert on blog.blog_settings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_blog_settings_update
-after
-update on blog.blog_settings for each row
+after update on blog.blog_settings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_authors_insert
@@ -1545,11 +1544,11 @@ after insert on blog.authors for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_authors_update
-after
-update on blog.authors for each row
+after update on blog.authors for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_blog_authors_delete before delete on blog.authors for each row
+create trigger audit_blog_authors_delete
+before delete on blog.authors for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_social_links_insert
@@ -1557,11 +1556,11 @@ after insert on blog.social_links for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_social_links_update
-after
-update on blog.social_links for each row
+after update on blog.social_links for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_blog_social_links_delete before delete on blog.social_links for each row
+create trigger audit_blog_social_links_delete
+before delete on blog.social_links for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_categories_insert
@@ -1569,11 +1568,11 @@ after insert on blog.categories for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_categories_update
-after
-update on blog.categories for each row
+after update on blog.categories for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_blog_categories_delete before delete on blog.categories for each row
+create trigger audit_blog_categories_delete
+before delete on blog.categories for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_posts_insert
@@ -1581,18 +1580,19 @@ after insert on blog.posts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_posts_update
-after
-update on blog.posts for each row
+after update on blog.posts for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_blog_posts_delete before delete on blog.posts for each row
+create trigger audit_blog_posts_delete
+before delete on blog.posts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_post_categories_insert
 after insert on blog.post_categories for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_blog_post_categories_delete before delete on blog.post_categories for each row
+create trigger audit_blog_post_categories_delete
+before delete on blog.post_categories for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_comments_insert
@@ -1600,11 +1600,11 @@ after insert on blog.comments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_blog_comments_update
-after
-update on blog.comments for each row
+after update on blog.comments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_blog_comments_delete before delete on blog.comments for each row
+create trigger audit_blog_comments_delete
+before delete on blog.comments for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -1662,8 +1662,7 @@ set
 drop trigger if exists posts_notify on blog.posts;
 
 create trigger posts_notify
-after
-update of status on blog.posts for each row
+after update of status on blog.posts for each row
 execute function blog.trg_posts_notify ();
 
 -- Comment trigger:
@@ -1713,7 +1712,5 @@ set
 drop trigger if exists comments_notify on blog.comments;
 
 create trigger comments_notify
-after insert
-or
-update of status on blog.comments for each row
+after insert or update of status on blog.comments for each row
 execute function blog.trg_comments_notify ();

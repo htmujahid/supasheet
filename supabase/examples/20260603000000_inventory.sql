@@ -2539,11 +2539,11 @@ after insert on inventory.warehouses for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_warehouses_update
-after
-update on inventory.warehouses for each row
+after update on inventory.warehouses for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_warehouses_delete before delete on inventory.warehouses for each row
+create trigger audit_inv_warehouses_delete
+before delete on inventory.warehouses for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_suppliers_insert
@@ -2551,11 +2551,11 @@ after insert on inventory.suppliers for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_suppliers_update
-after
-update on inventory.suppliers for each row
+after update on inventory.suppliers for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_suppliers_delete before delete on inventory.suppliers for each row
+create trigger audit_inv_suppliers_delete
+before delete on inventory.suppliers for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_products_insert
@@ -2563,11 +2563,11 @@ after insert on inventory.products for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_products_update
-after
-update on inventory.products for each row
+after update on inventory.products for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_products_delete before delete on inventory.products for each row
+create trigger audit_inv_products_delete
+before delete on inventory.products for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_levels_insert
@@ -2575,11 +2575,11 @@ after insert on inventory.stock_levels for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_levels_update
-after
-update on inventory.stock_levels for each row
+after update on inventory.stock_levels for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_stock_levels_delete before delete on inventory.stock_levels for each row
+create trigger audit_inv_stock_levels_delete
+before delete on inventory.stock_levels for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_orders_insert
@@ -2587,11 +2587,11 @@ after insert on inventory.purchase_orders for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_orders_update
-after
-update on inventory.purchase_orders for each row
+after update on inventory.purchase_orders for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_purchase_orders_delete before delete on inventory.purchase_orders for each row
+create trigger audit_inv_purchase_orders_delete
+before delete on inventory.purchase_orders for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_order_items_insert
@@ -2599,11 +2599,11 @@ after insert on inventory.purchase_order_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_purchase_order_items_update
-after
-update on inventory.purchase_order_items for each row
+after update on inventory.purchase_order_items for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_purchase_order_items_delete before delete on inventory.purchase_order_items for each row
+create trigger audit_inv_purchase_order_items_delete
+before delete on inventory.purchase_order_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipments_insert
@@ -2611,11 +2611,11 @@ after insert on inventory.shipments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipments_update
-after
-update on inventory.shipments for each row
+after update on inventory.shipments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_shipments_delete before delete on inventory.shipments for each row
+create trigger audit_inv_shipments_delete
+before delete on inventory.shipments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipment_items_insert
@@ -2623,11 +2623,11 @@ after insert on inventory.shipment_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_shipment_items_update
-after
-update on inventory.shipment_items for each row
+after update on inventory.shipment_items for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_shipment_items_delete before delete on inventory.shipment_items for each row
+create trigger audit_inv_shipment_items_delete
+before delete on inventory.shipment_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_movements_insert
@@ -2635,11 +2635,11 @@ after insert on inventory.stock_movements for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_inv_stock_movements_update
-after
-update on inventory.stock_movements for each row
+after update on inventory.stock_movements for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_inv_stock_movements_delete before delete on inventory.stock_movements for each row
+create trigger audit_inv_stock_movements_delete
+before delete on inventory.stock_movements for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -2697,8 +2697,7 @@ set
 drop trigger if exists stock_levels_notify on inventory.stock_levels;
 
 create trigger stock_levels_notify
-after
-update of status on inventory.stock_levels for each row
+after update of status on inventory.stock_levels for each row
 execute function inventory.trg_stock_levels_notify ();
 
 -- Purchase orders: notify on submission and receipt
@@ -2751,9 +2750,7 @@ set
 drop trigger if exists purchase_orders_notify on inventory.purchase_orders;
 
 create trigger purchase_orders_notify
-after insert
-or
-update of status on inventory.purchase_orders for each row
+after insert or update of status on inventory.purchase_orders for each row
 execute function inventory.trg_purchase_orders_notify ();
 
 -- Shipments: notify on shipped and delivered transitions
@@ -2805,6 +2802,5 @@ set
 drop trigger if exists shipments_notify on inventory.shipments;
 
 create trigger shipments_notify
-after
-update of status on inventory.shipments for each row
+after update of status on inventory.shipments for each row
 execute function inventory.trg_shipments_notify ();

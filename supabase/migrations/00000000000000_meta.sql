@@ -564,7 +564,7 @@ create event trigger table_creation_trigger on ddl_command_end when TAG in (
   'CREATE VIEW',
   'CREATE MATERIALIZED VIEW'
 )
-execute FUNCTION supasheet.log_new_table_creation ();
+execute function supasheet.log_new_table_creation ();
 
 ----------------------------------------------------------------
 -- Trigger Function for DROP events
@@ -601,7 +601,7 @@ create event trigger table_deletion_trigger on sql_drop when TAG in (
   'DROP VIEW',
   'DROP MATERIALIZED VIEW'
 )
-execute FUNCTION supasheet.log_table_deletion ();
+execute function supasheet.log_table_deletion ();
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER events
@@ -652,7 +652,7 @@ create event trigger table_alteration_trigger on ddl_command_end when TAG in (
   'ALTER VIEW',
   'ALTER MATERIALIZED VIEW'
 )
-execute FUNCTION supasheet.log_table_alteration ();
+execute function supasheet.log_table_alteration ();
 
 ----------------------------------------------------------------
 -- Trigger Function for COMMENT events
@@ -719,7 +719,7 @@ set
   search_path = '';
 
 create event trigger comment_trigger on ddl_command_end when TAG in ('COMMENT')
-execute FUNCTION supasheet.log_comment_changes ();
+execute function supasheet.log_comment_changes ();
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER TYPE events (enum changes)
@@ -766,7 +766,7 @@ set
   search_path = '';
 
 create event trigger enum_alteration_trigger on ddl_command_end when TAG in ('ALTER TYPE')
-execute FUNCTION supasheet.log_enum_alteration ();
+execute function supasheet.log_enum_alteration ();
 
 ----------------------------------------------------------------
 -- Trigger Function for CREATE SCHEMA events
@@ -800,7 +800,7 @@ set
   search_path = '';
 
 create event trigger schema_creation_trigger on ddl_command_end when TAG in ('CREATE SCHEMA')
-execute FUNCTION supasheet.log_schema_creation ();
+execute function supasheet.log_schema_creation ();
 
 ----------------------------------------------------------------
 -- Trigger Function for ALTER SCHEMA events
@@ -839,7 +839,7 @@ set
   search_path = '';
 
 create event trigger schema_alteration_trigger on ddl_command_end when TAG in ('ALTER SCHEMA')
-execute FUNCTION supasheet.log_schema_alteration ();
+execute function supasheet.log_schema_alteration ();
 
 ----------------------------------------------------------------
 -- Trigger Function for DROP SCHEMA events
@@ -866,4 +866,4 @@ set
   search_path = '';
 
 create event trigger schema_deletion_trigger on sql_drop when TAG in ('DROP SCHEMA')
-execute FUNCTION supasheet.log_schema_deletion ();
+execute function supasheet.log_schema_deletion ();

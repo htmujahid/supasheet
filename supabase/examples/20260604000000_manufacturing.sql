@@ -2699,11 +2699,11 @@ after insert on manufacturing.work_centers for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_work_centers_update
-after
-update on manufacturing.work_centers for each row
+after update on manufacturing.work_centers for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_work_centers_delete before delete on manufacturing.work_centers for each row
+create trigger audit_mfg_work_centers_delete
+before delete on manufacturing.work_centers for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_boms_insert
@@ -2711,11 +2711,11 @@ after insert on manufacturing.boms for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_boms_update
-after
-update on manufacturing.boms for each row
+after update on manufacturing.boms for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_boms_delete before delete on manufacturing.boms for each row
+create trigger audit_mfg_boms_delete
+before delete on manufacturing.boms for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_bom_items_insert
@@ -2723,11 +2723,11 @@ after insert on manufacturing.bom_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_bom_items_update
-after
-update on manufacturing.bom_items for each row
+after update on manufacturing.bom_items for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_bom_items_delete before delete on manufacturing.bom_items for each row
+create trigger audit_mfg_bom_items_delete
+before delete on manufacturing.bom_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_routings_insert
@@ -2735,11 +2735,11 @@ after insert on manufacturing.routings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_routings_update
-after
-update on manufacturing.routings for each row
+after update on manufacturing.routings for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_routings_delete before delete on manufacturing.routings for each row
+create trigger audit_mfg_routings_delete
+before delete on manufacturing.routings for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_routing_ops_insert
@@ -2747,11 +2747,11 @@ after insert on manufacturing.routing_operations for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_routing_ops_update
-after
-update on manufacturing.routing_operations for each row
+after update on manufacturing.routing_operations for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_routing_ops_delete before delete on manufacturing.routing_operations for each row
+create trigger audit_mfg_routing_ops_delete
+before delete on manufacturing.routing_operations for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_work_orders_insert
@@ -2759,11 +2759,11 @@ after insert on manufacturing.work_orders for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_work_orders_update
-after
-update on manufacturing.work_orders for each row
+after update on manufacturing.work_orders for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_work_orders_delete before delete on manufacturing.work_orders for each row
+create trigger audit_mfg_work_orders_delete
+before delete on manufacturing.work_orders for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_wo_ops_insert
@@ -2771,11 +2771,11 @@ after insert on manufacturing.work_order_operations for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_wo_ops_update
-after
-update on manufacturing.work_order_operations for each row
+after update on manufacturing.work_order_operations for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_wo_ops_delete before delete on manufacturing.work_order_operations for each row
+create trigger audit_mfg_wo_ops_delete
+before delete on manufacturing.work_order_operations for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_material_issues_insert
@@ -2783,11 +2783,11 @@ after insert on manufacturing.material_issues for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_material_issues_update
-after
-update on manufacturing.material_issues for each row
+after update on manufacturing.material_issues for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_material_issues_delete before delete on manufacturing.material_issues for each row
+create trigger audit_mfg_material_issues_delete
+before delete on manufacturing.material_issues for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_outputs_insert
@@ -2795,11 +2795,11 @@ after insert on manufacturing.production_outputs for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_mfg_outputs_update
-after
-update on manufacturing.production_outputs for each row
+after update on manufacturing.production_outputs for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_mfg_outputs_delete before delete on manufacturing.production_outputs for each row
+create trigger audit_mfg_outputs_delete
+before delete on manufacturing.production_outputs for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -2854,9 +2854,7 @@ set
 drop trigger if exists work_orders_notify on manufacturing.work_orders;
 
 create trigger work_orders_notify
-after insert
-or
-update of status on manufacturing.work_orders for each row
+after insert or update of status on manufacturing.work_orders for each row
 execute function manufacturing.trg_work_orders_notify ();
 
 -- Work order operations: notify operator + WO owner on start/complete/fail
@@ -2915,8 +2913,7 @@ set
 drop trigger if exists wo_operations_notify on manufacturing.work_order_operations;
 
 create trigger wo_operations_notify
-after
-update of status on manufacturing.work_order_operations for each row
+after update of status on manufacturing.work_order_operations for each row
 execute function manufacturing.trg_wo_operations_notify ();
 
 -- Production outputs: notify QA on scrap and rework
@@ -2975,7 +2972,5 @@ set
 drop trigger if exists production_outputs_notify on manufacturing.production_outputs;
 
 create trigger production_outputs_notify
-after insert
-or
-update of status on manufacturing.production_outputs for each row
+after insert or update of status on manufacturing.production_outputs for each row
 execute function manufacturing.trg_production_outputs_notify ();

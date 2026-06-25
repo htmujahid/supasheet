@@ -2714,11 +2714,11 @@ after insert on lms.courses for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_courses_update
-after
-update on lms.courses for each row
+after update on lms.courses for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_courses_delete before delete on lms.courses for each row
+create trigger audit_lms_courses_delete
+before delete on lms.courses for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_modules_insert
@@ -2726,11 +2726,11 @@ after insert on lms.modules for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_modules_update
-after
-update on lms.modules for each row
+after update on lms.modules for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_modules_delete before delete on lms.modules for each row
+create trigger audit_lms_modules_delete
+before delete on lms.modules for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_lessons_insert
@@ -2738,11 +2738,11 @@ after insert on lms.lessons for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_lessons_update
-after
-update on lms.lessons for each row
+after update on lms.lessons for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_lessons_delete before delete on lms.lessons for each row
+create trigger audit_lms_lessons_delete
+before delete on lms.lessons for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_enrollments_insert
@@ -2750,11 +2750,11 @@ after insert on lms.enrollments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_enrollments_update
-after
-update on lms.enrollments for each row
+after update on lms.enrollments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_enrollments_delete before delete on lms.enrollments for each row
+create trigger audit_lms_enrollments_delete
+before delete on lms.enrollments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_lesson_progress_insert
@@ -2762,11 +2762,11 @@ after insert on lms.lesson_progress for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_lesson_progress_update
-after
-update on lms.lesson_progress for each row
+after update on lms.lesson_progress for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_lesson_progress_delete before delete on lms.lesson_progress for each row
+create trigger audit_lms_lesson_progress_delete
+before delete on lms.lesson_progress for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_assignments_insert
@@ -2774,11 +2774,11 @@ after insert on lms.assignments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_assignments_update
-after
-update on lms.assignments for each row
+after update on lms.assignments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_assignments_delete before delete on lms.assignments for each row
+create trigger audit_lms_assignments_delete
+before delete on lms.assignments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_submissions_insert
@@ -2786,11 +2786,11 @@ after insert on lms.submissions for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_submissions_update
-after
-update on lms.submissions for each row
+after update on lms.submissions for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_submissions_delete before delete on lms.submissions for each row
+create trigger audit_lms_submissions_delete
+before delete on lms.submissions for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_certificates_insert
@@ -2798,11 +2798,11 @@ after insert on lms.certificates for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_certificates_update
-after
-update on lms.certificates for each row
+after update on lms.certificates for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_certificates_delete before delete on lms.certificates for each row
+create trigger audit_lms_certificates_delete
+before delete on lms.certificates for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_paths_insert
@@ -2810,11 +2810,11 @@ after insert on lms.learning_paths for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_lms_paths_update
-after
-update on lms.learning_paths for each row
+after update on lms.learning_paths for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_lms_paths_delete before delete on lms.learning_paths for each row
+create trigger audit_lms_paths_delete
+before delete on lms.learning_paths for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -2878,9 +2878,7 @@ set
 drop trigger if exists enrollments_notify on lms.enrollments;
 
 create trigger enrollments_notify
-after insert
-or
-update of status on lms.enrollments for each row
+after insert or update of status on lms.enrollments for each row
 execute function lms.trg_enrollments_notify ();
 
 -- Submissions: notify learner on grading
@@ -2939,8 +2937,7 @@ set
 drop trigger if exists submissions_notify on lms.submissions;
 
 create trigger submissions_notify
-after
-update of status on lms.submissions for each row
+after update of status on lms.submissions for each row
 execute function lms.trg_submissions_notify ();
 
 -- Certificates: notify learner on issuance and revocation
@@ -2994,7 +2991,5 @@ set
 drop trigger if exists certificates_notify on lms.certificates;
 
 create trigger certificates_notify
-after insert
-or
-update of status on lms.certificates for each row
+after insert or update of status on lms.certificates for each row
 execute function lms.trg_certificates_notify ();

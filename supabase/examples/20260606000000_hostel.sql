@@ -2215,11 +2215,11 @@ after insert on hostel.hostels for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_hostels_update
-after
-update on hostel.hostels for each row
+after update on hostel.hostels for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_hostels_delete before delete on hostel.hostels for each row
+create trigger audit_hostel_hostels_delete
+before delete on hostel.hostels for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_rooms_insert
@@ -2227,11 +2227,11 @@ after insert on hostel.rooms for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_rooms_update
-after
-update on hostel.rooms for each row
+after update on hostel.rooms for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_rooms_delete before delete on hostel.rooms for each row
+create trigger audit_hostel_rooms_delete
+before delete on hostel.rooms for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_residents_insert
@@ -2239,11 +2239,11 @@ after insert on hostel.residents for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_residents_update
-after
-update on hostel.residents for each row
+after update on hostel.residents for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_residents_delete before delete on hostel.residents for each row
+create trigger audit_hostel_residents_delete
+before delete on hostel.residents for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_allocations_insert
@@ -2251,11 +2251,11 @@ after insert on hostel.allocations for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_allocations_update
-after
-update on hostel.allocations for each row
+after update on hostel.allocations for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_allocations_delete before delete on hostel.allocations for each row
+create trigger audit_hostel_allocations_delete
+before delete on hostel.allocations for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_payments_insert
@@ -2263,11 +2263,11 @@ after insert on hostel.payments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_payments_update
-after
-update on hostel.payments for each row
+after update on hostel.payments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_payments_delete before delete on hostel.payments for each row
+create trigger audit_hostel_payments_delete
+before delete on hostel.payments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_complaints_insert
@@ -2275,11 +2275,11 @@ after insert on hostel.complaints for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_complaints_update
-after
-update on hostel.complaints for each row
+after update on hostel.complaints for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_complaints_delete before delete on hostel.complaints for each row
+create trigger audit_hostel_complaints_delete
+before delete on hostel.complaints for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_visitors_insert
@@ -2287,11 +2287,11 @@ after insert on hostel.visitors for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_hostel_visitors_update
-after
-update on hostel.visitors for each row
+after update on hostel.visitors for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_hostel_visitors_delete before delete on hostel.visitors for each row
+create trigger audit_hostel_visitors_delete
+before delete on hostel.visitors for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -2366,10 +2366,7 @@ set
 drop trigger if exists allocations_sync_room on hostel.allocations;
 
 create trigger allocations_sync_room
-after insert
-or
-update
-or delete on hostel.allocations for each row
+after insert or update or delete on hostel.allocations for each row
 execute function hostel.trg_allocation_sync_room ();
 
 ----------------------------------------------------------------
@@ -2427,9 +2424,7 @@ set
 drop trigger if exists allocations_notify on hostel.allocations;
 
 create trigger allocations_notify
-after insert
-or
-update of status on hostel.allocations for each row
+after insert or update of status on hostel.allocations for each row
 execute function hostel.trg_allocations_notify ();
 
 -- Payment trigger:
@@ -2491,9 +2486,7 @@ set
 drop trigger if exists payments_notify on hostel.payments;
 
 create trigger payments_notify
-after insert
-or
-update of status on hostel.payments for each row
+after insert or update of status on hostel.payments for each row
 execute function hostel.trg_payments_notify ();
 
 -- Complaint trigger:
@@ -2558,9 +2551,7 @@ set
 drop trigger if exists complaints_notify on hostel.complaints;
 
 create trigger complaints_notify
-after insert
-or
-update of status,
+after insert or update of status,
 assigned_to on hostel.complaints for each row
 execute function hostel.trg_complaints_notify ();
 

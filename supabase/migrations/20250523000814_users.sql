@@ -90,8 +90,8 @@ set
   search_path = '';
 
 -- trigger to protect user fields
-create trigger protect_user_fields before
-update on supasheet.users for each row
+create trigger protect_user_fields
+before update on supasheet.users for each row
 execute function supasheet.protect_user_fields ();
 
 -- create a trigger to update the user email when the primary owner email is updated
@@ -113,8 +113,7 @@ $$;
 -- trigger the function every time a user email is updated only if the user is the primary owner of the user and
 -- the user is personal user
 create trigger "on_auth_user_updated"
-after
-update of email on auth.users for each row
+after update of email on auth.users for each row
 execute procedure supasheet.handle_update_user_email ();
 
 -- Function "supasheet.new_user_created_setup"

@@ -1786,11 +1786,11 @@ after insert on crm.companies for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_companies_update
-after
-update on crm.companies for each row
+after update on crm.companies for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_crm_companies_delete before delete on crm.companies for each row
+create trigger audit_crm_companies_delete
+before delete on crm.companies for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_contacts_insert
@@ -1798,18 +1798,19 @@ after insert on crm.contacts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_contacts_update
-after
-update on crm.contacts for each row
+after update on crm.contacts for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_crm_contacts_delete before delete on crm.contacts for each row
+create trigger audit_crm_contacts_delete
+before delete on crm.contacts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_contact_companies_insert
 after insert on crm.contact_companies for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_crm_contact_companies_delete before delete on crm.contact_companies for each row
+create trigger audit_crm_contact_companies_delete
+before delete on crm.contact_companies for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_deals_insert
@@ -1817,11 +1818,11 @@ after insert on crm.deals for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_deals_update
-after
-update on crm.deals for each row
+after update on crm.deals for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_crm_deals_delete before delete on crm.deals for each row
+create trigger audit_crm_deals_delete
+before delete on crm.deals for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_activities_insert
@@ -1829,11 +1830,11 @@ after insert on crm.activities for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_crm_activities_update
-after
-update on crm.activities for each row
+after update on crm.activities for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_crm_activities_delete before delete on crm.activities for each row
+create trigger audit_crm_activities_delete
+before delete on crm.activities for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -1878,9 +1879,7 @@ set
 drop trigger if exists companies_notify on crm.companies;
 
 create trigger companies_notify
-after insert
-or
-update of type on crm.companies for each row
+after insert or update of type on crm.companies for each row
 execute function crm.trg_companies_notify ();
 
 -- Deals: notify on creation, stage change, and value change
@@ -1936,9 +1935,7 @@ set
 drop trigger if exists deals_notify on crm.deals;
 
 create trigger deals_notify
-after insert
-or
-update of stage,
+after insert or update of stage,
 value on crm.deals for each row
 execute function crm.trg_deals_notify ();
 
@@ -1997,7 +1994,5 @@ set
 drop trigger if exists activities_notify on crm.activities;
 
 create trigger activities_notify
-after insert
-or
-update of status on crm.activities for each row
+after insert or update of status on crm.activities for each row
 execute function crm.trg_activities_notify ();

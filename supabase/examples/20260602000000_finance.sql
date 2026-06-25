@@ -2890,11 +2890,11 @@ after insert on finance.accounts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_accounts_update
-after
-update on finance.accounts for each row
+after update on finance.accounts for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_accounts_delete before delete on finance.accounts for each row
+create trigger audit_finance_accounts_delete
+before delete on finance.accounts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_vendors_insert
@@ -2902,11 +2902,11 @@ after insert on finance.vendors for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_vendors_update
-after
-update on finance.vendors for each row
+after update on finance.vendors for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_vendors_delete before delete on finance.vendors for each row
+create trigger audit_finance_vendors_delete
+before delete on finance.vendors for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_invoices_insert
@@ -2914,11 +2914,11 @@ after insert on finance.invoices for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_invoices_update
-after
-update on finance.invoices for each row
+after update on finance.invoices for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_invoices_delete before delete on finance.invoices for each row
+create trigger audit_finance_invoices_delete
+before delete on finance.invoices for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_bills_insert
@@ -2926,11 +2926,11 @@ after insert on finance.bills for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_bills_update
-after
-update on finance.bills for each row
+after update on finance.bills for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_bills_delete before delete on finance.bills for each row
+create trigger audit_finance_bills_delete
+before delete on finance.bills for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_expenses_insert
@@ -2938,11 +2938,11 @@ after insert on finance.expenses for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_expenses_update
-after
-update on finance.expenses for each row
+after update on finance.expenses for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_expenses_delete before delete on finance.expenses for each row
+create trigger audit_finance_expenses_delete
+before delete on finance.expenses for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payments_insert
@@ -2950,11 +2950,11 @@ after insert on finance.payments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payments_update
-after
-update on finance.payments for each row
+after update on finance.payments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_payments_delete before delete on finance.payments for each row
+create trigger audit_finance_payments_delete
+before delete on finance.payments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_budgets_insert
@@ -2962,11 +2962,11 @@ after insert on finance.budgets for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_budgets_update
-after
-update on finance.budgets for each row
+after update on finance.budgets for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_budgets_delete before delete on finance.budgets for each row
+create trigger audit_finance_budgets_delete
+before delete on finance.budgets for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payroll_runs_insert
@@ -2974,11 +2974,11 @@ after insert on finance.payroll_runs for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payroll_runs_update
-after
-update on finance.payroll_runs for each row
+after update on finance.payroll_runs for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_payroll_runs_delete before delete on finance.payroll_runs for each row
+create trigger audit_finance_payroll_runs_delete
+before delete on finance.payroll_runs for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payslips_insert
@@ -2986,11 +2986,11 @@ after insert on finance.payslips for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_payslips_update
-after
-update on finance.payslips for each row
+after update on finance.payslips for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_payslips_delete before delete on finance.payslips for each row
+create trigger audit_finance_payslips_delete
+before delete on finance.payslips for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_journal_entries_insert
@@ -2998,11 +2998,11 @@ after insert on finance.journal_entries for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_finance_journal_entries_update
-after
-update on finance.journal_entries for each row
+after update on finance.journal_entries for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_finance_journal_entries_delete before delete on finance.journal_entries for each row
+create trigger audit_finance_journal_entries_delete
+before delete on finance.journal_entries for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -3054,9 +3054,7 @@ set
 drop trigger if exists invoices_notify on finance.invoices;
 
 create trigger invoices_notify
-after insert
-or
-update of status on finance.invoices for each row
+after insert or update of status on finance.invoices for each row
 execute function finance.trg_invoices_notify ();
 
 -- Expenses: notify reviewers on submission, employee on status change
@@ -3106,9 +3104,7 @@ set
 drop trigger if exists expenses_notify on finance.expenses;
 
 create trigger expenses_notify
-after insert
-or
-update of status on finance.expenses for each row
+after insert or update of status on finance.expenses for each row
 execute function finance.trg_expenses_notify ();
 
 -- Payroll runs: notify finance team on completion
@@ -3152,6 +3148,5 @@ set
 drop trigger if exists payroll_runs_notify on finance.payroll_runs;
 
 create trigger payroll_runs_notify
-after
-update of status on finance.payroll_runs for each row
+after update of status on finance.payroll_runs for each row
 execute function finance.trg_payroll_runs_notify ();

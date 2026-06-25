@@ -3225,11 +3225,11 @@ after insert on procurement.suppliers for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_suppliers_update
-after
-update on procurement.suppliers for each row
+after update on procurement.suppliers for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_suppliers_delete before delete on procurement.suppliers for each row
+create trigger audit_proc_suppliers_delete
+before delete on procurement.suppliers for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_contracts_insert
@@ -3237,11 +3237,11 @@ after insert on procurement.contracts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_contracts_update
-after
-update on procurement.contracts for each row
+after update on procurement.contracts for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_contracts_delete before delete on procurement.contracts for each row
+create trigger audit_proc_contracts_delete
+before delete on procurement.contracts for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_requisitions_insert
@@ -3249,11 +3249,11 @@ after insert on procurement.requisitions for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_requisitions_update
-after
-update on procurement.requisitions for each row
+after update on procurement.requisitions for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_requisitions_delete before delete on procurement.requisitions for each row
+create trigger audit_proc_requisitions_delete
+before delete on procurement.requisitions for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_req_items_insert
@@ -3261,11 +3261,11 @@ after insert on procurement.requisition_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_req_items_update
-after
-update on procurement.requisition_items for each row
+after update on procurement.requisition_items for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_req_items_delete before delete on procurement.requisition_items for each row
+create trigger audit_proc_req_items_delete
+before delete on procurement.requisition_items for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_rfqs_insert
@@ -3273,11 +3273,11 @@ after insert on procurement.rfqs for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_rfqs_update
-after
-update on procurement.rfqs for each row
+after update on procurement.rfqs for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_rfqs_delete before delete on procurement.rfqs for each row
+create trigger audit_proc_rfqs_delete
+before delete on procurement.rfqs for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_quotes_insert
@@ -3285,11 +3285,11 @@ after insert on procurement.quotes for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_quotes_update
-after
-update on procurement.quotes for each row
+after update on procurement.quotes for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_quotes_delete before delete on procurement.quotes for each row
+create trigger audit_proc_quotes_delete
+before delete on procurement.quotes for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_asset_cats_insert
@@ -3297,11 +3297,11 @@ after insert on procurement.asset_categories for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_asset_cats_update
-after
-update on procurement.asset_categories for each row
+after update on procurement.asset_categories for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_asset_cats_delete before delete on procurement.asset_categories for each row
+create trigger audit_proc_asset_cats_delete
+before delete on procurement.asset_categories for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_assets_insert
@@ -3309,11 +3309,11 @@ after insert on procurement.assets for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_assets_update
-after
-update on procurement.assets for each row
+after update on procurement.assets for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_assets_delete before delete on procurement.assets for each row
+create trigger audit_proc_assets_delete
+before delete on procurement.assets for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_asset_assignments_insert
@@ -3321,11 +3321,11 @@ after insert on procurement.asset_assignments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_asset_assignments_update
-after
-update on procurement.asset_assignments for each row
+after update on procurement.asset_assignments for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_asset_assignments_delete before delete on procurement.asset_assignments for each row
+create trigger audit_proc_asset_assignments_delete
+before delete on procurement.asset_assignments for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_asset_maintenance_insert
@@ -3333,11 +3333,11 @@ after insert on procurement.asset_maintenance for each row
 execute function supasheet.audit_trigger_function ();
 
 create trigger audit_proc_asset_maintenance_update
-after
-update on procurement.asset_maintenance for each row
+after update on procurement.asset_maintenance for each row
 execute function supasheet.audit_trigger_function ();
 
-create trigger audit_proc_asset_maintenance_delete before delete on procurement.asset_maintenance for each row
+create trigger audit_proc_asset_maintenance_delete
+before delete on procurement.asset_maintenance for each row
 execute function supasheet.audit_trigger_function ();
 
 ----------------------------------------------------------------
@@ -3393,9 +3393,7 @@ set
 drop trigger if exists requisitions_notify on procurement.requisitions;
 
 create trigger requisitions_notify
-after insert
-or
-update of status on procurement.requisitions for each row
+after insert or update of status on procurement.requisitions for each row
 execute function procurement.trg_requisitions_notify ();
 
 -- Contracts: notify on creation and status changes (expiring_soon, expired, terminated)
@@ -3452,9 +3450,7 @@ set
 drop trigger if exists contracts_notify on procurement.contracts;
 
 create trigger contracts_notify
-after insert
-or
-update of status on procurement.contracts for each row
+after insert or update of status on procurement.contracts for each row
 execute function procurement.trg_contracts_notify ();
 
 -- Asset maintenance: notify technician + asset owner on schedule and completion
@@ -3519,7 +3515,5 @@ set
 drop trigger if exists asset_maintenance_notify on procurement.asset_maintenance;
 
 create trigger asset_maintenance_notify
-after insert
-or
-update of status on procurement.asset_maintenance for each row
+after insert or update of status on procurement.asset_maintenance for each row
 execute function procurement.trg_asset_maintenance_notify ();

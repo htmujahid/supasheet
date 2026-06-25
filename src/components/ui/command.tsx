@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 
 import { Command as CommandPrimitive } from "cmdk"
@@ -9,9 +11,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "#/components/ui/dialog"
-import { InputGroup, InputGroupAddon } from "#/components/ui/input-group"
-import { cn } from "#/lib/utils"
+} from "#/components/ui/dialog.tsx"
+import { InputGroup, InputGroupAddon } from "#/components/ui/input-group.tsx"
+import { cn } from "#/lib/utils.ts"
 
 function Command({
   className,
