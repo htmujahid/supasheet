@@ -59,10 +59,10 @@ export async function resolveResourceSchema(
                 table_id: underlyingTable.id,
                 table_name: underlyingTable.name,
               }]
-              resolvedTableSchema = { ...underlyingTable, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
+              resolvedTableSchema = { ...underlyingTable, name: viewSchema.name, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
             }
           } else {
-            resolvedTableSchema = { ...underlyingTable, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
+            resolvedTableSchema = { ...underlyingTable, name: viewSchema.name, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
           }
         }
       }

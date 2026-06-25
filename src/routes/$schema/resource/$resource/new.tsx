@@ -117,7 +117,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
       }
     }
 
-    return { columnsSchema, tableSchema: { ...tableSchema, comment, primary_keys: primaryKeys } }
+    return { columnsSchema, tableSchema: { ...tableSchema, name: resource, comment, primary_keys: primaryKeys } }
   },
   head: ({ params }) => ({
     meta: [

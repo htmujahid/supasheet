@@ -368,9 +368,8 @@ from
   service_role;
 
 grant
-select
-,
-  insert,
+select,
+insert,
 update,
 delete on table desk.projects to authenticated;
 
