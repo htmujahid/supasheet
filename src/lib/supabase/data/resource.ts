@@ -1,4 +1,5 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query"
+import type { QueryClient } from "@tanstack/react-query"
 
 import type { ColumnFiltersState } from "@tanstack/react-table"
 
@@ -10,11 +11,69 @@ import type {
   DatabaseViews,
   TableMetadata,
   TableSchema,
+  UpdatableViewMetadata,
   ViewMetadata,
   ViewSchema,
 } from "#/lib/database-meta.types"
 import { supabase } from "#/lib/supabase/client"
 import { applyFilters } from "#/lib/supabase/filter"
+
+export async function resolveResourceSchema(
+  queryClient: QueryClient,
+  schema: DatabaseSchemas,
+  resource: string
+): Promise<{
+  resourceSchema: TableSchema | ViewSchema | null
+  columnsSchema: ColumnSchema[] | null
+}> {
+  const r = resource as DatabaseTables<typeof schema>
+
+  const [tableSchema, columnsSchema] = await Promise.all([
+    queryClient.ensureQueryData(tableSchemaQueryOptions(schema, r)),
+    queryClient.ensureQueryData(columnsSchemaQueryOptions(schema, r)),
+  ])
+
+  const viewSchema = !tableSchema
+    ? await queryClient.ensureQueryData(viewSchemaQueryOptions(schema, r as DatabaseViews<typeof schema>))
+    : null
+
+  let resolvedTableSchema: TableSchema | null = tableSchema
+
+  if (viewSchema) {
+    const viewMetadata = JSON.parse(viewSchema.comment ?? "{}") as UpdatableViewMetadata
+    if (viewMetadata.based_on) {
+      const underlyingTable = await queryClient.ensureQueryData(
+        tableSchemaQueryOptions(schema, viewMetadata.based_on as DatabaseTables<typeof schema>)
+      )
+      if (underlyingTable) {
+        let resolvedPrimaryKeys = underlyingTable.primary_keys
+
+        if (resolvedPrimaryKeys?.length === 1) {
+          const pkExposed = columnsSchema?.some((c) => c.name === resolvedPrimaryKeys![0].name)
+          if (!pkExposed) {
+            const uniqueCol = columnsSchema?.find((c) => c.is_unique && c.name)
+            if (uniqueCol?.name) {
+              resolvedPrimaryKeys = [{
+                name: uniqueCol.name,
+                schema: underlyingTable.schema as string,
+                table_id: underlyingTable.id,
+                table_name: underlyingTable.name,
+              }]
+              resolvedTableSchema = { ...underlyingTable, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
+            }
+          } else {
+            resolvedTableSchema = { ...underlyingTable, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    resourceSchema: resolvedTableSchema ?? viewSchema,
+    columnsSchema,
+  }
+}
 
 export const navItemsQueryOptions = (schema: DatabaseSchemas) =>
   queryOptions({

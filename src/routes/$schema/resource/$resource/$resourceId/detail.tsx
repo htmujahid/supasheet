@@ -29,10 +29,8 @@ import type { TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
-  columnsSchemaQueryOptions,
   relatedTablesSchemaQueryOptions,
-  tableSchemaQueryOptions,
-  viewSchemaQueryOptions,
+  resolveResourceSchema,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute(
@@ -48,38 +46,18 @@ export const Route = createFileRoute(
   },
   loader: async ({ context, params }) => {
     const { schema, resource } = params
-    const [tableSchema, columnsSchema, relatedTablesSchema] = await Promise.all(
-      [
-        context.queryClient.ensureQueryData(
-          tableSchemaQueryOptions(schema, resource)
-        ),
-        context.queryClient.ensureQueryData(
-          columnsSchemaQueryOptions(schema, resource)
-        ),
-        context.queryClient.ensureQueryData(
-          relatedTablesSchemaQueryOptions(schema, resource)
-        ),
-      ]
-    )
+    const [{ resourceSchema, columnsSchema }, relatedTablesSchema] = await Promise.all([
+      resolveResourceSchema(context.queryClient, schema, resource),
+      context.queryClient.ensureQueryData(relatedTablesSchemaQueryOptions(schema, resource)),
+    ])
+    if (!resourceSchema) throw notFound()
     if (!columnsSchema?.length) throw notFound()
 
-    let viewSchema = null
-    if (!tableSchema) {
-      viewSchema = await context.queryClient.ensureQueryData(
-        viewSchemaQueryOptions(schema, resource)
-      )
-    }
-
-    const resourceSchema = tableSchema ?? viewSchema
-    if (!resourceSchema) throw notFound()
-
-    const primaryKeys = isTableSchema(resourceSchema)
-      ? (resourceSchema.primary_keys ?? [])
-      : []
+    const primaryKeys = isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
     const pkName = primaryKeys[0]?.name ?? "id"
 
     const metaJoins = (
-      JSON.parse(tableSchema?.comment ?? "{}") as TableMetadata
+      JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     ).query?.join
     const classification = classifyRelationships(
       schema,

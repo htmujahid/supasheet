@@ -8,16 +8,16 @@ export type DatabaseSchemas = keyof Database
 
 export type DatabaseTables<TSchema extends DatabaseSchemas> =
   Database[TSchema] extends { Tables: infer TTables }
-    ? TTables extends Record<string, unknown>
-      ? keyof TTables & string
-      : never
-    : never
+  ? TTables extends Record<string, unknown>
+  ? keyof TTables & string
+  : never
+  : never
 export type DatabaseViews<TSchema extends DatabaseSchemas> =
   Database[TSchema] extends { Views: infer TViews }
-    ? TViews extends Record<string, unknown>
-      ? keyof TViews & string
-      : never
-    : never
+  ? TViews extends Record<string, unknown>
+  ? keyof TViews & string
+  : never
+  : never
 
 export type ColumnSchema<S extends DatabaseSchemas = DatabaseSchemas> =
   Database["supasheet"]["Tables"]["columns"]["Row"] & {
@@ -251,6 +251,10 @@ export type TableMetadata = BaseResourceMetadata & {
   fields?: TableFieldsConfig
 }
 
+export type UpdatableViewMetadata = {
+  based_on: DatabaseTables<DatabaseSchemas>
+} & TableMetadata
+
 export type ViewMetadata = BaseResourceMetadata
 
 export type ColumnMetadata = {
@@ -265,12 +269,12 @@ export type EnumColumnMetadata = ColumnMetadata & {
     [key: string]: {
       icon?: string
       variant:
-        | "default"
-        | "secondary"
-        | "success"
-        | "warning"
-        | "destructive"
-        | "info"
+      | "default"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "destructive"
+      | "info"
     }
   }
 }

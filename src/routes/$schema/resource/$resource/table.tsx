@@ -36,10 +36,8 @@ import type { TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
-  columnsSchemaQueryOptions,
+  resolveResourceSchema,
   resourceDataQueryOptions,
-  tableSchemaQueryOptions,
-  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/table")({
@@ -86,25 +84,11 @@ export const Route = createFileRoute("/$schema/resource/$resource/table")({
     deps: { sortId, sortDesc, page, pageSize, filters },
   }) => {
     const { schema, resource } = params
-    const [tableSchema, columnsSchema] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema, resource)
-      ),
-      context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema, resource)
-      ),
-    ])
+
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    if (!resourceSchema) throw notFound()
     if (!columnsSchema?.length) throw notFound()
 
-    let viewSchema = null
-    if (!tableSchema) {
-      viewSchema = await context.queryClient.ensureQueryData(
-        viewSchemaQueryOptions(schema, resource)
-      )
-    }
-
-    const resourceSchema = tableSchema ?? viewSchema
-    if (!resourceSchema) throw notFound()
     const metaData = JSON.parse(
       resourceSchema?.comment ?? "{}"
     ) as TableMetadata

@@ -31,10 +31,8 @@ import type { TableMetadata, TreeLayout } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
 import {
-  columnsSchemaQueryOptions,
+  resolveResourceSchema,
   resourceDataQueryOptions,
-  tableSchemaQueryOptions,
-  viewSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute(
@@ -51,25 +49,9 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, treeId } = params
 
-    const [tableSchema, columnsSchema] = await Promise.all([
-      context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema, resource)
-      ),
-      context.queryClient.ensureQueryData(
-        columnsSchemaQueryOptions(schema, resource)
-      ),
-    ])
-    if (!columnsSchema?.length) throw notFound()
-
-    let viewSchema = null
-    if (!tableSchema) {
-      viewSchema = await context.queryClient.ensureQueryData(
-        viewSchemaQueryOptions(schema, resource)
-      )
-    }
-
-    const resourceSchema = tableSchema ?? viewSchema
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
     if (!resourceSchema) throw notFound()
+    if (!columnsSchema?.length) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
     const treeView = meta.views?.find(
