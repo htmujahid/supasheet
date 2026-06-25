@@ -14,7 +14,7 @@ export function TableToolbarPlugin() {
           <InsertTableDialog activeEditor={activeEditor} onClose={onClose} />
         ))
       }
-      size={"icon-sm"}
+      size={"sm"}
       variant={"outline"}
       className=""
     >

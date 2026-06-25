@@ -12,7 +12,7 @@ export function HorizontalRuleToolbarPlugin() {
       onClick={() =>
         activeEditor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined)
       }
-      size={"icon-sm"}
+      size={"sm"}
       variant={"outline"}
       className=""
     >

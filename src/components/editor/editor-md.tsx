@@ -218,7 +218,7 @@ export function Editor({
                 <div className="" ref={onRef}>
                   <ContentEditable
                     placeholder={placeholder}
-                    className="h-[calc(100vh-141px)] pl-4"
+                    className={`ContentEditable__root relative block h-48 w-full overflow-auto focus:outline-none ${!disabled ? "px-8 py-2" : ""}`}
                   />
                 </div>
               </div>
