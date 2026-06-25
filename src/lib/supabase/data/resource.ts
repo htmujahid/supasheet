@@ -28,25 +28,28 @@ export async function resolveResourceSchema(
 }> {
   const r = resource as DatabaseTables<typeof schema>
 
-  const [tableSchema, columnsSchema] = await Promise.all([
+  let [resolvedTableSchema, columnsSchema] = await Promise.all([
     queryClient.ensureQueryData(tableSchemaQueryOptions(schema, r)),
     queryClient.ensureQueryData(columnsSchemaQueryOptions(schema, r)),
   ])
 
-  const viewSchema = !tableSchema
+  const viewSchema = !resolvedTableSchema
     ? await queryClient.ensureQueryData(viewSchemaQueryOptions(schema, r as DatabaseViews<typeof schema>))
     : null
-
-  let resolvedTableSchema: TableSchema | null = tableSchema
 
   if (viewSchema) {
     const viewMetadata = JSON.parse(viewSchema.comment ?? "{}") as UpdatableViewMetadata
     if (viewMetadata.based_on) {
-      const underlyingTable = await queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema, viewMetadata.based_on as DatabaseTables<typeof schema>)
-      )
-      if (underlyingTable) {
-        let resolvedPrimaryKeys = underlyingTable.primary_keys
+      const [tableSchema, resolvedColumnsSchema] = await Promise.all([
+        queryClient.ensureQueryData(
+          tableSchemaQueryOptions(schema, viewMetadata.based_on as DatabaseTables<typeof schema>)
+        ),
+        queryClient.ensureQueryData(
+          columnsSchemaQueryOptions(schema, viewMetadata.based_on as DatabaseTables<typeof schema>)
+        ),
+      ])
+      if (tableSchema) {
+        let resolvedPrimaryKeys = tableSchema.primary_keys
 
         if (resolvedPrimaryKeys?.length === 1) {
           const pkExposed = columnsSchema?.some((c) => c.name === resolvedPrimaryKeys![0].name)
@@ -55,15 +58,20 @@ export async function resolveResourceSchema(
             if (uniqueCol?.name) {
               resolvedPrimaryKeys = [{
                 name: uniqueCol.name,
-                schema: underlyingTable.schema as string,
-                table_id: underlyingTable.id,
-                table_name: underlyingTable.name,
+                schema: tableSchema.schema as string,
+                table_id: tableSchema.id,
+                table_name: tableSchema.name,
               }]
-              resolvedTableSchema = { ...underlyingTable, name: viewSchema.name, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
+              resolvedTableSchema = { ...tableSchema, name: viewSchema.name, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
             }
           } else {
-            resolvedTableSchema = { ...underlyingTable, name: viewSchema.name, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
+            resolvedTableSchema = { ...tableSchema, name: viewSchema.name, comment: viewSchema.comment ?? null, primary_keys: resolvedPrimaryKeys }
           }
+        }
+
+        if (resolvedColumnsSchema && columnsSchema) {
+          const resourceColumnNames = new Set(columnsSchema.map((c) => c.name))
+          columnsSchema = resolvedColumnsSchema.filter((c) => resourceColumnNames.has(c.name))
         }
       }
     }

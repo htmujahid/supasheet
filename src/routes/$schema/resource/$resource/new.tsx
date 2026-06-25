@@ -91,9 +91,16 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
       const viewMetadata = JSON.parse(viewSchema.comment ?? "{}") as UpdatableViewMetadata
       if (!viewMetadata.based_on) throw notFound()
 
-      tableSchema = await context.queryClient.ensureQueryData(
-        tableSchemaQueryOptions(schema, viewMetadata.based_on)
-      )
+      const [resolvedTableSchema, resolvedColumnsSchema] = await Promise.all([
+        context.queryClient.ensureQueryData(
+          tableSchemaQueryOptions(schema, viewMetadata.based_on)
+        ),
+        context.queryClient.ensureQueryData(
+          columnsSchemaQueryOptions(schema, viewMetadata.based_on)
+        ),
+      ])
+
+      tableSchema = resolvedTableSchema
       if (!tableSchema) throw notFound()
 
       comment = viewSchema.comment ?? null
@@ -114,6 +121,11 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
             throw notFound()
           }
         }
+      }
+
+      if (resolvedColumnsSchema) {
+        const resourceColumnNames = new Set(columnsSchema.map((c) => c.name))
+        columnsSchema = resolvedColumnsSchema.filter((c) => resourceColumnNames.has(c.name))
       }
     }
 
