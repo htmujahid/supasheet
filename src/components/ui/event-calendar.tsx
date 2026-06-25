@@ -2657,7 +2657,7 @@ export function EventCalendarDayView() {
           mode="single"
           selected={selectedDate}
           onSelect={setSelectedDate}
-          initialFocus
+          autoFocus
         />
 
         <div className="flex-1 space-y-3">
