@@ -1,14 +1,9 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
-
-    // Static assets (hashed filenames) — serve directly, ASSETS handles caching
-    if (url.pathname !== '/' && /\.\w+$/.test(url.pathname)) {
-      return env.ASSETS.fetch(request)
-    }
+    const isSupasheetDomain = url.hostname.endsWith('.supasheet.app')
 
     // Self-hosted (custom domain) or bare supasheet.app — no injection needed
-    const isSupasheetDomain = url.hostname.endsWith('.supasheet.app')
     if (!isSupasheetDomain) {
       return env.ASSETS.fetch(request)
     }
