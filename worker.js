@@ -8,19 +8,23 @@ export default {
     }
 
     const projectRef = url.hostname.split('.')[0]
+    const cache = caches.default
     const cacheKey = new Request(`https://cache.internal/${projectRef}`)
 
-    const cached = await caches.default.match(cacheKey)
+    const cached = await cache.match(cacheKey)
     if (cached) return cached
 
-    const indexResponse = await env.ASSETS.fetch(new Request(`${url.origin}/`))
-    const anonKey = await env.CONFIGS.get(projectRef)
+    const indexResponse = await env.ASSETS.fetch(
+      new Request(`${url.origin}/`)
+    )
+
+    const publishableKey = await env.CONFIGS.get(projectRef)
 
     let html = await indexResponse.text()
-    if (anonKey) {
+    if (publishableKey) {
       const config = JSON.stringify({
         supabaseUrl: `https://${projectRef}.supabase.co`,
-        anonKey,
+        anonKey: publishableKey,
       })
       html = html.replace('<head>', `<head><script>window.__CONFIG__=${config};</script>`)
     }
@@ -33,7 +37,7 @@ export default {
       },
     })
 
-    await caches.default.put(cacheKey, response.clone())
+    await cache.put(cacheKey, response.clone())
     return response
   },
 }
