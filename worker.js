@@ -1,5 +1,3 @@
-const HOSTED_DOMAIN = 'supasheet.app'
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
@@ -9,26 +7,21 @@ export default {
       return env.ASSETS.fetch(request)
     }
 
-    const hostname = url.hostname
-    const isHosted = hostname === HOSTED_DOMAIN || hostname.endsWith(`.${HOSTED_DOMAIN}`)
+    const projectRef = url.hostname.split('.')[0]
+    const cacheKey = new Request(`https://cache.internal/${projectRef}`)
 
-    // Self-hosted — serve as-is, env vars handled by the user's own setup
-    if (!isHosted) {
-      return env.ASSETS.fetch(request)
-    }
-
-    const cacheKey = new Request(`https://cache.internal/${hostname}`)
     const cached = await caches.default.match(cacheKey)
     if (cached) return cached
 
-    const projectRef = hostname.split('.')[0]
     const indexResponse = await env.ASSETS.fetch(new Request(`${url.origin}/`))
     const anonKey = await env.CONFIGS.get(projectRef)
-    const supabaseUrl = `https://${projectRef}.supabase.co`
 
     let html = await indexResponse.text()
     if (anonKey) {
-      const config = JSON.stringify({ supabaseUrl, anonKey })
+      const config = JSON.stringify({
+        supabaseUrl: `https://${projectRef}.supabase.co`,
+        anonKey,
+      })
       html = html.replace('<head>', `<head><script>window.__CONFIG__=${config};</script>`)
     }
 
