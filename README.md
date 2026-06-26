@@ -60,7 +60,7 @@ npm install
 2. Copy `.env.example` and fill in your Supabase credentials:
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
 ```
