@@ -1,35 +1,29 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
-    const isSupasheetDomain = url.hostname.endsWith('.supasheet.app')
 
     if (url.pathname !== '/' && /\.\w+$/.test(url.pathname)) {
-      if (isSupasheetDomain) {
-        const mainOrigin = `https://${url.hostname.split('.').slice(1).join('.')}`
-        return env.ASSETS.fetch(new Request(`${mainOrigin}${url.pathname}${url.search}`, request))
+      const assetResponse = await env.ASSETS.fetch(request)
+      const contentType = assetResponse.headers.get('content-type') || ''
+      if (contentType.includes('text/html') && !url.pathname.endsWith('.html')) {
+        return new Response('Not found', { status: 404 })
       }
-      return env.ASSETS.fetch(request)
+      return assetResponse
     }
 
+    const indexResponse = await env.ASSETS.fetch(new Request(`${url.origin}/`, request))
+    const isSupasheetDomain = url.hostname.endsWith('.supasheet.app')
+
     if (!isSupasheetDomain) {
-      return env.ASSETS.fetch(request)
+      return indexResponse
     }
 
     const projectRef = url.hostname.split('.')[0]
-    const cache = caches.default
-    const cacheKey = new Request(`https://cache.internal/${projectRef}`)
-
-    const cached = await cache.match(cacheKey)
-    if (cached) return cached
-
     const publishableKey = await env.CONFIGS.get(projectRef)
 
     if (!publishableKey) {
-      return env.ASSETS.fetch(request)
+      return indexResponse
     }
-
-    const mainOrigin = `https://${url.hostname.split('.').slice(1).join('.')}`
-    const indexResponse = await env.ASSETS.fetch(new Request(`${mainOrigin}/`))
 
     const config = JSON.stringify({
       supabaseUrl: `https://${projectRef}.supabase.co`,
@@ -40,15 +34,12 @@ export default {
       `<head><script>window.__CONFIG__=${config};</script>`
     )
 
-    const response = new Response(html, {
-      status: indexResponse.status,
+    return new Response(html, {
+      status: 200,
       headers: {
         'content-type': 'text/html;charset=UTF-8',
-        'cache-control': 'public, max-age=3600',
+        'cache-control': 'no-cache',
       },
     })
-
-    await cache.put(cacheKey, response.clone())
-    return response
   },
 }
