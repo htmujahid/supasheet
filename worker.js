@@ -16,11 +16,15 @@ export default {
 
     // SPA fallback: ASSETS returns index.html for any unmatched route
     const asset = await env.ASSETS.fetch(new Request(new URL('/', url), request))
-    const configStr = await env.CONFIGS.get(projectRef)
+    const publishableKey = await env.CONFIGS.get(projectRef)
 
     let html = await asset.text()
-    if (configStr) {
-      html = html.replace('<head>', `<head><script>window.__CONFIG__=${configStr};</script>`)
+    if (publishableKey) {
+      const config = JSON.stringify({
+        supabaseUrl: `https://${projectRef}.supabase.co`,
+        anonKey: publishableKey,
+      })
+      html = html.replace('<head>', `<head><script>window.__CONFIG__=${config};</script>`)
     }
 
     const response = new Response(html, {
