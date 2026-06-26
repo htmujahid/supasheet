@@ -19,6 +19,13 @@ export default {
     }
 
     const projectRef = url.hostname.split('.')[0]
+    const version = env.CF_VERSION_METADATA?.id || 'dev'
+    const cache = caches.default
+    const cacheKey = new Request(`https://cache.internal/${version}/${projectRef}`)
+
+    const cached = await cache.match(cacheKey)
+    if (cached) return cached
+
     const publishableKey = await env.CONFIGS.get(projectRef)
 
     if (!publishableKey) {
@@ -34,12 +41,15 @@ export default {
       `<head><script>window.__CONFIG__=${config};</script>`
     )
 
-    return new Response(html, {
+    const response = new Response(html, {
       status: 200,
       headers: {
         'content-type': 'text/html;charset=UTF-8',
-        'cache-control': 'no-cache',
+        'cache-control': 'public, max-age=3600',
       },
     })
+
+    await cache.put(cacheKey, response.clone())
+    return response
   },
 }
