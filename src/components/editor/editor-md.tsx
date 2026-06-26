@@ -164,7 +164,7 @@ export function Editor({
   )
 
   return (
-    <div className="bg-background overflow-hidden rounded-lg border shadow w-full">
+    <div className="overflow-hidden rounded-lg border shadow w-full">
       <LexicalExtensionComposer extension={AppExtension} contentEditable={null}>
         <TooltipProvider>
           <div className="relative">
