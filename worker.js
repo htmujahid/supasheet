@@ -3,7 +3,7 @@ export default {
     const url = new URL(request.url)
 
     // Static assets (hashed filenames) — serve directly, ASSETS handles caching
-    if (/\.\w+$/.test(url.pathname)) {
+    if (url.pathname !== '/' && /\.\w+$/.test(url.pathname)) {
       return env.ASSETS.fetch(request)
     }
 
@@ -14,11 +14,13 @@ export default {
     const cached = await cache.match(cacheKey)
     if (cached) return cached
 
-    // SPA fallback: ASSETS returns index.html for any unmatched route
-    const asset = await env.ASSETS.fetch(new Request(new URL('/', url), request))
+    const indexResponse = await env.ASSETS.fetch(
+      new Request(`${url.origin}/`)
+    )
+
     const publishableKey = await env.CONFIGS.get(projectRef)
 
-    let html = await asset.text()
+    let html = await indexResponse.text()
     if (publishableKey) {
       const config = JSON.stringify({
         supabaseUrl: `https://${projectRef}.supabase.co`,
@@ -28,7 +30,7 @@ export default {
     }
 
     const response = new Response(html, {
-      status: asset.status,
+      status: indexResponse.status,
       headers: {
         'content-type': 'text/html;charset=UTF-8',
         'cache-control': 'public, max-age=3600',
