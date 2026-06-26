@@ -33,8 +33,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       await context.queryClient.ensureQueryData(authUserQueryOptions)
     if (
       !authUser &&
-      !location.pathname.startsWith("/auth") &&
-      !location.pathname.startsWith("/init")
+      !location.pathname.startsWith("/auth")
     ) {
       window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(location.href)}`
       await new Promise<never>(() => {})

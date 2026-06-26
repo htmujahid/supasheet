@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as InitRouteImport } from './routes/init'
 import { Route as StorageRouteRouteImport } from './routes/storage/route'
 import { Route as CoreRouteRouteImport } from './routes/core/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
@@ -80,11 +79,6 @@ import { Route as SchemaResourceResourceResourceIdDetailSheetRouteImport } from 
 import { Route as SchemaResourceResourceResourceIdDetailTabRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail.$tab'
 import { Route as SchemaResourceResourceResourceIdDetailTabSheetRouteImport } from './routes/$schema/resource/$resource/$resourceId/detail.$tab.sheet'
 
-const InitRoute = InitRouteImport.update({
-  id: '/init',
-  path: '/init',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const StorageRouteRoute = StorageRouteRouteImport.update({
   id: '/storage',
   path: '/storage',
@@ -468,7 +462,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteRouteWithChildren
   '/core': typeof CoreRouteRouteWithChildren
   '/storage': typeof StorageRouteRouteWithChildren
-  '/init': typeof InitRoute
   '/storage/$bucketId': typeof StorageBucketIdRouteRouteWithChildren
   '/account/identities': typeof AccountIdentitiesRoute
   '/account/profile': typeof AccountProfileRoute
@@ -536,7 +529,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
-  '/init': typeof InitRoute
   '/account/identities': typeof AccountIdentitiesRoute
   '/account/profile': typeof AccountProfileRoute
   '/account/roles-permissions': typeof AccountRolesPermissionsRoute
@@ -605,7 +597,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteRouteWithChildren
   '/core': typeof CoreRouteRouteWithChildren
   '/storage': typeof StorageRouteRouteWithChildren
-  '/init': typeof InitRoute
   '/storage/$bucketId': typeof StorageBucketIdRouteRouteWithChildren
   '/account/identities': typeof AccountIdentitiesRoute
   '/account/profile': typeof AccountProfileRoute
@@ -679,7 +670,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/core'
     | '/storage'
-    | '/init'
     | '/storage/$bucketId'
     | '/account/identities'
     | '/account/profile'
@@ -747,7 +737,6 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
-    | '/init'
     | '/account/identities'
     | '/account/profile'
     | '/account/roles-permissions'
@@ -815,7 +804,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/core'
     | '/storage'
-    | '/init'
     | '/storage/$bucketId'
     | '/account/identities'
     | '/account/profile'
@@ -888,18 +876,10 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   CoreRouteRoute: typeof CoreRouteRouteWithChildren
   StorageRouteRoute: typeof StorageRouteRouteWithChildren
-  InitRoute: typeof InitRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/init': {
-      id: '/init'
-      path: '/init'
-      fullPath: '/init'
-      preLoaderRoute: typeof InitRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/storage': {
       id: '/storage'
       path: '/storage'
@@ -1737,7 +1717,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   CoreRouteRoute: CoreRouteRouteWithChildren,
   StorageRouteRoute: StorageRouteRouteWithChildren,
-  InitRoute: InitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
