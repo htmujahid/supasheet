@@ -7,6 +7,11 @@ export default {
       return env.ASSETS.fetch(request)
     }
 
+    // Self-hosted (custom domain) — user has their own .env, no injection needed
+    if (!url.hostname.endsWith('supasheet.app')) {
+      return env.ASSETS.fetch(request)
+    }
+
     const projectRef = url.hostname.split('.')[0]
     const cache = caches.default
     const cacheKey = new Request(`https://cache.internal/${projectRef}`)
