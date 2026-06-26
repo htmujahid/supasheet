@@ -11,10 +11,6 @@ declare global {
 const config = typeof window !== "undefined" ? window.__CONFIG__ : undefined
 
 export const supabase = createClient<Database>(
-  localStorage.getItem("supabase-url") ??
-    config?.supabaseUrl ??
-    import.meta.env.VITE_SUPABASE_URL,
-  localStorage.getItem("supabase-pubkey") ??
-    config?.anonKey ??
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+  config?.supabaseUrl ?? import.meta.env.VITE_SUPABASE_URL,
+  config?.anonKey ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 )
