@@ -3,6 +3,17 @@ export default {
     const url = new URL(request.url)
     const isSupasheetDomain = url.hostname.endsWith('.supasheet.app')
 
+    // Non-root paths with a file extension are static assets — never inject config.
+    // For supasheet subdomains, strip the subdomain so ASSETS resolves the real file
+    // instead of SPA-falling-back to index.html (which has the wrong MIME type for JS/CSS).
+    if (url.pathname !== '/' && /\.\w+$/.test(url.pathname)) {
+      if (isSupasheetDomain) {
+        const mainOrigin = `https://${url.hostname.split('.').slice(1).join('.')}`
+        return env.ASSETS.fetch(new Request(`${mainOrigin}${url.pathname}${url.search}`, request))
+      }
+      return env.ASSETS.fetch(request)
+    }
+
     // Self-hosted (custom domain) or bare supasheet.app — no injection needed
     if (!isSupasheetDomain) {
       return env.ASSETS.fetch(request)
@@ -15,9 +26,8 @@ export default {
     const cached = await cache.match(cacheKey)
     if (cached) return cached
 
-    const indexResponse = await env.ASSETS.fetch(
-      new Request(`${url.origin}/`)
-    )
+    const mainOrigin = `https://${url.hostname.split('.').slice(1).join('.')}`
+    const indexResponse = await env.ASSETS.fetch(new Request(`${mainOrigin}/`))
 
     const publishableKey = await env.CONFIGS.get(projectRef)
 
