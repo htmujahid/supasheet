@@ -7,8 +7,9 @@ export default {
       return env.ASSETS.fetch(request)
     }
 
-    // Self-hosted (custom domain) — user has their own .env, no injection needed
-    if (!url.hostname.endsWith('supasheet.app')) {
+    // Self-hosted (custom domain) or bare supasheet.app — no injection needed
+    const isSupasheetDomain = url.hostname.endsWith('.supasheet.app')
+    if (!isSupasheetDomain) {
       return env.ASSETS.fetch(request)
     }
 
