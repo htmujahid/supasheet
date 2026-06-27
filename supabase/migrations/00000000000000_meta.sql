@@ -5,32 +5,10 @@ grant usage on schema supasheet to authenticated,
 service_role;
 
 ----------------------------------------------------------------
--- Function: supasheet.generate_tables
+-- Materialized View: supasheet.tables
 ----------------------------------------------------------------
-create or replace function supasheet.generate_tables (
-  schema_filter TEXT default null,
-  table_identifier_filter TEXT default null,
-  ids_filter TEXT default null,
-  limit_count INTEGER default null,
-  offset_count INTEGER default null
-) RETURNS table (
-  id BIGINT,
-  schema TEXT,
-  name TEXT,
-  rls_enabled BOOLEAN,
-  rls_forced BOOLEAN,
-  replica_identity TEXT,
-  bytes BIGINT,
-  size TEXT,
-  live_rows_estimate BIGINT,
-  dead_rows_estimate BIGINT,
-  comment TEXT,
-  primary_keys JSONB,
-  relationships JSONB
-) LANGUAGE SQL
-set
-  search_path = '' as $$
-  SELECT
+create materialized view if not exists supasheet.tables as
+SELECT
   c.oid :: int8 AS id,
   nc.nspname AS schema,
   c.relname AS name,
@@ -73,17 +51,14 @@ FROM
         pg_attribute a,
         pg_namespace n
       where
-        CASE WHEN schema_filter IS NOT NULL THEN n.nspname OPERATOR(pg_catalog.=) schema_filter ELSE true END
-        AND CASE WHEN table_identifier_filter IS NOT NULL THEN n.nspname || '.' || c.relname OPERATOR(pg_catalog.=) table_identifier_filter ELSE true END
-        AND i.indrelid = c.oid
+        i.indrelid = c.oid
         and c.relnamespace = n.oid
         and a.attrelid = c.oid
         and a.attnum = any (i.indkey)
         and i.indisprimary
     ) as _pk
     group by table_id
-  ) as pk
-  on pk.table_id = c.oid
+  ) as pk on pk.table_id = c.oid
   left join (
     select
       c.oid :: int8 as id,
@@ -106,19 +81,17 @@ FROM
       join pg_class cta on ta.attrelid = cta.oid
       join pg_namespace nta on cta.relnamespace = nta.oid
     ) on ta.attrelid = c.confrelid and ta.attnum = any (c.confkey)
-    where
-      CASE WHEN schema_filter IS NOT NULL THEN nsa.nspname OPERATOR(pg_catalog.=) schema_filter OR nta.nspname OPERATOR(pg_catalog.=) schema_filter ELSE true END
-      AND CASE WHEN table_identifier_filter IS NOT NULL THEN (nsa.nspname || '.' || csa.relname) OPERATOR(pg_catalog.=) table_identifier_filter OR (nta.nspname || '.' || cta.relname) OPERATOR(pg_catalog.=) table_identifier_filter ELSE true END
-      AND c.contype = 'f'
+    where c.contype = 'f'
   ) as relationships
   on (relationships.source_schema = nc.nspname and relationships.source_table_name = c.relname)
   or (relationships.target_table_schema = nc.nspname and relationships.target_table_name = c.relname)
 WHERE
-  CASE WHEN schema_filter IS NOT NULL THEN nc.nspname OPERATOR(pg_catalog.=) schema_filter ELSE true END
-  AND CASE WHEN ids_filter IS NOT NULL THEN c.oid::text OPERATOR(pg_catalog.=) ids_filter ELSE true END
-  AND CASE WHEN table_identifier_filter IS NOT NULL THEN nc.nspname || '.' || c.relname OPERATOR(pg_catalog.=) table_identifier_filter ELSE true END
-  AND c.relkind IN ('r', 'p')
+  c.relkind IN ('r', 'p')
   AND NOT pg_is_other_temp_schema(nc.oid)
+  AND nc.nspname NOT IN (
+    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
+    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+  )
   AND (
     pg_has_role(c.relowner, 'USAGE')
     OR has_table_privilege(
@@ -136,70 +109,23 @@ group by
   nc.nspname,
   pk.primary_keys
 ORDER BY c.oid
-LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-$$;
+with no data;
 
-revoke all on function supasheet.generate_tables (text, text, text, integer, integer)
-from
-  public;
-
-create table if not exists supasheet.tables as
-select
-  *
-from
-  supasheet.generate_tables ()
-with
-  no data;
-
-revoke all on table supasheet.tables
+revoke all on supasheet.tables
 from
   public,
   anon,
   authenticated,
   service_role;
 
-alter table supasheet.tables
-add constraint pk_tables_id primary key (id);
-
-alter table supasheet.tables enable row level security;
+create unique index on supasheet.tables (id);
 
 ----------------------------------------------------------------
--- Function: supasheet.generate_columns
+-- Materialized View: supasheet.columns
 ----------------------------------------------------------------
-create or replace function supasheet.generate_columns (
-  schema_filter TEXT default null,
-  table_identifier_filter TEXT default null,
-  column_name_filter TEXT default null,
-  table_id_filter TEXT default null,
-  ids_filter TEXT default null,
-  limit_count INTEGER default null,
-  offset_count INTEGER default null
-) RETURNS table (
-  table_id BIGINT,
-  schema TEXT,
-  "table" TEXT,
-  id TEXT,
-  ordinal_position TEXT,
-  "name" TEXT,
-  default_value TEXT,
-  data_type TEXT,
-  actual_type TEXT,
-  format TEXT,
-  is_identity BOOLEAN,
-  identity_generation TEXT,
-  is_generated BOOLEAN,
-  is_nullable BOOLEAN,
-  is_updatable BOOLEAN,
-  is_unique BOOLEAN,
-  "check" TEXT,
-  enums JSON,
-  "comment" TEXT
-) LANGUAGE SQL
-set
-  search_path = '' as $$
-  -- Adapted from information_schema.columns
-  SELECT
+create materialized view if not exists supasheet.columns as
+-- Adapted from information_schema.columns
+SELECT
   c.oid :: int8 AS table_id,
   nc.nspname AS schema,
   c.relname AS "table",
@@ -224,8 +150,9 @@ set
       ELSE 'USER-DEFINED'
     END
   END AS data_type,
-  COALESCE(bt.typname, t.typname) AS format,
   t.typname as actual_type,
+  COALESCE(bt.typname, t.typname) AS format,
+  COALESCE(nbt.nspname, nt.nspname) AS format_schema,
   a.attidentity IN ('a', 'd') AS is_identity,
   CASE
     a.attidentity
@@ -297,12 +224,11 @@ FROM
     ORDER BY table_id, ordinal_position, oid asc
   ) AS check_constraints ON check_constraints.table_id = c.oid AND check_constraints.ordinal_position = a.attnum
 WHERE
-  (schema_filter IS NULL OR (nc.nspname || '' SIMILAR TO schema_filter)) AND
-  (ids_filter IS NULL OR ((c.oid || '.' || a.attnum) || '' SIMILAR TO ids_filter)) AND
-  (column_name_filter IS NULL OR ((c.relname || '.' || a.attname) || '' SIMILAR TO column_name_filter)) AND
-  (table_id_filter IS NULL OR (c.oid::text || '' SIMILAR TO table_id_filter)) AND
-  (table_identifier_filter IS NULL OR ((nc.nspname || '.' || c.relname) || '' SIMILAR TO table_identifier_filter)) AND
   NOT pg_is_other_temp_schema(nc.oid)
+  AND nc.nspname NOT IN (
+    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
+    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+  )
   AND a.attnum > 0
   AND NOT a.attisdropped
   AND (c.relkind IN ('r', 'v', 'm', 'f', 'p'))
@@ -315,53 +241,22 @@ WHERE
     )
   )
 ORDER BY c.oid, a.attnum
-LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count ELSE NULL END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-$$;
+with no data;
 
-revoke all on function supasheet.generate_columns (text, text, text, text, text, integer, integer)
-from
-  public;
-
-create table if not exists supasheet.columns as
-select
-  *
-from
-  supasheet.generate_columns ()
-with
-  no data;
-
-revoke all on table supasheet.columns
+revoke all on supasheet.columns
 from
   public,
   anon,
   authenticated,
   service_role;
 
-alter table supasheet.columns
-add constraint pk_columns_id primary key (id);
-
-alter table supasheet.columns enable row level security;
+create unique index on supasheet.columns (id);
 
 ----------------------------------------------------------------
--- Function: supasheet.generate_views
+-- Materialized View: supasheet.views
 ----------------------------------------------------------------
-create or replace function supasheet.generate_views (
-  schema_filter TEXT default null,
-  view_identifier_filter TEXT default null,
-  ids_filter TEXT default null,
-  limit_count INTEGER default null,
-  offset_count INTEGER default null
-) RETURNS table (
-  id BIGINT,
-  schema TEXT,
-  name TEXT,
-  is_updatable BOOLEAN,
-  comment TEXT
-) LANGUAGE SQL
-set
-  search_path = '' as $$
-  SELECT
+create materialized view if not exists supasheet.views as
+SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
   c.relname AS name,
@@ -372,11 +267,12 @@ FROM
   pg_class c
   JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE
-    CASE WHEN schema_filter IS NOT NULL THEN n.nspname OPERATOR(pg_catalog.=) schema_filter ELSE true END
-  AND CASE WHEN ids_filter IS NOT NULL THEN c.oid::text OPERATOR(pg_catalog.=) ids_filter ELSE true END
-  AND CASE WHEN view_identifier_filter IS NOT NULL THEN (n.nspname || '.' || c.relname) OPERATOR(pg_catalog.=) view_identifier_filter ELSE true END
-  AND c.relkind = 'v'
+  c.relkind = 'v'
   AND NOT pg_is_other_temp_schema(n.oid)
+  AND n.nspname NOT IN (
+    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
+    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+  )
   AND (
     pg_has_role(c.relowner, 'USAGE')
     OR has_table_privilege(
@@ -386,53 +282,22 @@ WHERE
     OR has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
   )
 ORDER BY c.oid
-LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-$$;
+with no data;
 
-revoke all on function supasheet.generate_views (text, text, text, integer, integer)
-from
-  public;
-
-create table if not exists supasheet.views as
-select
-  *
-from
-  supasheet.generate_views ()
-with
-  no data;
-
-revoke all on table supasheet.views
+revoke all on supasheet.views
 from
   public,
   anon,
   authenticated,
   service_role;
 
-alter table supasheet.views
-add constraint pk_views_id primary key (id);
-
-alter table supasheet.views enable row level security;
+create unique index on supasheet.views (id);
 
 ----------------------------------------------------------------
--- Function: supasheet.generate_materialized_views
+-- Materialized View: supasheet.materialized_views
 ----------------------------------------------------------------
-create or replace function supasheet.generate_materialized_views (
-  schema_filter TEXT default null,
-  materialized_view_identifier_filter TEXT default null,
-  ids_filter TEXT default null,
-  limit_count INTEGER default null,
-  offset_count INTEGER default null
-) RETURNS table (
-  id BIGINT,
-  schema TEXT,
-  name TEXT,
-  is_populated BOOLEAN,
-  comment TEXT
-) LANGUAGE SQL
-set
-  search_path = '' as $$
-  SELECT
+create materialized view if not exists supasheet.materialized_views as
+SELECT
   c.oid :: int8 AS id,
   n.nspname AS schema,
   c.relname AS name,
@@ -442,11 +307,12 @@ FROM
   pg_class c
   JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE
-    CASE WHEN schema_filter IS NOT NULL THEN n.nspname OPERATOR(pg_catalog.=) schema_filter ELSE true END
-  AND CASE WHEN ids_filter IS NOT NULL THEN c.oid::text OPERATOR(pg_catalog.=) ids_filter ELSE true END
-  AND CASE WHEN materialized_view_identifier_filter IS NOT NULL THEN (n.nspname || '.' || c.relname) OPERATOR(pg_catalog.=) materialized_view_identifier_filter ELSE true END
-  AND c.relkind = 'm'
+  c.relkind = 'm'
   AND NOT pg_is_other_temp_schema(n.oid)
+  AND n.nspname NOT IN (
+    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
+    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+  )
   AND (
     pg_has_role(c.relowner, 'USAGE')
     OR has_table_privilege(
@@ -456,104 +322,32 @@ WHERE
     OR has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
   )
 ORDER BY c.oid
-LIMIT CASE WHEN limit_count IS NOT NULL THEN limit_count END
-OFFSET CASE WHEN offset_count IS NOT NULL THEN offset_count ELSE 0 END;
-$$;
+with no data;
 
-revoke all on function supasheet.generate_materialized_views (text, text, text, integer, integer)
-from
-  public;
-
-create table if not exists supasheet.materialized_views as
-select
-  *
-from
-  supasheet.generate_materialized_views ()
-with
-  no data;
-
-revoke all on table supasheet.materialized_views
+revoke all on supasheet.materialized_views
 from
   public,
   anon,
   authenticated,
   service_role;
 
-alter table supasheet.materialized_views
-add constraint pk_materialized_views_id primary key (id);
+create unique index on supasheet.materialized_views (id);
 
-alter table supasheet.materialized_views enable row level security;
-
-insert into
-  supasheet.columns
-select
-  *
-from
-  supasheet.generate_columns ('supasheet');
-
-insert into
-  supasheet.tables
-select
-  *
-from
-  supasheet.generate_tables ('supasheet');
-
-insert into
-  supasheet.views
-select
-  *
-from
-  supasheet.generate_views ('supasheet');
-
-insert into
-  supasheet.materialized_views
-select
-  *
-from
-  supasheet.generate_materialized_views ('supasheet');
+-- Initial population
+refresh materialized view supasheet.columns;
+refresh materialized view supasheet.tables;
+refresh materialized view supasheet.views;
+refresh materialized view supasheet.materialized_views;
 
 ----------------------------------------------------------------
 -- Trigger Function for CREATE events
 ----------------------------------------------------------------
 create or replace function supasheet.log_new_table_creation () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
-    object_name TEXT;
-    full_identity TEXT;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
-    LOOP
-        schema_name := obj.schema_name;
-        full_identity := obj.object_identity;
-
-        object_name := split_part(full_identity, '.', 2);
-
-        IF object_name = '' THEN
-            object_name := full_identity;
-        END IF;
-
-        DELETE FROM supasheet.columns
-        WHERE schema = schema_name AND 'table' = object_name;
-
-        INSERT INTO supasheet.columns
-        SELECT * FROM supasheet.generate_columns(schema_name, schema_name || '.' || object_name) on conflict do nothing;
-
-        IF obj.object_type = 'table' THEN
-            DELETE FROM supasheet.tables WHERE schema = schema_name;
-            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
-            DELETE FROM supasheet.tables WHERE schema = 'supasheet';
-            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet');
-
-        ELSIF obj.object_type = 'view' THEN
-            DELETE FROM supasheet.views WHERE schema = schema_name and name = object_name;
-            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
-
-        ELSIF obj.object_type = 'materialized view' THEN
-            DELETE FROM supasheet.materialized_views WHERE schema = schema_name and name = object_name;
-            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -570,27 +364,11 @@ execute function supasheet.log_new_table_creation ();
 -- Trigger Function for DROP events
 ----------------------------------------------------------------
 create or replace function supasheet.log_table_deletion () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
-    object_name TEXT;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
-    LOOP
-        schema_name := obj.schema_name;
-        object_name := obj.object_name;
-
-        DELETE FROM supasheet.columns
-        WHERE schema = schema_name AND "table" = object_name;
-
-        IF obj.object_type = 'table' THEN
-            DELETE FROM supasheet.tables WHERE schema = schema_name AND name = object_name;
-        ELSIF obj.object_type = 'view' THEN
-            DELETE FROM supasheet.views WHERE schema = schema_name AND name = object_name;
-        ELSIF obj.object_type = 'materialized view' THEN
-            DELETE FROM supasheet.materialized_views WHERE schema = schema_name AND name = object_name;
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -607,41 +385,11 @@ execute function supasheet.log_table_deletion ();
 -- Trigger Function for ALTER events
 ----------------------------------------------------------------
 create or replace function supasheet.log_table_alteration () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
-    object_name TEXT;
-    full_identity TEXT;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
-    LOOP
-        schema_name := obj.schema_name;
-        full_identity := obj.object_identity;
-
-        object_name := split_part(full_identity, '.', 2);
-
-        IF object_name = '' THEN
-            object_name := full_identity;
-        END IF;
-
-        DELETE FROM supasheet.columns WHERE schema = schema_name AND "table" = object_name;
-        INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns(schema_name, schema_name || '.' || object_name);
-
-        IF obj.object_type = 'table' THEN
-            DELETE FROM supasheet.tables WHERE schema = schema_name;
-            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
-            DELETE FROM supasheet.tables WHERE schema = 'supasheet';
-            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables('supasheet');
-
-        ELSIF obj.object_type = 'view' THEN
-            DELETE FROM supasheet.views WHERE schema = schema_name AND name = object_name;
-            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name, schema_name || '.' || object_name);
-
-        ELSIF obj.object_type = 'materialized view' THEN
-            DELETE FROM supasheet.materialized_views WHERE schema = schema_name AND name = object_name;
-            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name, schema_name || '.' || object_name);
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -658,61 +406,11 @@ execute function supasheet.log_table_alteration ();
 -- Trigger Function for COMMENT events
 ----------------------------------------------------------------
 create or replace function supasheet.log_comment_changes () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
-    object_name TEXT;
-    column_name TEXT;
-    full_identity TEXT;
-    table_oid OID;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
-    LOOP
-        schema_name := obj.schema_name;
-        full_identity := obj.object_identity;
-
-        IF obj.object_type = 'table column' THEN
-            object_name := split_part(full_identity, '.', 2);
-            column_name := split_part(full_identity, '.', 3);
-
-            IF object_name = '' THEN
-                object_name := split_part(full_identity, '.', 1);
-                column_name := split_part(full_identity, '.', 2);
-            END IF;
-
-            table_oid := (quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid;
-
-            UPDATE supasheet.columns
-            SET comment = col_description(
-                table_oid,
-                (SELECT attnum FROM pg_attribute WHERE attrelid = table_oid AND attname = column_name)
-            )
-            WHERE schema = schema_name AND "table" = object_name AND name = column_name;
-
-        ELSE
-            object_name := split_part(full_identity, '.', 2);
-
-            IF object_name = '' THEN
-                object_name := full_identity;
-            END IF;
-
-            IF obj.object_type = 'table' THEN
-                UPDATE supasheet.tables
-                SET comment = obj_description((quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid)
-                WHERE schema = schema_name AND name = object_name;
-
-            ELSIF obj.object_type = 'view' THEN
-                UPDATE supasheet.views
-                SET comment = obj_description((quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid)
-                WHERE schema = schema_name AND name = object_name;
-
-            ELSIF obj.object_type = 'materialized view' THEN
-                UPDATE supasheet.materialized_views
-                SET comment = obj_description((quote_ident(schema_name) || '.' || quote_ident(object_name))::regclass::oid)
-                WHERE schema = schema_name AND name = object_name;
-            END IF;
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -725,41 +423,8 @@ execute function supasheet.log_comment_changes ();
 -- Trigger Function for ALTER TYPE events (enum changes)
 ----------------------------------------------------------------
 create or replace function supasheet.log_enum_alteration () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
-    type_name TEXT;
-    full_identity TEXT;
-    enum_values JSON;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
-    LOOP
-        IF obj.object_type = 'type' THEN
-            schema_name := obj.schema_name;
-            full_identity := obj.object_identity;
-
-            type_name := split_part(full_identity, '.', 2);
-
-            IF type_name = '' THEN
-                type_name := full_identity;
-            END IF;
-
-            SELECT array_to_json(
-                array(
-                    SELECT enumlabel
-                    FROM pg_catalog.pg_enum
-                    WHERE enumtypid = (quote_ident(schema_name) || '.' || quote_ident(type_name))::regtype::oid
-                    ORDER BY enumsortorder
-                )
-            ) INTO enum_values;
-
-            UPDATE supasheet.columns
-            SET enums = enum_values
-            WHERE schema = schema_name
-              AND data_type = 'USER-DEFINED'
-              AND actual_type = type_name;
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -772,28 +437,11 @@ execute function supasheet.log_enum_alteration ();
 -- Trigger Function for CREATE SCHEMA events
 ----------------------------------------------------------------
 create or replace function supasheet.log_schema_creation () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
-    LOOP
-        IF obj.object_type = 'schema' THEN
-            schema_name := obj.object_identity;
-
-            DELETE FROM supasheet.columns WHERE schema = schema_name;
-            INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns(schema_name);
-
-            DELETE FROM supasheet.tables WHERE schema = schema_name;
-            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(schema_name);
-
-            DELETE FROM supasheet.views WHERE schema = schema_name;
-            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(schema_name);
-
-            DELETE FROM supasheet.materialized_views WHERE schema = schema_name;
-            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(schema_name);
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -806,33 +454,11 @@ execute function supasheet.log_schema_creation ();
 -- Trigger Function for ALTER SCHEMA events
 ----------------------------------------------------------------
 create or replace function supasheet.log_schema_alteration () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    new_schema TEXT;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands()
-    LOOP
-        IF obj.object_type = 'schema' THEN
-            new_schema := obj.object_identity;
-
-            DELETE FROM supasheet.columns WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
-            DELETE FROM supasheet.tables WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
-            DELETE FROM supasheet.views WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
-            DELETE FROM supasheet.materialized_views WHERE schema NOT IN (SELECT nspname FROM pg_namespace);
-
-            DELETE FROM supasheet.columns WHERE schema = new_schema;
-            INSERT INTO supasheet.columns SELECT * FROM supasheet.generate_columns(new_schema);
-
-            DELETE FROM supasheet.tables WHERE schema = new_schema;
-            INSERT INTO supasheet.tables SELECT * FROM supasheet.generate_tables(new_schema);
-
-            DELETE FROM supasheet.views WHERE schema = new_schema;
-            INSERT INTO supasheet.views SELECT * FROM supasheet.generate_views(new_schema);
-
-            DELETE FROM supasheet.materialized_views WHERE schema = new_schema;
-            INSERT INTO supasheet.materialized_views SELECT * FROM supasheet.generate_materialized_views(new_schema);
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set
@@ -845,21 +471,11 @@ execute function supasheet.log_schema_alteration ();
 -- Trigger Function for DROP SCHEMA events
 ----------------------------------------------------------------
 create or replace function supasheet.log_schema_deletion () RETURNS event_trigger as $$
-DECLARE
-    obj record;
-    schema_name TEXT;
 BEGIN
-    FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
-    LOOP
-        IF obj.object_type = 'schema' THEN
-            schema_name := obj.object_name;
-
-            DELETE FROM supasheet.columns WHERE schema = schema_name;
-            DELETE FROM supasheet.tables WHERE schema = schema_name;
-            DELETE FROM supasheet.views WHERE schema = schema_name;
-            DELETE FROM supasheet.materialized_views WHERE schema = schema_name;
-        END IF;
-    END LOOP;
+    REFRESH MATERIALIZED VIEW supasheet.tables;
+    REFRESH MATERIALIZED VIEW supasheet.columns;
+    REFRESH MATERIALIZED VIEW supasheet.views;
+    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
 END;
 $$ LANGUAGE plpgsql
 set

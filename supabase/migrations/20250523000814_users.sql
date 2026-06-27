@@ -196,7 +196,6 @@ execute on function supasheet.get_storage_filename_as_uuid (text) to authenticat
 service_role;
 
 -- RLS policies for storage bucket account_image
-drop policy if exists account_image on storage.objects;
 
 create policy account_image on storage.objects for all using (
   bucket_id = 'account_image'

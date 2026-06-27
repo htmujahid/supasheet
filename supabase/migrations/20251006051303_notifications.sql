@@ -149,7 +149,6 @@ create policy user_notifications_delete on supasheet.user_notifications for dele
 -- p_link is an optional in-app path the UI can navigate to
 -- (e.g. /desk/resource/tasks/detail/<id>).
 -- ─────────────────────────────────────────────
-drop function if exists supasheet.create_notification (text, text, text, uuid[], jsonb);
 
 create or replace function supasheet.create_notification (
   p_type text,
@@ -274,7 +273,6 @@ begin
 end;
 $$;
 
-drop trigger if exists user_roles_notify on supasheet.user_roles;
 
 create trigger user_roles_notify
 after insert on supasheet.user_roles for each row
