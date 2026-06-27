@@ -119,6 +119,9 @@ from
   service_role;
 
 create unique index on supasheet.tables (id);
+create unique index on supasheet.tables (schema, name);
+create index on supasheet.tables (schema);
+create index on supasheet.tables (name);
 
 ----------------------------------------------------------------
 -- Materialized View: supasheet.columns
@@ -251,6 +254,10 @@ from
   service_role;
 
 create unique index on supasheet.columns (id);
+create index on supasheet.columns (table_id);
+create index on supasheet.columns (schema, "table");
+create index on supasheet.columns (schema, "table", name);
+create index on supasheet.columns (name);
 
 ----------------------------------------------------------------
 -- Materialized View: supasheet.views
@@ -292,6 +299,8 @@ from
   service_role;
 
 create unique index on supasheet.views (id);
+create unique index on supasheet.views (schema, name);
+create index on supasheet.views (schema);
 
 ----------------------------------------------------------------
 -- Materialized View: supasheet.materialized_views
@@ -332,6 +341,8 @@ from
   service_role;
 
 create unique index on supasheet.materialized_views (id);
+create unique index on supasheet.materialized_views (schema, name);
+create index on supasheet.materialized_views (schema);
 
 -- Initial population
 refresh materialized view supasheet.columns;
