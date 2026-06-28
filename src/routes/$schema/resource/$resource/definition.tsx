@@ -21,6 +21,7 @@ import {
 import { Skeleton } from "#/components/ui/skeleton"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import { resolveResourceSchema } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource/definition")({
@@ -35,7 +36,11 @@ export const Route = createFileRoute("/$schema/resource/$resource/definition")({
   loader: async ({ context, params }) => {
     const { schema, resource } = params
 
-    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(
+      context.queryClient,
+      schema,
+      resource
+    )
     if (!resourceSchema) throw notFound()
     if (!columnsSchema?.length) throw notFound()
 
@@ -44,7 +49,9 @@ export const Route = createFileRoute("/$schema/resource/$resource/definition")({
   head: ({ params }) => ({
     meta: [
       {
-        title: `About · ${formatTitle(params.resource)} | ${formatTitle(params.schema)} | Supasheet`,
+        title: pageTitle(
+          `About · ${formatTitle(params.resource)} | ${formatTitle(params.schema)}`
+        ),
       },
     ],
   }),

@@ -23,8 +23,12 @@ import {
   EmptyTitle,
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
-import type { TableMetadata, UpdatableViewMetadata } from "#/lib/database-meta.types"
+import type {
+  TableMetadata,
+  UpdatableViewMetadata,
+} from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   columnsSchemaQueryOptions,
   tableSchemaQueryOptions,
@@ -48,7 +52,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
         if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
           source = parsed as Record<string, unknown>
         }
-      } catch { }
+      } catch {}
     }
     if (source) {
       defaults = Object.fromEntries(
@@ -74,7 +78,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
       ),
       context.queryClient.ensureQueryData(
         columnsSchemaQueryOptions(schema, resource)
-      )
+      ),
     ])
     if (!columnsSchema) throw notFound()
 
@@ -88,7 +92,9 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
 
       if (!viewSchema?.is_updatable) throw notFound()
 
-      const viewMetadata = JSON.parse(viewSchema.comment ?? "{}") as UpdatableViewMetadata
+      const viewMetadata = JSON.parse(
+        viewSchema.comment ?? "{}"
+      ) as UpdatableViewMetadata
       if (!viewMetadata.based_on) throw notFound()
 
       const [resolvedTableSchema, resolvedColumnsSchema] = await Promise.all([
@@ -107,16 +113,20 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
       primaryKeys = tableSchema.primary_keys
 
       if (primaryKeys?.length === 1) {
-        const pkExposed = columnsSchema.some((c) => c.name === primaryKeys![0].name)
+        const pkExposed = columnsSchema.some(
+          (c) => c.name === primaryKeys![0].name
+        )
         if (!pkExposed) {
           const uniqueCol = columnsSchema.find((c) => c.is_unique && c.name)
           if (uniqueCol?.name) {
-            primaryKeys = [{
-              name: uniqueCol.name,
-              schema: tableSchema.schema as string,
-              table_id: tableSchema.id,
-              table_name: tableSchema.name,
-            }]
+            primaryKeys = [
+              {
+                name: uniqueCol.name,
+                schema: tableSchema.schema as string,
+                table_id: tableSchema.id,
+                table_name: tableSchema.name,
+              },
+            ]
           } else {
             throw notFound()
           }
@@ -125,15 +135,25 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
 
       if (resolvedColumnsSchema) {
         const resourceColumnNames = new Set(columnsSchema.map((c) => c.name))
-        columnsSchema = resolvedColumnsSchema.filter((c) => resourceColumnNames.has(c.name))
+        columnsSchema = resolvedColumnsSchema.filter((c) =>
+          resourceColumnNames.has(c.name)
+        )
       }
     }
 
-    return { columnsSchema, tableSchema: { ...tableSchema, name: resource, comment, primary_keys: primaryKeys } }
+    return {
+      columnsSchema,
+      tableSchema: {
+        ...tableSchema,
+        name: resource,
+        comment,
+        primary_keys: primaryKeys,
+      },
+    }
   },
   head: ({ params }) => ({
     meta: [
-      { title: `New Record | ${formatTitle(params.resource)} | Supasheet` },
+      { title: pageTitle(`New Record | ${formatTitle(params.resource)}`) },
     ],
   }),
   pendingComponent: () => {

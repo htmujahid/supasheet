@@ -8,11 +8,12 @@ import type { ColumnFiltersState, SortingState } from "@tanstack/react-table"
 import { AuditLogTable } from "#/components/audit-logs/audit-logs-table"
 import { DataTableSkeleton } from "#/components/data-table/data-table-skeleton"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { pageTitle } from "#/lib/page-title"
 import { auditLogsQueryOptions } from "#/lib/supabase/data/core"
 import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/audit_logs/")({
-  head: () => ({ meta: [{ title: "Audit Logs | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Audit Logs") }] }),
   validateSearch: (
     search: {
       sortId?: string

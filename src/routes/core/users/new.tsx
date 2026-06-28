@@ -4,9 +4,10 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
 import { UserCreateForm } from "#/components/users/user-create-form"
+import { pageTitle } from "#/lib/page-title"
 
 export const Route = createFileRoute("/core/users/new")({
-  head: () => ({ meta: [{ title: "New User | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("New User") }] }),
   beforeLoad: ({ context }) => {
     if (
       !context.permissions?.some(

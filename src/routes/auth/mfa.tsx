@@ -1,11 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import { MfaForm } from "#/components/auth/mfa-form"
+import { pageTitle } from "#/lib/page-title"
 import { supabase } from "#/lib/supabase/client"
 import { mfaFactorsQueryOptions } from "#/lib/supabase/data/security"
 
 export const Route = createFileRoute("/auth/mfa")({
-  head: () => ({ meta: [{ title: "Two-Factor Authentication | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Two-Factor Authentication") }] }),
   beforeLoad: async ({ context }) => {
     if (!context.authUser) throw redirect({ to: "/auth/sign-in" })
     const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()

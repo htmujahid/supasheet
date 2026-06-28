@@ -32,6 +32,7 @@ import {
 import { useHasPermission } from "#/hooks/use-permissions"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resolveResourceSchema,
   resourceDataQueryOptions,
@@ -82,7 +83,11 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
   }) => {
     const { schema, resource } = params
 
-    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(
+      context.queryClient,
+      schema,
+      resource
+    )
     if (!resourceSchema) throw notFound()
     if (!columnsSchema?.length) throw notFound()
 
@@ -104,7 +109,9 @@ export const Route = createFileRoute("/$schema/resource/$resource/grid")({
   head: ({ params }) => ({
     meta: [
       {
-        title: `${formatTitle(params.resource)} | ${formatTitle(params.schema)} | Supasheet`,
+        title: pageTitle(
+          `${formatTitle(params.resource)} | ${formatTitle(params.schema)}`
+        ),
       },
     ],
   }),

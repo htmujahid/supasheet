@@ -4,13 +4,14 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { RolePermissionsForm } from "#/components/role-permissions/role-permissions-form"
 import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
+import { pageTitle } from "#/lib/page-title"
 import {
   columnsSchemaQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/role_permissions/new")({
-  head: () => ({ meta: [{ title: "New Role Permission | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("New Role Permission") }] }),
   beforeLoad: ({ context }) => {
     if (
       !context.permissions?.some(

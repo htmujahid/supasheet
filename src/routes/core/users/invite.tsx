@@ -2,9 +2,10 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { UserInviteForm } from "#/components/users/user-invite-form"
+import { pageTitle } from "#/lib/page-title"
 
 export const Route = createFileRoute("/core/users/invite")({
-  head: () => ({ meta: [{ title: "Invite User | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Invite User") }] }),
   component: RouteComponent,
 })
 

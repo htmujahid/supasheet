@@ -10,9 +10,10 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#/components/ui/empty"
+import { pageTitle } from "#/lib/page-title"
 
 export const Route = createFileRoute("/storage/")({
-  head: () => ({ meta: [{ title: "Storage | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Storage") }] }),
   component: RouteComponent,
 })
 

@@ -4,13 +4,14 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
 import { UserRolesForm } from "#/components/user-roles/user-roles-form"
+import { pageTitle } from "#/lib/page-title"
 import {
   columnsSchemaQueryOptions,
   tableSchemaQueryOptions,
 } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/user_roles/new")({
-  head: () => ({ meta: [{ title: "New User Role | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("New User Role") }] }),
   beforeLoad: ({ context }) => {
     if (
       !context.permissions?.some(

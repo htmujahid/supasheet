@@ -30,6 +30,7 @@ import { useSheetHref } from "#/hooks/use-sheet-href"
 import type { TableMetadata, TreeLayout } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resolveResourceSchema,
   resourceDataQueryOptions,
@@ -49,7 +50,11 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, treeId } = params
 
-    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(
+      context.queryClient,
+      schema,
+      resource
+    )
     if (!resourceSchema) throw notFound()
     if (!columnsSchema?.length) throw notFound()
 
@@ -66,7 +71,7 @@ export const Route = createFileRoute(
     return { columnsSchema, resourceSchema, treeView }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Tree | ${formatTitle(params.resource)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Tree | ${formatTitle(params.resource)}`) }],
   }),
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()

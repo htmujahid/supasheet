@@ -19,6 +19,7 @@ import {
   useSidebar,
 } from "#/components/ui/sidebar"
 import { Skeleton } from "#/components/ui/skeleton"
+import { useAppConfig } from "#/hooks/use-app-config"
 
 export function ModuleSwitcher({
   modules,
@@ -33,6 +34,7 @@ export function ModuleSwitcher({
 }) {
   const { isMobile } = useSidebar()
   const { location } = useRouterState()
+  const { name: appName } = useAppConfig()
 
   const activeModule =
     modules.find((m) => location.pathname.startsWith(m.url)) ?? modules[0]
@@ -73,8 +75,8 @@ export function ModuleSwitcher({
               {activeModule.icon}
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">Supasheet</span>
-              <span className="truncate text-xs">{activeModule.name}</span>
+              <span className="truncate font-medium">{activeModule.name}</span>
+              <span className="truncate text-xs">{appName}</span>
             </div>
             <ChevronsUpDownIcon className="ml-auto" />
           </DropdownMenuTrigger>

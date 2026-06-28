@@ -11,6 +11,7 @@ import {
 import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import type { Tables } from "#/lib/database.types"
+import { pageTitle } from "#/lib/page-title"
 import { auditLogQueryOptions } from "#/lib/supabase/data/core"
 
 type AuditLogRow = Tables<{ schema: "supasheet" }, "audit_logs">
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/core/audit_logs/$auditLogId")({
   },
   head: ({ params }) => ({
     meta: [
-      { title: `${params.auditLogId.slice(0, 8)} | Audit Logs | Supasheet` },
+      { title: pageTitle(`${params.auditLogId.slice(0, 8)} | Audit Logs`) },
     ],
   }),
   pendingComponent: () => {

@@ -15,6 +15,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import { chartsQueryOptions } from "#/lib/supabase/data/chart"
 
 export const Route = createFileRoute("/$schema/chart/")({
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/$schema/chart/")({
     return { charts }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Charts | ${formatTitle(params.schema)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Charts | ${formatTitle(params.schema)}`) }],
   }),
   pendingComponent: () => (
     <div className="w-full flex-1">

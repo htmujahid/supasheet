@@ -22,6 +22,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import { reportsQueryOptions } from "#/lib/supabase/data/report"
 
 export const Route = createFileRoute("/$schema/report/")({
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/$schema/report/")({
     return { reports }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Reports | ${formatTitle(params.schema)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Reports | ${formatTitle(params.schema)}`) }],
   }),
   component: RouteComponent,
   pendingComponent: () => {

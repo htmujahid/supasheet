@@ -31,6 +31,7 @@ import type {
   DatabaseViews,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   reportDataQueryOptions,
   reportsQueryOptions,
@@ -95,7 +96,7 @@ export const Route = createFileRoute("/$schema/report/$report/")({
     return { reportData, columnsSchema }
   },
   head: ({ params }) => ({
-    meta: [{ title: `${formatTitle(params.report)} | Reports | Supasheet` }],
+    meta: [{ title: pageTitle(`${formatTitle(params.report)} | Reports`) }],
   }),
   pendingComponent: () => {
     const { schema, report } = Route.useParams()

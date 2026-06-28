@@ -20,6 +20,7 @@ import {
 } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   navItemsQueryOptions,
   resourcesQueryOptions,
@@ -27,7 +28,7 @@ import {
 
 export const Route = createFileRoute("/$schema/")({
   head: ({ params }) => ({
-    meta: [{ title: `${formatTitle(params.schema)} | Supasheet` }],
+    meta: [{ title: pageTitle(`${formatTitle(params.schema)}`) }],
   }),
   component: RouteComponent,
 })

@@ -4,6 +4,8 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { TableIcon } from "lucide-react"
 
+import { useAppConfig } from "#/hooks/use-app-config"
+
 export const Route = createFileRoute("/auth")({
   beforeLoad: ({ context, location }) => {
     if (
@@ -17,6 +19,8 @@ export const Route = createFileRoute("/auth")({
 })
 
 function AuthLayout() {
+  const { name, description } = useAppConfig()
+
   return (
     <div className="relative grid min-h-screen lg:grid-cols-2">
       {/* Left panel — hidden on mobile */}
@@ -25,18 +29,12 @@ function AuthLayout() {
 
         <div className="relative z-10 flex items-center gap-2 text-lg font-medium">
           <TableIcon className="size-5" />
-          <span>Supasheet</span>
+          <span>{name}</span>
         </div>
 
         <div className="relative z-10">
           <blockquote className="space-y-2">
-            <p className="leading-relaxed text-balance">
-              &ldquo;Supasheet has completely changed how our team manages data.
-              What used to take hours now takes minutes.&rdquo;
-            </p>
-            <footer className="text-sm text-muted-foreground">
-              Sofia Davis
-            </footer>
+            <p className="leading-relaxed text-balance">{description}</p>
           </blockquote>
         </div>
       </div>

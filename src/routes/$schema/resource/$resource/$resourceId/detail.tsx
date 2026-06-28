@@ -28,6 +28,7 @@ import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   relatedTablesSchemaQueryOptions,
   resolveResourceSchema,
@@ -46,14 +47,19 @@ export const Route = createFileRoute(
   },
   loader: async ({ context, params }) => {
     const { schema, resource } = params
-    const [{ resourceSchema, columnsSchema }, relatedTablesSchema] = await Promise.all([
-      resolveResourceSchema(context.queryClient, schema, resource),
-      context.queryClient.ensureQueryData(relatedTablesSchemaQueryOptions(schema, resource)),
-    ])
+    const [{ resourceSchema, columnsSchema }, relatedTablesSchema] =
+      await Promise.all([
+        resolveResourceSchema(context.queryClient, schema, resource),
+        context.queryClient.ensureQueryData(
+          relatedTablesSchemaQueryOptions(schema, resource)
+        ),
+      ])
     if (!resourceSchema) throw notFound()
     if (!columnsSchema?.length) throw notFound()
 
-    const primaryKeys = isTableSchema(resourceSchema) ? (resourceSchema.primary_keys ?? []) : []
+    const primaryKeys = isTableSchema(resourceSchema)
+      ? (resourceSchema.primary_keys ?? [])
+      : []
     const pkName = primaryKeys[0]?.name ?? "id"
 
     const metaJoins = (
@@ -75,7 +81,7 @@ export const Route = createFileRoute(
     }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Detail | ${formatTitle(params.resource)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Detail | ${formatTitle(params.resource)}`) }],
   }),
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()

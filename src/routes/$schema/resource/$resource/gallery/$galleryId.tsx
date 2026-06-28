@@ -29,6 +29,7 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import type { GalleryLayout, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resolveResourceSchema,
   resourceDataQueryOptions,
@@ -48,7 +49,11 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, galleryId } = params
 
-    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(
+      context.queryClient,
+      schema,
+      resource
+    )
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
@@ -65,7 +70,7 @@ export const Route = createFileRoute(
     return { galleryView, resourceSchema, columnsSchema }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Gallery | ${formatTitle(params.resource)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Gallery | ${formatTitle(params.resource)}`) }],
   }),
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()

@@ -5,10 +5,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardFooter, CardHeader } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
 import { UserEditForm } from "#/components/users/user-edit-form"
+import { pageTitle } from "#/lib/page-title"
 import { adminGetUserQueryOptions } from "#/lib/supabase/data/admin-auth"
 
 export const Route = createFileRoute("/core/users/$userId/edit")({
-  head: () => ({ meta: [{ title: "Edit User | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Edit User") }] }),
   beforeLoad: ({ context, params: { userId } }) => {
     if (context.authUser?.id === userId) throw notFound()
     if (

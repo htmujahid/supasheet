@@ -12,11 +12,12 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { RolePermissionsTable } from "#/components/role-permissions/role-permissions-table"
 import { Button } from "#/components/ui/button"
 import { useHasPermission } from "#/hooks/use-permissions"
+import { pageTitle } from "#/lib/page-title"
 import { rolePermissionsQueryOptions } from "#/lib/supabase/data/core"
 import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/role_permissions/")({
-  head: () => ({ meta: [{ title: "Role Permissions | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Role Permissions") }] }),
   validateSearch: (
     search: {
       sortId?: string

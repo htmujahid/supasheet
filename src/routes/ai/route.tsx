@@ -3,9 +3,10 @@ import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
 import { ArrowLeftIcon, SparklesIcon } from "lucide-react"
 
 import { Button } from "#/components/ui/button"
+import { pageTitle } from "#/lib/page-title"
 
 export const Route = createFileRoute("/ai")({
-  head: () => ({ meta: [{ title: "AI | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("AI") }] }),
   component: RouteComponent,
 })
 

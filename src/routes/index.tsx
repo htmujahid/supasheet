@@ -14,10 +14,11 @@ import { Badge } from "#/components/ui/badge"
 import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import { useUser } from "#/hooks/use-user"
+import { pageTitle } from "#/lib/page-title"
 import { schemasQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Home | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Home") }] }),
   loader: async ({ context }) => {
     const schemas =
       await context.queryClient.ensureQueryData(schemasQueryOptions)

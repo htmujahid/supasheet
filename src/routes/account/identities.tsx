@@ -3,10 +3,11 @@ import { createFileRoute } from "@tanstack/react-router"
 import { IdentityEmailCard } from "#/components/account/identity-email-card"
 import { IdentityProvidersCard } from "#/components/account/identity-providers-card"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { pageTitle } from "#/lib/page-title"
 import { identitiesQueryOptions } from "#/lib/supabase/data/identities"
 
 export const Route = createFileRoute("/account/identities")({
-  head: () => ({ meta: [{ title: "Identities | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Identities") }] }),
   loader: ({ context }) => {
     context.queryClient.prefetchQuery(identitiesQueryOptions)
   },

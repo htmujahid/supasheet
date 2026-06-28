@@ -12,11 +12,12 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { Button } from "#/components/ui/button"
 import { UsersTable } from "#/components/users/users-table"
 import { useHasPermission } from "#/hooks/use-permissions"
+import { pageTitle } from "#/lib/page-title"
 import { usersQueryOptions } from "#/lib/supabase/data/core"
 import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/core/users/")({
-  head: () => ({ meta: [{ title: "Users | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Users") }] }),
   validateSearch: (
     search: {
       sortId?: string

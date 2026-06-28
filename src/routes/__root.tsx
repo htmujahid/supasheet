@@ -17,6 +17,10 @@ import { Toaster } from "#/components/ui/sonner"
 import { Spinner } from "#/components/ui/spinner"
 import { TooltipProvider } from "#/components/ui/tooltip"
 import { authUserQueryOptions } from "#/lib/supabase/data/auth"
+import {
+  DEFAULT_APP_CONFIG,
+  appConfigQueryOptions,
+} from "#/lib/supabase/data/config"
 import { userQueryOptions } from "#/lib/supabase/data/users"
 
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools"
@@ -29,23 +33,29 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context, location }) => {
-    const authUser =
-      await context.queryClient.ensureQueryData(authUserQueryOptions)
-    if (
-      !authUser &&
-      !location.pathname.startsWith("/auth")
-    ) {
+    const [authUser, appConfig] = await Promise.all([
+      context.queryClient.ensureQueryData(authUserQueryOptions),
+      context.queryClient.ensureQueryData(appConfigQueryOptions()),
+    ])
+    if (!authUser && !location.pathname.startsWith("/auth")) {
       window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(location.href)}`
       await new Promise<never>(() => {})
     }
     const user = authUser
       ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id))
       : null
-    return { authUser, user }
+    return { authUser, user, appConfig }
   },
-  head: () => ({
-    meta: [{ title: "Supasheet" }],
-  }),
+  loader: ({ context }) => ({ appConfig: context.appConfig }),
+  head: ({ loaderData }) => {
+    const appConfig = loaderData?.appConfig ?? DEFAULT_APP_CONFIG
+    return {
+      meta: [
+        { title: appConfig.name },
+        { name: "description", content: appConfig.description },
+      ],
+    }
+  },
   pendingMs: 0,
   pendingComponent: LoadingScreen,
   component: RootComponent,

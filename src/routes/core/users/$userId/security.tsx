@@ -6,10 +6,11 @@ import { Card, CardContent, CardHeader } from "#/components/ui/card"
 import { Separator } from "#/components/ui/separator"
 import { Skeleton } from "#/components/ui/skeleton"
 import { UserSecurity } from "#/components/users/user-security"
+import { pageTitle } from "#/lib/page-title"
 import { adminGetUserQueryOptions } from "#/lib/supabase/data/admin-auth"
 
 export const Route = createFileRoute("/core/users/$userId/security")({
-  head: () => ({ meta: [{ title: "User Security | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("User Security") }] }),
   beforeLoad: ({ context, params: { userId } }) => {
     if (context.authUser?.id === userId) throw notFound()
     const p = context.permissions

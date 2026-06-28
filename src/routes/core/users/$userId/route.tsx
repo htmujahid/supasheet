@@ -14,6 +14,7 @@ import { Skeleton } from "#/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "#/components/ui/tabs"
 import { useHasPermission } from "#/hooks/use-permissions"
 import { useAuthUser } from "#/hooks/use-user"
+import { pageTitle } from "#/lib/page-title"
 import { adminGetUserQueryOptions } from "#/lib/supabase/data/admin-auth"
 
 export const Route = createFileRoute("/core/users/$userId")({
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/core/users/$userId")({
     if (!data?.user) throw notFound()
   },
   head: ({ params }) => ({
-    meta: [{ title: `${params.userId} | Users | Supasheet` }],
+    meta: [{ title: pageTitle(`${params.userId} | Users`) }],
   }),
   pendingComponent: () => (
     <>

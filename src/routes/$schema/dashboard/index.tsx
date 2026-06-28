@@ -15,6 +15,7 @@ import {
 } from "#/components/ui/empty"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import { dashboardWidgetsQueryOptions } from "#/lib/supabase/data/dashboard"
 
 export const Route = createFileRoute("/$schema/dashboard/")({
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/$schema/dashboard/")({
     return { widgets }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Dashboard | ${formatTitle(params.schema)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Dashboard | ${formatTitle(params.schema)}`) }],
   }),
   pendingComponent: () => (
     <div className="w-full flex-1">

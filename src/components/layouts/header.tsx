@@ -31,6 +31,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu"
+import { useAppConfig } from "#/hooks/use-app-config"
 import { useUser } from "#/hooks/use-user"
 import { supabase } from "#/lib/supabase/client"
 import { authUserQueryOptions } from "#/lib/supabase/data/auth"
@@ -50,6 +51,7 @@ export function Header() {
   const queryClient = useQueryClient()
   const { mode, setTheme } = useTheme()
   const user = useUser()
+  const { name: appName } = useAppConfig()
 
   const initials = (user?.name ?? user?.email ?? "?").slice(0, 2).toUpperCase()
 
@@ -64,7 +66,7 @@ export function Header() {
       <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-1.5 text-sm font-medium">
           <TableIcon className="size-4" />
-          <span>Supasheet</span>
+          <span>{appName}</span>
         </div>
 
         <div className="flex items-center gap-1">

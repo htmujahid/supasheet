@@ -9,9 +9,10 @@ import {
 } from "lucide-react"
 
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { pageTitle } from "#/lib/page-title"
 
 export const Route = createFileRoute("/core/")({
-  head: () => ({ meta: [{ title: "Core | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Core") }] }),
   component: RouteComponent,
 })
 

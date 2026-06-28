@@ -10,6 +10,7 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceComments } from "#/components/resource/comments/resource-comments"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resourceCommentsQueryOptions,
   tableSchemaQueryOptions,
@@ -39,7 +40,7 @@ export const Route = createFileRoute(
   head: ({ params }) => ({
     meta: [
       {
-        title: `Comments | ${formatTitle(params.resource)} | Supasheet`,
+        title: pageTitle(`Comments | ${formatTitle(params.resource)}`),
       },
     ],
   }),

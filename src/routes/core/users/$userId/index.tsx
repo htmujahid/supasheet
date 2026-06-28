@@ -5,10 +5,11 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader } from "#/components/ui/card"
 import { Skeleton } from "#/components/ui/skeleton"
 import { UserOverview } from "#/components/users/user-overview"
+import { pageTitle } from "#/lib/page-title"
 import { adminGetUserQueryOptions } from "#/lib/supabase/data/admin-auth"
 
 export const Route = createFileRoute("/core/users/$userId/")({
-  head: () => ({ meta: [{ title: "Overview | Users | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Overview | Users") }] }),
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(
       adminGetUserQueryOptions(params.userId)

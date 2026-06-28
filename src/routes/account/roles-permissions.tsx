@@ -2,10 +2,11 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { RolesPermissionsCard } from "#/components/account/roles-permissions-card"
 import { DefaultHeader } from "#/components/layouts/default-header"
+import { pageTitle } from "#/lib/page-title"
 import { rolesQueryOptions } from "#/lib/supabase/data/core"
 
 export const Route = createFileRoute("/account/roles-permissions")({
-  head: () => ({ meta: [{ title: "Roles & Permissions | Supasheet" }] }),
+  head: () => ({ meta: [{ title: pageTitle("Roles & Permissions") }] }),
   loader: ({ context }) => {
     context.queryClient.prefetchQuery(rolesQueryOptions(context.authUser!.id))
   },

@@ -116,6 +116,30 @@ export type Database = {
           },
         ]
       }
+      configs: {
+        Row: {
+          description: string | null
+          id: number
+          is_public: boolean
+          key: string
+          value: Json | null
+        }
+        Insert: {
+          description?: string | null
+          id?: number
+          is_public?: boolean
+          key: string
+          value?: Json | null
+        }
+        Update: {
+          description?: string | null
+          id?: number
+          is_public?: boolean
+          key?: string
+          value?: Json | null
+        }
+        Relationships: []
+      }
       columns: {
         Row: {
           actual_type: string | null

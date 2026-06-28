@@ -12,6 +12,7 @@ import {
   SheetHeader,
 } from "#/components/ui/sheet"
 import { Skeleton } from "#/components/ui/skeleton"
+import { pageTitle } from "#/lib/page-title"
 import type { FileObject } from "#/lib/supabase/data/storage"
 import { storageFilesQueryOptions } from "#/lib/supabase/data/storage"
 
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/storage/$bucketId/$")({
   head: ({ params }) => {
     const segments = (params._splat ?? "").split("/").filter(Boolean)
     const name = segments[segments.length - 1] ?? params.bucketId
-    return { meta: [{ title: `${name} | Storage | Supasheet` }] }
+    return { meta: [{ title: pageTitle(`${name} | Storage`) }] }
   },
   pendingComponent: () => (
     <Sheet open>

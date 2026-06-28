@@ -32,6 +32,7 @@ import type {
   DatabaseViews,
 } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import { columnsSchemaQueryOptions } from "#/lib/supabase/data/resource"
 import {
   templateDataQueryOptions,
@@ -96,9 +97,7 @@ export const Route = createFileRoute("/$schema/template/$template/")({
     return { templateData, columnsSchema, template }
   },
   head: ({ params }) => ({
-    meta: [
-      { title: `${formatTitle(params.template)} | Templates | Supasheet` },
-    ],
+    meta: [{ title: pageTitle(`${formatTitle(params.template)} | Templates`) }],
   }),
   pendingComponent: () => {
     const { schema, template } = Route.useParams()

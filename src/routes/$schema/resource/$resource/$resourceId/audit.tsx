@@ -10,6 +10,7 @@ import { DefaultHeader } from "#/components/layouts/default-header"
 import { ResourceAuditTimeline } from "#/components/resource/audit/resource-audit-timeline"
 import { Skeleton } from "#/components/ui/skeleton"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resourceAuditLogsQueryOptions,
   tableSchemaQueryOptions,
@@ -39,7 +40,7 @@ export const Route = createFileRoute(
   head: ({ params }) => ({
     meta: [
       {
-        title: `Audit | ${formatTitle(params.resource)} | Supasheet`,
+        title: pageTitle(`Audit | ${formatTitle(params.resource)}`),
       },
     ],
   }),

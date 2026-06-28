@@ -8,6 +8,7 @@ import {
 import { DefaultHeader } from "#/components/layouts/default-header"
 import { StorageExplorer } from "#/components/storage/storage-explorer"
 import { Skeleton } from "#/components/ui/skeleton"
+import { pageTitle } from "#/lib/page-title"
 import { storageBucketsQueryOptions } from "#/lib/supabase/data/storage"
 
 export const Route = createFileRoute("/storage/$bucketId")({
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/storage/$bucketId")({
     return { bucket }
   },
   head: ({ params }) => ({
-    meta: [{ title: `${params.bucketId} | Storage | Supasheet` }],
+    meta: [{ title: pageTitle(`${params.bucketId} | Storage`) }],
   }),
   pendingComponent: PendingComponent,
   component: RouteComponent,

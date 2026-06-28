@@ -33,6 +33,7 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import type { KanbanLayout, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resolveResourceSchema,
   resourceDataQueryOptions,
@@ -58,7 +59,11 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, kanbanId } = params
 
-    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(
+      context.queryClient,
+      schema,
+      resource
+    )
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
@@ -75,7 +80,7 @@ export const Route = createFileRoute(
     return { kanbanView, resourceSchema, columnsSchema }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Kanban | ${formatTitle(params.resource)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Kanban | ${formatTitle(params.resource)}`) }],
   }),
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()

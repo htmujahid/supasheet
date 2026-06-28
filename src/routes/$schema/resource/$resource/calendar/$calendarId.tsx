@@ -32,6 +32,7 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import type { CalendarLayout, TableMetadata } from "#/lib/database-meta.types"
 import { isTableSchema } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   resolveResourceSchema,
   resourceDataQueryOptions,
@@ -59,7 +60,11 @@ export const Route = createFileRoute(
   loader: async ({ context, params }) => {
     const { schema, resource, calendarId } = params
 
-    const { resourceSchema, columnsSchema } = await resolveResourceSchema(context.queryClient, schema, resource)
+    const { resourceSchema, columnsSchema } = await resolveResourceSchema(
+      context.queryClient,
+      schema,
+      resource
+    )
     if (!resourceSchema) throw notFound()
 
     const meta = JSON.parse(resourceSchema.comment ?? "{}") as TableMetadata
@@ -76,7 +81,7 @@ export const Route = createFileRoute(
     return { calendarView, resourceSchema, columnsSchema }
   },
   head: ({ params }) => ({
-    meta: [{ title: `Calendar | ${formatTitle(params.resource)} | Supasheet` }],
+    meta: [{ title: pageTitle(`Calendar | ${formatTitle(params.resource)}`) }],
   }),
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()

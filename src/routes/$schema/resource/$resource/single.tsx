@@ -25,6 +25,7 @@ import {
 import { Skeleton } from "#/components/ui/skeleton"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import { formatTitle } from "#/lib/format"
+import { pageTitle } from "#/lib/page-title"
 import {
   columnsSchemaQueryOptions,
   resourceDataQueryOptions,
@@ -62,7 +63,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/single")({
         ) as TableMetadata)
       : {}
     const name = meta.name ?? formatTitle(params.resource)
-    return { meta: [{ title: `${name} | Supasheet` }] }
+    return { meta: [{ title: pageTitle(`${name}`) }] }
   },
   pendingComponent: () => {
     const { schema, resource } = Route.useParams()
