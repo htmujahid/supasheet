@@ -23,6 +23,7 @@ export default [
       "src/lib/database.types.ts",
       "src/components/ui/**",
       "src/routeTree.gen.ts",
+      "worker.js",
     ],
   },
 ]

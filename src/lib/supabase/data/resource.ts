@@ -34,7 +34,7 @@ export async function resolveResourceSchema(
   ])
 
   const viewSchema = !resolvedTableSchema
-    ? await queryClient.ensureQueryData(viewSchemaQueryOptions(schema, r as DatabaseViews<typeof schema>))
+    ? await queryClient.ensureQueryData(viewSchemaQueryOptions(schema, r))
     : null
 
   if (viewSchema) {
@@ -42,10 +42,10 @@ export async function resolveResourceSchema(
     if (viewMetadata.based_on) {
       const [tableSchema, resolvedColumnsSchema] = await Promise.all([
         queryClient.ensureQueryData(
-          tableSchemaQueryOptions(schema, viewMetadata.based_on as DatabaseTables<typeof schema>)
+          tableSchemaQueryOptions(schema, viewMetadata.based_on)
         ),
         queryClient.ensureQueryData(
-          columnsSchemaQueryOptions(schema, viewMetadata.based_on as DatabaseTables<typeof schema>)
+          columnsSchemaQueryOptions(schema, viewMetadata.based_on)
         ),
       ])
       if (tableSchema) {
@@ -58,7 +58,7 @@ export async function resolveResourceSchema(
             if (uniqueCol?.name) {
               resolvedPrimaryKeys = [{
                 name: uniqueCol.name,
-                schema: tableSchema.schema as string,
+                schema: tableSchema.schema,
                 table_id: tableSchema.id,
                 table_name: tableSchema.name,
               }]
