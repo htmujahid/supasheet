@@ -1,6 +1,6 @@
 import { createFileRoute, getRouteApi, notFound } from "@tanstack/react-router"
 
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
 
 import { classifyRelationships } from "#/components/resource/detail/classify-relationships"
 import { ResourceDetailTab } from "#/components/resource/detail/resource-detail-tab"
@@ -8,6 +8,7 @@ import { useHasPermission } from "#/hooks/use-permissions"
 import type { TableMetadata } from "#/lib/database-meta.types"
 import {
   relatedTablesSchemaQueryOptions,
+  resourcePrivilegesQueryOptions,
   singleForeignTableDataQueryOptions,
   singleResourceDataQueryOptions,
   tableSchemaQueryOptions,
@@ -101,10 +102,30 @@ function RouteComponent() {
     singleResourceDataQueryOptions(schema, resource, pk)
   )
 
-  const canUpdateOneToOne = useHasPermission(
+  const { authUser, privileges } = Route.useRouteContext()
+
+  const hasParentUpdatePermission = useHasPermission(
+    `${schema}.${resource}:update`
+  )
+  const parentUpdatePrivilege = !!privileges?.includes("update")
+  const canUpdateParent = authUser
+    ? hasParentUpdatePermission && parentUpdatePrivilege
+    : parentUpdatePrivilege
+
+  const hasOneToOneUpdatePermission = useHasPermission(
     oneToOne ? `${oneToOne.schema}.${oneToOne.name}:update` : undefined
   )
-  const canUpdateParent = useHasPermission(`${schema}.${resource}:update`)
+  const { data: oneToOnePrivileges } = useQuery({
+    ...resourcePrivilegesQueryOptions(
+      oneToOne?.schema ?? schema,
+      oneToOne?.name ?? resource
+    ),
+    enabled: !!oneToOne,
+  })
+  const oneToOneUpdatePrivilege = !!oneToOnePrivileges?.includes("update")
+  const canUpdateOneToOne = authUser
+    ? hasOneToOneUpdatePermission && oneToOneUpdatePrivilege
+    : oneToOneUpdatePrivilege
 
   return (
     <ResourceDetailTab

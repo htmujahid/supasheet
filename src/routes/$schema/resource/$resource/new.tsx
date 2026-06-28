@@ -64,12 +64,14 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
     }
   },
   beforeLoad: ({ context, params: { schema, resource } }) => {
-    if (
-      !context.permissions?.some(
-        (p) => p.permission === `${schema}.${resource}:insert`
-      )
+    const hasPermission = context.permissions?.some(
+      (p) => p.permission === `${schema}.${resource}:insert`
     )
-      throw notFound()
+    const hasPrivilege = context.privileges?.includes("insert")
+    const canInsert = context.authUser
+      ? hasPermission && hasPrivilege
+      : hasPrivilege
+    if (!canInsert) throw notFound()
   },
   loader: async ({ context, params: { schema, resource } }) => {
     let [tableSchema, columnsSchema] = await Promise.all([

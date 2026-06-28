@@ -1,7 +1,7 @@
 create schema if not exists supasheet;
 
 -- Initialize schema and extensions
-grant usage on schema supasheet to authenticated,
+grant usage on schema supasheet to anon, authenticated,
 service_role;
 
 ----------------------------------------------------------------

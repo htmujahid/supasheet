@@ -164,6 +164,28 @@ export const resourcesQueryOptions = (schema: DatabaseSchemas) =>
     staleTime: 1000 * 60 * 5,
   })
 
+export type ResourcePrivilege = "select" | "insert" | "update" | "delete"
+
+export const resourcePrivilegesQueryOptions = <S extends DatabaseSchemas>(
+  schema: S,
+  resource: DatabaseTables<S> | DatabaseViews<S>
+) =>
+  queryOptions({
+    queryKey: ["supasheet", "schema", "privileges", schema, resource],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("supasheet")
+        .rpc("get_privileges", {
+          schema_name: schema,
+          resource_name: resource,
+        })
+      if (error) throw error
+      const rows = (data as unknown as { privilege: string }[] | null) ?? []
+      return rows.map((d) => d.privilege as ResourcePrivilege)
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+
 export const columnsSchemaQueryOptions = <S extends DatabaseSchemas>(
   schema: S,
   id: DatabaseTables<S> | DatabaseViews<S>

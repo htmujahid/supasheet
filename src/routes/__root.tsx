@@ -38,8 +38,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       context.queryClient.ensureQueryData(appConfigQueryOptions()),
     ])
     if (!authUser && !location.pathname.startsWith("/auth")) {
-      window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(location.href)}`
-      await new Promise<never>(() => {})
+      const segment = location.pathname.split("/")[1] ?? ""
+      const isSchemaRoute =
+        segment !== "" && !["account", "core", "storage"].includes(segment)
+      if (!isSchemaRoute) {
+        window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(location.href)}`
+        await new Promise<never>(() => {})
+      }
     }
     const user = authUser
       ? await context.queryClient.ensureQueryData(userQueryOptions(authUser.id))

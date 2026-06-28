@@ -28,121 +28,266 @@ execute on FUNCTION supasheet.get_schemas () to authenticated;
 ----------------------------------------------------------------
 create or replace function supasheet.get_tables (
   schema_name text default null,
-  table_name text default null
+  table_name text default null,
+  action text default 'select'
 ) RETURNS SETOF supasheet.tables LANGUAGE sql SECURITY DEFINER
 set
   search_path = '' as $$
     SELECT
         t.*
     FROM supasheet.tables t
-    INNER JOIN supasheet.role_permissions rp
-        ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur
-        ON ur.role = rp.role
-    WHERE ur.user_id = (select auth.uid())
-        AND (table_name IS NULL OR t.name = table_name)
-        AND (schema_name IS NULL OR t.schema = schema_name);
+    WHERE (table_name IS NULL OR t.name = table_name)
+        AND (schema_name IS NULL OR t.schema = schema_name)
+        AND (
+            (
+                (select auth.uid()) IS NULL
+                AND has_table_privilege(
+                    'anon',
+                    format('%I.%I', t.schema, t.name),
+                    action
+                )
+            )
+            OR
+            (
+                (select auth.uid()) IS NOT NULL
+                AND has_table_privilege(
+                    'authenticated',
+                    format('%I.%I', t.schema, t.name),
+                    action
+                )
+                AND EXISTS (
+                    SELECT 1
+                    FROM supasheet.role_permissions rp
+                    INNER JOIN supasheet.user_roles ur
+                        ON ur.role = rp.role
+                    WHERE ur.user_id = (select auth.uid())
+                        AND rp.permission::text = t.schema || '.' || t.name || ':' || action
+                )
+            )
+        );
 $$;
 
-revoke all on FUNCTION supasheet.get_tables (text, text)
+revoke all on FUNCTION supasheet.get_tables (text, text, text)
 from
   anon,
   authenticated,
   service_role;
 
 grant
-execute on FUNCTION supasheet.get_tables (text, text) to authenticated;
+execute on FUNCTION supasheet.get_tables (text, text, text) to anon,
+authenticated;
 
 ----------------------------------------------------------------
 -- Function: supasheet.get_views
 ----------------------------------------------------------------
 create or replace function supasheet.get_views (
   schema_name text default null,
-  view_name text default null
+  view_name text default null,
+  action text default 'select'
 ) RETURNS SETOF supasheet.views LANGUAGE sql SECURITY DEFINER
 set
   search_path = '' as $$
     SELECT
         t.*
     FROM supasheet.views t
-    INNER JOIN supasheet.role_permissions rp
-        ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur
-        ON ur.role = rp.role
-    WHERE ur.user_id = (select auth.uid())
-        AND (view_name IS NULL OR t.name = view_name)
-        AND (schema_name IS NULL OR t.schema = schema_name);
+    WHERE (view_name IS NULL OR t.name = view_name)
+        AND (schema_name IS NULL OR t.schema = schema_name)
+        AND (
+            (
+                (select auth.uid()) IS NULL
+                AND has_table_privilege(
+                    'anon',
+                    format('%I.%I', t.schema, t.name),
+                    action
+                )
+            )
+            OR
+            (
+                (select auth.uid()) IS NOT NULL
+                AND has_table_privilege(
+                    'authenticated',
+                    format('%I.%I', t.schema, t.name),
+                    action
+                )
+                AND EXISTS (
+                    SELECT 1
+                    FROM supasheet.role_permissions rp
+                    INNER JOIN supasheet.user_roles ur
+                        ON ur.role = rp.role
+                    WHERE ur.user_id = (select auth.uid())
+                        AND rp.permission::text = t.schema || '.' || t.name || ':' || action
+                )
+            )
+        );
 $$;
 
-revoke all on FUNCTION supasheet.get_views (text, text)
+revoke all on FUNCTION supasheet.get_views (text, text, text)
 from
   anon,
   authenticated,
   service_role;
 
 grant
-execute on FUNCTION supasheet.get_views (text, text) to authenticated;
+execute on FUNCTION supasheet.get_views (text, text, text) to anon,
+authenticated;
 
 ----------------------------------------------------------------
 -- Function: supasheet.get_materialized_views
 ----------------------------------------------------------------
 create or replace function supasheet.get_materialized_views (
   schema_name text default null,
-  view_name text default null
+  view_name text default null,
+  action text default 'select'
 ) RETURNS SETOF supasheet.materialized_views LANGUAGE sql SECURITY DEFINER
 set
   search_path = '' as $$
     SELECT
         t.*
     FROM supasheet.materialized_views t
-    INNER JOIN supasheet.role_permissions rp
-        ON rp.permission::text = t.schema || '.' || t.name || ':select'
-    INNER JOIN supasheet.user_roles ur
-        ON ur.role = rp.role
-    WHERE ur.user_id = (select auth.uid())
-        AND (view_name IS NULL OR t.name = view_name)
-        AND (schema_name IS NULL OR t.schema = schema_name);
+    WHERE (view_name IS NULL OR t.name = view_name)
+        AND (schema_name IS NULL OR t.schema = schema_name)
+        AND (
+            (
+                (select auth.uid()) IS NULL
+                AND has_table_privilege(
+                    'anon',
+                    format('%I.%I', t.schema, t.name),
+                    action
+                )
+            )
+            OR
+            (
+                (select auth.uid()) IS NOT NULL
+                AND has_table_privilege(
+                    'authenticated',
+                    format('%I.%I', t.schema, t.name),
+                    action
+                )
+                AND EXISTS (
+                    SELECT 1
+                    FROM supasheet.role_permissions rp
+                    INNER JOIN supasheet.user_roles ur
+                        ON ur.role = rp.role
+                    WHERE ur.user_id = (select auth.uid())
+                        AND rp.permission::text = t.schema || '.' || t.name || ':' || action
+                )
+            )
+        );
 $$;
 
-revoke all on FUNCTION supasheet.get_materialized_views (text, text)
+revoke all on FUNCTION supasheet.get_materialized_views (text, text, text)
 from
   anon,
   authenticated,
   service_role;
 
 grant
-execute on FUNCTION supasheet.get_materialized_views (text, text) to authenticated;
+execute on FUNCTION supasheet.get_materialized_views (text, text, text) to anon,
+authenticated;
 
 ----------------------------------------------------------------
 -- Function: supasheet.get_columns
 ----------------------------------------------------------------
 create or replace function supasheet.get_columns (
   schema_name text default null,
-  table_name text default null
+  table_name text default null,
+  action text default 'select'
 ) RETURNS SETOF supasheet.columns LANGUAGE sql SECURITY DEFINER
 set
   search_path = '' as $$
     SELECT
         t.*
     FROM supasheet.columns t
-    INNER JOIN supasheet.role_permissions rp
-        ON rp.permission::text = t.schema || '.' || t.table || ':select'
-    INNER JOIN supasheet.user_roles ur
-        ON ur.role = rp.role
-    WHERE ur.user_id = (select auth.uid())
-        AND (table_name IS NULL OR t.table = table_name)
+    WHERE (table_name IS NULL OR t.table = table_name)
         AND (schema_name IS NULL OR t.schema = schema_name)
+        AND (
+            (
+                (select auth.uid()) IS NULL
+                AND CASE
+                    WHEN lower(action) = 'delete'
+                        THEN has_table_privilege('anon', t.table_id::oid, action)
+                    ELSE has_column_privilege('anon', t.table_id::oid, t.name, action)
+                END
+            )
+            OR
+            (
+                (select auth.uid()) IS NOT NULL
+                AND CASE
+                    WHEN lower(action) = 'delete'
+                        THEN has_table_privilege('authenticated', t.table_id::oid, action)
+                    ELSE has_column_privilege('authenticated', t.table_id::oid, t.name, action)
+                END
+                AND EXISTS (
+                    SELECT 1
+                    FROM supasheet.role_permissions rp
+                    INNER JOIN supasheet.user_roles ur
+                        ON ur.role = rp.role
+                    WHERE ur.user_id = (select auth.uid())
+                        AND rp.permission::text = t.schema || '.' || t.table || ':' || action
+                )
+            )
+        )
     ORDER BY (t.ordinal_position::int);
 $$;
 
-revoke all on FUNCTION supasheet.get_columns (text, text)
+revoke all on FUNCTION supasheet.get_columns (text, text, text)
 from
   anon,
   authenticated,
   service_role;
 
 grant
-execute on FUNCTION supasheet.get_columns (text, text) to authenticated;
+execute on FUNCTION supasheet.get_columns (text, text, text) to anon,
+authenticated;
+
+----------------------------------------------------------------
+-- Function: supasheet.get_privileges
+----------------------------------------------------------------
+-- Returns the CRUD privileges (select/insert/update/delete) the caller
+-- effectively holds on a table/view. The role is derived from the session:
+-- `anon` when unauthenticated, `authenticated` otherwise. For authenticated
+-- callers the postgres grant must be matched by an app permission in
+-- role_permissions (same rule as get_tables); anon relies on the grant alone.
+create or replace function supasheet.get_privileges (
+  schema_name text,
+  resource_name text
+) RETURNS table (privilege text) LANGUAGE sql SECURITY DEFINER
+set
+  search_path = '' as $$
+    WITH effective AS (
+        SELECT
+            CASE WHEN (select auth.uid()) IS NULL THEN 'anon' ELSE 'authenticated' END AS role
+    )
+    SELECT act.action AS privilege
+    FROM effective e
+    CROSS JOIN (VALUES ('select'), ('insert'), ('update'), ('delete')) AS act(action)
+    WHERE has_table_privilege(
+            e.role,
+            format('%I.%I', schema_name, resource_name),
+            act.action
+        )
+        AND (
+            e.role <> 'authenticated'
+            OR EXISTS (
+                SELECT 1
+                FROM supasheet.role_permissions rp
+                INNER JOIN supasheet.user_roles ur
+                    ON ur.role = rp.role
+                WHERE ur.user_id = (select auth.uid())
+                    AND rp.permission::text = schema_name || '.' || resource_name || ':' || act.action
+            )
+        );
+$$;
+
+revoke all on FUNCTION supasheet.get_privileges (text, text)
+from
+  anon,
+  authenticated,
+  service_role;
+
+grant
+execute on FUNCTION supasheet.get_privileges (text, text) to anon,
+authenticated;
 
 ----------------------------------------------------------------
 -- Function: supasheet.get_related_tables

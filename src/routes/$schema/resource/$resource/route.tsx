@@ -7,6 +7,7 @@ import type {
   DatabaseTables,
   DatabaseViews,
 } from "#/lib/database-meta.types"
+import { resourcePrivilegesQueryOptions } from "#/lib/supabase/data/resource"
 
 export const Route = createFileRoute("/$schema/resource/$resource")({
   params: z.object({
@@ -15,6 +16,12 @@ export const Route = createFileRoute("/$schema/resource/$resource")({
       DatabaseTables<DatabaseSchemas> | DatabaseViews<DatabaseSchemas>
     >(),
   }),
+  beforeLoad: async ({ context, params: { schema, resource } }) => {
+    const privileges = await context.queryClient.ensureQueryData(
+      resourcePrivilegesQueryOptions(schema, resource)
+    )
+    return { privileges }
+  },
   component: RouteComponent,
 })
 

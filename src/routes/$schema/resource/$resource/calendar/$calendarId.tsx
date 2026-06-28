@@ -42,12 +42,14 @@ export const Route = createFileRoute(
   "/$schema/resource/$resource/calendar/$calendarId"
 )({
   beforeLoad: ({ context, params: { schema, resource } }) => {
-    if (
-      !context.permissions?.some(
-        (p) => p.permission === `${schema}.${resource}:select`
-      )
+    const hasPermission = context.permissions?.some(
+      (p) => p.permission === `${schema}.${resource}:select`
     )
-      throw notFound()
+    const hasPrivilege = context.privileges?.includes("select")
+    const canSelect = context.authUser
+      ? hasPermission && hasPrivilege
+      : hasPrivilege
+    if (!canSelect) throw notFound()
   },
   validateSearch: (search: { view?: string }) => ({
     view: (["month", "week", "day", "year", "agenda"].includes(
@@ -266,7 +268,7 @@ function RouteComponent() {
           <ResourceActions
             schema={schema}
             resource={resource}
-            columnsSchema={columnsSchema}
+            columnsSchema={columnsSchema ?? []}
             tableSchema={resourceSchema}
           />
         )}

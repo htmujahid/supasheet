@@ -44,7 +44,12 @@ function RouteComponent() {
     singleResourceDataQueryOptions(schema, resource, pk)
   )
 
-  const canUpdate = useHasPermission(`${schema}.${resource}:update`)
+  const { authUser, privileges } = Route.useRouteContext()
+  const hasUpdatePermission = useHasPermission(`${schema}.${resource}:update`)
+  const hasUpdatePrivilege = !!privileges?.includes("update")
+  const canUpdate = authUser
+    ? hasUpdatePermission && hasUpdatePrivilege
+    : hasUpdatePrivilege
 
   if (!record) return null
 

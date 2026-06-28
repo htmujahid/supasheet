@@ -672,7 +672,7 @@ export type Database = {
         }[]
       }
       get_columns: {
-        Args: { schema_name?: string; table_name?: string }
+        Args: { schema_name?: string; table_name?: string; action?: string }
         Returns: {
           actual_type: string | null
           check: string | null
@@ -718,7 +718,7 @@ export type Database = {
         }[]
       }
       get_materialized_views: {
-        Args: { schema_name?: string; view_name?: string }
+        Args: { schema_name?: string; view_name?: string; action?: string }
         Returns: {
           comment: string | null
           id: number
@@ -737,6 +737,15 @@ export type Database = {
         Args: { schema_name?: string }
         Returns: {
           permission: Database["supasheet"]["Enums"]["app_permission"]
+        }[]
+      }
+      get_privileges: {
+        Args: {
+          schema_name: string
+          resource_name: string
+        }
+        Returns: {
+          privilege: string
         }[]
       }
       get_related_tables: {
@@ -776,7 +785,7 @@ export type Database = {
       }
       get_storage_filename_as_uuid: { Args: { name: string }; Returns: string }
       get_tables: {
-        Args: { schema_name?: string; table_name?: string }
+        Args: { schema_name?: string; table_name?: string; action?: string }
         Returns: {
           bytes: number | null
           comment: string | null
@@ -818,7 +827,7 @@ export type Database = {
         Returns: string[]
       }
       get_views: {
-        Args: { schema_name?: string; view_name?: string }
+        Args: { schema_name?: string; view_name?: string; action?: string }
         Returns: {
           comment: string | null
           id: number

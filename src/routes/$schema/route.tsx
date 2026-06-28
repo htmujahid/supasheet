@@ -61,7 +61,7 @@ export const Route = createFileRoute("/$schema")({
           userPermissionsQueryOptions(params.schema)
         )
       : null
-    if (!permissions?.length) throw notFound()
+    if (context.authUser && !permissions?.length) throw notFound()
     return { permissions }
   },
   loader: async ({ context, params }) => {
@@ -136,19 +136,24 @@ const NAV_TYPE_CONFIG: Record<
 
 function RouteComponent() {
   const params = Route.useParams()
-  const { data: schemas = [], isLoading: schemasLoading } =
-    useQuery(schemasQueryOptions)
+  const { authUser } = Route.useRouteContext()
+  const { data: schemas = [], isLoading: schemasLoading } = useQuery({
+    ...schemasQueryOptions,
+    enabled: !!authUser,
+  })
   const modules = schemas.map((s) => ({
     name: formatTitle(s.schema),
     icon: <DatabaseIcon />,
     url: `/${s.schema}`,
   }))
-  const { data: resources = [], isLoading: resourcesLoading } = useQuery(
-    resourcesQueryOptions(params.schema)
-  )
-  const { data: navItemGroups = [] } = useQuery(
-    navItemsQueryOptions(params.schema)
-  )
+  const { data: resources = [], isLoading: resourcesLoading } = useQuery({
+    ...resourcesQueryOptions(params.schema),
+    enabled: !!authUser,
+  })
+  const { data: navItemGroups = [] } = useQuery({
+    ...navItemsQueryOptions(params.schema),
+    enabled: !!authUser,
+  })
   const activeTypes = new Set(
     navItemGroups.filter((g) => g.count > 0).map((g) => g.type)
   )
@@ -169,38 +174,40 @@ function RouteComponent() {
       }
       className="h-svh overflow-hidden"
     >
-      <Sidebar collapsible="offcanvas" variant="inset">
-        <SidebarHeader>
-          <div className="flex items-center gap-1">
-            <div className="min-w-0 flex-1">
-              <ModuleSwitcher modules={modules} isLoading={schemasLoading} />
+      {authUser && (
+        <Sidebar collapsible="offcanvas" variant="inset">
+          <SidebarHeader>
+            <div className="flex items-center gap-1">
+              <div className="min-w-0 flex-1">
+                <ModuleSwitcher modules={modules} isLoading={schemasLoading} />
+              </div>
             </div>
-          </div>
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain
-            schema={params.schema}
-            items={navMain}
-            resourceItems={resources.map((r) => ({
-              ...r,
-              url: `/${params.schema}/resource/${r.id}`,
-            }))}
-          />
-          <NavResources
-            schema={params.schema + "/resource"}
-            items={resources}
-            isLoading={resourcesLoading}
-          />
-        </SidebarContent>
-        <SidebarFooter>
-          <NavSecondary
-            items={[
-              { title: "Storage", url: "/storage", icon: <FolderIcon /> },
-            ]}
-          />
-          <NavUser />
-        </SidebarFooter>
-      </Sidebar>
+          </SidebarHeader>
+          <SidebarContent>
+            <NavMain
+              schema={params.schema}
+              items={navMain}
+              resourceItems={resources.map((r) => ({
+                ...r,
+                url: `/${params.schema}/resource/${r.id}`,
+              }))}
+            />
+            <NavResources
+              schema={params.schema + "/resource"}
+              items={resources}
+              isLoading={resourcesLoading}
+            />
+          </SidebarContent>
+          <SidebarFooter>
+            <NavSecondary
+              items={[
+                { title: "Storage", url: "/storage", icon: <FolderIcon /> },
+              ]}
+            />
+            <NavUser />
+          </SidebarFooter>
+        </Sidebar>
+      )}
       <SidebarInset className="overflow-hidden">
         <div className="flex flex-1 flex-col overflow-auto">
           <Outlet />
