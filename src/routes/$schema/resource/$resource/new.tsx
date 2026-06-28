@@ -122,7 +122,7 @@ export const Route = createFileRoute("/$schema/resource/$resource/new")({
             primaryKeys = [
               {
                 name: uniqueCol.name,
-                schema: tableSchema.schema as string,
+                schema: tableSchema.schema,
                 table_id: tableSchema.id,
                 table_name: tableSchema.name,
               },
