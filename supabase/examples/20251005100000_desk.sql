@@ -724,9 +724,6 @@ comment on table desk.tasks is '{
                 ]
             }
         ]
-    },
-    "history": {
-        "table": "tasks_history"
     }
 }';
 

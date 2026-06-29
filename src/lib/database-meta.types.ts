@@ -211,10 +211,6 @@ export type FilterPreset = {
   filters: FilterRule[]
 }
 
-export type HistoryMetadata = {
-  table: DatabaseTables<DatabaseSchemas>
-}
-
 // Valid for both tables and views
 export type FieldsConfig = {
   sections?: FieldSection[]
@@ -246,7 +242,6 @@ export type TableMetadata = BaseResourceMetadata & {
   inline_form?: boolean
   query?: QueryConfig
   tabs?: string[]
-  history?: HistoryMetadata
   fields?: TableFieldsConfig
 }
 
