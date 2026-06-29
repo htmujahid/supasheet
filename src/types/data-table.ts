@@ -1,11 +1,11 @@
 import type { RowData } from "@tanstack/react-table"
 
-import type { DataTableConfig } from "#/config/data-table"
+import type { FiltersConfig } from "#/config/filters.config"
 
 import type { ColumnFieldMetadata } from "./fields"
 
-export type FilterVariant = DataTableConfig["filterVariants"][number]
-export type FilterOperator = DataTableConfig["operators"][number]
+export type FilterVariant = FiltersConfig["filterVariants"][number]
+export type FilterOperator = FiltersConfig["operators"][number]
 
 export type ColumnMeta = {
   label: string

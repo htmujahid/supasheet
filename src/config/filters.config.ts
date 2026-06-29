@@ -1,6 +1,6 @@
-export type DataTableConfig = typeof dataTableConfig
+export type FiltersConfig = typeof filtersConfig
 
-export const dataTableConfig = {
+export const filtersConfig = {
   textOperators: [
     { label: "Contains", value: "ilike" as const },
     { label: "Does not contain", value: "not.ilike" as const },
@@ -77,8 +77,6 @@ export const dataTableConfig = {
     "ilike",
     "is",
     "in",
-    "contains",
-    "overlaps",
     "not.ilike",
     "not.is",
     "not.in",

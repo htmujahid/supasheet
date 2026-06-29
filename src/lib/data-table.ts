@@ -1,29 +1,29 @@
-import { dataTableConfig } from "#/config/data-table"
+import { filtersConfig } from "#/config/filters.config"
 import type { FilterOperator, FilterVariant } from "#/types/data-table"
 
 export function getFilterOperators(variant: FilterVariant) {
   switch (variant) {
     case "text":
-      return dataTableConfig.textOperators
+      return filtersConfig.textOperators
     case "number":
     case "range":
-      return dataTableConfig.numericOperators
+      return filtersConfig.numericOperators
     case "date":
     case "time":
     case "timetz":
     case "timestamp":
     case "timestamptz":
-      return dataTableConfig.dateOperators
+      return filtersConfig.dateOperators
     case "select":
-      return dataTableConfig.selectOperators
+      return filtersConfig.selectOperators
     case "multiSelect":
-      return dataTableConfig.multiSelectOperators
+      return filtersConfig.multiSelectOperators
     case "boolean":
-      return dataTableConfig.booleanOperators
+      return filtersConfig.booleanOperators
     case "uuid":
-      return dataTableConfig.uuidOperators
+      return filtersConfig.uuidOperators
     default:
-      return dataTableConfig.textOperators
+      return filtersConfig.textOperators
   }
 }
 
