@@ -226,7 +226,6 @@ comment on table desk.projects is '{
                 {
                     "id": "status",
                     "value": "active",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -238,7 +237,6 @@ comment on table desk.projects is '{
                 {
                     "id": "status",
                     "value": "on_hold",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -253,7 +251,6 @@ comment on table desk.projects is '{
                         "critical",
                         "high"
                     ],
-                    "variant": "multiSelect",
                     "operator": "in"
                 }
             ]
@@ -265,7 +262,6 @@ comment on table desk.projects is '{
                 {
                     "id": "status",
                     "value": "completed",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -520,7 +516,6 @@ comment on table desk.tasks is '{
                 {
                     "id": "status",
                     "value": "in_progress",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -532,7 +527,6 @@ comment on table desk.tasks is '{
                 {
                     "id": "status",
                     "value": "pending",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -544,7 +538,6 @@ comment on table desk.tasks is '{
                 {
                     "id": "status",
                     "value": "completed",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -559,7 +552,6 @@ comment on table desk.tasks is '{
                         "pending",
                         "in_progress"
                     ],
-                    "variant": "multiSelect",
                     "operator": "in"
                 }
             ]
@@ -574,7 +566,6 @@ comment on table desk.tasks is '{
                         "critical",
                         "high"
                     ],
-                    "variant": "multiSelect",
                     "operator": "in"
                 }
             ]
@@ -2161,7 +2152,6 @@ comment on table desk.timesheets is '{
                 {
                     "id": "status",
                     "value": "draft",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -2173,7 +2163,6 @@ comment on table desk.timesheets is '{
                 {
                     "id": "status",
                     "value": "submitted",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -2185,7 +2174,6 @@ comment on table desk.timesheets is '{
                 {
                     "id": "status",
                     "value": "approved",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]
@@ -2197,7 +2185,6 @@ comment on table desk.timesheets is '{
                 {
                     "id": "status",
                     "value": "rejected",
-                    "variant": "select",
                     "operator": "eq"
                 }
             ]

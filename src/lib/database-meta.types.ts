@@ -126,7 +126,6 @@ export type FieldSection = {
 export type FilterRule = {
   id: string
   value: string | string[]
-  variant: string
   operator: string
 }
 
