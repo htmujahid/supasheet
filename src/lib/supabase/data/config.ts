@@ -33,7 +33,7 @@ export const appConfigQueryOptions = () =>
         name: asString(byKey.get("app.name"), DEFAULT_APP_CONFIG.name),
         description: asString(
           byKey.get("app.description"),
-          DEFAULT_APP_CONFIG.description,
+          DEFAULT_APP_CONFIG.description
         ),
       }
     },

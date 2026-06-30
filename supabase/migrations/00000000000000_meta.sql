@@ -1,67 +1,73 @@
 create schema if not exists supasheet;
 
 -- Initialize schema and extensions
-grant usage on schema supasheet to anon, authenticated,
+grant usage on schema supasheet to anon,
+authenticated,
 service_role;
 
 ----------------------------------------------------------------
 -- Materialized View: supasheet.tables
 ----------------------------------------------------------------
 create materialized view if not exists supasheet.tables as
-SELECT
-  c.oid :: int8 AS id,
-  nc.nspname AS schema,
-  c.relname AS name,
-  c.relrowsecurity AS rls_enabled,
-  c.relforcerowsecurity AS rls_forced,
-  CASE
-    WHEN c.relreplident = 'd' THEN 'DEFAULT'
-    WHEN c.relreplident = 'i' THEN 'INDEX'
-    WHEN c.relreplident = 'f' THEN 'FULL'
-    ELSE 'NOTHING'
-  END AS replica_identity,
-  pg_total_relation_size(format('%I.%I', nc.nspname, c.relname)) :: int8 AS bytes,
+select
+  c.oid::int8 as id,
+  nc.nspname as schema,
+  c.relname as name,
+  c.relrowsecurity as rls_enabled,
+  c.relforcerowsecurity as rls_forced,
+  case
+    when c.relreplident = 'd' then 'DEFAULT'
+    when c.relreplident = 'i' then 'INDEX'
+    when c.relreplident = 'f' then 'FULL'
+    else 'NOTHING'
+  end as replica_identity,
+  pg_total_relation_size(format('%I.%I', nc.nspname, c.relname))::int8 as bytes,
   pg_size_pretty(
     pg_total_relation_size(format('%I.%I', nc.nspname, c.relname))
-  ) AS size,
-  pg_stat_get_live_tuples(c.oid) AS live_rows_estimate,
-  pg_stat_get_dead_tuples(c.oid) AS dead_rows_estimate,
-  obj_description(c.oid) AS comment,
+  ) as size,
+  pg_stat_get_live_tuples (c.oid) as live_rows_estimate,
+  pg_stat_get_dead_tuples (c.oid) as dead_rows_estimate,
+  obj_description(c.oid) as comment,
   coalesce(pk.primary_keys, '[]') as primary_keys,
   coalesce(
-    jsonb_agg(relationships) filter (where relationships is not null),
+    jsonb_agg(relationships) filter (
+      where
+        relationships is not null
+    ),
     '[]'
   ) as relationships
-FROM
+from
   pg_namespace nc
-  JOIN pg_class c ON nc.oid = c.relnamespace
+  join pg_class c on nc.oid = c.relnamespace
   left join (
     select
       table_id,
       jsonb_agg(_pk.*) as primary_keys
-    from (
-      select
-        n.nspname as schema,
-        c.relname as table_name,
-        a.attname as name,
-        c.oid :: int8 as table_id
-      from
-        pg_index i,
-        pg_class c,
-        pg_attribute a,
-        pg_namespace n
-      where
-        i.indrelid = c.oid
-        and c.relnamespace = n.oid
-        and a.attrelid = c.oid
-        and a.attnum = any (i.indkey)
-        and i.indisprimary
-    ) as _pk
-    group by table_id
+    from
+      (
+        select
+          n.nspname as schema,
+          c.relname as table_name,
+          a.attname as name,
+          c.oid::int8 as table_id
+        from
+          pg_index i,
+          pg_class c,
+          pg_attribute a,
+          pg_namespace n
+        where
+          i.indrelid = c.oid
+          and c.relnamespace = n.oid
+          and a.attrelid = c.oid
+          and a.attnum = any (i.indkey)
+          and i.indisprimary
+      ) as _pk
+    group by
+      table_id
   ) as pk on pk.table_id = c.oid
   left join (
     select
-      c.oid :: int8 as id,
+      c.oid::int8 as id,
       c.conname as constraint_name,
       nsa.nspname as source_schema,
       csa.relname as source_table_name,
@@ -71,34 +77,52 @@ FROM
       ta.attname as target_column_name
     from
       pg_constraint c
-    join (
-      pg_attribute sa
-      join pg_class csa on sa.attrelid = csa.oid
-      join pg_namespace nsa on csa.relnamespace = nsa.oid
-    ) on sa.attrelid = c.conrelid and sa.attnum = any (c.conkey)
-    join (
-      pg_attribute ta
-      join pg_class cta on ta.attrelid = cta.oid
-      join pg_namespace nta on cta.relnamespace = nta.oid
-    ) on ta.attrelid = c.confrelid and ta.attnum = any (c.confkey)
-    where c.contype = 'f'
-  ) as relationships
-  on (relationships.source_schema = nc.nspname and relationships.source_table_name = c.relname)
-  or (relationships.target_table_schema = nc.nspname and relationships.target_table_name = c.relname)
-WHERE
-  c.relkind IN ('r', 'p')
-  AND NOT pg_is_other_temp_schema(nc.oid)
-  AND nc.nspname NOT IN (
-    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
-    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+      join (
+        pg_attribute sa
+        join pg_class csa on sa.attrelid = csa.oid
+        join pg_namespace nsa on csa.relnamespace = nsa.oid
+      ) on sa.attrelid = c.conrelid
+      and sa.attnum = any (c.conkey)
+      join (
+        pg_attribute ta
+        join pg_class cta on ta.attrelid = cta.oid
+        join pg_namespace nta on cta.relnamespace = nta.oid
+      ) on ta.attrelid = c.confrelid
+      and ta.attnum = any (c.confkey)
+    where
+      c.contype = 'f'
+  ) as relationships on (
+    relationships.source_schema = nc.nspname
+    and relationships.source_table_name = c.relname
   )
-  AND (
+  or (
+    relationships.target_table_schema = nc.nspname
+    and relationships.target_table_name = c.relname
+  )
+where
+  c.relkind in ('r', 'p')
+  and not pg_is_other_temp_schema(nc.oid)
+  and nc.nspname not in (
+    'vault',
+    'supabase_migrations',
+    'pg_catalog',
+    'realtime',
+    'supasheet',
+    'storage',
+    'supabase_functions',
+    '_realtime',
+    'information_schema',
+    'net',
+    'auth',
+    'extensions'
+  )
+  and (
     pg_has_role(c.relowner, 'USAGE')
-    OR has_table_privilege(
+    or has_table_privilege(
       c.oid,
       'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'
     )
-    OR has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
+    or has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
   )
 group by
   c.oid,
@@ -108,8 +132,10 @@ group by
   c.relreplident,
   nc.nspname,
   pk.primary_keys
-ORDER BY c.oid
-with no data;
+order by
+  c.oid
+with
+  no data;
 
 revoke all on supasheet.tables
 from
@@ -119,8 +145,11 @@ from
   service_role;
 
 create unique index on supasheet.tables (id);
+
 create unique index on supasheet.tables (schema, name);
+
 create index on supasheet.tables (schema);
+
 create index on supasheet.tables (name);
 
 ----------------------------------------------------------------
@@ -128,123 +157,148 @@ create index on supasheet.tables (name);
 ----------------------------------------------------------------
 create materialized view if not exists supasheet.columns as
 -- Adapted from information_schema.columns
-SELECT
-  c.oid :: int8 AS table_id,
-  nc.nspname AS schema,
-  c.relname AS "table",
-  (c.oid || '.' || a.attnum) AS id,
-  a.attnum AS ordinal_position,
-  a.attname AS "name",
-  CASE
-    WHEN a.atthasdef THEN pg_get_expr(ad.adbin, ad.adrelid)
-    ELSE NULL
-  END AS default_value,
-  CASE
-    WHEN t.typtype = 'd' THEN CASE
-      WHEN bt.typelem <> 0 :: oid
-      AND bt.typlen = -1 THEN 'ARRAY'
-      WHEN nbt.nspname = 'pg_catalog' THEN format_type(t.typbasetype, NULL)
-      ELSE 'USER-DEFINED'
-    END
-    ELSE CASE
-      WHEN t.typelem <> 0 :: oid
-      AND t.typlen = -1 THEN 'ARRAY'
-      WHEN nt.nspname = 'pg_catalog' THEN format_type(a.atttypid, NULL)
-      ELSE 'USER-DEFINED'
-    END
-  END AS data_type,
+select
+  c.oid::int8 as table_id,
+  nc.nspname as schema,
+  c.relname as "table",
+  (c.oid || '.' || a.attnum) as id,
+  a.attnum as ordinal_position,
+  a.attname as "name",
+  case
+    when a.atthasdef then pg_get_expr(ad.adbin, ad.adrelid)
+    else null
+  end as default_value,
+  case
+    when t.typtype = 'd' then case
+      when bt.typelem <> 0::oid
+      and bt.typlen = -1 then 'ARRAY'
+      when nbt.nspname = 'pg_catalog' then format_type(t.typbasetype, null)
+      else 'USER-DEFINED'
+    end
+    else case
+      when t.typelem <> 0::oid
+      and t.typlen = -1 then 'ARRAY'
+      when nt.nspname = 'pg_catalog' then format_type(a.atttypid, null)
+      else 'USER-DEFINED'
+    end
+  end as data_type,
   t.typname as actual_type,
-  COALESCE(bt.typname, t.typname) AS format,
-  COALESCE(nbt.nspname, nt.nspname) AS format_schema,
-  a.attidentity IN ('a', 'd') AS is_identity,
-  CASE
-    a.attidentity
-    WHEN 'a' THEN 'ALWAYS'
-    WHEN 'd' THEN 'BY DEFAULT'
-    ELSE NULL
-  END AS identity_generation,
-  a.attgenerated IN ('s') AS is_generated,
-  NOT (
+  COALESCE(bt.typname, t.typname) as format,
+  COALESCE(nbt.nspname, nt.nspname) as format_schema,
+  a.attidentity in ('a', 'd') as is_identity,
+  case a.attidentity
+    when 'a' then 'ALWAYS'
+    when 'd' then 'BY DEFAULT'
+    else null
+  end as identity_generation,
+  a.attgenerated in ('s') as is_generated,
+  not (
     a.attnotnull
-    OR t.typtype = 'd' AND t.typnotnull
-  ) AS is_nullable,
+    or t.typtype = 'd'
+    and t.typnotnull
+  ) as is_nullable,
   (
-    c.relkind IN ('r', 'p')
-    OR c.relkind IN ('v', 'f') AND pg_column_is_updatable(c.oid, a.attnum, FALSE)
-  ) AS is_updatable,
-  uniques.table_id IS NOT NULL AS is_unique,
-  check_constraints.definition AS "check",
+    c.relkind in ('r', 'p')
+    or c.relkind in ('v', 'f')
+    and pg_column_is_updatable (c.oid, a.attnum, false)
+  ) as is_updatable,
+  uniques.table_id is not null as is_unique,
+  check_constraints.definition as "check",
   array_to_json(
     array(
-      SELECT
+      select
         enumlabel
-      FROM
+      from
         pg_catalog.pg_enum enums
-      WHERE
+      where
         enums.enumtypid = coalesce(bt.oid, t.oid)
-        OR enums.enumtypid = coalesce(bt.typelem, t.typelem)
-      ORDER BY
+        or enums.enumtypid = coalesce(bt.typelem, t.typelem)
+      order by
         enums.enumsortorder
     )
-  ) AS enums,
-  col_description(c.oid, a.attnum) AS "comment"
-FROM
+  ) as enums,
+  col_description(c.oid, a.attnum) as "comment"
+from
   pg_attribute a
-  LEFT JOIN pg_attrdef ad ON a.attrelid = ad.adrelid
-  AND a.attnum = ad.adnum
-  JOIN (
+  left join pg_attrdef ad on a.attrelid = ad.adrelid
+  and a.attnum = ad.adnum
+  join (
     pg_class c
-    JOIN pg_namespace nc ON c.relnamespace = nc.oid
-  ) ON a.attrelid = c.oid
-  JOIN (
+    join pg_namespace nc on c.relnamespace = nc.oid
+  ) on a.attrelid = c.oid
+  join (
     pg_type t
-    JOIN pg_namespace nt ON t.typnamespace = nt.oid
-  ) ON a.atttypid = t.oid
-  LEFT JOIN (
+    join pg_namespace nt on t.typnamespace = nt.oid
+  ) on a.atttypid = t.oid
+  left join (
     pg_type bt
-    JOIN pg_namespace nbt ON bt.typnamespace = nbt.oid
-  ) ON t.typtype = 'd'
-  AND t.typbasetype = bt.oid
-  LEFT JOIN (
-    SELECT DISTINCT ON (table_id, ordinal_position)
-      conrelid AS table_id,
-      conkey[1] AS ordinal_position
-    FROM pg_catalog.pg_constraint
-    WHERE contype = 'u' AND cardinality(conkey) = 1
-  ) AS uniques ON uniques.table_id = c.oid AND uniques.ordinal_position = a.attnum
-  LEFT JOIN (
+    join pg_namespace nbt on bt.typnamespace = nbt.oid
+  ) on t.typtype = 'd'
+  and t.typbasetype = bt.oid
+  left join (
+    select distinct
+      on (table_id, ordinal_position) conrelid as table_id,
+      conkey[1] as ordinal_position
+    from
+      pg_catalog.pg_constraint
+    where
+      contype = 'u'
+      and cardinality(conkey) = 1
+  ) as uniques on uniques.table_id = c.oid
+  and uniques.ordinal_position = a.attnum
+  left join (
     -- We only select the first column check
-    SELECT DISTINCT ON (table_id, ordinal_position)
-      conrelid AS table_id,
-      conkey[1] AS ordinal_position,
+    select distinct
+      on (table_id, ordinal_position) conrelid as table_id,
+      conkey[1] as ordinal_position,
       substring(
         pg_get_constraintdef(pg_constraint.oid, true),
         8,
         length(pg_get_constraintdef(pg_constraint.oid, true)) - 8
-      ) AS "definition"
-    FROM pg_constraint
-    WHERE contype = 'c' AND cardinality(conkey) = 1
-    ORDER BY table_id, ordinal_position, oid asc
-  ) AS check_constraints ON check_constraints.table_id = c.oid AND check_constraints.ordinal_position = a.attnum
-WHERE
-  NOT pg_is_other_temp_schema(nc.oid)
-  AND nc.nspname NOT IN (
-    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
-    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+      ) as "definition"
+    from
+      pg_constraint
+    where
+      contype = 'c'
+      and cardinality(conkey) = 1
+    order by
+      table_id,
+      ordinal_position,
+      oid asc
+  ) as check_constraints on check_constraints.table_id = c.oid
+  and check_constraints.ordinal_position = a.attnum
+where
+  not pg_is_other_temp_schema(nc.oid)
+  and nc.nspname not in (
+    'vault',
+    'supabase_migrations',
+    'pg_catalog',
+    'realtime',
+    'supasheet',
+    'storage',
+    'supabase_functions',
+    '_realtime',
+    'information_schema',
+    'net',
+    'auth',
+    'extensions'
   )
-  AND a.attnum > 0
-  AND NOT a.attisdropped
-  AND (c.relkind IN ('r', 'v', 'm', 'f', 'p'))
-  AND (
+  and a.attnum > 0
+  and not a.attisdropped
+  and (c.relkind in ('r', 'v', 'm', 'f', 'p'))
+  and (
     pg_has_role(c.relowner, 'USAGE')
-    OR has_column_privilege(
+    or has_column_privilege(
       c.oid,
       a.attnum,
       'SELECT, INSERT, UPDATE, REFERENCES'
     )
   )
-ORDER BY c.oid, a.attnum
-with no data;
+order by
+  c.oid,
+  a.attnum
+with
+  no data;
 
 revoke all on supasheet.columns
 from
@@ -254,42 +308,58 @@ from
   service_role;
 
 create unique index on supasheet.columns (id);
+
 create index on supasheet.columns (table_id);
+
 create index on supasheet.columns (schema, "table");
+
 create index on supasheet.columns (schema, "table", name);
+
 create index on supasheet.columns (name);
 
 ----------------------------------------------------------------
 -- Materialized View: supasheet.views
 ----------------------------------------------------------------
 create materialized view if not exists supasheet.views as
-SELECT
-  c.oid :: int8 AS id,
-  n.nspname AS schema,
-  c.relname AS name,
+select
+  c.oid::int8 as id,
+  n.nspname as schema,
+  c.relname as name,
   -- See definition of information_schema.views
-  (pg_relation_is_updatable(c.oid, false) & 20) = 20 AS is_updatable,
-  obj_description(c.oid) AS comment
-FROM
+  (pg_relation_is_updatable (c.oid, false) & 20) = 20 as is_updatable,
+  obj_description(c.oid) as comment
+from
   pg_class c
-  JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE
+  join pg_namespace n on n.oid = c.relnamespace
+where
   c.relkind = 'v'
-  AND NOT pg_is_other_temp_schema(n.oid)
-  AND n.nspname NOT IN (
-    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
-    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+  and not pg_is_other_temp_schema(n.oid)
+  and n.nspname not in (
+    'vault',
+    'supabase_migrations',
+    'pg_catalog',
+    'realtime',
+    'supasheet',
+    'storage',
+    'supabase_functions',
+    '_realtime',
+    'information_schema',
+    'net',
+    'auth',
+    'extensions'
   )
-  AND (
+  and (
     pg_has_role(c.relowner, 'USAGE')
-    OR has_table_privilege(
+    or has_table_privilege(
       c.oid,
       'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'
     )
-    OR has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
+    or has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
   )
-ORDER BY c.oid
-with no data;
+order by
+  c.oid
+with
+  no data;
 
 revoke all on supasheet.views
 from
@@ -299,39 +369,53 @@ from
   service_role;
 
 create unique index on supasheet.views (id);
+
 create unique index on supasheet.views (schema, name);
+
 create index on supasheet.views (schema);
 
 ----------------------------------------------------------------
 -- Materialized View: supasheet.materialized_views
 ----------------------------------------------------------------
 create materialized view if not exists supasheet.materialized_views as
-SELECT
-  c.oid :: int8 AS id,
-  n.nspname AS schema,
-  c.relname AS name,
-  c.relispopulated AS is_populated,
-  obj_description(c.oid) AS comment
-FROM
+select
+  c.oid::int8 as id,
+  n.nspname as schema,
+  c.relname as name,
+  c.relispopulated as is_populated,
+  obj_description(c.oid) as comment
+from
   pg_class c
-  JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE
+  join pg_namespace n on n.oid = c.relnamespace
+where
   c.relkind = 'm'
-  AND NOT pg_is_other_temp_schema(n.oid)
-  AND n.nspname NOT IN (
-    'vault', 'supabase_migrations', 'pg_catalog', 'realtime', 'supasheet',
-    'storage', 'supabase_functions', '_realtime', 'information_schema', 'net', 'auth', 'extensions'
+  and not pg_is_other_temp_schema(n.oid)
+  and n.nspname not in (
+    'vault',
+    'supabase_migrations',
+    'pg_catalog',
+    'realtime',
+    'supasheet',
+    'storage',
+    'supabase_functions',
+    '_realtime',
+    'information_schema',
+    'net',
+    'auth',
+    'extensions'
   )
-  AND (
+  and (
     pg_has_role(c.relowner, 'USAGE')
-    OR has_table_privilege(
+    or has_table_privilege(
       c.oid,
       'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'
     )
-    OR has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
+    or has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES')
   )
-ORDER BY c.oid
-with no data;
+order by
+  c.oid
+with
+  no data;
 
 revoke all on supasheet.materialized_views
 from
@@ -341,13 +425,18 @@ from
   service_role;
 
 create unique index on supasheet.materialized_views (id);
+
 create unique index on supasheet.materialized_views (schema, name);
+
 create index on supasheet.materialized_views (schema);
 
 -- Initial population
 refresh materialized view supasheet.columns;
+
 refresh materialized view supasheet.tables;
+
 refresh materialized view supasheet.views;
+
 refresh materialized view supasheet.materialized_views;
 
 ----------------------------------------------------------------

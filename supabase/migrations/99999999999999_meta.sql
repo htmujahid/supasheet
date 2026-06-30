@@ -248,10 +248,7 @@ authenticated;
 -- `anon` when unauthenticated, `authenticated` otherwise. For authenticated
 -- callers the postgres grant must be matched by an app permission in
 -- role_permissions (same rule as get_tables); anon relies on the grant alone.
-create or replace function supasheet.get_privileges (
-  schema_name text,
-  resource_name text
-) RETURNS table (privilege text) LANGUAGE sql SECURITY DEFINER
+create or replace function supasheet.get_privileges (schema_name text, resource_name text) RETURNS table (privilege text) LANGUAGE sql SECURITY DEFINER
 set
   search_path = '' as $$
     WITH effective AS (
