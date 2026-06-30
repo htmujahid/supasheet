@@ -33,11 +33,11 @@ export const updateAccountNameMutationOptions = (userId: string) =>
 export const removeAccountAvatarMutationOptions = (userId: string) =>
   mutationOptions({
     mutationFn: async (pictureUrl: string) => {
-      const marker = "/object/public/account_image/"
+      const marker = "/object/public/uploads/"
       const idx = pictureUrl.indexOf(marker)
       if (idx !== -1) {
         const path = pictureUrl.slice(idx + marker.length)
-        await supabase.storage.from("account_image").remove([path])
+        await supabase.storage.from("uploads").remove([path])
       }
 
       const { error } = await supabase
@@ -67,16 +67,16 @@ export const uploadAccountAvatarMutationOptions = (userId: string) =>
         throw new Error("Avatar must be 2 MB or smaller")
       }
       const ext = MIME_TO_EXT[file.type]
-      const path = `${userId}/${Date.now()}.${ext}`
+      const path = `auth/${userId}/${Date.now()}.${ext}`
 
       const { error: uploadError } = await supabase.storage
-        .from("account_image")
+        .from("uploads")
         .upload(path, file, { upsert: true, contentType: file.type })
       if (uploadError) throw uploadError
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from("account_image").getPublicUrl(path)
+      } = supabase.storage.from("uploads").getPublicUrl(path)
 
       const { error: updateError } = await supabase
         .schema("supasheet")

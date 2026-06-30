@@ -170,14 +170,6 @@ create trigger on_auth_user_created
 after insert on auth.users for each row
 execute procedure supasheet.new_user_created_setup ();
 
--- Storage
--- user Image
-insert into
-  storage.buckets (id, name, public)
-values
-  ('account_image', 'account_image', true)
-on conflict do nothing;
-
 -- Function: get the storage filename as a UUID.
 -- Useful if you want to name files with UUIDs related to an user
 create or replace function supasheet.get_storage_filename_as_uuid (name text) returns uuid
@@ -194,25 +186,3 @@ $$ language plpgsql;
 grant
 execute on function supasheet.get_storage_filename_as_uuid (text) to authenticated,
 service_role;
-
--- RLS policies for storage bucket account_image
-
-create policy account_image on storage.objects for all using (
-  bucket_id = 'account_image'
-  and (
-    (storage.foldername (name)) [1] = (
-      select
-        auth.uid ()::text
-    )
-  )
-)
-with
-  check (
-    bucket_id = 'account_image'
-    and (
-      (storage.foldername (name)) [1] = (
-        select
-          auth.uid ()::text
-      )
-    )
-  );

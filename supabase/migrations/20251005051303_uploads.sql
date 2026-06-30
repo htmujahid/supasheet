@@ -56,3 +56,24 @@ create policy enable_delete_authorized_uploads_objects on storage.objects as PER
     format('%s.%s:delete', path_tokens[1], path_tokens[2])::supasheet.app_permission
   )
 );
+
+-- Auth folder policies in uploads bucket (account avatar images)
+drop policy IF exists enable_all_auth_uploads_objects on storage.objects;
+
+create policy enable_all_auth_uploads_objects on storage.objects as PERMISSIVE for all to authenticated using (
+  bucket_id = 'uploads'
+  and path_tokens[1] = 'auth'
+  and path_tokens[2] = (
+    select
+      auth.uid ()::text
+  )
+)
+with
+  check (
+    bucket_id = 'uploads'
+    and path_tokens[1] = 'auth'
+    and path_tokens[2] = (
+      select
+        auth.uid ()::text
+    )
+  );
