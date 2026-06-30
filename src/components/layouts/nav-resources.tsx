@@ -92,7 +92,7 @@ function ResourceMenuItem({
       <SidebarMenuButton
         tooltip={item.meta?.name ?? formatTitle(item.name)}
         render={<Link to={url as never} />}
-        isActive={location.pathname.startsWith(`/${schema}/${item.id}`)}
+        isActive={location.pathname.startsWith(`/${schema}/${item.id}/`)}
       >
         {icon}
         <span>{item.meta?.name ?? formatTitle(item.name)}</span>
