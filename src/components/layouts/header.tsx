@@ -16,7 +16,7 @@ import {
 import { NotificationsBell } from "#/components/layouts/notifications-bell"
 import { useTheme } from "#/components/theme-provider"
 import type { ThemeMode } from "#/components/theme-provider"
-import { Avatar, AvatarFallback } from "#/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,6 +75,7 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger className="rounded-full ring-offset-background outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               <Avatar size="sm">
+                <AvatarImage src={user?.picture_url ?? ""}></AvatarImage>
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
