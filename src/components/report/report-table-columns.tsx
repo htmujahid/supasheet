@@ -11,26 +11,30 @@ function formatCellValue(value: unknown): string {
 }
 
 export function getReportTableColumns(columnsSchema: ColumnSchema[]) {
-  return columnsSchema.map((col) => ({
-    id: col.name ?? col.id,
-    accessorKey: col.name as string,
-    header: ({
-      column,
-    }: {
-      column: Column<Record<string, unknown>, unknown>
-    }) => <DataTableColumnHeader column={column} title={col.name ?? col.id} />,
-    cell: ({ row }: { row: Row<Record<string, unknown>> }) => {
-      const value = row.getValue(col.name as string)
-      return (
-        <span className="text-sm text-muted-foreground">
-          {formatCellValue(value)}
-        </span>
-      )
-    },
-    size: 170,
-    enableSorting: true,
-    enableHiding: true,
-    enableColumnFilter: true,
-    meta: getColumnMetadata(null, col),
-  })) as ColumnDef<Record<string, unknown>, unknown>[]
+  return columnsSchema.map((col) => {
+    const meta = getColumnMetadata(null, col)
+
+    return {
+      id: col.name ?? col.id,
+      accessorKey: col.name as string,
+      header: ({
+        column,
+      }: {
+        column: Column<Record<string, unknown>, unknown>
+      }) => <DataTableColumnHeader column={column} title={meta.name} />,
+      cell: ({ row }: { row: Row<Record<string, unknown>> }) => {
+        const value = row.getValue(col.name as string)
+        return (
+          <span className="text-sm text-muted-foreground">
+            {formatCellValue(value)}
+          </span>
+        )
+      },
+      size: 170,
+      enableSorting: true,
+      enableHiding: true,
+      enableColumnFilter: true,
+      meta,
+    }
+  }) as ColumnDef<Record<string, unknown>, unknown>[]
 }

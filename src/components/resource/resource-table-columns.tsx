@@ -86,6 +86,7 @@ export function getResourceTableColumns({
 
   for (const col of visibleColumns) {
     const name = col.name ?? col.id
+    const meta = getColumnMetadata(tableSchema, col)
 
     cols.push({
       id: name,
@@ -97,7 +98,7 @@ export function getResourceTableColumns({
       }) => (
         <ResourceColumnHeader
           column={column}
-          title={name}
+          title={meta.name}
           isSorted={column.getIsSorted()}
         />
       ),
@@ -112,7 +113,7 @@ export function getResourceTableColumns({
       enableSorting: true,
       enableHiding: true,
       enableColumnFilter: true,
-      meta: getColumnMetadata(tableSchema, col),
+      meta,
     })
   }
 

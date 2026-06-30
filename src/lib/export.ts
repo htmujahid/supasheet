@@ -10,22 +10,31 @@ export function exportTableToCSV<TData>(
 ): void {
   const { filename = "table", excludeColumns = [], onlySelected = false } = opts
 
-  const headers = table
+  const columns = table
     .getAllLeafColumns()
-    .map((column) => column.id)
     .filter(
-      (id) => !excludeColumns.includes(id as keyof TData | "select" | "actions")
+      (column) =>
+        !excludeColumns.includes(
+          column.id as keyof TData | "select" | "actions"
+        )
     )
 
   const csvContent = [
-    headers.join(","),
+    columns
+      .map((column) => {
+        // Display label for end users; falls back to the column id (name).
+        const label = column.columnDef.meta?.name ?? column.id
+        return `"${label.replace(/"/g, '""')}"`
+      })
+      .join(","),
     ...(onlySelected
       ? table.getFilteredSelectedRowModel().rows
       : table.getRowModel().rows
     ).map((row) =>
-      headers
-        .map((header) => {
-          const cellValue = row.getValue(header)
+      columns
+        .map((column) => {
+          // Always look up the value by the column id (the data key).
+          const cellValue = row.getValue(column.id)
           return typeof cellValue === "string"
             ? `"${cellValue.replace(/"/g, '""')}"`
             : cellValue

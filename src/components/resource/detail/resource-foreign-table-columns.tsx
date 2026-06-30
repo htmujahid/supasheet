@@ -78,26 +78,28 @@ export function getResourceForeignTableColumns({
 
   return [
     ...(selectColumn ? [selectColumn] : []),
-    ...(columnsSchema ?? []).map((c) => ({
-      id: c.name,
-      accessorKey: c.name as string,
-      header: () => (
-        <div className="truncate select-none">
-          {formatTitle(c.name as string)}
-        </div>
-      ),
-      cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
-        <ResourceRowCell
-          row={row}
-          columnSchema={c}
-          resourceSchema={resourceSchema}
-        />
-      ),
-      size: 150,
-      enableColumnFilter: true,
-      enableSorting: true,
-      enableHiding: true,
-      meta: getColumnMetadata(resourceSchema, c),
-    })),
+    ...(columnsSchema ?? []).map((c) => {
+      const meta = getColumnMetadata(resourceSchema, c)
+
+      return {
+        id: c.name,
+        accessorKey: c.name as string,
+        header: () => (
+          <div className="truncate select-none">{formatTitle(meta.name)}</div>
+        ),
+        cell: ({ row }: { row: Row<ResourceDataSchema> }) => (
+          <ResourceRowCell
+            row={row}
+            columnSchema={c}
+            resourceSchema={resourceSchema}
+          />
+        ),
+        size: 150,
+        enableColumnFilter: true,
+        enableSorting: true,
+        enableHiding: true,
+        meta,
+      }
+    }),
   ] as ColumnDef<ResourceDataSchema, unknown>[]
 }

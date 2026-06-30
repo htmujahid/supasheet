@@ -16,6 +16,7 @@ export function getResourceGridColumns({
 
   for (const col of columnsSchema) {
     const name = col.name ?? col.id
+    const meta = getColumnMetadata(tableSchema, col)
 
     cols.push({
       id: name,
@@ -27,7 +28,7 @@ export function getResourceGridColumns({
       }) => (
         <ResourceGridColumnHeader
           column={column}
-          title={name}
+          title={meta.name}
           tableSchema={tableSchema}
           columnSchema={col}
           isSorted={column.getIsSorted()}
@@ -37,7 +38,7 @@ export function getResourceGridColumns({
       enableSorting: true,
       enableHiding: true,
       enableColumnFilter: true,
-      meta: getColumnMetadata(tableSchema, col),
+      meta,
     })
   }
 
