@@ -1105,7 +1105,8 @@ comment on table hostel.payments is '{
                 "visible": [
                     {
                         "id": "status",
-                        "value": "eq.paid"
+                        "operator": "eq",
+                        "value": "paid"
                     }
                 ]
             },
@@ -1113,7 +1114,8 @@ comment on table hostel.payments is '{
                 "visible": [
                     {
                         "id": "method",
-                        "value": "in.bank_transfer,credit_card,upi,cheque"
+                        "operator": "in",
+                        "value": ["bank_transfer", "credit_card", "upi", "cheque"]
                     }
                 ]
             }
@@ -1349,7 +1351,8 @@ comment on table hostel.complaints is '{
                 "visible": [
                     {
                         "id": "status",
-                        "value": "in.resolved,closed"
+                        "operator": "in",
+                        "value": ["resolved", "closed"]
                     }
                 ]
             },
@@ -1357,7 +1360,8 @@ comment on table hostel.complaints is '{
                 "visible": [
                     {
                         "id": "status",
-                        "value": "in.resolved,closed"
+                        "operator": "in",
+                        "value": ["resolved", "closed"]
                     }
                 ]
             }
@@ -1567,7 +1571,8 @@ comment on table hostel.visitors is '{
                 "visible": [
                     {
                         "id": "status",
-                        "value": "eq.checked_out"
+                        "operator": "eq",
+                        "value": "checked_out"
                     }
                 ]
             }

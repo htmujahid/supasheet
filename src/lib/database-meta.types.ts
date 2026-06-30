@@ -88,7 +88,8 @@ export type FormMode = "create" | "update" | "read"
 
 export type FieldCondition = {
   id: string
-  value: string
+  operator: string // e.g. eq, neq, lt, lte, gt, gte, like, ilike, is, in, not.ilike, not.is, not.in
+  value: string | string[]
 }
 
 export type FieldBehavior = {

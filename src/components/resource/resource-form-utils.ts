@@ -1,5 +1,4 @@
 import { getColumnMetadata } from "#/lib/columns"
-import { decodeFilterValue } from "#/lib/data-table"
 import type {
   ColumnSchema,
   FieldBehavior,
@@ -102,35 +101,49 @@ export function buildCreatePayload(
   return payload
 }
 
+function toList(value: string | string[]): string[] {
+  return Array.isArray(value)
+    ? value.map((v) => String(v)).filter(Boolean)
+    : value.split(",").filter(Boolean)
+}
+
 export function evaluateConditionalField(
   conditions: FieldCondition[],
   values: Record<string, unknown>
 ): boolean {
   return conditions.every((c) => {
     const fieldValue = values[c.id]
-    const { operator, value } = decodeFilterValue(c.value)
     const raw = String(fieldValue ?? "")
-    switch (operator) {
+    const single = Array.isArray(c.value) ? (c.value[0] ?? "") : c.value
+    const num = Number(raw)
+    const compare = Number(single)
+    switch (c.operator) {
       case "eq":
-        return raw === value
+        return raw === single
       case "neq":
-        return raw !== value
-      case "in": {
-        const vals = value.split(",").filter(Boolean)
-        return vals.includes(raw)
-      }
-      case "not.in": {
-        const vals = value.split(",").filter(Boolean)
-        return !vals.includes(raw)
-      }
+        return raw !== single
+      case "lt":
+        return num < compare
+      case "lte":
+        return num <= compare
+      case "gt":
+        return num > compare
+      case "gte":
+        return num >= compare
+      case "like":
+        return raw.toLowerCase().startsWith(single.toLowerCase())
+      case "ilike":
+        return raw.toLowerCase().includes(single.toLowerCase())
+      case "not.ilike":
+        return !raw.toLowerCase().includes(single.toLowerCase())
+      case "in":
+        return toList(c.value).includes(raw)
+      case "not.in":
+        return !toList(c.value).includes(raw)
       case "is":
         return fieldValue === null || fieldValue === undefined || raw === ""
       case "not.is":
         return fieldValue !== null && fieldValue !== undefined && raw !== ""
-      case "ilike":
-        return raw.toLowerCase().includes(value.toLowerCase())
-      case "like":
-        return raw.toLowerCase().startsWith(value.toLowerCase())
       default:
         return true
     }
