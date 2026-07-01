@@ -440,9 +440,13 @@ refresh materialized view supasheet.views;
 refresh materialized view supasheet.materialized_views;
 
 ----------------------------------------------------------------
--- Trigger Function for CREATE events
+-- Manual refresh function for all metadata materialized views
 ----------------------------------------------------------------
-create or replace function supasheet.log_new_table_creation () RETURNS event_trigger as $$
+-- Run this after any DDL changes (create/alter/drop table, view,
+-- materialized view, schema, enum, or comment) to keep the
+-- metadata materialized views in sync:
+--   select supasheet.refresh_metadata();
+create or replace function supasheet.refresh_metadata () RETURNS void as $$
 BEGIN
     REFRESH MATERIALIZED VIEW supasheet.tables;
     REFRESH MATERIALIZED VIEW supasheet.columns;
@@ -453,133 +457,11 @@ $$ LANGUAGE plpgsql
 set
   search_path = '';
 
-create event trigger table_creation_trigger on ddl_command_end when TAG in (
-  'CREATE TABLE',
-  'CREATE VIEW',
-  'CREATE MATERIALIZED VIEW'
-)
-execute function supasheet.log_new_table_creation ();
-
-----------------------------------------------------------------
--- Trigger Function for DROP events
-----------------------------------------------------------------
-create or replace function supasheet.log_table_deletion () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.tables;
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-    REFRESH MATERIALIZED VIEW supasheet.views;
-    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger table_deletion_trigger on sql_drop when TAG in (
-  'DROP TABLE',
-  'DROP VIEW',
-  'DROP MATERIALIZED VIEW'
-)
-execute function supasheet.log_table_deletion ();
-
-----------------------------------------------------------------
--- Trigger Function for ALTER events
-----------------------------------------------------------------
-create or replace function supasheet.log_table_alteration () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.tables;
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-    REFRESH MATERIALIZED VIEW supasheet.views;
-    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger table_alteration_trigger on ddl_command_end when TAG in (
-  'ALTER TABLE',
-  'ALTER VIEW',
-  'ALTER MATERIALIZED VIEW'
-)
-execute function supasheet.log_table_alteration ();
-
-----------------------------------------------------------------
--- Trigger Function for COMMENT events
-----------------------------------------------------------------
-create or replace function supasheet.log_comment_changes () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.tables;
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-    REFRESH MATERIALIZED VIEW supasheet.views;
-    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger comment_trigger on ddl_command_end when TAG in ('COMMENT')
-execute function supasheet.log_comment_changes ();
-
-----------------------------------------------------------------
--- Trigger Function for ALTER TYPE events (enum changes)
-----------------------------------------------------------------
-create or replace function supasheet.log_enum_alteration () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger enum_alteration_trigger on ddl_command_end when TAG in ('ALTER TYPE')
-execute function supasheet.log_enum_alteration ();
-
-----------------------------------------------------------------
--- Trigger Function for CREATE SCHEMA events
-----------------------------------------------------------------
-create or replace function supasheet.log_schema_creation () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.tables;
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-    REFRESH MATERIALIZED VIEW supasheet.views;
-    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger schema_creation_trigger on ddl_command_end when TAG in ('CREATE SCHEMA')
-execute function supasheet.log_schema_creation ();
-
-----------------------------------------------------------------
--- Trigger Function for ALTER SCHEMA events
-----------------------------------------------------------------
-create or replace function supasheet.log_schema_alteration () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.tables;
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-    REFRESH MATERIALIZED VIEW supasheet.views;
-    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger schema_alteration_trigger on ddl_command_end when TAG in ('ALTER SCHEMA')
-execute function supasheet.log_schema_alteration ();
-
-----------------------------------------------------------------
--- Trigger Function for DROP SCHEMA events
-----------------------------------------------------------------
-create or replace function supasheet.log_schema_deletion () RETURNS event_trigger as $$
-BEGIN
-    REFRESH MATERIALIZED VIEW supasheet.tables;
-    REFRESH MATERIALIZED VIEW supasheet.columns;
-    REFRESH MATERIALIZED VIEW supasheet.views;
-    REFRESH MATERIALIZED VIEW supasheet.materialized_views;
-END;
-$$ LANGUAGE plpgsql
-set
-  search_path = '';
-
-create event trigger schema_deletion_trigger on sql_drop when TAG in ('DROP SCHEMA')
-execute function supasheet.log_schema_deletion ();
+-- By default Postgres grants EXECUTE on new functions to PUBLIC.
+-- Revoke it so only the owner (postgres) role can refresh metadata.
+revoke all on function supasheet.refresh_metadata ()
+from
+  public,
+  anon,
+  authenticated,
+  service_role;

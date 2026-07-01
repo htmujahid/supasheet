@@ -195,7 +195,7 @@ export function getColumnMetadata(
   const baseOptions = {
     name,
     defaultValue,
-    disabled: disabled,
+    disabled,
     required,
     isArray,
     isMetadata,
