@@ -79,7 +79,7 @@ export function getUsersTableColumns({
       ),
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "id") as ColumnSchema
+        columnsSchema.find((col) => col.name === "id")
       ),
     },
     {
@@ -106,7 +106,7 @@ export function getUsersTableColumns({
       },
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "name") as ColumnSchema
+        columnsSchema.find((col) => col.name === "name")
       ),
     },
     {
@@ -121,7 +121,7 @@ export function getUsersTableColumns({
       ),
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "email") as ColumnSchema
+        columnsSchema.find((col) => col.name === "email")
       ),
     },
     {
@@ -143,7 +143,7 @@ export function getUsersTableColumns({
       },
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "created_at") as ColumnSchema
+        columnsSchema.find((col) => col.name === "created_at")
       ),
     },
     {
@@ -165,7 +165,7 @@ export function getUsersTableColumns({
       },
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "updated_at") as ColumnSchema
+        columnsSchema.find((col) => col.name === "updated_at")
       ),
     },
   ]

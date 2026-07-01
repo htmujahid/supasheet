@@ -51,7 +51,7 @@ export function getUserRolesTableColumns({
       ),
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "id") as ColumnSchema
+        columnsSchema.find((col) => col.name === "id")
       ),
     },
     {
@@ -66,7 +66,7 @@ export function getUserRolesTableColumns({
       ),
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "user_id") as ColumnSchema
+        columnsSchema.find((col) => col.name === "user_id")
       ),
     },
     {
@@ -79,7 +79,7 @@ export function getUserRolesTableColumns({
       ),
       meta: getColumnMetadata(
         null,
-        columnsSchema.find((col) => col.name === "role") as ColumnSchema
+        columnsSchema.find((col) => col.name === "role")
       ),
     },
   ]

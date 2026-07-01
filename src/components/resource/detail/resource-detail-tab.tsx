@@ -141,7 +141,7 @@ export function ResourceDetailTab({
             {
               ...oneToOne,
               name: oneToOne.__embedKey,
-            } as unknown as ResourceSchema
+            }
           }
           columnsSchema={oneToOne.columns ?? []}
           record={embedded}
