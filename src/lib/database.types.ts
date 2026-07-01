@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       [_ in never]: never
@@ -116,96 +91,6 @@ export type Database = {
           },
         ]
       }
-      configs: {
-        Row: {
-          description: string | null
-          id: number
-          is_public: boolean
-          key: string
-          value: Json | null
-        }
-        Insert: {
-          description?: string | null
-          id?: number
-          is_public?: boolean
-          key: string
-          value?: Json | null
-        }
-        Update: {
-          description?: string | null
-          id?: number
-          is_public?: boolean
-          key?: string
-          value?: Json | null
-        }
-        Relationships: []
-      }
-      columns: {
-        Row: {
-          actual_type: string | null
-          check: string | null
-          comment: string | null
-          data_type: string | null
-          default_value: string | null
-          enums: Json | null
-          format: string | null
-          id: string
-          identity_generation: string | null
-          is_generated: boolean | null
-          is_identity: boolean | null
-          is_nullable: boolean | null
-          is_unique: boolean | null
-          is_updatable: boolean | null
-          name: string | null
-          ordinal_position: string | null
-          schema: string | null
-          table: string | null
-          table_id: number | null
-        }
-        Insert: {
-          actual_type?: string | null
-          check?: string | null
-          comment?: string | null
-          data_type?: string | null
-          default_value?: string | null
-          enums?: Json | null
-          format?: string | null
-          id: string
-          identity_generation?: string | null
-          is_generated?: boolean | null
-          is_identity?: boolean | null
-          is_nullable?: boolean | null
-          is_unique?: boolean | null
-          is_updatable?: boolean | null
-          name?: string | null
-          ordinal_position?: string | null
-          schema?: string | null
-          table?: string | null
-          table_id?: number | null
-        }
-        Update: {
-          actual_type?: string | null
-          check?: string | null
-          comment?: string | null
-          data_type?: string | null
-          default_value?: string | null
-          enums?: Json | null
-          format?: string | null
-          id?: string
-          identity_generation?: string | null
-          is_generated?: boolean | null
-          is_identity?: boolean | null
-          is_nullable?: boolean | null
-          is_unique?: boolean | null
-          is_updatable?: boolean | null
-          name?: string | null
-          ordinal_position?: string | null
-          schema?: string | null
-          table?: string | null
-          table_id?: number | null
-        }
-        Relationships: []
-      }
       comments: {
         Row: {
           content: string
@@ -247,27 +132,27 @@ export type Database = {
           },
         ]
       }
-      materialized_views: {
+      configs: {
         Row: {
-          comment: string | null
+          description: string | null
           id: number
-          is_populated: boolean | null
-          name: string | null
-          schema: string | null
+          is_public: boolean
+          key: string
+          value: Json | null
         }
         Insert: {
-          comment?: string | null
-          id: number
-          is_populated?: boolean | null
-          name?: string | null
-          schema?: string | null
+          description?: string | null
+          id?: number
+          is_public?: boolean
+          key: string
+          value?: Json | null
         }
         Update: {
-          comment?: string | null
+          description?: string | null
           id?: number
-          is_populated?: boolean | null
-          name?: string | null
-          schema?: string | null
+          is_public?: boolean
+          key?: string
+          value?: Json | null
         }
         Relationships: []
       }
@@ -327,54 +212,6 @@ export type Database = {
           id?: number
           permission?: Database["supasheet"]["Enums"]["app_permission"]
           role?: Database["supasheet"]["Enums"]["app_role"]
-        }
-        Relationships: []
-      }
-      tables: {
-        Row: {
-          bytes: number | null
-          comment: string | null
-          dead_rows_estimate: number | null
-          id: number
-          live_rows_estimate: number | null
-          name: string | null
-          primary_keys: Json | null
-          relationships: Json | null
-          replica_identity: string | null
-          rls_enabled: boolean | null
-          rls_forced: boolean | null
-          schema: string | null
-          size: string | null
-        }
-        Insert: {
-          bytes?: number | null
-          comment?: string | null
-          dead_rows_estimate?: number | null
-          id: number
-          live_rows_estimate?: number | null
-          name?: string | null
-          primary_keys?: Json | null
-          relationships?: Json | null
-          replica_identity?: string | null
-          rls_enabled?: boolean | null
-          rls_forced?: boolean | null
-          schema?: string | null
-          size?: string | null
-        }
-        Update: {
-          bytes?: number | null
-          comment?: string | null
-          dead_rows_estimate?: number | null
-          id?: number
-          live_rows_estimate?: number | null
-          name?: string | null
-          primary_keys?: Json | null
-          relationships?: Json | null
-          replica_identity?: string | null
-          rls_enabled?: boolean | null
-          rls_forced?: boolean | null
-          schema?: string | null
-          size?: string | null
         }
         Relationships: []
       }
@@ -482,33 +319,71 @@ export type Database = {
         }
         Relationships: []
       }
-      views: {
+    }
+    Views: {
+      columns: {
         Row: {
+          actual_type: unknown
+          check: string | null
           comment: string | null
-          id: number
+          data_type: string | null
+          default_value: string | null
+          enums: Json | null
+          format: unknown
+          format_schema: unknown
+          id: string | null
+          identity_generation: string | null
+          is_generated: boolean | null
+          is_identity: boolean | null
+          is_nullable: boolean | null
+          is_unique: boolean | null
           is_updatable: boolean | null
-          name: string | null
-          schema: string | null
-        }
-        Insert: {
-          comment?: string | null
-          id: number
-          is_updatable?: boolean | null
-          name?: string | null
-          schema?: string | null
-        }
-        Update: {
-          comment?: string | null
-          id?: number
-          is_updatable?: boolean | null
-          name?: string | null
-          schema?: string | null
+          name: unknown
+          ordinal_position: number | null
+          schema: unknown
+          table: unknown
+          table_id: number | null
         }
         Relationships: []
       }
-    }
-    Views: {
-      [_ in never]: never
+      materialized_views: {
+        Row: {
+          comment: string | null
+          id: number | null
+          is_populated: boolean | null
+          name: unknown
+          schema: unknown
+        }
+        Relationships: []
+      }
+      tables: {
+        Row: {
+          bytes: number | null
+          comment: string | null
+          dead_rows_estimate: number | null
+          id: number | null
+          live_rows_estimate: number | null
+          name: unknown
+          primary_keys: Json | null
+          relationships: Json | null
+          replica_identity: string | null
+          rls_enabled: boolean | null
+          rls_forced: boolean | null
+          schema: unknown
+          size: string | null
+        }
+        Relationships: []
+      }
+      views: {
+        Row: {
+          comment: string | null
+          id: number | null
+          is_updatable: boolean | null
+          name: unknown
+          schema: unknown
+        }
+        Relationships: []
+      }
     }
     Functions: {
       apply_template: {
@@ -541,94 +416,6 @@ export type Database = {
           p_user_ids: string[]
         }
         Returns: string
-      }
-      generate_columns: {
-        Args: {
-          column_name_filter?: string
-          ids_filter?: string
-          limit_count?: number
-          offset_count?: number
-          schema_filter?: string
-          table_id_filter?: string
-          table_identifier_filter?: string
-        }
-        Returns: {
-          actual_type: string
-          check: string
-          comment: string
-          data_type: string
-          default_value: string
-          enums: Json
-          format: string
-          id: string
-          identity_generation: string
-          is_generated: boolean
-          is_identity: boolean
-          is_nullable: boolean
-          is_unique: boolean
-          is_updatable: boolean
-          name: string
-          ordinal_position: string
-          schema: string
-          table: string
-          table_id: number
-        }[]
-      }
-      generate_materialized_views: {
-        Args: {
-          ids_filter?: string
-          limit_count?: number
-          materialized_view_identifier_filter?: string
-          offset_count?: number
-          schema_filter?: string
-        }
-        Returns: {
-          comment: string
-          id: number
-          is_populated: boolean
-          name: string
-          schema: string
-        }[]
-      }
-      generate_tables: {
-        Args: {
-          ids_filter?: string
-          limit_count?: number
-          offset_count?: number
-          schema_filter?: string
-          table_identifier_filter?: string
-        }
-        Returns: {
-          bytes: number
-          comment: string
-          dead_rows_estimate: number
-          id: number
-          live_rows_estimate: number
-          name: string
-          primary_keys: Json
-          relationships: Json
-          replica_identity: string
-          rls_enabled: boolean
-          rls_forced: boolean
-          schema: string
-          size: string
-        }[]
-      }
-      generate_views: {
-        Args: {
-          ids_filter?: string
-          limit_count?: number
-          offset_count?: number
-          schema_filter?: string
-          view_identifier_filter?: string
-        }
-        Returns: {
-          comment: string
-          id: number
-          is_updatable: boolean
-          name: string
-          schema: string
-        }[]
       }
       get_audit_logs: {
         Args: { p_record_id?: string; p_schema: string; p_table: string }
@@ -664,34 +451,28 @@ export type Database = {
           schema: string
         }[]
       }
-      get_nav_items: {
-        Args: { schema_name?: string }
-        Returns: {
-          type: string
-          count: number
-        }[]
-      }
       get_columns: {
-        Args: { schema_name?: string; table_name?: string; action?: string }
+        Args: { action?: string; schema_name?: string; table_name?: string }
         Returns: {
-          actual_type: string | null
+          actual_type: unknown
           check: string | null
           comment: string | null
           data_type: string | null
           default_value: string | null
           enums: Json | null
-          format: string | null
-          id: string
+          format: unknown
+          format_schema: unknown
+          id: string | null
           identity_generation: string | null
           is_generated: boolean | null
           is_identity: boolean | null
           is_nullable: boolean | null
           is_unique: boolean | null
           is_updatable: boolean | null
-          name: string | null
-          ordinal_position: string | null
-          schema: string | null
-          table: string | null
+          name: unknown
+          ordinal_position: number | null
+          schema: unknown
+          table: unknown
           table_id: number | null
         }[]
         SetofOptions: {
@@ -718,13 +499,13 @@ export type Database = {
         }[]
       }
       get_materialized_views: {
-        Args: { schema_name?: string; view_name?: string; action?: string }
+        Args: { action?: string; schema_name?: string; view_name?: string }
         Returns: {
           comment: string | null
-          id: number
+          id: number | null
           is_populated: boolean | null
-          name: string | null
-          schema: string | null
+          name: unknown
+          schema: unknown
         }[]
         SetofOptions: {
           from: "*"
@@ -733,6 +514,13 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_nav_items: {
+        Args: { schema_name?: string }
+        Returns: {
+          count: number
+          type: string
+        }[]
+      }
       get_permissions: {
         Args: { schema_name?: string }
         Returns: {
@@ -740,10 +528,7 @@ export type Database = {
         }[]
       }
       get_privileges: {
-        Args: {
-          schema_name: string
-          resource_name: string
-        }
+        Args: { resource_name: string; schema_name: string }
         Returns: {
           privilege: string
         }[]
@@ -752,7 +537,7 @@ export type Database = {
         Args: { schema_name: string; table_name: string }
         Returns: {
           bytes: number
-          columns: Database["supasheet"]["Tables"]["columns"]["Row"][]
+          columns: unknown[]
           comment: string
           dead_rows_estimate: number
           id: number
@@ -785,20 +570,20 @@ export type Database = {
       }
       get_storage_filename_as_uuid: { Args: { name: string }; Returns: string }
       get_tables: {
-        Args: { schema_name?: string; table_name?: string; action?: string }
+        Args: { action?: string; schema_name?: string; table_name?: string }
         Returns: {
           bytes: number | null
           comment: string | null
           dead_rows_estimate: number | null
-          id: number
+          id: number | null
           live_rows_estimate: number | null
-          name: string | null
+          name: unknown
           primary_keys: Json | null
           relationships: Json | null
           replica_identity: string | null
           rls_enabled: boolean | null
           rls_forced: boolean | null
-          schema: string | null
+          schema: unknown
           size: string | null
         }[]
         SetofOptions: {
@@ -827,13 +612,13 @@ export type Database = {
         Returns: string[]
       }
       get_views: {
-        Args: { schema_name?: string; view_name?: string; action?: string }
+        Args: { action?: string; schema_name?: string; view_name?: string }
         Returns: {
           comment: string | null
-          id: number
+          id: number | null
           is_updatable: boolean | null
-          name: string | null
-          schema: string | null
+          name: unknown
+          schema: unknown
         }[]
         SetofOptions: {
           from: "*"
@@ -863,6 +648,7 @@ export type Database = {
         Returns: boolean
       }
       mark_all_notifications_read: { Args: never; Returns: number }
+      refresh_metadata: { Args: never; Returns: undefined }
       unread_notifications_count: { Args: never; Returns: number }
     }
     Enums: {
@@ -1015,9 +801,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
@@ -1045,3 +828,4 @@ export const Constants = {
     },
   },
 } as const
+
