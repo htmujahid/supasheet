@@ -63,12 +63,7 @@ create type demo.project_status as enum(
 
 create type demo.priority_level as enum('low', 'medium', 'high', 'critical');
 
-create type demo.milestone_status as enum(
-  'pending',
-  'in_progress',
-  'completed',
-  'missed'
-);
+create type demo.milestone_status as enum('pending', 'in_progress', 'completed', 'missed');
 
 create type demo.task_status as enum(
   'todo',
@@ -87,13 +82,7 @@ create type demo.service_category as enum(
   'support'
 );
 
-create type demo.invoice_status as enum(
-  'draft',
-  'sent',
-  'paid',
-  'overdue',
-  'void'
-);
+create type demo.invoice_status as enum('draft', 'sent', 'paid', 'overdue', 'void');
 
 create type demo.portfolio_category as enum(
   'web',
@@ -488,8 +477,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.clients to authenticated;
+update,
+delete on table demo.clients to authenticated;
 
 create index idx_demo_clients_user_id on demo.clients (user_id);
 
@@ -616,8 +605,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.team_members to authenticated;
+update,
+delete on table demo.team_members to authenticated;
 
 create index idx_demo_team_members_user_id on demo.team_members (user_id);
 
@@ -631,19 +620,29 @@ alter table demo.team_members enable row level security;
 
 create policy team_members_select on demo.team_members for
 select
-  to authenticated using (supasheet.has_permission ('demo.team_members:select'));
+  to authenticated using (
+    supasheet.has_permission ('demo.team_members:select')
+  );
 
 create policy team_members_insert on demo.team_members for insert to authenticated
 with
-  check (supasheet.has_permission ('demo.team_members:insert'));
+  check (
+    supasheet.has_permission ('demo.team_members:insert')
+  );
 
 create policy team_members_update on demo.team_members
 for update
-  to authenticated using (supasheet.has_permission ('demo.team_members:update'))
+  to authenticated using (
+    supasheet.has_permission ('demo.team_members:update')
+  )
 with
-  check (supasheet.has_permission ('demo.team_members:update'));
+  check (
+    supasheet.has_permission ('demo.team_members:update')
+  );
 
-create policy team_members_delete on demo.team_members for delete to authenticated using (supasheet.has_permission ('demo.team_members:delete'));
+create policy team_members_delete on demo.team_members for delete to authenticated using (
+  supasheet.has_permission ('demo.team_members:delete')
+);
 
 ----------------------------------------------------------------
 -- Projects
@@ -761,8 +760,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.projects to authenticated;
+update,
+delete on table demo.projects to authenticated;
 
 create index idx_demo_projects_client_id on demo.projects (client_id);
 
@@ -931,8 +930,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.milestones to authenticated;
+update,
+delete on table demo.milestones to authenticated;
 
 create index idx_demo_milestones_project_id on demo.milestones (project_id);
 
@@ -944,19 +943,29 @@ alter table demo.milestones enable row level security;
 
 create policy milestones_select on demo.milestones for
 select
-  to authenticated using (supasheet.has_permission ('demo.milestones:select'));
+  to authenticated using (
+    supasheet.has_permission ('demo.milestones:select')
+  );
 
 create policy milestones_insert on demo.milestones for insert to authenticated
 with
-  check (supasheet.has_permission ('demo.milestones:insert'));
+  check (
+    supasheet.has_permission ('demo.milestones:insert')
+  );
 
 create policy milestones_update on demo.milestones
 for update
-  to authenticated using (supasheet.has_permission ('demo.milestones:update'))
+  to authenticated using (
+    supasheet.has_permission ('demo.milestones:update')
+  )
 with
-  check (supasheet.has_permission ('demo.milestones:update'));
+  check (
+    supasheet.has_permission ('demo.milestones:update')
+  );
 
-create policy milestones_delete on demo.milestones for delete to authenticated using (supasheet.has_permission ('demo.milestones:delete'));
+create policy milestones_delete on demo.milestones for delete to authenticated using (
+  supasheet.has_permission ('demo.milestones:delete')
+);
 
 ----------------------------------------------------------------
 -- Tasks (kanban + tree for subtasks + calendar for due dates)
@@ -1085,8 +1094,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.tasks to authenticated;
+update,
+delete on table demo.tasks to authenticated;
 
 create index idx_demo_tasks_project_id on demo.tasks (project_id);
 
@@ -1215,8 +1224,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.portfolio_items to authenticated;
+update,
+delete on table demo.portfolio_items to authenticated;
 
 create index idx_demo_portfolio_items_project_id on demo.portfolio_items (project_id);
 
@@ -1324,8 +1333,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.services to authenticated;
+update,
+delete on table demo.services to authenticated;
 
 create index idx_demo_services_category on demo.services (category);
 
@@ -1357,11 +1366,7 @@ create sequence if not exists demo.invoice_number_seq;
 create table demo.invoices (
   id uuid primary key default extensions.uuid_generate_v4 (),
   invoice_number varchar(50) not null unique default (
-    'INV-' || to_char(current_date, 'YYYY') || '-' || lpad(
-      nextval('demo.invoice_number_seq')::text,
-      4,
-      '0'
-    )
+    'INV-' || to_char(current_date, 'YYYY') || '-' || lpad(nextval('demo.invoice_number_seq')::text, 4, '0')
   ),
   client_id uuid not null references demo.clients (id) on delete restrict,
   project_id uuid references demo.projects (id) on delete set null,
@@ -1455,8 +1460,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.invoices to authenticated;
+update,
+delete on table demo.invoices to authenticated;
 
 create index idx_demo_invoices_client_id on demo.invoices (client_id);
 
@@ -1539,8 +1544,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.invoice_items to authenticated;
+update,
+delete on table demo.invoice_items to authenticated;
 
 create index idx_demo_invoice_items_invoice_id on demo.invoice_items (invoice_id);
 
@@ -1606,9 +1611,7 @@ set
   search_path = '';
 
 create trigger invoice_items_recalc
-after insert
-or update
-or delete on demo.invoice_items for each row
+after insert or update or delete on demo.invoice_items for each row
 execute function demo.trg_invoice_items_recalc ();
 
 ----------------------------------------------------------------
@@ -1652,8 +1655,8 @@ grant
 select
 ,
   insert,
-  update,
-  delete on table demo.time_entries to authenticated;
+update,
+delete on table demo.time_entries to authenticated;
 
 create index idx_demo_time_entries_task_id on demo.time_entries (task_id);
 
@@ -1731,7 +1734,7 @@ grant
 select
 ,
   insert,
-  update on table demo.workspace_settings to authenticated;
+update on table demo.workspace_settings to authenticated;
 
 alter table demo.workspace_settings enable row level security;
 
@@ -2638,8 +2641,7 @@ set
 drop trigger if exists projects_notify on demo.projects;
 
 create trigger projects_notify
-after insert
-or update of status on demo.projects for each row
+after insert or update of status on demo.projects for each row
 execute function demo.trg_projects_notify ();
 
 -- Tasks: notify assignee on assignment and on status change
@@ -2693,8 +2695,7 @@ set
 drop trigger if exists tasks_notify on demo.tasks;
 
 create trigger tasks_notify
-after insert
-or update of assignee_id,
+after insert or update of assignee_id,
 status on demo.tasks for each row
 execute function demo.trg_tasks_notify ();
 
@@ -2742,8 +2743,7 @@ set
 drop trigger if exists invoices_notify on demo.invoices;
 
 create trigger invoices_notify
-after insert
-or update of status on demo.invoices for each row
+after insert or update of status on demo.invoices for each row
 execute function demo.trg_invoices_notify ();
 
 -- ================================================================
@@ -2756,7 +2756,6 @@ execute function demo.trg_invoices_notify ();
 --   b73eb03e-fb7a-424d-84ff-18e2791ce0b1  user1@supasheet.dev (user)
 --   b73eb03e-fb7a-424d-84ff-18e2791ce0b4  user@supasheet.dev (user)
 -- ================================================================
-
 ----------------------------------------------------------------
 -- Demo users
 ----------------------------------------------------------------
@@ -3336,25 +3335,93 @@ values
 -- Project members
 ----------------------------------------------------------------
 insert into
-  demo.project_members (project_id, team_member_id, role_on_project, allocation_percent)
+  demo.project_members (
+    project_id,
+    team_member_id,
+    role_on_project,
+    allocation_percent
+  )
 values
-  ('ec000000-0000-0000-0000-000000000001', 'ea000000-0000-0000-0000-000000000002', 'Tech Lead', 50),
-  ('ec000000-0000-0000-0000-000000000001', 'ea000000-0000-0000-0000-000000000004', 'Engineer', 80),
-  ('ec000000-0000-0000-0000-000000000001', 'ea000000-0000-0000-0000-000000000005', 'Designer', 30),
-  ('ec000000-0000-0000-0000-000000000002', 'ea000000-0000-0000-0000-000000000003', 'Design Lead', 60),
-  ('ec000000-0000-0000-0000-000000000002', 'ea000000-0000-0000-0000-000000000005', 'Designer', 40),
-  ('ec000000-0000-0000-0000-000000000002', 'ea000000-0000-0000-0000-000000000006', 'Marketing', 20),
-  ('ec000000-0000-0000-0000-000000000003', 'ea000000-0000-0000-0000-000000000002', 'Tech Lead', 40),
-  ('ec000000-0000-0000-0000-000000000003', 'ea000000-0000-0000-0000-000000000004', 'Engineer', 50),
-  ('ec000000-0000-0000-0000-000000000004', 'ea000000-0000-0000-0000-000000000004', 'Engineer', 30),
-  ('ec000000-0000-0000-0000-000000000005', 'ea000000-0000-0000-0000-000000000001', 'Sponsor', 10),
-  ('ec000000-0000-0000-0000-000000000005', 'ea000000-0000-0000-0000-000000000008', 'Coordinator', 20);
+  (
+    'ec000000-0000-0000-0000-000000000001',
+    'ea000000-0000-0000-0000-000000000002',
+    'Tech Lead',
+    50
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000001',
+    'ea000000-0000-0000-0000-000000000004',
+    'Engineer',
+    80
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000001',
+    'ea000000-0000-0000-0000-000000000005',
+    'Designer',
+    30
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000002',
+    'ea000000-0000-0000-0000-000000000003',
+    'Design Lead',
+    60
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000002',
+    'ea000000-0000-0000-0000-000000000005',
+    'Designer',
+    40
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000002',
+    'ea000000-0000-0000-0000-000000000006',
+    'Marketing',
+    20
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000003',
+    'ea000000-0000-0000-0000-000000000002',
+    'Tech Lead',
+    40
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000003',
+    'ea000000-0000-0000-0000-000000000004',
+    'Engineer',
+    50
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000004',
+    'ea000000-0000-0000-0000-000000000004',
+    'Engineer',
+    30
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000005',
+    'ea000000-0000-0000-0000-000000000001',
+    'Sponsor',
+    10
+  ),
+  (
+    'ec000000-0000-0000-0000-000000000005',
+    'ea000000-0000-0000-0000-000000000008',
+    'Coordinator',
+    20
+  );
 
 ----------------------------------------------------------------
 -- Milestones
 ----------------------------------------------------------------
 insert into
-  demo.milestones (id, project_id, title, description, due_date, status, sort_order)
+  demo.milestones (
+    id,
+    project_id,
+    title,
+    description,
+    due_date,
+    status,
+    sort_order
+  )
 values
   (
     '5e000000-0000-0000-0000-000000000001',
@@ -3767,7 +3834,15 @@ values
 -- Services (billing catalog)
 ----------------------------------------------------------------
 insert into
-  demo.services (id, name, description, category, default_rate, unit, color)
+  demo.services (
+    id,
+    name,
+    description,
+    category,
+    default_rate,
+    unit,
+    color
+  )
 values
   (
     '5ec00000-0000-0000-0000-000000000001',
@@ -3938,42 +4013,211 @@ values
 -- lookup-fill UI would populate from demo.services.default_rate)
 ----------------------------------------------------------------
 insert into
-  demo.invoice_items (invoice_id, service_id, description, quantity, unit_price, sort_order)
+  demo.invoice_items (
+    invoice_id,
+    service_id,
+    description,
+    quantity,
+    unit_price,
+    sort_order
+  )
 values
   -- ffa...001 (Acme, paid) — Discovery Workshop + UI/UX Design
-  ('ffa00000-0000-0000-0000-000000000001', '5ec00000-0000-0000-0000-000000000001', 'Discovery Workshop', 20, 150.00, 1),
-  ('ffa00000-0000-0000-0000-000000000001', '5ec00000-0000-0000-0000-000000000002', 'UI/UX Design', 40, 120.00, 2),
+  (
+    'ffa00000-0000-0000-0000-000000000001',
+    '5ec00000-0000-0000-0000-000000000001',
+    'Discovery Workshop',
+    20,
+    150.00,
+    1
+  ),
+  (
+    'ffa00000-0000-0000-0000-000000000001',
+    '5ec00000-0000-0000-0000-000000000002',
+    'UI/UX Design',
+    40,
+    120.00,
+    2
+  ),
   -- ffa...002 (Acme, sent) — Frontend Development
-  ('ffa00000-0000-0000-0000-000000000002', '5ec00000-0000-0000-0000-000000000003', 'Frontend Development', 60, 140.00, 1),
-  ('ffa00000-0000-0000-0000-000000000002', '5ec00000-0000-0000-0000-000000000005', 'QA Testing', 10, 90.00, 2),
+  (
+    'ffa00000-0000-0000-0000-000000000002',
+    '5ec00000-0000-0000-0000-000000000003',
+    'Frontend Development',
+    60,
+    140.00,
+    1
+  ),
+  (
+    'ffa00000-0000-0000-0000-000000000002',
+    '5ec00000-0000-0000-0000-000000000005',
+    'QA Testing',
+    10,
+    90.00,
+    2
+  ),
   -- ffa...003 (Blue Harbor, overdue) — Brand Identity Package
-  ('ffa00000-0000-0000-0000-000000000003', '5ec00000-0000-0000-0000-000000000007', 'Brand Identity Package', 1, 2500.00, 1),
-  ('ffa00000-0000-0000-0000-000000000003', '5ec00000-0000-0000-0000-000000000001', 'Discovery Workshop', 8, 150.00, 2),
+  (
+    'ffa00000-0000-0000-0000-000000000003',
+    '5ec00000-0000-0000-0000-000000000007',
+    'Brand Identity Package',
+    1,
+    2500.00,
+    1
+  ),
+  (
+    'ffa00000-0000-0000-0000-000000000003',
+    '5ec00000-0000-0000-0000-000000000001',
+    'Discovery Workshop',
+    8,
+    150.00,
+    2
+  ),
   -- ffa...004 (Greenfield, draft) — Backend Development
-  ('ffa00000-0000-0000-0000-000000000004', '5ec00000-0000-0000-0000-000000000004', 'Backend Development', 15, 150.00, 1),
+  (
+    'ffa00000-0000-0000-0000-000000000004',
+    '5ec00000-0000-0000-0000-000000000004',
+    'Backend Development',
+    15,
+    150.00,
+    1
+  ),
   -- ffa...005 (Acme, paid) — Support Retainer
-  ('ffa00000-0000-0000-0000-000000000005', '5ec00000-0000-0000-0000-000000000008', 'Support Retainer', 25, 100.00, 1),
+  (
+    'ffa00000-0000-0000-0000-000000000005',
+    '5ec00000-0000-0000-0000-000000000008',
+    'Support Retainer',
+    25,
+    100.00,
+    1
+  ),
   -- ffa...006 (Nimbus, draft) — Discovery Workshop deposit
-  ('ffa00000-0000-0000-0000-000000000006', '5ec00000-0000-0000-0000-000000000001', 'Discovery Workshop', 10, 150.00, 1);
+  (
+    'ffa00000-0000-0000-0000-000000000006',
+    '5ec00000-0000-0000-0000-000000000001',
+    'Discovery Workshop',
+    10,
+    150.00,
+    1
+  );
 
 ----------------------------------------------------------------
 -- Time entries
 ----------------------------------------------------------------
 insert into
-  demo.time_entries (task_id, team_member_id, entry_date, duration, is_billable, notes)
+  demo.time_entries (
+    task_id,
+    team_member_id,
+    entry_date,
+    duration,
+    is_billable,
+    notes
+  )
 values
-  ('a5000000-0000-0000-0000-000000000001', 'ea000000-0000-0000-0000-000000000004', current_date - interval '18 days', 14400, true, 'Configurator scaffolding.'),
-  ('a5000000-0000-0000-0000-000000000001', 'ea000000-0000-0000-0000-000000000004', current_date - interval '15 days', 21600, true, '3D model integration.'),
-  ('a5000000-0000-0000-0000-000000000002', 'ea000000-0000-0000-0000-000000000004', current_date - interval '10 days', 18000, true, 'Color + material step complete.'),
-  ('a5000000-0000-0000-0000-000000000003', 'ea000000-0000-0000-0000-000000000004', current_date - interval '3 days', 10800, true, 'Pricing summary in progress.'),
-  ('a5000000-0000-0000-0000-000000000004', 'ea000000-0000-0000-0000-000000000002', current_date - interval '9 days', 7200, true, 'Hosting vendor comparison.'),
-  ('a5000000-0000-0000-0000-000000000006', 'ea000000-0000-0000-0000-000000000005', current_date - interval '20 days', 28800, true, 'Logo concept sketches.'),
-  ('a5000000-0000-0000-0000-000000000006', 'ea000000-0000-0000-0000-000000000005', current_date - interval '18 days', 25200, true, 'Refined final concept direction.'),
-  ('a5000000-0000-0000-0000-000000000007', 'ea000000-0000-0000-0000-000000000003', current_date - interval '11 days', 21600, true, 'Typography system draft.'),
-  ('a5000000-0000-0000-0000-000000000007', 'ea000000-0000-0000-0000-000000000003', current_date - interval '6 days', 18000, true, 'Color system + usage rules.'),
-  ('a5000000-0000-0000-0000-000000000009', 'ea000000-0000-0000-0000-000000000002', current_date - interval '5 days', 14400, true, 'Compliance workshop prep.'),
-  ('a5000000-0000-0000-0000-00000000000a', 'ea000000-0000-0000-0000-000000000004', current_date - interval '2 days', 10800, true, 'Initial architecture notes.'),
-  ('a5000000-0000-0000-0000-00000000000d', 'ea000000-0000-0000-0000-000000000008', current_date - interval '24 days', 21600, false, 'Internal tooling — non-billable.'),
-  ('a5000000-0000-0000-0000-00000000000e', 'ea000000-0000-0000-0000-000000000001', current_date - interval '21 days', 7200, false, 'Internal tooling — non-billable.');
+  (
+    'a5000000-0000-0000-0000-000000000001',
+    'ea000000-0000-0000-0000-000000000004',
+    current_date - interval '18 days',
+    14400,
+    true,
+    'Configurator scaffolding.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000001',
+    'ea000000-0000-0000-0000-000000000004',
+    current_date - interval '15 days',
+    21600,
+    true,
+    '3D model integration.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000002',
+    'ea000000-0000-0000-0000-000000000004',
+    current_date - interval '10 days',
+    18000,
+    true,
+    'Color + material step complete.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000003',
+    'ea000000-0000-0000-0000-000000000004',
+    current_date - interval '3 days',
+    10800,
+    true,
+    'Pricing summary in progress.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000004',
+    'ea000000-0000-0000-0000-000000000002',
+    current_date - interval '9 days',
+    7200,
+    true,
+    'Hosting vendor comparison.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000006',
+    'ea000000-0000-0000-0000-000000000005',
+    current_date - interval '20 days',
+    28800,
+    true,
+    'Logo concept sketches.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000006',
+    'ea000000-0000-0000-0000-000000000005',
+    current_date - interval '18 days',
+    25200,
+    true,
+    'Refined final concept direction.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000007',
+    'ea000000-0000-0000-0000-000000000003',
+    current_date - interval '11 days',
+    21600,
+    true,
+    'Typography system draft.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000007',
+    'ea000000-0000-0000-0000-000000000003',
+    current_date - interval '6 days',
+    18000,
+    true,
+    'Color system + usage rules.'
+  ),
+  (
+    'a5000000-0000-0000-0000-000000000009',
+    'ea000000-0000-0000-0000-000000000002',
+    current_date - interval '5 days',
+    14400,
+    true,
+    'Compliance workshop prep.'
+  ),
+  (
+    'a5000000-0000-0000-0000-00000000000a',
+    'ea000000-0000-0000-0000-000000000004',
+    current_date - interval '2 days',
+    10800,
+    true,
+    'Initial architecture notes.'
+  ),
+  (
+    'a5000000-0000-0000-0000-00000000000d',
+    'ea000000-0000-0000-0000-000000000008',
+    current_date - interval '24 days',
+    21600,
+    false,
+    'Internal tooling — non-billable.'
+  ),
+  (
+    'a5000000-0000-0000-0000-00000000000e',
+    'ea000000-0000-0000-0000-000000000001',
+    current_date - interval '21 days',
+    7200,
+    false,
+    'Internal tooling — non-billable.'
+  );
 
-select supasheet.refresh_metadata();
+select
+  supasheet.refresh_metadata ();
